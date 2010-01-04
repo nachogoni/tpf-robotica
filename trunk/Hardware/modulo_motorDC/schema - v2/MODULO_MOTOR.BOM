@@ -1,0 +1,39 @@
+MODULO_MOTOR  Revised: Saturday, December 26, 2009
+1          Revision: 1
+
+
+
+
+
+
+
+Bill Of Materials       December 26,2009      22:29:58	Page1
+
+Item	Quantity	Reference	Part
+______________________________________________
+
+1	1	C4	330 uF
+2	4	C9,C10,C1 30 pF,C2 30 pF	CAPACITOR NON-POL
+3	4	C16,C17,C19,C20	1uF
+4	1	C21	10uF
+5	1	C22	100uF
+6	1	D6	1N4148
+7	4	D8,D9,D10,D11	FR304
+8	1	D12	TX_LED
+9	1	D13	RX_LED
+10	2	D14,D15	LED
+11	1	J1	MOTOR
+12	1	J4	ICD2
+13	1	J5	POWER
+14	1	J6	PROGRAM JUMPER
+15	1	R2	0.5 Ohm
+16	4	R5,R6,R11,R13	470 Ohm
+17	3	R8,R9,R10	2,2 KOhm
+18	1	R12	1 KOhm
+19	2	SERIAL_1,SERIAL_2	GND RX TX
+20	1	S2	Reset
+21	1	U1	PIC16F88
+22	1	U2	MAX232
+23	1	U3	L298
+24	1	U4	L7805/TO220
+25	1	XTAL	20 MHz

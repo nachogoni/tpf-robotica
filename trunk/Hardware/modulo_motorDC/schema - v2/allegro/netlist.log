@@ -1,0 +1,48 @@
+{ Using PSTWRITER 16.2.0 p001Dec-29-2009 at 10:43:01 }
+
+#1 Error   [ALG0012] Property "PCB Footprint" missing from instance D11: SCHEMATIC1, Motor (8.70, 0.50).
+#2 Error   [ALG0012] Property "PCB Footprint" missing from instance U3: SCHEMATIC1, Motor (6.90, 0.90).
+#3 Error   [ALG0012] Property "PCB Footprint" missing from instance D12: SCHEMATIC1, Motor (5.30, 4.60).
+#4 Error   [ALG0012] Property "PCB Footprint" missing from instance S2: SCHEMATIC1, Motor (0.60, 4.40).
+#5 Error   [ALG0012] Property "PCB Footprint" missing from instance U4: SCHEMATIC1, Motor (1.80, 5.60).
+#6 Error   [ALG0012] Property "PCB Footprint" missing from instance D13: SCHEMATIC1, Motor (4.70, 4.60).
+#7 Error   [ALG0012] Property "PCB Footprint" missing from instance C4: SCHEMATIC1, Motor (1.20, 6.00).
+#8 Error   [ALG0012] Property "PCB Footprint" missing from instance R2: SCHEMATIC1, Motor (7.60, 1.90).
+#9 Error   [ALG0012] Property "PCB Footprint" missing from instance D6: SCHEMATIC1, Motor (1.40, 4.00).
+#10 Error   [ALG0012] Property "PCB Footprint" missing from instance D14: SCHEMATIC1, Motor (1.10, 2.30).
+#11 Error   [ALG0012] Property "PCB Footprint" missing from instance D15: SCHEMATIC1, Motor (1.10, 1.80).
+#12 Error   [ALG0012] Property "PCB Footprint" missing from instance C16: SCHEMATIC1, Motor (6.10, 5.20).
+#13 Error   [ALG0012] Property "PCB Footprint" missing from instance R5: SCHEMATIC1, Motor (5.30, 5.20).
+#14 Error   [ALG0012] Property "PCB Footprint" missing from instance C17: SCHEMATIC1, Motor (6.20, 5.60).
+#15 Error   [ALG0012] Property "PCB Footprint" missing from instance D8: SCHEMATIC1, Motor (8.10, 1.70).
+#16 Error   [ALG0012] Property "PCB Footprint" missing from instance R6: SCHEMATIC1, Motor (4.70, 5.20).
+#17 Error   [ALG0012] Property "PCB Footprint" missing from instance D9: SCHEMATIC1, Motor (8.10, 0.50).
+#18 Error   [ALG0012] Property "PCB Footprint" missing from instance C9: SCHEMATIC1, Motor (0.70, 4.70).
+#19 Error   [ALG0012] Property "PCB Footprint" missing from instance C19: SCHEMATIC1, Motor (6.30, 5.00).
+#20 Error   [ALG0012] Property "PCB Footprint" missing from instance XTAL: SCHEMATIC1, Motor (0.60, 3.00).
+#21 Error   [ALG0012] Property "PCB Footprint" missing from instance R8: SCHEMATIC1, Motor (5.50, 2.60).
+#22 Error   [ALG0012] Property "PCB Footprint" missing from instance R9: SCHEMATIC1, Motor (5.50, 2.10).
+#23 Error   [ALG0012] Property "PCB Footprint" missing from instance J1: SCHEMATIC1, Motor (7.40, 2.70).
+#24 Error   [ALG0012] Property "PCB Footprint" missing from instance C1 30 pF: SCHEMATIC1, Motor (0.30, 3.40).
+#25 Error   [ALG0012] Property "PCB Footprint" missing from instance C2 30 pF: SCHEMATIC1, Motor (0.90, 3.40).
+#26 Error   [ALG0012] Property "PCB Footprint" missing from instance J4: SCHEMATIC1, Motor (4.40, 3.00).
+#27 Error   [ALG0012] Property "PCB Footprint" missing from instance J5: SCHEMATIC1, Motor (4.20, 4.80).
+#28 Error   [ALG0012] Property "PCB Footprint" missing from instance R10: SCHEMATIC1, Motor (5.50, 2.40).
+#29 Error   [ALG0012] Property "PCB Footprint" missing from instance J6: SCHEMATIC1, Motor (5.70, 3.40).
+#30 Error   [ALG0012] Property "PCB Footprint" missing from instance R11: SCHEMATIC1, Motor (0.50, 2.30).
+#31 Error   [ALG0012] Property "PCB Footprint" missing from instance C20: SCHEMATIC1, Motor (6.30, 4.70).
+#32 Error   [ALG0012] Property "PCB Footprint" missing from instance C21: SCHEMATIC1, Motor (7.90, 5.60).
+#33 Error   [ALG0012] Property "PCB Footprint" missing from instance C10: SCHEMATIC1, Motor (2.90, 6.00).
+#34 Error   [ALG0012] Property "PCB Footprint" missing from instance R12: SCHEMATIC1, Motor (2.10, 4.10).
+#35 Error   [ALG0012] Property "PCB Footprint" missing from instance SERIAL_1: SCHEMATIC1, Motor (8.40, 5.60).
+#36 Error   [ALG0012] Property "PCB Footprint" missing from instance U1: SCHEMATIC1, Motor (2.40, 2.00).
+#37 Error   [ALG0012] Property "PCB Footprint" missing from instance R13: SCHEMATIC1, Motor (0.50, 1.80).
+#38 Error   [ALG0012] Property "PCB Footprint" missing from instance SERIAL_2: SCHEMATIC1, Motor (8.90, 5.60).
+#39 Error   [ALG0012] Property "PCB Footprint" missing from instance C22: SCHEMATIC1, Motor (7.00, 0.30).
+#40 Error   [ALG0012] Property "PCB Footprint" missing from instance D10: SCHEMATIC1, Motor (8.70, 1.70).
+#41 Error   [ALG0012] Property "PCB Footprint" missing from instance U2: SCHEMATIC1, Motor (7.10, 4.10).
+#42 Error   [ALG0031] Pin number missing from Pin "1" of Package SW PUSHBUTTON , S2: SCHEMATIC1, Motor (0.60, 4.40). All pins should be numbered.
+#43 Error   [ALG0031] Pin number missing from Pin "2" of Package SW PUSHBUTTON , S2: SCHEMATIC1, Motor (0.60, 4.40). All pins should be numbered.
+#44 Error   [ALG0031] Pin number missing from Pin "1" of Package CRYSTAL , XTAL: SCHEMATIC1, Motor (0.60, 3.00). All pins should be numbered.
+#45 Error   [ALG0031] Pin number missing from Pin "2" of Package CRYSTAL , XTAL: SCHEMATIC1, Motor (0.60, 3.00). All pins should be numbered.
+#46 Aborting Netlisting... Please correct the above errors and retry.
