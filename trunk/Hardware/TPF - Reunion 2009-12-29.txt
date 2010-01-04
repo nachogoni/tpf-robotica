@@ -1,0 +1,69 @@
+Temas hablados:
+
+--Sensores de piso-- (CNY70) - http://www.x-robotics.com/sensores_ing.htm
+    Uso de un PIC16F88 para el manejo de hasta 5 sensores de piso - lectura del nivel de tension de la salida del fototransistor
+    Hacer el promedio de al menos 5 mediciones para eliminar el ruido de sensado
+    Habilitar bajo pedido el sensor con un GIO que exita la base de un transistor (ver polarizacion y transistor correcto) - IDEM TELEMETROS
+    VER SENSORES - MODELOS - PRECIOS - DONDE COMPRARLOS
+
+--Sensores de ultraSonido--
+    Medicion de la distancia en base al ancho del pulso de la salida
+    VER FUNCIONAMIENTO
+    VER SENSORES - MODELOS - PRECIOS - DONDE COMPRARLOS
+
+--Telemetros-- GP2D-120 - http://www.x-robotics.com/sensores_ing.htm#B%C3%A1sico
+    Uso de un PIC16F88 para el manejo de hasta 5 telemetros de 4 a 30cm por nivel de tension en la salida
+    Uso de pines GIO para habilitar y deshabilitar el telemetro que exitan la base de un transistor (ver polarizacion y transistor correcto)
+    Medicion del sensor bajo pedido
+    VER TELEMETROS - MODELOS - PRECIOS - DONDE COMPRARLOS
+
+--Control de velocidad--
+    Agregar llave doble inversora seguir la cadena o como terminacion (puente)
+    Agregar referencia de voltaje para el ADC con un puente de resistencias a mass de 2V (chequear que el voltaje de referencia es el correcto para la maxima corriente y la resistencia del L298)
+    Cambiar el led de debug de RA2 para el voltaje de referencia
+    Capacitor de 1000uF en la alimentacion de la logica (entrada del regulador) y en la alimentacion del L298
+    Capacitor de 0.1nF en la alimentacion de la logica (salida del regulador)
+    Reemplazo del jumper de programacion por una llave inversora RB6 a CLK o encoder del motor
+    Pines con polaridad para el conector del motor y de programacion ICD2
+    Darle footprints a los componentes y armar la placa -> tener en cuenta las medidas reales y los diametros de los pines
+    +12V Logic es +V Logic
+    Usar borneras enchufables para la alimentacion
+    Usar RJ9 (4P4C) para los pines de comunicacion serial
+    El promedio esta mal hecho :P Usar: (valor acumulado, promedio, #muestras) o un consumo semi-instantaneo para informar.
+    Arreglar el bug de cuentas para frenar "marcha atras"
+    Lado del motro (IZQ o DER) por firmware -> usa algun pin libre?
+    RUEDAS
+
+--Servos--
+    Angulo del rotor en base al ancho del pulso de la entrada
+    Logica independiente a la alimentacion -> no hay necesidad de uso de un driver
+    Ver la posibilidad de usar un mismo PIC16F88 para varios servos o compartir el uso del micro con los telemetros (NO NECESARIO)
+    VER SERVOS - MODELOS - PRECIOS - DONDE COMPRARLOS
+
+--Protocolo--
+    Control de velocidad de los motores -> mensaje de consumo extremo en los motores.
+    Inicializacion con paquete para autonumerar y setear los IDs de las placas (?)
+    Comunicacion broadcast -> cada placa debe retransmitir el mensaje
+    Comunicacion unicast -> retransmitir el paquete a placas del mismo tipo? (unicast x tipo de placa?)
+    Ver como salvar el posible delay en la comunicacion - sincronismo entre placas, en especial en el control de velocidad
+    Ver "easy chain" sobre RS232
+    Ver como va a ser la comunicacion -> |ID|MSG|PARAMETROS|CHECKSUM|
+    Ver como sincronizar en envio de los datos, ver como serian las prioridades entre las respuesta y la retransmision del mensaje recibido
+    Ver que pasa si una placa deja de responder -> Master error :P
+    Armar la API - punto de entrada a los sensores desde la PC
+
+--Deteccion de basura--
+    Uso de un pulsador que se presione a cierto nivel de basura para simplificar la deteccion (?)
+    IDEAS (?)
+
+--Medicion de las Baterias--
+    Se puede usar un ADC para medir la tension en la o las baterias -> bastante malo, pero por ahora creo que es lo que va a ser
+    Carga de baterias
+    CUAL??
+
+--Netbook--
+    VER MODELOS - PRECIOS - DONDE COMPRARLA
+
+--Tiempos/Alcance--
+    Hacer alcance/cronograma de al menos mi parte del TPF
+    Silvia: "podemos ver cuando crean que llegaron al punto en el que esta listo para darlo por terminado, pero tienen que estar todos"

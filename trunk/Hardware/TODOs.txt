@@ -1,0 +1,28 @@
+TODOs
+
+- Terminar el diagrama del control de velocidad del motor (LISTO)
+- Buscar si estan todos los componentes para montaje superficial (TODO)
+- Hacer el circuito del control de velocidad del motor -> Pasar del Orcad Capture al Orcad Layout (??)
+- Corregir el firmware del 16f88 - bug de control de cuentas andando en "reversa"
+- Hacer cronograma y alcance del proyecto - hardware (TODO)
+- Ver como se usan los servos (PWM -> posicion)
+- Ver como se usan los telemetros (por nivel de tension o comunicacion serial de un cable)
+- Ver como se usan los sensores de luz - sensores de piso (nivel de tension al fototransistor)
+- Ver como se usan los sensores de ultrasonido (?)
+- Ver como se usan los LDR (resistencia variable, 5v directo y el LDR a masa, no?)
+- Ver que baterias usar, ver tamaños y potencia
+- Deteccion bateria baja (?)
+- Carga de bateria (?)
+- Protocolo de comunicacion (TODO)
+- Interfaz de control - API (TODO)
+
+
+Specs
+
+Control de servo ("pala delantera", puerta trasera de descarga de basura, pie/rueda para inclinar el robot al recolectar la basura)
+- De la misma forma que se hizo con el control de velocidad del motor princiapl, se puede usar el PWM del PIC16F88 para controlar el servo. Esto llevaria a un microcontrolador por servo.
+- Se puede hacer un PWM por software para controlar a mas de un servo permitiendo el control de varios servos con el mismo controlador. Esto puede ayudar a aumentar la velocidad en las comunicaciones evitando "saltos"
+Lectura de telemetros
+- El PIC16F88 tiene 7 entradas para el ADC interno usando el clock interno. Puede manejar 7 telemetros con salida analogica y hasta otro 6 con comunicacion serial de un cable.
+Lectura de los sensores de piso
+- Si es un led emisor y un fototransistor, se puede usar de la misma forma que en los telemetros, un PIC16F88 para tomar la señal analogica del fototransistor.
