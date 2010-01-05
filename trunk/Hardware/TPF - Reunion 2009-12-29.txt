@@ -17,16 +17,16 @@ Temas hablados:
     Medicion del sensor bajo pedido
     VER TELEMETROS - MODELOS - PRECIOS - DONDE COMPRARLOS
 
---Control de velocidad--
-    Agregar llave doble inversora seguir la cadena o como terminacion (puente)
-    Agregar referencia de voltaje para el ADC con un puente de resistencias a mass de 2V (chequear que el voltaje de referencia es el correcto para la maxima corriente y la resistencia del L298)
-    Cambiar el led de debug de RA2 para el voltaje de referencia
-    Capacitor de 1000uF en la alimentacion de la logica (entrada del regulador) y en la alimentacion del L298
-    Capacitor de 0.1nF en la alimentacion de la logica (salida del regulador)
-    Reemplazo del jumper de programacion por una llave inversora RB6 a CLK o encoder del motor
-    Pines con polaridad para el conector del motor y de programacion ICD2
+--Control de velocidad-- (* -> Listo)
+    *Agregar llave doble inversora seguir la cadena o como terminacion (puente)
+    *Agregar referencia de voltaje para el ADC con un puente de resistencias a mass de 2V (chequear que el voltaje de referencia es el correcto para la maxima corriente y la resistencia del L298)
+    *Cambiar el led de debug de RA2 para el voltaje de referencia
+    *Capacitor de 1000uF en la alimentacion de la logica (entrada del regulador) y en la alimentacion del L298
+    *Capacitor de 0.1nF en la alimentacion de la logica (salida del regulador)
+    *Reemplazo del jumper de programacion por una llave inversora RB6 a CLK o encoder del motor
     Darle footprints a los componentes y armar la placa -> tener en cuenta las medidas reales y los diametros de los pines
-    +12V Logic es +V Logic
+    Pines con polaridad para el conector del motor y de programacion ICD2
+    *+12V Logic es +V Logic
     Usar borneras enchufables para la alimentacion
     Usar RJ9 (4P4C) para los pines de comunicacion serial
     El promedio esta mal hecho :P Usar: (valor acumulado, promedio, #muestras) o un consumo semi-instantaneo para informar.
