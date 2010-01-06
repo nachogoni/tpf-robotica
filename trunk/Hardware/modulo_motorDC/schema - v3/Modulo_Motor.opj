@@ -56,10 +56,22 @@
     ("Allegro Setup Backup Versions" "3")
     ("Allegro Netlist Combine Property String" "PCB Footprint")
     ("Allegro Netlist Ignore Fixed Property" "FALSE")
-    ("Allegro Netlist User Defined Property" "FALSE"))
+    ("Allegro Netlist User Defined Property" "FALSE")
+    (TRUE))
   (Folder "Outputs"
     (File ".\modulo_motor.bom"
-      (Type "Report")))
+      (Type "Report"))
+    (File ".\allegro\pstxnet.dat"
+      (Type "Report")
+      (DisplayName "pstxnet.dat"))
+    (File ".\allegro\pstxprt.dat"
+      (Type "Report")
+      (DisplayName "pstxprt.dat"))
+    (File ".\allegro\pstchip.dat"
+      (Type "Report")
+      (DisplayName "pstchip.dat"))
+    (File ".\modulo_motor.mnl"
+      (Type "LAYOUT Netlist File")))
   (Folder "Referenced Projects")
   (PartMRUSelector
     ("CONN PCB 4"
@@ -111,32 +123,14 @@
   (GlobalState
     (FileView
       (Path "Design Resources")
-      (Path "Design Resources"
-         "D:\TPF\Hardware\modulo_motorDC\schema - v2\modulo_motor.dsn")
-      (Path "Design Resources"
-         "D:\TPF\Hardware\modulo_motorDC\schema - v2\modulo_motor.dsn"
-         "SCHEMATIC1")
-      (Path "Design Resources"
-         "D:\TPF\Hardware\modulo_motorDC\schema - v2\modulo_motor.dsn"
-         "Design Cache")
-      (Path "Outputs"))
-    (HierarchyView
-      (Path "SCHEMATIC1"))
+      (Path "Outputs")
+      (Path "Simulation Resources"))
+    (HierarchyView)
     (Doc
       (Type "COrCapturePMDoc")
       (Frame
-        (Placement "44 2 3 -1 -1 -4 -30 0 233 0 865"))
-      (Tab 0))
-    (Doc
-      (Type "COrSchematicDoc")
-      (Frame
-        (Placement "44 0 1 -1 -1 -4 -30 22 1477 29 509")
-        (Scroll "-154 0")
-        (Zoom "114")
-        (Occurrence "/"))
-      (Path "D:\TPF\HARDWARE\MODULO_MOTORDC\SCHEMA - V2\MODULO_MOTOR.DSN")
-      (Schematic "SCHEMATIC1")
-      (Page "Modulo")))
+        (Placement "44 2 3 -1 -1 -4 -30 0 216 0 865"))
+      (Tab 0)))
   (MPSSessionName "Usuario")
   (ISPCBBASICLICENSE "false")
   (Folder "Simulation Resources"
