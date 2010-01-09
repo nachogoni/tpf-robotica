@@ -5,9 +5,9 @@
  *
  *                               PIC16F88
  *                .------------------------------------.
- *           LED -|RA2/AN2/CVREF/VREF           RA1/AN1|- MOTOR:CHA_B
- *               -|RA3/AN3/VREF+/C1OUT          RA0/AN0|- L298:SEN
- *               -|RA4/AN4/T0CKI/C2OUT    RA7/OSC1/CLKI|- XT CLOCK pin1, 27pF to GND
+ *          VREF -|RA2/AN2/CVREF/VREF           RA1/AN1|- MOTOR:CHA_B
+ *           LED -|RA3/AN3/VREF+/C1OUT          RA0/AN0|- L298:SEN
+ *           LED -|RA4/AN4/T0CKI/C2OUT    RA7/OSC1/CLKI|- XT CLOCK pin1, 27pF to GND
  * RST/ICD2:MCLR -|RA5/MCLR/VPP           RA6/OSC2/CLKO|- XT CLOCK pin2, 27pF to GND
  *           GND -|VSS                              VDD|- +5v
  *   L298:ENABLE -|RB0/INT/CCP1       RB7/AN6/PGD/T1OSI|- ICD2:PGD
@@ -24,14 +24,15 @@
 #fuses HS,NOWDT,NOPROTECT,NOLVP
 #use delay (clock=20000000)
 //#device adc = 8
-#use rs232(BAUD=115200,PARITY=N,XMIT=PIN_B5,RCV=PIN_B2,BITS=8,ERRORS, TIMEOUT=1, STOP=1)
+#use rs232(BAUD=115200,PARITY=N,XMIT=PIN_B5,RCV=PIN_B2,BITS=8,ERRORS, TIMEOUT=1, STOP=1, UART1)
 #use fast_io(A)
 #use fast_io(B)
 
 #byte porta=0x05
 #byte portb=0x06
 // Led
-#bit led=porta.2
+#bit led1=porta.3
+#bit led2=porta.4
 // L298
 #bit inputA=portb.4
 #bit inputB=portb.3
@@ -55,10 +56,9 @@ long tmr0_ticks = 0;
 
 // Valor acumulado del ADC - Consumo aprox
 float adc_value = 0;
-float average_consumption = 0;
 
-// Valor de dutty del PWM
-signed long dutty = 0;
+// Valor de duty del PWM
+signed long duty = 0;
 
 // Girar -> clockwise or unclockwise
 // Intercambiar entre el motor derecho y el izquierdo
@@ -72,7 +72,7 @@ signed long counts_to_stop = 0;
 signed long last_counts = 0;
 signed long last_counts2 = 0;
 short counts_check = 0;
-short correct_dutty = 1;
+short correct_duty = 1;
 
 /* Examina y ejecula el comando */
 void command(char * cmd);
@@ -108,24 +108,24 @@ void Timer0_INT()
 			counts_check = 0;
 			counts_to_stop = 0;
 			counts_expected = 0;
-			dutty = 0;
-			SetPWM(dutty);
-			correct_dutty = 0;
+			duty = 0;
+			SetPWM(duty);
+			correct_duty = 0;
 			last_counts = 0;
 		} else {
 			tmr1 = get_timer1();
-			counts_to_stop -= (tmr1 - last_counts) * turn;
-			correct_dutty = 1;
+			counts_to_stop -= (tmr1 - last_counts);// * turn;
+			correct_duty = 1;
 			last_counts = tmr1;
 		}
 	} else {
-		correct_dutty = 1;
+		correct_duty = 1;
 	}
 	
 	if (++tmr0_ticks == 32)
 	{
 		// Entra cada 200ms
-		led = 1;// DEBUG?
+		led1 = 1;// DEBUG?
 		// Obtengo la cantidad de cuentas desde la ultima entrada
 		tmr1 = get_timer1();
 		set_timer1(0);
@@ -133,26 +133,25 @@ void Timer0_INT()
 		last_counts2 = 0;
 		// Promedio el consumo segun la cantidad de tmr0_ticks
 		adc_value /= tmr0_ticks;
-		printf("\n\rTimer1: %ld | Expected: %ld | dutty: %ld | ", tmr1, counts_expected, dutty); // DEBUG
-		printf("consumtion: %d avrg: %g hist: %g\n\r", read_adc(), adc_value, average_consumption); // DEBUG
+		printf("\n\rTimer1: %ld | Expected: %ld | duty: %ld | ", tmr1, counts_expected, duty); // DEBUG
+		printf("consumtion: %d avrg: %g\n\r", read_adc(), adc_value); // DEBUG
 		tmr0_ticks = 0;
 
 		// Mantengo el consumo promedio desde que arranque y borro el temporal
-		average_consumption = (average_consumption + adc_value) / 2;
 		adc_value = 0;
 
 		// Corrijo el PWM segun lo esperado
-		if ((correct_dutty == 1) && (tmr1 != counts_expected))
+		if ((correct_duty == 1) && (tmr1 != counts_expected))
 		{
-			dutty += (counts_expected - tmr1) * 5;
-			if (dutty > 1023L)
-				dutty = 1023;
-			else if (dutty < 0)
-				dutty = 0;
-			SetPWM(dutty * turn);
+			duty += (counts_expected - tmr1) * 5;
+			if (duty > 1023L)
+				duty = 1023;
+			else if (duty < 0)
+				duty = 0;
+			SetPWM(duty * turn);
 		}
 	} else {
-		led = 0; // DEBUG?
+		led1 = 0; // DEBUG?
 	}
 }
 
@@ -161,18 +160,20 @@ void main() {
 	// Control de Velocidad comandado por RS232
 	byte c = 0;
 
-	set_tris_a(0b11111011);
+	set_tris_a(0b11100111);
 	set_tris_b(0b11100110);
 	
 	// ***ADC***
-	setup_port_a(sAN0|VSS_VREF);
+	setup_port_a(sAN0);//|VSS_VREF);
 	setup_adc(ADC_CLOCK_INTERNAL);
 	set_adc_channel(0);
 	setup_adc_ports(sAN0);
+	// Deberia usar VREF_A2... probar
+	setup_vref(VREF_HIGH | 8); // VREF a 2.5V -> no hay cambios...
 	
 	// ***PWM***
 	setup_ccp1(CCP_PWM);
-	// Seteo al PWM con f: 4.88 kHz, dutty = 0
+	// Seteo al PWM con f: 4.88 kHz, duty = 0
 	set_pwm1_duty(0);
 	setup_timer_2(T2_DIV_BY_4, 255, 1);
 
@@ -197,7 +198,7 @@ void main() {
 
 	// Splash
 	/*printf("\n\rINIT - CONTROL DE VELOCIDAD DE MOTOR - DEV: %s VERSION: %s", getenv("DEVICE"), VERSION);// DEBUG
-	printf("\n\rsc: clockwise, su: unclockwise, d<value>: set dutty");
+	printf("\n\rsc: clockwise, su: unclockwise, d<value>: set duty");
 	printf("\n\re<value>: set expected, t<value>: set counts to stop");
 	printf("\n\rf: dont stop, c: get total counts, z: set total counts to zero");
 	printf("\n\rv<value>: set counts to");*/
@@ -277,13 +278,16 @@ void command(char * cmd)
 	} else 
 	if (cmd[0] == 'd')
 	{
-		dutty = atol(cmd + 1);
-		SetPWM(dutty);
-		printf("\rPWM dutty to: %ld", dutty);
+		duty = atol(cmd + 1);
+		SetPWM(duty);
+		printf("\rPWM duty to: %ld", duty);
 	} else 
 	if (cmd[0] == 'e')
 	{
 		counts_expected = atol(cmd + 1);
+		// Frenar el motor
+		if (atol(cmd + 1) == 0)
+			duty = 0;
 		printf("\rExpected changed to: %ld", counts_expected);
 	} else 
 	if (cmd[0] == 's')
@@ -298,7 +302,7 @@ void command(char * cmd)
 	return;	
 }	
 
-/* Setea el dutty del PWM segun el valor. Positivo o negativo determina el sentido */
+/* Setea el duty del PWM segun el valor. Positivo o negativo determina el sentido */
 void setPWM(signed long pwm)
 {
   long pset;

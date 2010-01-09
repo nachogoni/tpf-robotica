@@ -29,9 +29,10 @@ Temas hablados:
     *+12V Logic es +V Logic
     Usar borneras enchufables para la alimentacion - VER COMPONENTES REALES
     -Usar RJ9 (4P4C) para los pines de comunicacion serial - VER COMPONENTES REALES
-    El promedio esta mal hecho :P Usar: (valor acumulado, promedio, #muestras) o un consumo semi-instantaneo para informar.
-    Arreglar el bug de cuentas para frenar "marcha atras"
+    *El promedio esta mal hecho :P Usar: (valor acumulado, promedio, #muestras) o un consumo semi-instantaneo para informar.
+    *Arreglar el bug de cuentas para frenar "marcha atras"
     Lado del motro (IZQ o DER) por firmware -> usa algun pin libre?
+    Mejorar la velocidad de respuesta y hacer que el incremento de duty sea menor a 5
     COMPRAR COMPONENTES QUE FALTEN PARA VERIFICAR LOS FOOTPRINTS
     RUEDAS
 

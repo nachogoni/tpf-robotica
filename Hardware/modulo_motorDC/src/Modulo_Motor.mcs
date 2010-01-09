@@ -15,7 +15,7 @@ ToolArgsString=
 TraceCmdString=
 DebugOptions=
 [File001]
-Location=D:\TPF\Modulo_Motor\Modulo_Motor_main.o
+Location=D:\TPF\Hardware\modulo_motorDC\src\Modulo_Motor_main.o
 Folder=Intermediary
 DeviceName=
 LanguageToolSuiteID=
