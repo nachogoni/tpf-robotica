@@ -1,0 +1,337 @@
+\documentclass[a4paper,11pt]{article}
+
+%% Paquetes Adicionales %%
+
+\usepackage[spanish]{babel}
+\selectlanguage{spanish}
+\spanishdecimal{.}
+\addto\captionsspanish{\def\tablename{Tabla}}
+\usepackage{fancyhdr}
+\usepackage{graphics}
+\usepackage[dvips]{graphicx}
+\usepackage[normal]{caption2}
+\usepackage{amsfonts,amssymb,amsmath,amsthm}
+\usepackage[T1]{fontenc}
+\usepackage{moreverb}
+
+
+%% Declaracion de comandos %%
+
+\newtheorem{lema}{Lema}
+\newtheorem{teor}{Teorema}
+\newtheorem{propos}{Proposici\'on}
+\newtheorem{corol}{Corolario}
+
+
+\newcommand{\mivec}[1]{\mathbf{#1}}
+\newcommand{\vers}[1]{\mivec{\check{#1}}}
+\newcommand{\deriv}[2]{\frac{\mathrm{d}#1}{\mathrm{d}#2}}
+\newcommand{\expo}[1]{~10^{#1}}
+\newcommand{\uni}[1]{\mathrm{#1}} 
+
+\newcommand{\prop}[1]{\begin{propos} #1 \end{propos}}
+\newcommand{\teo}[1]{\begin{teor} #1 \end{teor}}
+\newcommand{\cor}[1]{\begin{corol} #1 \end{corol}}
+\newcommand{\lem}[1]{\begin{lema} #1 \end{lema}}
+
+
+%% Encabezado y Pie de Pagina %%
+
+\pagestyle{plain}
+\lhead{}
+\chead{}
+\rhead{}
+\cfoot{\thepage}
+\renewcommand{\footrulewidth}{0.4pt}
+
+%% Titulo %%
+\begin{document}
+\title{{\ Trabajo Pr\'actico N\'umero 2}}
+\author{Juan Ignacio Go\~ni \footnote{jgoni@alu.itba.edu.ar} \\ Diego Marqu\'es \footnote{dmarques@alu.itba.edu.ar}}
+
+%\date{}
+
+%% Comienzo del documento %%
+
+\maketitle
+\begin{abstract}
+En el presente art\'iculo se desarrollan diferentes estrategias de c\'omputo para la multiplicaci\'on de matrices cuadradas. Aprovechando la existencia de distintos \emph{cores} o procesadores de un sistema multiprocesador para aumentar el rendimiento mediante el uso de threads y OpenMP.
+\\ \\
+\textbf{Palabras Clave: }\emph{loop unroll, cores, multicore, multiprocesador, rendimiento, performance, Mflops/s, OpemMP.}
+\end{abstract}
+
+%\thispagestyle{fancy}
+
+%% COMIENZO DEL TEXTO %%
+
+\section{Introducci\'on}
+
+En el presente informe se comentan, discuten y presentan mejoras para optimizar el rendimiento en un sistema multiprocesador para el c\'alculo de matrices cuadradas. Se comparan los tiempos de ejecuci\'on del programa optimizado mediante el uso de threads impl\'icitamente programados por el autor, contra la implementaci\'on automaumentar el rendimientoatica de threads mediante el uso de \emph{OpenMP}.
+A los efectos de realizar las mediciones, se utiliza la funci\'on de librer\'ia est\'andard \emph{GetTimeOfDay}.
+Tambi\'en se calculan los Mflop/s (millones de operaciones de punto flotante por segundo) el cual es un indicador del rendimiento muy utilizado en c\'alculos y aplicaciones cient\'ificas.
+
+\section{Funci\'on GetTimeOfDay}
+
+La funci\'on \emph{GetTimeOfDay} es utilizada para obtener la cantidad de segundos y microsegundos transcurridos desde la media noche del primero de enero de
+1970 con presici\'on de hasta 1 microsegundo, dentro de una estructura de tipo \emph{struct timeval}. Si se utiliza esta funci\'on justo antes y justo despu\'es de invocar
+a un proceso o funci\'on, se puede medir el tiempo total que tarda en ejecutarse dicho proceso con una simple resta, obteniendo una precisi\'on del orden de los
+microsegundos (mejor que la que brinda el comando \emph{time} de UNIX).
+
+\section{Estrategias de optimizaci\'on}
+
+A la hora de realizar c\'alculos con matrices, existen muchas optimizaciones posibles, estas pueden ser combinadas aprovechando la existencia de m\'ultiples procesadores o \emph{cores} dentro de un mismo sistema. 
+
+\subsection{Sin threads con loop unRoll}
+\label{noOpt_threads}
+
+Como base de comparaci\'on, se puede utilizar una optimizacion ya conocida para acortar los tiempos de ejecucion. \emph{Loop unRoll}, consiste en extender un ciclo de repecici\'on simple reduciendo la cantidad de instrucciones de salto y comparaciones dentro del mismo, aprovechando as\'i el sistema de \emph{pipeline} de cada n\'ucleo de procesamiento. 
+
+El siguiente ejemplo sirve para explicar mejor la estrategia:
+
+\begin{verbatimtab}
+Desde i:= 1 a n
+	y(i) := y(i) + alfa * x(i)
+Fin Desde
+\end{verbatimtab}
+
+En lugar de hacer una sola instrucci\'on por ciclo, se pueden lograr $m$ instrucciones por cada iteraci\'on siempre y cuando $n$ sea m\'ultiplo de $m$, obteniendo
+la m\'axima performance cuando $n$ es igual a $m$. El problema es que la mayor\'ia de las veces no se conoce el valor de $n$, esto impide poder aplicar esta t\'ecnica. Aunque la ventaja es que con tan solo conocer alg\'un divisor de dicho valor ya es posible utilizarla. El c\'odigo anterior optimizado con loop unRoll se muestra a continuaci\'on:
+
+\begin{verbatimtab}
+for (i = 0; i < n; i++)
+{
+	y(i) := y(i) + alfa * x(i)
+	y(i+1) := y(i+1) + alfa * x(i+1)
+		.
+		.
+		.
+	y(i+m) := y(i+m) + alfa * x(i+m)
+}
+\end{verbatimtab}
+
+En la tabla \ref{tabla1} y figura \ref{figura1} se muestra el tiempo que consume la multiplicaci\'on de las matrices al ejecutar el programa utilizando \emph{loop unRoll} para diferentes dimensiones de matrices.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|r|r|}
+\hline
+         N & Tiempo \\
+\hline
+        10 &   0.000011 \\
+\hline
+        50 &   0.001221 \\
+\hline
+       100 &   0.009963 \\
+\hline
+       500 &   1.680750 \\
+\hline
+      1000 &   17.937000 \\
+\hline
+      2000 &   134.260000 \\
+\hline
+\end{tabular}
+\caption{Tiempo en segundos para la ejecuci\'on de distintas dimensiones de matrices utilizando \emph{loop unRoll}.}\label{tabla1}
+\end{center}
+\end{table}
+
+\begin{figure}
+\centering
+\includegraphics[scale =0.5]{t_sopt_secs.png}
+\caption{Tiempo en segundos para la ejecuci\'on de distintas dimensiones de matrices utilizando \emph{loop unRoll}}\label{figura1}
+\end{figure}
+
+En la tabla \ref{tabla2} y figura \ref{figura2} se muestran los resultados en Mflops/s.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|r|r|}
+\hline
+         N & Mflops/s \\
+\hline
+        10 &   181.82 \\
+\hline
+        50 &   204.75 \\
+\hline
+       100 &   200.74 \\
+\hline
+       500 &   148.74 \\
+\hline
+      1000 &   111.5 \\
+\hline
+      2000 &   119.17 \\
+\hline
+\end{tabular}
+\caption{Mflops/s para la ejecuci\'on de distintas dimensiones de matrices utilizando \emph{loop unRoll}.}\label{tabla2}
+\end{center}
+\end{table}
+
+\begin{figure}
+\centering
+\includegraphics[scale =0.5]{t_sopt_flops.png}
+\caption{Mflops/s para la ejecuci\'on de distintas dimensiones de matrices utilizando \emph{loop unRoll}}\label{figura2}
+\end{figure}
+
+\subsection{T\'ecnica de loop unRoll con threads}
+\label{loopunroll_threads}
+
+Normalmente, un \'unico proceso se ejecuta en un \'unico procesador, ya que la programaci\'on es secuencial y cada instrucci\'on depende de la anterior para se ejecutada. En un sistema multiprocedador o multicore, una optimizaci\'on posible es la creaci\'on de tantos hilos de ejecucion como n\'ucleos de procesamiento haya disponibles en el sistema, mediante el uso de threads. Esta estrategia es muy interesante desde el punto de vista temporal, ya que se realizan c\'alculos que son independientes entre s\'i de forma parelela, acortando el tiempo de ejecuci\'on.
+Si se utiliza el m\'etodo de \emph{loop unRoll} teniendo en cuenta estos aspectos, se puede optimizar a\'un m\'as los tiempos de ejecuci\'on.
+
+En la tabla \ref{tabla3} y figura \ref{figura3} se muestra el tiempo de ejecuci\'on, utilizando \emph{loop unRoll} en forma conjunta de m\'ultiples \emph{threads}, para diferentes dimensiones de matrices.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|r|r|}
+\hline
+         N & Tiempo \\
+\hline
+        10 &   0.000011 \\
+\hline
+        50 &   0.000660 \\
+\hline
+       100 &   0.005016 \\
+\hline
+       500 &   1.866884 \\
+\hline
+      1000 &   8.903870 \\
+\hline
+      2000 &   67.530500 \\
+\hline
+\end{tabular}
+\caption{Tiempo en segundos para la ejecuci\'on de distintas dimensiones de matrices utilizando \emph{loop unRoll} con m\'ultiples \emph{threads}.}\label{tabla3}
+\end{center}
+\end{table}
+
+\begin{figure}
+\centering
+\includegraphics[scale =0.5]{t_uroll_secs.png}
+\caption{Tiempo en segundos para la ejecuci\'on de distintas dimensiones de matrices utilizando \emph{loop unRoll} con m\'ultiples \emph{threads}}\label{figura3}
+\end{figure}
+
+En la tabla \ref{tabla2} y figura \ref{figura2} se muestran los resultados en Mflops/s.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|r|r|}
+\hline
+         N & Mflops/s \\
+\hline
+        10 &   33.9 \\
+\hline
+        50 &   378.79 \\
+\hline
+       100 &   398.72 \\
+\hline
+       500 &   288.39 \\
+\hline
+      1000 &   224.62 \\
+\hline
+      2000 &   236.93 \\
+\hline
+\end{tabular}
+\caption{Mflops/s para la ejecuci\'on de distintas dimensiones de matrices utilizando \emph{loop unRoll} con m\'ultiples \emph{threads}.}\label{tabla4}
+\end{center}
+\end{table}
+
+\begin{figure}
+\centering
+\includegraphics[scale =0.5]{t_uroll_flops.png}
+\caption{Mflops/s para la ejecuci\'on de distintas dimensiones de matrices utilizando \emph{loop unRoll} con m\'ultiples \emph{threads}}\label{figura4}
+\end{figure}
+
+\subsection{T\'ecnica de loop unRoll con OpenMP}
+\label{loopunroll_openmp}
+
+Aunque los resultados con el uso de m\'ultiples hilos de ejecuci\'on es muy optimistas, una realidad es que la implementaci\'on de m\'ultiples threads es compleja y trae muchos dolores de cabeza a la hora de programarla.
+
+OpenMP es una API para la programaci\'on en paralelo con memoria compartida. El uso de esta API es extremadamente sencillo. Mediante el uso de directivas, se especifica que tipo de c\'alculo paralelo se espera en una determinada secci\'on del c\'odigo y luego se programa en forma tradicional. Se pueden definir variables de tipo \emph{shared}, comunes a todos los hilos de ejecuci\'on, y \emph{private}, \'unicas para cada hilo.
+
+El siguiente, es un simple ejemplo que sirve para explicar el uso de esta la API de OpenMP:
+
+\begin{verbatimtab}
+
+#pragma omp parallel for private(i) shared(y, x, alfa, n, m)
+for (i = 0; i < n; i += m)
+{
+	y(i) := y(i) + alfa * x(i)
+	y(i+1) := y(i+1) + alfa * x(i+1)
+		.
+		.
+		.
+	y(i+m) := y(i+m) + alfa * x(i+m)
+}
+\end{verbatimtab}
+
+En este caso, el ciclo de repetici\'on \emph{for} es ejecutado en forma paralela, donde la variable \emph{i} es privada para cada hilo y las variables \emph{y}, \emph{x}, \emph{alfa}, \emph{n} y \emph{m}, son compartidas entre los distintos hilos de ejecuci\'on.
+
+En la tabla \ref{tabla5} y figura \ref{figura5} se muestra el tiempo de ejecuci\'on, utilizando \emph{loop unRoll} junto con la API de OpenMP, para diferentes dimensiones de matrices.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|r|r|}
+\hline
+         N & Tiempo \\
+\hline
+        10 &   0.000041 \\
+\hline
+        50 &   0.000863 \\
+\hline
+       100 &   0.006803 \\
+\hline
+       500 &   1.122310 \\
+\hline
+      1000 &   11.234800 \\
+\hline
+      2000 &   86.234800 \\
+\hline
+\end{tabular}
+\caption{Tiempo en segundos para la ejecuci\'on de distintas dimensiones de matrices utilizando \emph{loop unRoll} junto con la API de OpenMP.}\label{tabla5}
+\end{center}
+\end{table}
+
+\begin{figure}
+\centering
+\includegraphics[scale =0.5]{omp_uroll_secs.png}
+\caption{Tiempo en segundos para la ejecuci\'on de distintas dimensiones de matrices utilizando \emph{loop unRoll} junto con la API de OpenMP}\label{figura5}
+\end{figure}
+
+En la tabla \ref{tabla6} y figura \ref{figura6} se muestran los resultados en Mflops/s.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|r|r|}
+\hline
+         N & Mflops/s \\
+\hline
+        10 &   48.78 \\
+\hline
+        50 &   289.69 \\
+\hline
+       100 &   293.99 \\
+\hline
+       500 &   222.75 \\
+\hline
+      1000 &   178.02 \\
+\hline
+      2000 &   185.54 \\
+\hline
+\end{tabular}
+\caption{Mflops/s para la ejecuci\'on de distintas dimensiones de matrices utilizando \emph{loop unRoll} junto con la API de OpenMP.}\label{tabla6}
+\end{center}
+\end{table}
+
+\begin{figure}
+\centering
+\includegraphics[scale =0.5]{omp_uroll_flops.png}
+\caption{Mflops/s para la ejecuci\'on de distintas dimensiones de matrices utilizando \emph{loop unRoll} junto con la API de OpenMP}\label{figura6}
+\end{figure}
+
+\section{Resultados finales y conclusiones}
+
+Al comparar los tiempos de ejecuci\'on entre las distintas optimizaciones y implementaciones para m\'ultiples hilos de ejecuci\'on, se observa un clara diferencia entre la programaci\'on en paralelo y la secuencial. En el mejor de los casos, con el uso de 2 \emph{threads}, divide a la mitad el tiempo que tarda en realizar la misma operaci\'on.
+El uso de OpenMP, como herramienta para la programaci\'on en paralelo, es muy buena, pero no es \'optima. Lleva el tiempo de ejecuci\'on aproximadamente a un 75\% del tiempo secuencial, pero no supera a la implementaci\'on con \emph{threads}.
+Pero un punto a tener en cuenta es que implementarlo, fue agregarle una simple l\'inea de c\'odigo a la implementaci\'on del problema. El tiempo de implementaci\'on, claramente es despreciable frente al uso de threads.
+
+En definitiva, para las pruebas de concepto, OpenMP es una excelente opci\'on, pues libera al programador de las preocupaciones y cuidados del uso de recursos compartidos en la implementaci\'on de \emph{threads}. Pero si se buscan resultados \'optimos en tiempo de ejecuci\'on, se deber\'a invertir m\'as tiempo en el c\'odigo para un mejor manejo de los hilos de ejecuci\'on.
+
+\end{document}

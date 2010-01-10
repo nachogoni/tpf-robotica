@@ -1,0 +1,454 @@
+\documentclass[a4paper,11pt]{article}
+
+%% Paquetes Adicionales %%
+
+\usepackage[spanish]{babel}
+\selectlanguage{spanish}
+\spanishdecimal{.}
+\addto\captionsspanish{\def\tablename{Cuadro}}
+\usepackage{fancyhdr}
+\usepackage{graphics}
+\usepackage[dvips]{graphicx}
+\usepackage[normal]{caption2}
+\usepackage{amsfonts,amssymb,amsmath,amsthm}
+\usepackage[T1]{fontenc}
+\usepackage{moreverb}
+
+
+%% Declaracion de comandos %%
+
+\newtheorem{lema}{Lema}
+\newtheorem{teor}{Teorema}
+\newtheorem{propos}{Proposici\'on}
+\newtheorem{corol}{Corolario}
+
+
+\newcommand{\mivec}[1]{\mathbf{#1}}
+\newcommand{\vers}[1]{\mivec{\check{#1}}}
+\newcommand{\deriv}[2]{\frac{\mathrm{d}#1}{\mathrm{d}#2}}
+\newcommand{\expo}[1]{~10^{#1}}
+\newcommand{\uni}[1]{\mathrm{#1}} 
+
+\newcommand{\prop}[1]{\begin{propos} #1 \end{propos}}
+\newcommand{\teo}[1]{\begin{teor} #1 \end{teor}}
+\newcommand{\cor}[1]{\begin{corol} #1 \end{corol}}
+\newcommand{\lem}[1]{\begin{lema} #1 \end{lema}}
+
+
+%% Encabezado y Pie de Pagina %%
+
+\pagestyle{plain}
+\lhead{}
+\chead{}
+\rhead{}
+\cfoot{\thepage}
+\renewcommand{\footrulewidth}{0.4pt}
+
+%% Titulo %%
+\begin{document}
+\title{{\ Trabajo pr\'actico final \\ Robot recolector de residuos \\ Protocolo de comunicaci\'on}}
+
+%\date{}
+
+%% Comienzo del documento %%
+
+\maketitle
+\begin{abstract}
+En el presente se establece el protocolo de comunicaci\'on entre para el envio y recepci\'on de comandos hacia los controladores
+de motores, servos y sensores que proveen informaci\'on del entorno al robot recolector de residuos. El protocolo est\'a dise\~nado
+para ser transmitido a traves \emph{RS-232} utilizando la configuraci\'on de \emph{Daisy-Chain} entre las distintas placas controladoras.
+
+\textbf{Palabras Clave: }\emph{Robot, residuos, protocolo, serial, rs-232, daisy chain, motor, servo, sensor, tel\'emetro, ultrasonido, distancia, bateria}.
+\end{abstract}
+
+%\thispagestyle{fancy}
+
+%% COMIENZO DEL TEXTO %%
+
+\section{Introducci\'on}
+\label{introduccion}
+
+TODO
+
+\section{Formato del paquete}
+\label{formato_paquete}
+
+
+El paquete consta de un header com\'un con datos que identifican el emisor y receptor del paquete, el comando a enviar y posibles datos extras que sean requeridos.
+Tanto los paquetes de envio de datos como los de respuesta tienen el mismo formato y comparten el valor en el campo de comando.
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\hline
+TIPO & ID & TIPO & ID & COMANDO & LARGO & DATO & CRC \\
+\hline
+\end{tabular}
+\caption{Formato y header del paquete de datos}
+\label{formato_paquete_tabla}
+\end{center}
+\end{table}
+
+
+\subsection{TIPO}
+\label{tipo_destinatario}
+
+	El comando consta de 1 byte.
+	Informa el grupo del destinatario del paquete.
+	Grupos predefinidos en el listado \ref{grupos_listado}.
+	Bit 7: Broadcast a todos los IDs de un mismo grupo.
+	Bits 6-0: Grupo al que va dirigido el paquete. El grupo 0x7F esta reservado para hacer broadcast a todas las placas sin importar el grupo (Grupo 0xFF).
+
+\subsection{ID}
+\label{id_destinatario}
+
+	El comando consta de 1 byte.
+	Marca el n\'umero de id de la placa de destino
+	Si el bit 7 del campo \emph{TIPO} de destino esta activo, el \emph{ID} se ignora.
+
+\subsection{TIPO}
+\label{tipo_emisor}
+
+	El comando consta de 1 byte.
+	Determina el grupo del emisor del paquete para la respuesta del paquete.
+	Grupos predefinidos en el listado \ref{grupos_listado}.
+	Bit 7: El 0 es mandatorio, la respuesta debe tener un \'unico destinatario.
+	Bit 6-0: Grupo de origen del paquete.
+	El grupo 0x7F esta reservado para hacer broadcast a todas las placas sin importar el grupo y no debe ser utilizado como origen del paquete.
+
+\subsection{ID}
+\label{id_emisor}
+
+	El comando consta de 1 byte.
+	Es mandatorio, debe estar informado para una correcta respuesta. En caso contrario, se toma como valor por defecto el del controlador principal, en este caso, la PC.
+	Informa a que n\'umero de id de la placa debe ser dirigida la respuesta del paquete.
+	
+\subsection{COMANDO}
+\label{comando}
+
+	El comando consta de 1 byte.
+	Comando enviado al destino, que puede o no tener datos en el campo \emph{DATO}.
+	Definidos en la secci\'on \ref{comandos}.
+
+\subsection{LARGO}
+\label{largo}
+
+	El comando consta de 1 byte.
+	Largo en bytes del campo \emph{DATO}.
+	En caso que el largo del campo \emph{DATO} sea cero, igual debe ser informado con 0x00.
+
+\subsection{DATO}
+\label{dato}
+
+	El comando consta de \emph{LARGO} bytes.
+	Contiene los par\'ametros o datos extras que puedan ser necesarios para el comando enviado.
+	En el caso que el comando no los requiera, el campo debe ser nulo y el largo ser\'a 0x00.
+
+\subsection{CRC}
+\label{crc}
+
+	El comando consta de 1 byte.
+	C\'alculo de CRC sobre el paquete enviado.
+	-Algoritmo a ser determinado-
+
+\section{Posibles comandos}
+\label{comandos}
+
+El campo \emph{COMANDO} determina la acci\'on que debe realizarse en el destinatario o la respuesta al comando recibido.
+El rango para los comandos comunes a todos los grupos de tarjetas son desde 0x00 hasta 0x3F.
+Los comandos especificos para cada grupo deben ser desde 0x40 hasta 0xFF.
+
+\begin{itemize}
+	\item \emph{INITIALIZE}
+	\item \emph{RESET CARD}
+	\item \emph{PING}
+	\item \emph{ERROR}
+\label{lista_comandos}
+\end{itemize}
+
+\subsection{INIT}
+\label{init}
+
+Sincroniza el inicio de todas las placas en la cadena.
+Debe ser recibido por la placa para inicializarse y poder informar al controlador principal de su existencia.
+
+\subsubsection*{Comando enviado}
+\label{init_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x01
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{init_respuesta}
+
+\begin{itemize}
+	\item{COMANDO:} 0x01
+	\item{DATO:} Descripci\'on de la placa en texto plano
+\end{itemize}
+
+\subsection{RESET}
+\label{reset}
+
+Pide el reset de la tarjeta
+
+\subsubsection*{Comando enviado}
+\label{reset_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x02
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{reset_respuesta}
+
+Sin respuesta
+
+\subsection{PING}
+\label{ping}
+
+Envia un ping a la placa
+
+\subsubsection*{Comando enviado}
+\label{ping_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x03
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{ping_respuesta}
+
+\begin{itemize}
+	\item{COMANDO:} 0x03
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsection{ERROR}
+\label{error}
+
+Informa que ha habido un error.
+
+\subsubsection*{Comando enviado}
+\label{error_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x04
+	\item{DATO:} 1 byte con el c\'odigo de error y la descripci\'on del error en texto plano.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{error_respuesta}
+
+Sin respuesta.
+
+\section{Comandos espec\'ificos}
+\label{comandos_especificos}
+
+Cada grupo de placas tiene comandos propios y espec\'ificos dependiendo de la funci\'on que deban desempe\~nar en el sistema.
+Existen grupos con comandos predefinidos como se aprecia en el listado \ref{grupos_listado}.
+El rango para nuevos grupos se extiende hasta el valor 0x7E.
+
+\begin{itemize}
+	\item \emph{MAIN CONTROLLER} - secci\'on \ref{grupo_main_controller}
+	\item \emph{DC MOTOR} - secci\'on \ref{grupo_dc_motor}
+	\item \emph{SERVO MOTOR} - secci\'on \ref{grupo_servo_motor}
+	\item \emph{DISTANCE SENSOR} - secci\'on \ref{grupo_distance_sensor}
+	\item \emph{FLOOR SENSOR} - secci\'on \ref{grupo_floor_sensor}
+	\item \emph{ULTRASONIC SENSOR} - secci\'on \ref{grupo_ultrasonic_sensor}
+	\item \emph{BATTERY CONTROLLER} - secci\'on \ref{grupo_battery_controller}
+	\item \emph{TRASH BIN} - secci\'on \ref{grupo_trash_bin}
+\label{grupos_listado}
+\end{itemize}
+
+\section{MAIN CONTROLLER}
+\label{grupo_main_controller}
+
+NOT YET DEFINED
+
+\section{DC MOTOR}
+\label{grupo_dc_motor}
+
+\subsection{DIRECTION}
+\label{direction}
+
+Seteo del sentido de giro del motor
+
+\subsubsection*{Comando enviado}
+\label{direction_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x00
+	\item{DATO:} 0x00 para sentido horario \'o 0x01 para sentido anti-horario.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{direction_respuesta}
+
+Sin respuesta
+
+\subsection{SET SPEED}
+\label{set_speed}
+
+Seteo de la velocidad del motor en cuentas del encoder por segundo
+
+\subsubsection*{Comando enviado}
+\label{set_speed_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x01
+	\item{DATO:} consta de 6 bytes.
+		SENTIDO = 0x00 para sentido horario \'o 0x01 para sentido anti-horario.
+		VELOCIDAD = 0x0000 a 0xFFFF. Valores positivos, en cuentas por seguntos.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{set_speed_respuesta}
+
+Sin respuesta
+
+\subsection{SET ENCODER}
+\label{set_encoder}
+
+Seteo de la cantidad de cuentas historicas del encoder
+
+\subsubsection*{Comando enviado}
+\label{set_encoder_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x02
+	\item{DATO:} 0x0000 a 0xFFFF. Valores con signo, 0xFFFF es -32768 y 0x7FFF es 32767
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{set_encoder_respuesta}
+
+Sin respuesta
+
+\subsection{GET ENCODER}
+\label{get_encoder}
+
+Obtener la cantidad de cuentas historicas del encoder
+
+\subsubsection*{Comando enviado}
+\label{get_encoder_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x03
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{get_encoder_respuesta}
+
+\begin{itemize}
+	\item{COMANDO:} 0x03
+	\item{DATO:} 0x0000 a 0xFFFF. Valores con signo, 0xFFFF es -32768 y 0x7FFF es 32767
+\end{itemize}
+
+\subsection{RESET ENCODER}
+\label{reset_encoder}
+
+Resetear las cuentas historicas a cero
+
+\subsubsection*{Comando enviado}
+\label{reset_encoder_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x04
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{reset_encoder_respuesta}
+
+Sin respuesta
+
+\subsection{SET ENCODER TO STOP}
+\label{set_encoder_to_stop}
+
+Seteo de cuantas cuentas a girar hasta detenerse
+
+\subsubsection*{Comando enviado}
+\label{set_encoder_to_stop_comando_enviado}
+
+0x0000 a 0xFFFF. Valores con signo, 0xFFFF es -32768 y 0x7FFF es 32767
+
+\begin{itemize}
+	\item{COMANDO:} 0x05
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{set_encoder_to_stop_respuesta}
+
+Sin respuesta
+
+\subsection{GET ENCODER TO STOP}
+\label{get_encoder_to_stop}
+
+Obtener la cantidad de cuantas cuentas restantes hasta detenerse
+
+\subsubsection*{Comando enviado}
+\label{get_encoder_to_stop_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x06
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{get_encoder_to_stop_respuesta}
+
+\begin{itemize}
+	\item{COMANDO:} 0x06
+	\item{DATO:} 0x0000 a 0xFFFF. Valores con signo, 0xFFFF es -32768 y 0x7FFF es 32767
+\end{itemize}
+
+\subsection{DONT STOP}
+\label{dont_stop}
+
+Borrar la limitacion de cuentas para frenar
+
+\subsubsection*{Comando enviado}
+\label{dont_stop_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x06
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{dont_stop_respuesta}
+
+Sin respuesta
+
+
+\section{SERVO MOTOR}
+\label{grupo_servo_motor}
+
+\section{DISTANCE SENSOR} 
+\label{grupo_distance_sensor}
+
+\section{FLOOR SENSOR} 
+\label{grupo_floor_sensor}
+
+\section{ULTRASONIC SENSOR} 
+\label{grupo_ultrasonic_sensor}
+
+\section{BATTERY CONTROLLER} 
+\label{grupo_battery_controller}
+
+\section{TRASH BIN} 
+\label{grupo_trash_bin}
+
+\section{Ejemplos}
+\label{ejemplos}
+
+\section{Conclisi\'on}
+\label{conclusion}
+
+\end{document}
