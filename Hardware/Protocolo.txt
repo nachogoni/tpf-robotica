@@ -1,0 +1,162 @@
+Protocolo
+
+|D_TIPO|D_ID|O_TIPO|O_ID|COMANDO|LARGO|DATO|CRC|
+
+D_TIPO (1 byte)
+	Tipo del destinatario
+	BIT 7: Broadcast a todos los IDs de un mismo grupo
+	BIT 6-0: Grupo al que va dirigido el paquete. El grupo 0x7F esta reservado para hacer broadcast a todas las placas sin importar el grupo (type 0xFF)
+
+D_ID (1 byte)
+	ID de la placa de destino. Si el bit 7 de D_TIPO esta activo, el D_ID se ignora
+
+O_TIPO (1 byte)
+	Tipo del emisor del paquete
+	BIT 7: 0 (Mandatorio)
+	BIT 6-0: Grupo de origen del paquete. El grupo 0x7F esta reservado para hacer broadcast a todas las placas sin importar el grupo (type 0xFF)
+
+O_ID (1 byte)
+	ID de la placa de destino
+
+COMANDO (1 byte)
+	Comando
+
+LARGO (1 byte)
+	Largo en bytes del campo DATO
+
+DATO (LARGO bytes)
+	Parametros o datos que deban acompañar el comando
+
+CRC (1 byte)
+	Calculo del CRC del paquete
+
+
+Comandos
+
+-Initialize
+	0x01
+
+-Reset card
+	0x02
+
+-Ping
+	0x03
+
+-Error
+	0x04
+	El error se informa en el campo DATO
+
+-Los comandos especificos para cada grupo deben ir en el rando de 0x40 a 0xFF.
+
+Comandos especificos
+
+Tipo: 0x00 - Main controller (PC)
+
+Tipo: 0x01 - DC Motor
+
+COMANDO: 0x00 - Seteo de sentido de giro del motor
+DATO: 0x00 para sentido horario, 0x01 para sentido anti-horario
+
+Sin respuesta
+
+
+COMANDO: 0x01 - Seteo de la velocidad del motor en cuentas del encoder por segundo
+DATO:
+	|SENTIDO|VELOCIDAD|
+	SENTIDO = 0x00 para sentido horario, 0x01 para sentido anti-horario
+	VELOCIDAD = 0x0000 a 0xFFFF
+
+Sin respuesta
+
+
+COMANDO: 0x02 - Seteo de la cantidad de cuentas historicas del encoder
+DATO: 0x0000 a 0xFFFF. Valores con signo, 0xFFFF es -32768 y 0x7FFF es 32767
+
+Sin respuesta
+
+
+COMANDO: 0x03 - Obtener la cantidad de cuentas historicas del encoder
+DATO: -
+
+Respuesta
+COMANDO: 0x03
+DATO: 0x0000 a 0xFFFF. Valores con signo, 0xFFFF es -32768 y 0x7FFF es 32767
+
+
+COMANDO: 0x04 - Resetear las cuentas historicas a cero
+DATO: -
+
+Sin respuesta
+
+
+COMANDO: 0x05 - Seteo de cuantas cuentas a girar hasta detenerse
+DATO: 0x0000 a 0xFFFF. Valores con signo, 0xFFFF es -32768 y 0x7FFF es 32767
+
+Sin respuesta
+
+
+COMANDO: 0x06 - Obtener la cantidad de cuantas cuentas restantes hasta detenerse
+DATO: -
+
+Respuesta
+COMANDO: 0x06
+DATO: 0x0000 a 0xFFFF. Valores con signo, 0xFFFF es -32768 y 0x7FFF es 32767
+
+
+COMANDO: 0x07 - Borrar la limitacion de cuentas para frenar
+DATO: 
+
+Sin respuesta
+
+
+Tipo: 0x02 - Servo Motor
+
+set position
+get position
+set velocity
+get velocity
+free servo
+freeze servo (?)
+
+
+Tipo: 0x03 - Distance sensor (Telemeter)
+
+enable
+disable
+get distance
+one shoot
+get value
+one value
+
+
+Tipo: 0x04 - Floor sensor
+
+enable
+disable
+get distance
+one shoot
+get value
+one value
+
+
+Tipo: 0x05 - Ultrasound sensor
+
+enable
+disable
+get distance
+one shoot
+get value
+one value
+
+
+Tipo: 0x06 - Battery controller
+
+get value
+batery full alarm
+batery empty alarm
+
+Tipo: 0x07 - Trash bin
+
+get value
+bin full alarm
+

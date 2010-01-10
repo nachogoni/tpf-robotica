@@ -36,13 +36,13 @@ Temas hablados:
     COMPRAR COMPONENTES QUE FALTEN PARA VERIFICAR LOS FOOTPRINTS
     RUEDAS
 
---Servos--
+--Servos-- (http://www.imagesco.com/articles/picservo/04.html)
     Angulo del rotor en base al ancho del pulso de la entrada
-    Logica independiente a la alimentacion -> no hay necesidad de uso de un driver
-    Ver la posibilidad de usar un mismo PIC16F88 para varios servos o compartir el uso del micro con los telemetros (NO NECESARIO)
+    Hacer control de velocidad para el servo
+    Usar un mismo PIC16F88 para varios servos
     VER SERVOS - MODELOS - PRECIOS - DONDE COMPRARLOS
 
---Protocolo--
+--Protocolo-- (Ver Protocolo.txt)
     Control de velocidad de los motores -> mensaje de consumo extremo en los motores.
     Inicializacion con paquete para autonumerar y setear los IDs de las placas (?)
     Comunicacion broadcast -> cada placa debe retransmitir el mensaje
