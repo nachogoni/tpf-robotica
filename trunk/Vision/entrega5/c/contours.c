@@ -37,12 +37,12 @@ findContours(IplImage * image){
 			sizeof(CvContour),CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, 
 			cvPoint(0,0) );
 			
-	if( (polygonArray=malloc(sizeof(CvSeq*)*(numberOfContours+1)))==NULL)
+	if( (polygonArray=malloc(sizeof(CvSeq*)*(numberOfContours+1)))==NULL){
 		perror("Out of memory");
 		return NULL;
-
+	} 
 		
-	while(contours){
+	while(contours!=NULL){
 			contourPerimeter=cvContourPerimeter(contours);
 			aContour=cvApproxPoly (contours, sizeof(CvContour),
 				storage,CV_POLY_APPROX_DP, contourPerimeter/PER_TOLERANCE
@@ -56,7 +56,7 @@ findContours(IplImage * image){
 	}
 	
     		
-	polygonArray[polyIndex+1]=NULL;
+	polygonArray[polyIndex]=NULL;
 	cvReleaseMemStorage( &storage );
 	return polygonArray;
 }
