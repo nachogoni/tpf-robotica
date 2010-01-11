@@ -21,24 +21,30 @@
 
 int main(int argc,char * argv[]){
 	
+	//
+	cvNamedWindow("output",CV_WINDOW_AUTOSIZE);
 	//video to analyze
     CvCapture* capture;
 	
 	//frame from video
 	IplImage * src;
 	
-	if( argc == 2 && (capture=cvCreateFileCapture( argv[1]))!= 0 ){
+	if( argc != 2 || (capture=cvCreateFileCapture( argv[1]))== 0 ){
 		perror("Invalid capture");
 		return 0;
 	}
 	
-	int frameWidth=cvGetCaptureProperty(capture,CV_CAP_PROP_FRAME_WIDTH);
-	int frameHeight=cvGetCaptureProperty(capture,CV_CAP_PROP_FRAME_HEIGHT);
+	
+	
+	//~ int frameWidth=cvGetCaptureProperty(capture,CV_CAP_PROP_FRAME_WIDTH);
+	//~ int frameHeight=cvGetCaptureProperty(capture,CV_CAP_PROP_FRAME_HEIGHT);
+	
 	
 	
 	//video image size
-	CvSize srcSize = cvSize(frameWidth,frameHeight);
-	
+	//CvSize srcSize = cvSize(frameWidth,frameHeight);
+	src=cvQueryFrame(capture);
+	CvSize srcSize = cvGetSize(src);
 
 	//images for HSV conversion
 	IplImage* hsv = cvCreateImage( srcSize, 8, 3 );
@@ -59,7 +65,7 @@ int main(int argc,char * argv[]){
 	IplImage * smoothImage=cvCreateImage(srcSize,8,1);
 	
 	//image for contour-finding operations
-	IplImage * contourImage=cvCreateImage(srcSize,8,1);
+	IplImage * contourImage=cvCreateImage(srcSize,8,3);
 	
 	
 	int frameCounter=1;
@@ -87,7 +93,7 @@ int main(int argc,char * argv[]){
 		
 		//threshold the equalized Saturation channel image
 		cvThreshold(equalizedImage,threshImage,THRESHOLD_VALUE,255,
-		CV_THRESH_BINARY_INV);
+		CV_THRESH_BINARY);
 		
 		//apply morphologic operations
 		element = cvCreateStructuringElementEx( MORPH_KERNEL_SIZE*2+1, 
@@ -98,10 +104,12 @@ int main(int argc,char * argv[]){
         cvErode(morphImage,morphImage,element,MORPH_ERODE_ITER);
 	
 		//apply smooth gaussian-filter
-        cvSmooth(morphImage,smoothImage,CV_GAUSSIAN,3,0,0,0);
+        //~ cvSmooth(morphImage,smoothImage,CV_GAUSSIAN,3,0,0,0);
 		
-		contours=findContours(smoothImage);
+		contours=findContours(morphImage);
 		
+		cont_index=0;
+		cvCopy(src,contourImage,0);
 		while(contours[cont_index]!=NULL){
 			printContour(contours[cont_index],3,cvScalar(127,127,0,0),
 				contourImage);
@@ -116,7 +124,9 @@ int main(int argc,char * argv[]){
 			cont_index++;
 		}
 		
+		cvShowImage("output",contourImage);
 		
+		cvWaitKey(0);
 
 	} 
 	
