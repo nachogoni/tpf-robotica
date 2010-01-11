@@ -54,7 +54,7 @@
 
 \maketitle
 \begin{abstract}
-En el presente se establece el protocolo de comunicaci\'on entre para el envio y recepci\'on de comandos hacia los controladores
+En el presente se establece el protocolo de comunicaci\'on para el envio y recepci\'on de comandos hacia los controladores
 de motores, servos y sensores que proveen informaci\'on del entorno al robot recolector de residuos. El protocolo est\'a dise\~nado
 para ser transmitido a traves \emph{RS-232} utilizando la configuraci\'on de \emph{Daisy-Chain} entre las distintas placas controladoras.
 
@@ -75,13 +75,13 @@ TODO
 
 
 El paquete consta de un header com\'un con datos que identifican el emisor y receptor del paquete, el comando a enviar y posibles datos extras que sean requeridos.
-Tanto los paquetes de envio de datos como los de respuesta tienen el mismo formato y comparten el valor en el campo de comando.
+En el cuadro \ref{formato_paquete_tabla} se muestra la estructura interna de un paquete t\'ipico.
 
-\begin{table}
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
-TIPO & ID & TIPO & ID & COMANDO & LARGO & DATO & CRC \\
+TIPO\_D & ID\_D & TIPO\_O & ID\_O & COMANDO & LARGO & DATO & CRC \\
 \hline
 \end{tabular}
 \caption{Formato y header del paquete de datos}
@@ -89,8 +89,9 @@ TIPO & ID & TIPO & ID & COMANDO & LARGO & DATO & CRC \\
 \end{center}
 \end{table}
 
+Tanto los paquetes de envio de datos como los de respuesta tienen el mismo formato y comparten el valor en el campo de comando.
 
-\subsection{TIPO}
+\subsection{TIPO\_D}
 \label{tipo_destinatario}
 
 	El comando consta de 1 byte.
@@ -99,14 +100,14 @@ TIPO & ID & TIPO & ID & COMANDO & LARGO & DATO & CRC \\
 	Bit 7: Broadcast a todos los IDs de un mismo grupo.
 	Bits 6-0: Grupo al que va dirigido el paquete. El grupo 0x7F esta reservado para hacer broadcast a todas las placas sin importar el grupo (Grupo 0xFF).
 
-\subsection{ID}
+\subsection{ID\_D}
 \label{id_destinatario}
 
 	El comando consta de 1 byte.
-	Marca el n\'umero de id de la placa de destino
+	Marca el n\'umero de id de la placa de destino.
 	Si el bit 7 del campo \emph{TIPO} de destino esta activo, el \emph{ID} se ignora.
 
-\subsection{TIPO}
+\subsection{TIPO\_O}
 \label{tipo_emisor}
 
 	El comando consta de 1 byte.
@@ -116,13 +117,14 @@ TIPO & ID & TIPO & ID & COMANDO & LARGO & DATO & CRC \\
 	Bit 6-0: Grupo de origen del paquete.
 	El grupo 0x7F esta reservado para hacer broadcast a todas las placas sin importar el grupo y no debe ser utilizado como origen del paquete.
 
-\subsection{ID}
+\subsection{ID\_O}
 \label{id_emisor}
 
 	El comando consta de 1 byte.
-	Es mandatorio, debe estar informado para una correcta respuesta. En caso contrario, se toma como valor por defecto el del controlador principal, en este caso, la PC.
-	Informa a que n\'umero de id de la placa debe ser dirigida la respuesta del paquete.
-	
+	Informa a que n\'umero de id debe ser dirigida la respuesta del paquete.
+	Es mandatorio, debe estar informado para una correcta respuesta.
+	En caso contrario, se toma como valor por defecto el del controlador principal, en este caso, la PC.
+		
 \subsection{COMANDO}
 \label{comando}
 
@@ -156,7 +158,7 @@ TIPO & ID & TIPO & ID & COMANDO & LARGO & DATO & CRC \\
 
 El campo \emph{COMANDO} determina la acci\'on que debe realizarse en el destinatario o la respuesta al comando recibido.
 El rango para los comandos comunes a todos los grupos de tarjetas son desde 0x00 hasta 0x3F.
-Los comandos especificos para cada grupo deben ser desde 0x40 hasta 0xFF.
+Los comandos especificos para cada grupo deben ser desde 0x40 hasta 0x7F.
 
 \begin{itemize}
 	\item \emph{INITIALIZE}
@@ -250,7 +252,7 @@ Sin respuesta.
 
 Cada grupo de placas tiene comandos propios y espec\'ificos dependiendo de la funci\'on que deban desempe\~nar en el sistema.
 Existen grupos con comandos predefinidos como se aprecia en el listado \ref{grupos_listado}.
-El rango para nuevos grupos se extiende hasta el valor 0x7E.
+Los comandos especificos para cada grupo deben ser desde 0x40 hasta el valor 0x7E.
 
 \begin{itemize}
 	\item \emph{MAIN CONTROLLER} - secci\'on \ref{grupo_main_controller}
@@ -268,11 +270,15 @@ El rango para nuevos grupos se extiende hasta el valor 0x7E.
 \label{grupo_main_controller}
 
 NOT YET DEFINED
+El identificador de grupo es 0x00.
 
 \section{DC MOTOR}
 \label{grupo_dc_motor}
 
-\subsection{DIRECTION}
+Comandos espec\'ificos del controlador de velocidad de motor de cont\'inua.
+El identificador de grupo es 0x01.
+
+\subsection{SET DIRECTION}
 \label{direction}
 
 Seteo del sentido de giro del motor
@@ -281,7 +287,7 @@ Seteo del sentido de giro del motor
 \label{direction_comando_enviado}
 
 \begin{itemize}
-	\item{COMANDO:} 0x00
+	\item{COMANDO:} 0x40
 	\item{DATO:} 0x00 para sentido horario \'o 0x01 para sentido anti-horario.
 \end{itemize}
 
@@ -299,7 +305,7 @@ Seteo de la velocidad del motor en cuentas del encoder por segundo
 \label{set_speed_comando_enviado}
 
 \begin{itemize}
-	\item{COMANDO:} 0x01
+	\item{COMANDO:} 0x41
 	\item{DATO:} consta de 6 bytes.
 		SENTIDO = 0x00 para sentido horario \'o 0x01 para sentido anti-horario.
 		VELOCIDAD = 0x0000 a 0xFFFF. Valores positivos, en cuentas por seguntos.
@@ -319,7 +325,7 @@ Seteo de la cantidad de cuentas historicas del encoder
 \label{set_encoder_comando_enviado}
 
 \begin{itemize}
-	\item{COMANDO:} 0x02
+	\item{COMANDO:} 0x42
 	\item{DATO:} 0x0000 a 0xFFFF. Valores con signo, 0xFFFF es -32768 y 0x7FFF es 32767
 \end{itemize}
 
@@ -337,7 +343,7 @@ Obtener la cantidad de cuentas historicas del encoder
 \label{get_encoder_comando_enviado}
 
 \begin{itemize}
-	\item{COMANDO:} 0x03
+	\item{COMANDO:} 0x43
 	\item{DATO:} vacio
 \end{itemize}
 
@@ -345,7 +351,7 @@ Obtener la cantidad de cuentas historicas del encoder
 \label{get_encoder_respuesta}
 
 \begin{itemize}
-	\item{COMANDO:} 0x03
+	\item{COMANDO:} 0x43
 	\item{DATO:} 0x0000 a 0xFFFF. Valores con signo, 0xFFFF es -32768 y 0x7FFF es 32767
 \end{itemize}
 
@@ -358,7 +364,7 @@ Resetear las cuentas historicas a cero
 \label{reset_encoder_comando_enviado}
 
 \begin{itemize}
-	\item{COMANDO:} 0x04
+	\item{COMANDO:} 0x44
 	\item{DATO:} vacio
 \end{itemize}
 
@@ -378,7 +384,7 @@ Seteo de cuantas cuentas a girar hasta detenerse
 0x0000 a 0xFFFF. Valores con signo, 0xFFFF es -32768 y 0x7FFF es 32767
 
 \begin{itemize}
-	\item{COMANDO:} 0x05
+	\item{COMANDO:} 0x45
 	\item{DATO:} vacio
 \end{itemize}
 
@@ -396,7 +402,7 @@ Obtener la cantidad de cuantas cuentas restantes hasta detenerse
 \label{get_encoder_to_stop_comando_enviado}
 
 \begin{itemize}
-	\item{COMANDO:} 0x06
+	\item{COMANDO:} 0x46
 	\item{DATO:} vacio
 \end{itemize}
 
@@ -404,7 +410,7 @@ Obtener la cantidad de cuantas cuentas restantes hasta detenerse
 \label{get_encoder_to_stop_respuesta}
 
 \begin{itemize}
-	\item{COMANDO:} 0x06
+	\item{COMANDO:} 0x46
 	\item{DATO:} 0x0000 a 0xFFFF. Valores con signo, 0xFFFF es -32768 y 0x7FFF es 32767
 \end{itemize}
 
@@ -417,7 +423,7 @@ Borrar la limitacion de cuentas para frenar
 \label{dont_stop_comando_enviado}
 
 \begin{itemize}
-	\item{COMANDO:} 0x06
+	\item{COMANDO:} 0x47
 	\item{DATO:} vacio
 \end{itemize}
 
@@ -426,29 +432,378 @@ Borrar la limitacion de cuentas para frenar
 
 Sin respuesta
 
+\subsection{MOTOR CONSUMPTION}
+\label{motor_consumption}
+
+Consulta sobre el consumo actual del motor
+
+\subsubsection*{Comando enviado}
+\label{motor_consumption_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x48
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{motor_consumption_respuesta}
+
+\begin{itemize}
+	\item{COMANDO:} 0x48
+	\item{DATO:} Valor en punto flotante del consumo promedio del \'ultimo segundo. -VER FORMATO DEL PUNTO FLOTANTE-
+\end{itemize}
+
+\subsection{MOTOR STRESS}
+\label{motor_stress}
+
+Indica al controlador principal que hay un consumo extremo en el motor, posiblemente un atasco del motor o de la rueda.
+
+\subsubsection*{Comando enviado}
+\label{motor_stress_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x49
+	\item{DATO:} Valor en punto flotante del consumo. -VER FORMATO DEL PUNTO FLOTANTE-
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{motor_stress_respuesta}
+
+Sin respuesta
 
 \section{SERVO MOTOR}
 \label{grupo_servo_motor}
 
+Comandos espec\'ificos del controlador de servomotores.
+El identificador de grupo es 0x02.
+
+\subsection{SET POSITION}
+\label{set_position}
+
+Determina la posici\'on en la que debe colocarse el servomotor indicado.
+
+\subsubsection*{Comando enviado}
+\label{set_position_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x40
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del servo al que se le aplicar\'a la posici\'on.
+	Valor entre 0x0000 y 0x0384 que representa el rango de $0^{\circ}$ a $180^{\circ}$ con $0.2^{\circ}$ de presici\'on. -VERIFICAR POSIBILIDADES EN LOS SERVOS-
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{set_position_respuesta}
+
+Sin respuesta
+
+\subsection{SET ALL POSITION}
+\label{set_all_position}
+
+Determina las posiciones en la que deben colocarse cada uno de los servomotores.
+
+\subsubsection*{Comando enviado}
+\label{set_all_position_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x41
+	\item{DATO:} Consta de 5 valores entre 0x0000 y 0x0384 concatenados, uno para cada uno de los servos conectados al controlador.
+	Cada valor representa el rango de $0^{\circ}$ a $180^{\circ}$ con $0.2^{\circ}$ de presici\'on. -VERIFICAR POSIBILIDADES EN LOS SERVOS-
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{set_all_position_respuesta}
+
+Sin respuesta
+
+\subsection{GET POSITION}
+\label{set_position}
+
+Obtiene la \'ultima posici\'on del servomotor indicado. -INICIALIZARLO EN UN VALOR DETERMINADO CUANDO LLEGA INIT-
+
+\subsubsection*{Comando enviado}
+\label{set_position_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x42
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del servo del que se requiere la posici\'on.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{set_position_respuesta}
+
+\begin{itemize}
+	\item{COMANDO:} 0x42
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del servo del que se requiri\'o la posici\'on.
+	Valor entre 0x0000 y 0x0384 que representa el rango de $0^{\circ}$ a $180^{\circ}$ con $0.2^{\circ}$ de presici\'on. -VERIFICAR POSIBILIDADES EN LOS SERVOS-
+\end{itemize}
+
+\subsection{GET ALL POSITIONS}
+\label{get_all_position}
+
+Obtiene las \'ultimas posiciones de todos los servomotor conectados al controlador. -INICIALIZARLO EN UN VALOR DETERMINADO CUANDO LLEGA INIT-
+
+\subsubsection*{Comando enviado}
+\label{get_all_position_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x43
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{get_all_position_respuesta}
+
+\begin{itemize}
+	\item{COMANDO:} 0x43
+	\item{DATO:} Consta de 5 valores entre 0x0000 y 0x0384 concatenados, uno para cada uno de los servos conectados al controlador.
+	Cada valor representa el rango de $0^{\circ}$ a $180^{\circ}$ con $0.2^{\circ}$ de presici\'on. -VERIFICAR POSIBILIDADES EN LOS SERVOS-
+\end{itemize}
+
+\subsection{SET VELOCITY}
+\label{set_velocity}
+
+Determina la velocidad a la que el servomotor indicado llegar'a a la posici\'on que se le indique.
+
+\subsubsection*{Comando enviado}
+\label{set_velocity_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x44
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del servo al que se le aplicar\'a la velocidad.
+	-VERIFICAR POSIBILIDADES EN LOS SERVOS-
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{set_velocity_respuesta}
+
+Sin respuesta
+
+\subsection{SET ALL VELOCITIES}
+\label{set_all_velocities}
+
+Determina las velocidades a la que cada uno de los servomotores llegar'a a la posici\'on que se le indique.
+
+\subsubsection*{Comando enviado}
+\label{set_all_velocities_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x45
+	\item{DATO:} Consta de 5 valores entre -VER VPOSIBLES VALORES- concatenados, uno para cada uno de los servos conectados al controlador.
+	-VERIFICAR POSIBILIDADES EN LOS SERVOS-
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{set_all_velocities_respuesta}
+
+Sin respuesta
+
+\subsection{GET VELOCITY}
+\label{set_velocity}
+
+Obtiene la velocidad asiganda al servomotor indicado. -INICIALIZARLO EN UN VALOR DETERMINADO CUANDO LLEGA INIT-
+
+\subsubsection*{Comando enviado}
+\label{set_velocity_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x46
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del servo del que se requiere la velocidad.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{set_velocity_respuesta}
+
+\begin{itemize}
+	\item{COMANDO:} 0x46
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del servo del que se requiri\'o la velocidad.
+	-VERIFICAR POSIBILIDADES EN LOS SERVOS-
+\end{itemize}
+
+\subsection{GET ALL VELOCITIES}
+\label{get_all_velocities}
+
+Obtiene las velocidades de cada uno de los servomotor conectados al controlador. -INICIALIZARLO EN UN VALOR DETERMINADO CUANDO LLEGA INIT-
+
+\subsubsection*{Comando enviado}
+\label{get_all_velocities_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x47
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{get_all_velocities_respuesta}
+
+\begin{itemize}
+	\item{COMANDO:} 0x47
+	\item{DATO:} Consta de 5 valores entre 0x0000 y 0x0384 concatenados, uno para cada uno de los servos conectados al controlador.
+	-VERIFICAR POSIBILIDADES EN LOS SERVOS-
+\end{itemize}
+
+\subsection{FREE SERVO}
+\label{free_servo}
+
+Deja de aplicar fuerza sobre el servo indicado -VERIFICAR QUE SEA CORRECTO-
+
+\subsubsection*{Comando enviado}
+\label{free_servo_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x48
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del servo a liberar.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{free_servo_respuesta}
+
+Sin respuesta
+
+\subsection{FREE ALL SERVOS}
+\label{free_all_servos}
+
+Deja de aplicar fuerza sobre cada uno de los servomotor conectados al controlador. -VERIFICAR QUE SEA CORRECTO-
+
+\subsubsection*{Comando enviado}
+\label{free_all_servos_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x49
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{free_all_servos_respuesta}
+
+Sin respuesta
+
 \section{DISTANCE SENSOR} 
 \label{grupo_distance_sensor}
+
+Comandos espec\'ificos del controlador de sensores de distancia, generalmente tel\'emtros.
+El identificador de grupo es 0x03.
+
+\subsection{ENABLE}
+\label{enable}
+
+Enciende el sensor de distancia indicado.
+
+\subsubsection*{Comando enviado}
+\label{enable_d_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x40
+	\item{DATO:} Valor de 0x00 a 0x05 que representa el id del sensor a encender.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{enable_d_comando_respuesta}
+
+Sin respuesta
+
+\subsection{DISABLE}
+\label{disable}
+
+Apaga el sensor de distancia indicado.
+
+\subsubsection*{Comando enviado}
+\label{disable_d_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x41
+	\item{DATO:} Valor de 0x00 a 0x05 que representa el id del sensor a apagar.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{disable_d_comando_respuesta}
+
+Sin respuesta
+
+\subsection{SET ALL}
+\label{enable}
+
+Enciende o apaga cada uno de los sensores de distancia conectados al controlador.
+
+\subsubsection*{Comando enviado}
+\label{set_all_d_comando_enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x42
+	\item{DATO:} Valor de 0x00 a 0x020 donde cada bit representa el id del sensor a encender o apagar.
+	Si $2^{ID} = 1$ entonces el sensor $ID$ esta encendido.
+	Si $2^{ID} = 0$ entonces el sensor $ID$ esta apagado.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+\label{set_all_d_comando_respuesta}
+
+Sin respuesta
+
+
+
+
+
+
+
+
+get distance
+one shoot
+get value
+one value
 
 \section{FLOOR SENSOR} 
 \label{grupo_floor_sensor}
 
+Comandos espec\'ificos del controlador de sensores de piso.
+El identificador de grupo es 0x04.
+
+enable
+disable
+get distance
+one shoot
+get value
+one value
+
 \section{ULTRASONIC SENSOR} 
 \label{grupo_ultrasonic_sensor}
+
+Comandos espec\'ificos del controlador de sensores de ultrasonido.
+El identificador de grupo es 0x05.
+
+enable
+disable
+get distance
+one shoot
+get value
+one value
 
 \section{BATTERY CONTROLLER} 
 \label{grupo_battery_controller}
 
+Comandos espec\'ificos del controlador de carga y consumo de la bater\'ia.
+El identificador de grupo es 0x06.
+
+get value
+batery full alarm
+batery empty alarm
+
 \section{TRASH BIN} 
 \label{grupo_trash_bin}
+
+Comandos espec\'ificos del controlador de carga en el cesto de basura.
+El identificador de grupo es 0x07.
+
+get value
+bin full alarm
 
 \section{Ejemplos}
 \label{ejemplos}
 
+NOT YET DEFINED
+
 \section{Conclisi\'on}
 \label{conclusion}
+
+NOT YET DEFINED
 
 \end{document}
