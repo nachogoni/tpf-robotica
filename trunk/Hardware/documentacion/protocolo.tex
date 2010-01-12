@@ -52,9 +52,9 @@
 \maketitle
 
 \begin{abstract}
-En el presente se establece el protocolo de comunicaci\'on para el envio y recepci\'on de comandos hacia los controladores
+En el presente se establece el protocolo de comunicaci\'on para el env\'io y recepci\'on de comandos hacia los controladores
 de motores, servos y sensores que proveen informaci\'on del entorno al robot recolector de residuos. El protocolo est\'a dise\~nado
-para ser transmitido a traves \emph{RS-232} utilizando la configuraci\'on de \emph{Daisy-Chain} entre las distintas placas controladoras.
+para ser transmitido a trav\'es de \emph{RS-232} utilizando la configuraci\'on de \emph{Daisy-Chain} entre las distintas placas controladoras.
 
 \textbf{Palabras Clave: }\emph{Robot, residuos, protocolo, serial, rs-232, daisy chain, motor, servo, sensor, tel\'emetro, ultrasonido, distancia, bateria}.
 \end{abstract}
@@ -87,7 +87,7 @@ TIPO\_D & ID\_D & TIPO\_O & ID\_O & COMANDO & LARGO & DATO & CRC \\
 \end{center}
 \end{table}
 
-Tanto los paquetes de envio de datos como los de respuesta tienen el mismo formato y comparten el valor en el campo de comando.
+Tanto los paquetes de env\'io de datos como los de respuesta tienen el mismo formato y comparten el valor en el campo de comando.
 
 \subsection{TIPO\_D}
 \label{tipo_destinatario}
@@ -96,14 +96,14 @@ Tanto los paquetes de envio de datos como los de respuesta tienen el mismo forma
 	Informa el grupo del destinatario del paquete.
 	Grupos predefinidos en el listado \ref{grupos_listado}.
 	Bit 7: Broadcast a todos los IDs de un mismo grupo.
-	Bits 6-0: Grupo al que va dirigido el paquete. El grupo 0x7F esta reservado para hacer broadcast a todas las placas sin importar el grupo (Grupo 0xFF).
+	Bits 6-0: Grupo al que va dirigido el paquete. El grupo 0x7F est\'a reservado para hacer broadcast a todas las placas sin importar el grupo (Grupo 0xFF).
 
 \subsection{ID\_D}
 \label{id_destinatario}
 
 	El comando consta de 1 byte.
 	Marca el n\'umero de id de la placa de destino.
-	Si el bit 7 del campo \emph{TIPO} de destino esta activo, el \emph{ID} se ignora.
+	Si el bit 7 del campo \emph{TIPO} de destino est\'a activo, el \emph{ID} se ignora.
 
 \subsection{TIPO\_O}
 \label{tipo_emisor}
@@ -113,7 +113,7 @@ Tanto los paquetes de envio de datos como los de respuesta tienen el mismo forma
 	Grupos predefinidos en el listado \ref{grupos_listado}.
 	Bit 7: El 0 es mandatorio, la respuesta debe tener un \'unico destinatario.
 	Bit 6-0: Grupo de origen del paquete.
-	El grupo 0x7F esta reservado para hacer broadcast a todas las placas sin importar el grupo y no debe ser utilizado como origen del paquete.
+	El grupo 0x7F est\'a reservado para hacer broadcast a todas las placas sin importar el grupo y no debe ser utilizado como origen del paquete.
 
 \subsection{ID\_O}
 \label{id_emisor}
@@ -156,7 +156,7 @@ Tanto los paquetes de envio de datos como los de respuesta tienen el mismo forma
 
 El campo \emph{COMANDO} determina la acci\'on que debe realizarse en el destinatario o la respuesta al comando recibido.
 El rango para los comandos comunes a todos los grupos de tarjetas son desde 0x00 hasta 0x3F.
-Los comandos especificos para cada grupo deben ser desde 0x40 hasta 0x7F.
+Los comandos espec\'ificos para cada grupo deben ser desde 0x40 hasta 0x7F.
 
 \begin{itemize}
 	\item \emph{INITIALIZE}
@@ -177,7 +177,7 @@ Debe ser recibido por la placa para inicializarse y poder informar al controlado
 
 \begin{itemize}
 	\item{COMANDO:} 0x01
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -198,7 +198,7 @@ Pide el reset de la tarjeta
 
 \begin{itemize}
 	\item{COMANDO:} 0x02
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -216,7 +216,7 @@ Envia un ping a la placa
 
 \begin{itemize}
 	\item{COMANDO:} 0x03
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -224,7 +224,7 @@ Envia un ping a la placa
 
 \begin{itemize}
 	\item{COMANDO:} 0x03
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsection{ERROR}
@@ -250,7 +250,7 @@ Sin respuesta.
 
 Cada grupo de placas tiene comandos propios y espec\'ificos dependiendo de la funci\'on que deban desempe\~nar en el sistema.
 Existen grupos con comandos predefinidos como se aprecia en el listado \ref{grupos_listado}.
-Los comandos especificos para cada grupo deben ser desde 0x40 hasta el valor 0x7E.
+Los comandos espec\'ificos para cada grupo deben ser desde 0x40 hasta el valor 0x7E.
 
 \begin{itemize}
 	\item \emph{MAIN CONTROLLER} - secci\'on \ref{grupo_main_controller}
@@ -313,7 +313,7 @@ Sin respuesta
 \subsection{SET ENCODER}
 \label{set_encoder}
 
-Seteo de la cantidad de cuentas historicas del encoder
+Seteo de la cantidad de cuentas hist\'oricas del encoder
 
 \subsubsection*{Comando enviado}
 
@@ -329,13 +329,13 @@ Sin respuesta
 \subsection{GET ENCODER}
 \label{get_encoder}
 
-Obtener la cantidad de cuentas historicas del encoder
+Obtener la cantidad de cuentas hist\'oricas del encoder
 
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x43
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -348,13 +348,13 @@ Obtener la cantidad de cuentas historicas del encoder
 \subsection{RESET ENCODER}
 \label{reset_encoder}
 
-Resetear las cuentas historicas a cero
+Resetear las cuentas hist\'oricas a cero
 
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x44
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -364,7 +364,7 @@ Sin respuesta
 \subsection{SET ENCODER TO STOP}
 \label{set_encoder_to_stop}
 
-Seteo de cuantas cuentas a girar hasta detenerse
+Seteo de cu\'antas cuentas a girar hasta detenerse
 
 \subsubsection*{Comando enviado}
 
@@ -372,7 +372,7 @@ Seteo de cuantas cuentas a girar hasta detenerse
 
 \begin{itemize}
 	\item{COMANDO:} 0x45
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -388,7 +388,7 @@ Obtener la cantidad de cuantas cuentas restantes hasta detenerse
 
 \begin{itemize}
 	\item{COMANDO:} 0x46
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -401,13 +401,13 @@ Obtener la cantidad de cuantas cuentas restantes hasta detenerse
 \subsection{DONT STOP}
 \label{dont_stop}
 
-Borrar la limitacion de cuentas para frenar
+Borrar la limitaci\'on de cuentas para frenar
 
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x47
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -423,7 +423,7 @@ Consulta sobre el consumo actual del motor
 
 \begin{itemize}
 	\item{COMANDO:} 0x48
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -518,7 +518,7 @@ Obtiene las \'ultimas posiciones de todos los servomotor conectados al controlad
 
 \begin{itemize}
 	\item{COMANDO:} 0x43
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -532,7 +532,7 @@ Obtiene las \'ultimas posiciones de todos los servomotor conectados al controlad
 \subsection{SET SERVO SPEED}
 \label{set_servo_speed}
 
-Determina la velocidad a la que el servomotor indicado llegar'a a la posici\'on que se le indique.
+Determina la velocidad a la que el servomotor indicado llegar\'a a la posici\'on que se le indique.
 
 \subsubsection*{Comando enviado}
 
@@ -549,13 +549,13 @@ Sin respuesta
 \subsection{SET ALL SPEEDS}
 \label{set_all_speeds}
 
-Determina las velocidades a la que cada uno de los servomotores llegar'a a la posici\'on que se le indique.
+Determina las velocidades a la que cada uno de los servomotores llegar\'a a la posici\'on que se le indique.
 
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x45
-	\item{DATO:} Consta de 5 valores entre -VER VPOSIBLES VALORES- concatenados, uno para cada uno de los servos conectados al controlador.
+	\item{DATO:} Consta de 5 valores entre -VER POSIBLES VALORES- concatenados, uno para cada uno de los servos conectados al controlador.
 	-VERIFICAR POSIBILIDADES EN LOS SERVOS-
 \end{itemize}
 
@@ -592,7 +592,7 @@ Obtiene las velocidades de cada uno de los servomotor conectados al controlador.
 
 \begin{itemize}
 	\item{COMANDO:} 0x47
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -628,7 +628,7 @@ Deja de aplicar fuerza sobre cada uno de los servomotor conectados al controlado
 
 \begin{itemize}
 	\item{COMANDO:} 0x49
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -638,7 +638,7 @@ Sin respuesta
 \section{DISTANCE SENSOR} 
 \label{grupo_distance_sensor}
 
-Comandos espec\'ificos del controlador de sensores de distancia, generalmente tel\'emtros.
+Comandos espec\'ificos del controlador de sensores de distancia, generalmente tel\'emetros.
 El identificador de grupo es 0x03.
 
 \subsection{ENABLE DISTANCE SENSOR}
@@ -683,8 +683,8 @@ Enciende o apaga cada uno de los sensores de distancia conectados al controlador
 \begin{itemize}
 	\item{COMANDO:} 0x42
 	\item{DATO:} Valor de 0x00 a 0x020 donde cada bit representa el id del sensor a encender o apagar.
-	Si $2^{ID} = 1$ entonces el sensor $ID$ esta encendido.
-	Si $2^{ID} = 0$ entonces el sensor $ID$ esta apagado.
+	Si $2^{ID} = 1$ entonces el sensor $ID$ est\'a encendido.
+	Si $2^{ID} = 0$ entonces el sensor $ID$ est\'a apagado.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -720,7 +720,7 @@ Obtiene las distancias de cada uno de los sensores conectados al controlador.
 
 \begin{itemize}
 	\item{COMANDO:} 0x44
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -759,7 +759,7 @@ Obtiene las distancias de cada uno de los sensores conectados al controlador.
 
 \begin{itemize}
 	\item{COMANDO:} 0x46
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -801,7 +801,7 @@ Igual al comando \ref{get_all_distances_ds} pero si es necesario enciende los se
 
 \begin{itemize}
 	\item{COMANDO:} 0x48
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -842,7 +842,7 @@ Igual al comando \ref{get_all_values_ds} pero si es necesario enciende los senso
 
 \begin{itemize}
 	\item{COMANDO:} 0x50
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -901,8 +901,8 @@ Enciende o apaga cada uno de los sensores de piso conectados al controlador.
 \begin{itemize}
 	\item{COMANDO:} 0x42
 	\item{DATO:} Valor de 0x00 a 0x020 donde cada bit representa el id del sensor a encender o apagar.
-	Si $2^{ID} = 1$ entonces el sensor $ID$ esta encendido.
-	Si $2^{ID} = 0$ entonces el sensor $ID$ esta apagado.
+	Si $2^{ID} = 1$ entonces el sensor $ID$ est\'a encendido.
+	Si $2^{ID} = 0$ entonces el sensor $ID$ est\'a apagado.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -938,7 +938,7 @@ Obtiene las distancias de cada uno de los sensores conectados al controlador.
 
 \begin{itemize}
 	\item{COMANDO:} 0x46
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -980,7 +980,7 @@ Igual al comando \ref{get_all_values_fs} pero si es necesario enciende los senso
 
 \begin{itemize}
 	\item{COMANDO:} 0x50
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -1039,8 +1039,8 @@ Enciende o apaga cada uno de los sensores de ultrasonido conectados al controlad
 \begin{itemize}
 	\item{COMANDO:} 0x42
 	\item{DATO:} Valor de 0x00 a 0x020 donde cada bit representa el id del sensor a encender o apagar.
-	Si $2^{ID} = 1$ entonces el sensor $ID$ esta encendido.
-	Si $2^{ID} = 0$ entonces el sensor $ID$ esta apagado.
+	Si $2^{ID} = 1$ entonces el sensor $ID$ est\'a encendido.
+	Si $2^{ID} = 0$ entonces el sensor $ID$ est\'a apagado.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -1076,7 +1076,7 @@ Obtiene las distancias de cada uno de los sensores conectados al controlador.
 
 \begin{itemize}
 	\item{COMANDO:} 0x44
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -1115,7 +1115,7 @@ Obtiene las distancias de cada uno de los sensores conectados al controlador.
 
 \begin{itemize}
 	\item{COMANDO:} 0x46
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -1157,7 +1157,7 @@ Igual al comando \ref{get_all_distances_us} pero si es necesario enciende los se
 
 \begin{itemize}
 	\item{COMANDO:} 0x48
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -1198,7 +1198,7 @@ Igual al comando \ref{get_all_values_fs} pero si es necesario enciende los senso
 
 \begin{itemize}
 	\item{COMANDO:} 0x50
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -1218,13 +1218,13 @@ El identificador de grupo es 0x06.
 \subsection{GET BATTERY VALUE}
 \label{get_battery_value}
 
-Obtiene el valor en voltios de la bateria.
+Obtiene el valor en voltios de la bater\'ia.
 
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x40
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -1243,7 +1243,7 @@ Mensaje enviado desde el controlador de la bateria informando que se completado 
 
 \begin{itemize}
 	\item{COMANDO:} 0x41
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -1253,13 +1253,13 @@ Sin respuesta
 \subsection{SET BATTERY EMPTY VALUE}
 \label{set_battery_empty_value}
 
-Establece el valor de la bateria para ser tomado como cr\'itico.
+Establece el valor de la bater\'ia para ser tomado como cr\'itico.
 
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x42
-	\item{DATO:} Valor de 0x0000 a 0x03FF con el valor en voltios de la bateria.
+	\item{DATO:} Valor de 0x0000 a 0x03FF con el valor en voltios de la bater\'ia.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -1269,20 +1269,20 @@ Sin respuesta
 \subsection{BATTERY EMPTY ALARM}
 \label{battery_empty}
 
-Mensaje enviado desde el controlador de la bateria informando que de el voltaje lleg\'o a un valor cr\'itico.
+Mensaje enviado desde el controlador de la bater\'ia informando que de el voltaje lleg\'o a un valor cr\'itico.
 
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x43
-	\item{DATO:} Valor de 0x0000 a 0x03FF con el valor en voltios de la bateria.
+	\item{DATO:} Valor de 0x0000 a 0x03FF con el valor en voltios de la bater\'ia.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 Sin respuesta
 
-\section{TRASH BIN} 
+\section{TRASH BIN}
 \label{grupo_trash_bin}
 
 Comandos espec\'ificos del controlador de carga en el cesto de basura.
@@ -1297,7 +1297,7 @@ Obtiene el valor que representa que tan lleno est\'a el cesto interno de basura.
 
 \begin{itemize}
 	\item{COMANDO:} 0x40
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -1316,7 +1316,7 @@ Mensaje enviado desde el controlador del cesto de basura informando que se compl
 
 \begin{itemize}
 	\item{COMANDO:} 0x41
-	\item{DATO:} vacio
+	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
