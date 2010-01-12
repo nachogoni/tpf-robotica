@@ -1,4 +1,4 @@
-\documentclass[a4paper,11pt]{article}
+\documentclass[a4paper,10pt]{article}
 
 %% Paquetes Adicionales %%
 
@@ -14,14 +14,12 @@
 \usepackage[T1]{fontenc}
 \usepackage{moreverb}
 
-
 %% Declaracion de comandos %%
 
 \newtheorem{lema}{Lema}
 \newtheorem{teor}{Teorema}
 \newtheorem{propos}{Proposici\'on}
 \newtheorem{corol}{Corolario}
-
 
 \newcommand{\mivec}[1]{\mathbf{#1}}
 \newcommand{\vers}[1]{\mivec{\check{#1}}}
@@ -33,7 +31,6 @@
 \newcommand{\teo}[1]{\begin{teor} #1 \end{teor}}
 \newcommand{\cor}[1]{\begin{corol} #1 \end{corol}}
 \newcommand{\lem}[1]{\begin{lema} #1 \end{lema}}
-
 
 %% Encabezado y Pie de Pagina %%
 
@@ -53,6 +50,7 @@
 %% Comienzo del documento %%
 
 \maketitle
+
 \begin{abstract}
 En el presente se establece el protocolo de comunicaci\'on para el envio y recepci\'on de comandos hacia los controladores
 de motores, servos y sensores que proveen informaci\'on del entorno al robot recolector de residuos. El protocolo est\'a dise\~nado
@@ -279,12 +277,11 @@ Comandos espec\'ificos del controlador de velocidad de motor de cont\'inua.
 El identificador de grupo es 0x01.
 
 \subsection{SET DIRECTION}
-\label{direction}
+\label{set_direction}
 
 Seteo del sentido de giro del motor
 
 \subsubsection*{Comando enviado}
-\label{direction_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x40
@@ -292,17 +289,15 @@ Seteo del sentido de giro del motor
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{direction_respuesta}
 
 Sin respuesta
 
-\subsection{SET SPEED}
-\label{set_speed}
+\subsection{SET DC SPEED}
+\label{set_dc_speed}
 
 Seteo de la velocidad del motor en cuentas del encoder por segundo
 
 \subsubsection*{Comando enviado}
-\label{set_speed_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x41
@@ -312,7 +307,6 @@ Seteo de la velocidad del motor en cuentas del encoder por segundo
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{set_speed_respuesta}
 
 Sin respuesta
 
@@ -322,7 +316,6 @@ Sin respuesta
 Seteo de la cantidad de cuentas historicas del encoder
 
 \subsubsection*{Comando enviado}
-\label{set_encoder_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x42
@@ -330,7 +323,6 @@ Seteo de la cantidad de cuentas historicas del encoder
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{set_encoder_respuesta}
 
 Sin respuesta
 
@@ -340,7 +332,6 @@ Sin respuesta
 Obtener la cantidad de cuentas historicas del encoder
 
 \subsubsection*{Comando enviado}
-\label{get_encoder_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x43
@@ -348,7 +339,6 @@ Obtener la cantidad de cuentas historicas del encoder
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{get_encoder_respuesta}
 
 \begin{itemize}
 	\item{COMANDO:} 0x43
@@ -361,7 +351,6 @@ Obtener la cantidad de cuentas historicas del encoder
 Resetear las cuentas historicas a cero
 
 \subsubsection*{Comando enviado}
-\label{reset_encoder_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x44
@@ -369,7 +358,6 @@ Resetear las cuentas historicas a cero
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{reset_encoder_respuesta}
 
 Sin respuesta
 
@@ -379,7 +367,6 @@ Sin respuesta
 Seteo de cuantas cuentas a girar hasta detenerse
 
 \subsubsection*{Comando enviado}
-\label{set_encoder_to_stop_comando_enviado}
 
 0x0000 a 0xFFFF. Valores con signo, 0xFFFF es -32768 y 0x7FFF es 32767
 
@@ -389,7 +376,6 @@ Seteo de cuantas cuentas a girar hasta detenerse
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{set_encoder_to_stop_respuesta}
 
 Sin respuesta
 
@@ -399,7 +385,6 @@ Sin respuesta
 Obtener la cantidad de cuantas cuentas restantes hasta detenerse
 
 \subsubsection*{Comando enviado}
-\label{get_encoder_to_stop_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x46
@@ -407,7 +392,6 @@ Obtener la cantidad de cuantas cuentas restantes hasta detenerse
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{get_encoder_to_stop_respuesta}
 
 \begin{itemize}
 	\item{COMANDO:} 0x46
@@ -420,7 +404,6 @@ Obtener la cantidad de cuantas cuentas restantes hasta detenerse
 Borrar la limitacion de cuentas para frenar
 
 \subsubsection*{Comando enviado}
-\label{dont_stop_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x47
@@ -428,7 +411,6 @@ Borrar la limitacion de cuentas para frenar
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{dont_stop_respuesta}
 
 Sin respuesta
 
@@ -438,7 +420,6 @@ Sin respuesta
 Consulta sobre el consumo actual del motor
 
 \subsubsection*{Comando enviado}
-\label{motor_consumption_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x48
@@ -446,20 +427,18 @@ Consulta sobre el consumo actual del motor
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{motor_consumption_respuesta}
 
 \begin{itemize}
 	\item{COMANDO:} 0x48
 	\item{DATO:} Valor en punto flotante del consumo promedio del \'ultimo segundo. -VER FORMATO DEL PUNTO FLOTANTE-
 \end{itemize}
 
-\subsection{MOTOR STRESS}
-\label{motor_stress}
+\subsection{MOTOR STRESS ALARM}
+\label{motor_stress_alarm}
 
 Indica al controlador principal que hay un consumo extremo en el motor, posiblemente un atasco del motor o de la rueda.
 
 \subsubsection*{Comando enviado}
-\label{motor_stress_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x49
@@ -467,7 +446,6 @@ Indica al controlador principal que hay un consumo extremo en el motor, posiblem
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{motor_stress_respuesta}
 
 Sin respuesta
 
@@ -483,7 +461,6 @@ El identificador de grupo es 0x02.
 Determina la posici\'on en la que debe colocarse el servomotor indicado.
 
 \subsubsection*{Comando enviado}
-\label{set_position_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x40
@@ -492,17 +469,15 @@ Determina la posici\'on en la que debe colocarse el servomotor indicado.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{set_position_respuesta}
 
 Sin respuesta
 
-\subsection{SET ALL POSITION}
-\label{set_all_position}
+\subsection{SET ALL POSITIONS}
+\label{set_all_positions}
 
 Determina las posiciones en la que deben colocarse cada uno de los servomotores.
 
 \subsubsection*{Comando enviado}
-\label{set_all_position_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x41
@@ -511,17 +486,15 @@ Determina las posiciones en la que deben colocarse cada uno de los servomotores.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{set_all_position_respuesta}
 
 Sin respuesta
 
 \subsection{GET POSITION}
-\label{set_position}
+\label{get_position}
 
 Obtiene la \'ultima posici\'on del servomotor indicado. -INICIALIZARLO EN UN VALOR DETERMINADO CUANDO LLEGA INIT-
 
 \subsubsection*{Comando enviado}
-\label{set_position_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x42
@@ -529,7 +502,6 @@ Obtiene la \'ultima posici\'on del servomotor indicado. -INICIALIZARLO EN UN VAL
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{set_position_respuesta}
 
 \begin{itemize}
 	\item{COMANDO:} 0x42
@@ -538,12 +510,11 @@ Obtiene la \'ultima posici\'on del servomotor indicado. -INICIALIZARLO EN UN VAL
 \end{itemize}
 
 \subsection{GET ALL POSITIONS}
-\label{get_all_position}
+\label{get_all_positions}
 
 Obtiene las \'ultimas posiciones de todos los servomotor conectados al controlador. -INICIALIZARLO EN UN VALOR DETERMINADO CUANDO LLEGA INIT-
 
 \subsubsection*{Comando enviado}
-\label{get_all_position_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x43
@@ -551,7 +522,6 @@ Obtiene las \'ultimas posiciones de todos los servomotor conectados al controlad
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{get_all_position_respuesta}
 
 \begin{itemize}
 	\item{COMANDO:} 0x43
@@ -559,13 +529,12 @@ Obtiene las \'ultimas posiciones de todos los servomotor conectados al controlad
 	Cada valor representa el rango de $0^{\circ}$ a $180^{\circ}$ con $0.2^{\circ}$ de presici\'on. -VERIFICAR POSIBILIDADES EN LOS SERVOS-
 \end{itemize}
 
-\subsection{SET VELOCITY}
-\label{set_velocity}
+\subsection{SET SERVO SPEED}
+\label{set_servo_speed}
 
 Determina la velocidad a la que el servomotor indicado llegar'a a la posici\'on que se le indique.
 
 \subsubsection*{Comando enviado}
-\label{set_velocity_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x44
@@ -574,17 +543,15 @@ Determina la velocidad a la que el servomotor indicado llegar'a a la posici\'on 
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{set_velocity_respuesta}
 
 Sin respuesta
 
-\subsection{SET ALL VELOCITIES}
-\label{set_all_velocities}
+\subsection{SET ALL SPEEDS}
+\label{set_all_speeds}
 
 Determina las velocidades a la que cada uno de los servomotores llegar'a a la posici\'on que se le indique.
 
 \subsubsection*{Comando enviado}
-\label{set_all_velocities_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x45
@@ -593,17 +560,15 @@ Determina las velocidades a la que cada uno de los servomotores llegar'a a la po
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{set_all_velocities_respuesta}
 
 Sin respuesta
 
-\subsection{GET VELOCITY}
-\label{set_velocity}
+\subsection{GET SERVO SPEED}
+\label{get_servo_speed}
 
 Obtiene la velocidad asiganda al servomotor indicado. -INICIALIZARLO EN UN VALOR DETERMINADO CUANDO LLEGA INIT-
 
 \subsubsection*{Comando enviado}
-\label{set_velocity_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x46
@@ -611,7 +576,6 @@ Obtiene la velocidad asiganda al servomotor indicado. -INICIALIZARLO EN UN VALOR
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{set_velocity_respuesta}
 
 \begin{itemize}
 	\item{COMANDO:} 0x46
@@ -619,13 +583,12 @@ Obtiene la velocidad asiganda al servomotor indicado. -INICIALIZARLO EN UN VALOR
 	-VERIFICAR POSIBILIDADES EN LOS SERVOS-
 \end{itemize}
 
-\subsection{GET ALL VELOCITIES}
-\label{get_all_velocities}
+\subsection{GET ALL SPEEDS}
+\label{get_all_speeds}
 
 Obtiene las velocidades de cada uno de los servomotor conectados al controlador. -INICIALIZARLO EN UN VALOR DETERMINADO CUANDO LLEGA INIT-
 
 \subsubsection*{Comando enviado}
-\label{get_all_velocities_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x47
@@ -633,7 +596,6 @@ Obtiene las velocidades de cada uno de los servomotor conectados al controlador.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{get_all_velocities_respuesta}
 
 \begin{itemize}
 	\item{COMANDO:} 0x47
@@ -647,7 +609,6 @@ Obtiene las velocidades de cada uno de los servomotor conectados al controlador.
 Deja de aplicar fuerza sobre el servo indicado -VERIFICAR QUE SEA CORRECTO-
 
 \subsubsection*{Comando enviado}
-\label{free_servo_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x48
@@ -655,7 +616,6 @@ Deja de aplicar fuerza sobre el servo indicado -VERIFICAR QUE SEA CORRECTO-
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{free_servo_respuesta}
 
 Sin respuesta
 
@@ -665,7 +625,6 @@ Sin respuesta
 Deja de aplicar fuerza sobre cada uno de los servomotor conectados al controlador. -VERIFICAR QUE SEA CORRECTO-
 
 \subsubsection*{Comando enviado}
-\label{free_all_servos_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x49
@@ -673,7 +632,6 @@ Deja de aplicar fuerza sobre cada uno de los servomotor conectados al controlado
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{free_all_servos_respuesta}
 
 Sin respuesta
 
@@ -683,13 +641,12 @@ Sin respuesta
 Comandos espec\'ificos del controlador de sensores de distancia, generalmente tel\'emtros.
 El identificador de grupo es 0x03.
 
-\subsection{ENABLE}
-\label{enable}
+\subsection{ENABLE DISTANCE SENSOR}
+\label{enable_distance_sensor}
 
 Enciende el sensor de distancia indicado.
 
 \subsubsection*{Comando enviado}
-\label{enable_d_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x40
@@ -697,17 +654,15 @@ Enciende el sensor de distancia indicado.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{enable_d_comando_respuesta}
 
 Sin respuesta
 
-\subsection{DISABLE}
-\label{disable}
+\subsection{DISABLE DISTANCE SENSOR}
+\label{disable_distance_sensor}
 
 Apaga el sensor de distancia indicado.
 
 \subsubsection*{Comando enviado}
-\label{disable_d_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x41
@@ -715,17 +670,15 @@ Apaga el sensor de distancia indicado.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{disable_d_comando_respuesta}
 
 Sin respuesta
 
-\subsection{SET ALL}
-\label{enable}
+\subsection{SET ALL DISTANCE SENSORS}
+\label{set_all_distance_sensors}
 
 Enciende o apaga cada uno de los sensores de distancia conectados al controlador.
 
 \subsubsection*{Comando enviado}
-\label{set_all_d_comando_enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x42
@@ -735,21 +688,170 @@ Enciende o apaga cada uno de los sensores de distancia conectados al controlador
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
-\label{set_all_d_comando_respuesta}
 
 Sin respuesta
 
+\subsection{GET DISTANCE}
+\label{get_distance_ds}
 
+Obtiene la distancia del sensor indicado.
 
+\subsubsection*{Comando enviado}
 
+\begin{itemize}
+	\item{COMANDO:} 0x43
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
+\end{itemize}
 
+\subsubsection*{Respuesta al comando}
 
+\begin{itemize}
+	\item{COMANDO:} 0x43
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
+	Valor de 0x0000 a 0xFFFF que representa la distancia en mil\'imetros al objeto.
+\end{itemize}
 
+\subsection{GET ALL DISTANCES}
+\label{get_all_distances_ds}
 
-get distance
-one shoot
-get value
-one value
+Obtiene las distancias de cada uno de los sensores conectados al controlador.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x44
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x44
+	\item{DATO:} Consta de 5 valores entre 0x0000 y 0xFFFF concatenados, uno para cada uno de los sensores conectados al controlador.
+\end{itemize}
+
+\subsection{GET VALUE}
+\label{get_value_ds}
+
+Obtiene el valor en voltios del sensor indicado.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x45
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x45
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
+	Valor de 0x0000 a 0x03FF con el valor en voltios de la lectura que representa la distancia al objeto.
+\end{itemize}
+
+\subsection{GET ALL VALUES}
+\label{get_all_values_ds}
+
+Obtiene las distancias de cada uno de los sensores conectados al controlador.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x46
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x46
+	\item{DATO:} Consta de 5 valores entre 0x0000 y 0x03FF concatenados, uno para cada uno de los sensores conectados al controlador.
+	Valor en voltios de la lectura que representa la distancia al objeto.
+\end{itemize}
+
+\subsection{GET ONE DISTANCE}
+\label{get_one_distance_ds}
+
+Obtiene la distancia del sensor indicado.
+Igual al comando \ref{get_distance_ds} pero si es necesario enciende el sensor, toma la lectura y luego lo apaga para un mayor ahorro de energ\'ia.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x47
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x47
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
+	Valor de 0x0000 a 0xFFFF que representa la distancia en mil\'imetros al objeto.
+\end{itemize}
+
+\subsection{GET ONE DISTANCE FOR ALL}
+\label{get_one_distance_for_all_ds}
+
+Obtiene las distancias de cada uno de los sensores conectados al controlador.
+Igual al comando \ref{get_all_distances_ds} pero si es necesario enciende los sensores, toma las lecturas y luego los apaga para un mayor ahorro de energ\'ia.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x48
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x48
+	\item{DATO:} Consta de 5 valores entre 0x0000 y 0xFFFF concatenados, uno para cada uno de los sensores conectados al controlador.
+\end{itemize}
+
+\subsection{GET ONE VALUE}
+\label{get_one_value_ds}
+
+Obtiene el valor en voltios del sensor indicado.
+Igual al comando \ref{get_value_ds} pero si es necesario enciende el sensor, toma la lectura y luego lo apaga para un mayor ahorro de energ\'ia.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x49
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x49
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
+	Valor de 0x0000 a 0x03FF con el valor en voltios de la lectura que representa la distancia al objeto.
+\end{itemize}
+
+\subsection{GET ONE VALUES FOR ALL}
+\label{get_one_values_for_all_ds}
+
+Obtiene las distancias de cada uno de los sensores conectados al controlador.
+Igual al comando \ref{get_all_values_ds} pero si es necesario enciende los sensores, toma las lecturas y luego los apaga para un mayor ahorro de energ\'ia.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x50
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x50
+	\item{DATO:} Consta de 5 valores entre 0x0000 y 0x03FF concatenados, uno para cada uno de los sensores conectados al controlador.
+	Valor en voltios de la lectura que representa la distancia al objeto.
+\end{itemize}
 
 \section{FLOOR SENSOR} 
 \label{grupo_floor_sensor}
@@ -757,12 +859,137 @@ one value
 Comandos espec\'ificos del controlador de sensores de piso.
 El identificador de grupo es 0x04.
 
-enable
-disable
-get distance
-one shoot
-get value
-one value
+\subsection{ENABLE FLOOR SENSOR}
+\label{enable_fs}
+
+Enciende el sensor de piso indicado.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x40
+	\item{DATO:} Valor de 0x00 a 0x05 que representa el id del sensor a encender.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+Sin respuesta
+
+\subsection{DISABLE FLOOR SENSOR}
+\label{disable_fs}
+
+Apaga el sensor de piso indicado.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x41
+	\item{DATO:} Valor de 0x00 a 0x05 que representa el id del sensor a apagar.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+Sin respuesta
+
+\subsection{SET ALL FLOOR SENSORS}
+\label{set_all_fs}
+
+Enciende o apaga cada uno de los sensores de piso conectados al controlador.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x42
+	\item{DATO:} Valor de 0x00 a 0x020 donde cada bit representa el id del sensor a encender o apagar.
+	Si $2^{ID} = 1$ entonces el sensor $ID$ esta encendido.
+	Si $2^{ID} = 0$ entonces el sensor $ID$ esta apagado.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+Sin respuesta
+
+\subsection{GET VALUE}
+\label{get_value_fs}
+
+Obtiene el valor en voltios del sensor indicado.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x45
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x45
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
+	Valor de 0x0000 a 0x03FF con el valor en voltios de la lectura que representa la distancia al objeto.
+\end{itemize}
+
+\subsection{GET ALL VALUES}
+\label{get_all_values_fs}
+
+Obtiene las distancias de cada uno de los sensores conectados al controlador.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x46
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x46
+	\item{DATO:} Consta de 5 valores entre 0x0000 y 0x03FF concatenados, uno para cada uno de los sensores conectados al controlador.
+	Valor en voltios de la lectura que representa la distancia al objeto.
+\end{itemize}
+
+\subsection{GET ONE VALUE}
+\label{get_one_value_fs}
+
+Obtiene el valor en voltios del sensor indicado.
+Igual al comando \ref{get_value_fs} pero si es necesario enciende el sensor, toma la lectura y luego lo apaga para un mayor ahorro de energ\'ia.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x49
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x49
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
+	Valor de 0x0000 a 0x03FF con el valor en voltios de la lectura que representa la distancia al objeto.
+\end{itemize}
+
+\subsection{GET ONE VALUES FOR ALL}
+\label{get_one_values_for_all_fs}
+
+Obtiene las distancias de cada uno de los sensores conectados al controlador.
+Igual al comando \ref{get_all_values_fs} pero si es necesario enciende los sensores, toma las lecturas y luego los apaga para un mayor ahorro de energ\'ia.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x50
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x50
+	\item{DATO:} Consta de 5 valores entre 0x0000 y 0x03FF concatenados, uno para cada uno de los sensores conectados al controlador.
+	Valor en voltios de la lectura que representa la distancia al objeto.
+\end{itemize}
 
 \section{ULTRASONIC SENSOR} 
 \label{grupo_ultrasonic_sensor}
@@ -770,12 +997,217 @@ one value
 Comandos espec\'ificos del controlador de sensores de ultrasonido.
 El identificador de grupo es 0x05.
 
-enable
-disable
-get distance
-one shoot
-get value
-one value
+\subsection{ENABLE ULTRASONIC SENSOR}
+\label{enable_ultrasonic_sensor}
+
+Enciende el sensor de ultrasonido indicado.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x40
+	\item{DATO:} Valor de 0x00 a 0x05 que representa el id del sensor a encender.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+Sin respuesta
+
+\subsection{DISABLE ULTRASONIC SENSOR}
+\label{disable_ultrasonic_sensor}
+
+Apaga el sensor de ultrasonido indicado.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x41
+	\item{DATO:} Valor de 0x00 a 0x05 que representa el id del sensor a apagar.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+Sin respuesta
+
+\subsection{SET ALL ULTRASONIC SENSOR}
+\label{set_all_ultrasonic_sensor}
+
+Enciende o apaga cada uno de los sensores de ultrasonido conectados al controlador.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x42
+	\item{DATO:} Valor de 0x00 a 0x020 donde cada bit representa el id del sensor a encender o apagar.
+	Si $2^{ID} = 1$ entonces el sensor $ID$ esta encendido.
+	Si $2^{ID} = 0$ entonces el sensor $ID$ esta apagado.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+Sin respuesta
+
+\subsection{GET DISTANCE}
+\label{get_distance_us}
+
+Obtiene la distancia del sensor indicado.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x43
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x43
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
+	Valor de 0x0000 a 0xFFFF que representa la distancia en mil\'imetros al objeto.
+\end{itemize}
+
+\subsection{GET ALL DISTANCES}
+\label{get_all_distances_us}
+
+Obtiene las distancias de cada uno de los sensores conectados al controlador.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x44
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x44
+	\item{DATO:} Consta de 5 valores entre 0x0000 y 0xFFFF concatenados, uno para cada uno de los sensores conectados al controlador.
+\end{itemize}
+
+\subsection{GET VALUE}
+\label{get_value_us}
+
+Obtiene el valor en voltios del sensor indicado.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x45
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x45
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
+	Valor de 0x0000 a 0x03FF con el valor en voltios de la lectura que representa la distancia al objeto.
+\end{itemize}
+
+\subsection{GET ALL VALUES}
+\label{get_all_values_us}
+
+Obtiene las distancias de cada uno de los sensores conectados al controlador.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x46
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x46
+	\item{DATO:} Consta de 5 valores entre 0x0000 y 0x03FF concatenados, uno para cada uno de los sensores conectados al controlador.
+	Valor en voltios de la lectura que representa la distancia al objeto.
+\end{itemize}
+
+\subsection{GET ONE DISTANCE}
+\label{get_one_distance_us}
+
+Obtiene la distancia del sensor indicado.
+Igual al comando \ref{get_distance_us} pero si es necesario enciende el sensor, toma la lectura y luego lo apaga para un mayor ahorro de energ\'ia.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x47
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x47
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
+	Valor de 0x0000 a 0xFFFF que representa la distancia en mil\'imetros al objeto.
+\end{itemize}
+
+\subsection{GET ONE DISTANCE FOR ALL}
+\label{get_one_distance_for_all_us}
+
+Obtiene las distancias de cada uno de los sensores conectados al controlador.
+Igual al comando \ref{get_all_distances_us} pero si es necesario enciende los sensores, toma las lecturas y luego los apaga para un mayor ahorro de energ\'ia.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x48
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x48
+	\item{DATO:} Consta de 5 valores entre 0x0000 y 0xFFFF concatenados, uno para cada uno de los sensores conectados al controlador.
+\end{itemize}
+
+\subsection{GET ONE VALUE}
+\label{get_one_value_us}
+
+Obtiene el valor en voltios del sensor indicado.
+Igual al comando \ref{get_value_us} pero si es necesario enciende el sensor, toma la lectura y luego lo apaga para un mayor ahorro de energ\'ia.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x49
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x49
+	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
+	Valor de 0x0000 a 0x03FF con el valor en voltios de la lectura que representa la distancia al objeto.
+\end{itemize}
+
+\subsection{GET ONE VALUES FOR ALL}
+\label{get_one_values_for_all_us}
+
+Obtiene las distancias de cada uno de los sensores conectados al controlador.
+Igual al comando \ref{get_all_values_fs} pero si es necesario enciende los sensores, toma las lecturas y luego los apaga para un mayor ahorro de energ\'ia.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x50
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x50
+	\item{DATO:} Consta de 5 valores entre 0x0000 y 0x03FF concatenados, uno para cada uno de los sensores conectados al controlador.
+	Valor en voltios de la lectura que representa la distancia al objeto.
+\end{itemize}
 
 \section{BATTERY CONTROLLER} 
 \label{grupo_battery_controller}
@@ -783,9 +1215,72 @@ one value
 Comandos espec\'ificos del controlador de carga y consumo de la bater\'ia.
 El identificador de grupo es 0x06.
 
-get value
-batery full alarm
-batery empty alarm
+\subsection{GET BATTERY VALUE}
+\label{get_battery_value}
+
+Obtiene el valor en voltios de la bateria.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x40
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x40
+	\item{DATO:} Valor de 0x0000 a 0x03FF con el valor en voltios de la bateria.
+\end{itemize}
+
+\subsection{BATTERY FULL ALARM}
+\label{battery_full_alarm}
+
+Mensaje enviado desde el controlador de la bateria informando que se completado la carga de la misma.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x41
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+Sin respuesta
+
+\subsection{SET BATTERY EMPTY VALUE}
+\label{set_battery_empty_value}
+
+Establece el valor de la bateria para ser tomado como cr\'itico.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x42
+	\item{DATO:} Valor de 0x0000 a 0x03FF con el valor en voltios de la bateria.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+Sin respuesta
+
+\subsection{BATTERY EMPTY ALARM}
+\label{battery_empty}
+
+Mensaje enviado desde el controlador de la bateria informando que de el voltaje lleg\'o a un valor cr\'itico.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x43
+	\item{DATO:} Valor de 0x0000 a 0x03FF con el valor en voltios de la bateria.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+Sin respuesta
 
 \section{TRASH BIN} 
 \label{grupo_trash_bin}
@@ -793,16 +1288,44 @@ batery empty alarm
 Comandos espec\'ificos del controlador de carga en el cesto de basura.
 El identificador de grupo es 0x07.
 
-get value
-bin full alarm
+\subsection{GET TRASH BIN VALUE}
+\label{get_trash_bin_value}
+
+Obtiene el valor que representa que tan lleno est\'a el cesto interno de basura.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x40
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0x40
+	\item{DATO:} Valor de 0x0000 a 0x03FF que representa que tan lleno est\'a el cesto interno de basura.
+\end{itemize}
+
+\subsection{BIN FULL ALARM}
+\label{bin_full_alarm}
+
+Mensaje enviado desde el controlador del cesto de basura informando que se completado y debe ser descargado.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x41
+	\item{DATO:} vacio
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+Sin respuesta
+
 
 \section{Ejemplos}
 \label{ejemplos}
-
-NOT YET DEFINED
-
-\section{Conclisi\'on}
-\label{conclusion}
 
 NOT YET DEFINED
 
