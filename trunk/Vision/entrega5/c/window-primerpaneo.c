@@ -18,6 +18,15 @@
 #define _GREEN cvScalar (0, 255, 0, 0)
 
 
+#define MINCONTOUR_AREA 1000
+#define MAXCONTOUR_AREA 10000
+#define BOXFILTER_TOLERANCE 0.55
+#define MINCONTOUR_PERIMETER 80
+#define MAXCONTOUR_PERIMETER 1000
+#define CONTOUR_RECTANGULAR_MIN_RATIO 1.2
+#define CONTOUR_RECTANGULAR_MAX_RATIO 3.0
+
+
 
 int main(int argc,char * argv[]){
 	
@@ -111,16 +120,27 @@ int main(int argc,char * argv[]){
 		cont_index=0;
 		cvCopy(src,contourImage,0);
 		while(contours[cont_index]!=NULL){
-			printContour(contours[cont_index],3,cvScalar(127,127,0,0),
-				contourImage);
-			
-			//get contour bounding box
-			boundingRect=cvBoundingRect(contours[cont_index],0);
-			cvRectangle(contourImage,cvPoint(boundingRect.x,boundingRect.y),
-					cvPoint(boundingRect.x+boundingRect.width,
-					boundingRect.y+boundingRect.height),
-					_GREEN,1,8,0);
-			
+			CvSeq * aContour=contours[cont_index];
+			//apply filters
+			if(perimeterFilter(aContour,MINCONTOUR_PERIMETER,
+				MAXCONTOUR_PERIMETER) &&
+				//areaFilter(aContour,MINCONTOUR_AREA,MAXCONTOUR_AREA) &&
+				rectangularAspectFilter(aContour,CONTOUR_RECTANGULAR_MIN_RATIO,
+					CONTOUR_RECTANGULAR_MAX_RATIO) &&
+				boxAreaFilter(aContour,BOXFILTER_TOLERANCE)){
+
+					//if passed filters
+					printContour(aContour,3,cvScalar(127,127,0,0),
+						contourImage);
+				
+					//get contour bounding box
+					boundingRect=cvBoundingRect(aContour,0);
+					cvRectangle(contourImage,cvPoint(boundingRect.x,boundingRect.y),
+							cvPoint(boundingRect.x+boundingRect.width,
+							boundingRect.y+boundingRect.height),
+							_GREEN,1,8,0);
+				}
+				
 			cont_index++;
 		}
 		
