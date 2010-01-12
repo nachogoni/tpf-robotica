@@ -249,7 +249,7 @@ Sin respuesta.
 \label{comandos_especificos}
 
 Cada grupo de placas tiene comandos propios y espec\'ificos dependiendo de la funci\'on que deban desempe\~nar en el sistema.
-Existen grupos con comandos predefinidos como se aprecia en el listado \ref{grupos_listado}.
+Existen grupos con comandos predefinidos cada uno se trata en las secciones como se detalla en el listado.
 Los comandos espec\'ificos para cada grupo deben ser desde 0x40 hasta el valor 0x7E.
 
 \begin{itemize}
@@ -364,15 +364,13 @@ Sin respuesta
 \subsection{SET ENCODER TO STOP}
 \label{set_encoder_to_stop}
 
-Seteo de cu\'antas cuentas a girar hasta detenerse
+Seteo de cu\'antas cuentas debe girar hasta detenerse
 
 \subsubsection*{Comando enviado}
 
-0x0000 a 0xFFFF. Valores con signo, 0xFFFF es -32768 y 0x7FFF es 32767
-
 \begin{itemize}
 	\item{COMANDO:} 0x45
-	\item{DATO:} vac\'io
+	\item{DATO:} 0x0000 a 0xFFFF. Valores con signo, 0xFFFF es -32768 y 0x7FFF es 32767
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -382,7 +380,7 @@ Sin respuesta
 \subsection{GET ENCODER TO STOP}
 \label{get_encoder_to_stop}
 
-Obtener la cantidad de cuantas cuentas restantes hasta detenerse
+Obtener la cantidad de las cuentas restantes que quedan por realizar hasta detenerse.
 
 \subsubsection*{Comando enviado}
 
@@ -401,7 +399,7 @@ Obtener la cantidad de cuantas cuentas restantes hasta detenerse
 \subsection{DONT STOP}
 \label{dont_stop}
 
-Borrar la limitaci\'on de cuentas para frenar
+Deshace los comandos \ref{set_encoder_to_stop} y \ref{get_encoder_to_stop}, deshabilita el conteo de cuentas para frenar y sigue en el estado actual.
 
 \subsubsection*{Comando enviado}
 
@@ -532,7 +530,7 @@ Obtiene las \'ultimas posiciones de todos los servomotor conectados al controlad
 \subsection{SET SERVO SPEED}
 \label{set_servo_speed}
 
-Determina la velocidad a la que el servomotor indicado llegar\'a a la posici\'on que se le indique.
+Determina la velocidad a la que el servomotor indicado llegar\'a a la posici\'on.
 
 \subsubsection*{Comando enviado}
 
@@ -549,7 +547,7 @@ Sin respuesta
 \subsection{SET ALL SPEEDS}
 \label{set_all_speeds}
 
-Determina las velocidades a la que cada uno de los servomotores llegar\'a a la posici\'on que se le indique.
+Determina las velocidades a la que cada uno de los servomotores llegar\'a a la posici\'on indicada.
 
 \subsubsection*{Comando enviado}
 
@@ -682,7 +680,7 @@ Enciende o apaga cada uno de los sensores de distancia conectados al controlador
 
 \begin{itemize}
 	\item{COMANDO:} 0x42
-	\item{DATO:} Valor de 0x00 a 0x020 donde cada bit representa el id del sensor a encender o apagar.
+	\item{DATO:} Valor de 0x00 a 0x02F donde cada bit representa el id del sensor a encender o apagar.
 	Si $2^{ID} = 1$ entonces el sensor $ID$ est\'a encendido.
 	Si $2^{ID} = 0$ entonces el sensor $ID$ est\'a apagado.
 \end{itemize}
@@ -841,14 +839,14 @@ Igual al comando \ref{get_all_values_ds} pero si es necesario enciende los senso
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
-	\item{COMANDO:} 0x50
+	\item{COMANDO:} 0x4A
 	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
-	\item{COMANDO:} 0x50
+	\item{COMANDO:} 0x4A
 	\item{DATO:} Consta de 5 valores entre 0x0000 y 0x03FF concatenados, uno para cada uno de los sensores conectados al controlador.
 	Valor en voltios de la lectura que representa la distancia al objeto.
 \end{itemize}
@@ -917,14 +915,14 @@ Obtiene el valor en voltios del sensor indicado.
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
-	\item{COMANDO:} 0x45
+	\item{COMANDO:} 0x43
 	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
-	\item{COMANDO:} 0x45
+	\item{COMANDO:} 0x43
 	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
 	Valor de 0x0000 a 0x03FF con el valor en voltios de la lectura que representa la distancia al objeto.
 \end{itemize}
@@ -937,14 +935,14 @@ Obtiene las distancias de cada uno de los sensores conectados al controlador.
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
-	\item{COMANDO:} 0x46
+	\item{COMANDO:} 0x44
 	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
-	\item{COMANDO:} 0x46
+	\item{COMANDO:} 0x44
 	\item{DATO:} Consta de 5 valores entre 0x0000 y 0x03FF concatenados, uno para cada uno de los sensores conectados al controlador.
 	Valor en voltios de la lectura que representa la distancia al objeto.
 \end{itemize}
@@ -958,19 +956,19 @@ Igual al comando \ref{get_value_fs} pero si es necesario enciende el sensor, tom
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
-	\item{COMANDO:} 0x49
+	\item{COMANDO:} 0x45 
 	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
-	\item{COMANDO:} 0x49
+	\item{COMANDO:} 0x45
 	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
 	Valor de 0x0000 a 0x03FF con el valor en voltios de la lectura que representa la distancia al objeto.
 \end{itemize}
 
-\subsection{GET ONE VALUES FOR ALL}
+\subsection{GET ONE VALUE FOR ALL}
 \label{get_one_values_for_all_fs}
 
 Obtiene las distancias de cada uno de los sensores conectados al controlador.
@@ -979,14 +977,14 @@ Igual al comando \ref{get_all_values_fs} pero si es necesario enciende los senso
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
-	\item{COMANDO:} 0x50
+	\item{COMANDO:} 0x46
 	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
-	\item{COMANDO:} 0x50
+	\item{COMANDO:} 0x46
 	\item{DATO:} Consta de 5 valores entre 0x0000 y 0x03FF concatenados, uno para cada uno de los sensores conectados al controlador.
 	Valor en voltios de la lectura que representa la distancia al objeto.
 \end{itemize}
@@ -1038,7 +1036,7 @@ Enciende o apaga cada uno de los sensores de ultrasonido conectados al controlad
 
 \begin{itemize}
 	\item{COMANDO:} 0x42
-	\item{DATO:} Valor de 0x00 a 0x020 donde cada bit representa el id del sensor a encender o apagar.
+	\item{DATO:} Valor de 0x00 a 0x02F donde cada bit representa el id del sensor a encender o apagar.
 	Si $2^{ID} = 1$ entonces el sensor $ID$ est\'a encendido.
 	Si $2^{ID} = 0$ entonces el sensor $ID$ est\'a apagado.
 \end{itemize}
@@ -1188,7 +1186,7 @@ Igual al comando \ref{get_value_us} pero si es necesario enciende el sensor, tom
 	Valor de 0x0000 a 0x03FF con el valor en voltios de la lectura que representa la distancia al objeto.
 \end{itemize}
 
-\subsection{GET ONE VALUES FOR ALL}
+\subsection{GET ONE VALUE FOR ALL}
 \label{get_one_values_for_all_us}
 
 Obtiene las distancias de cada uno de los sensores conectados al controlador.
@@ -1197,14 +1195,14 @@ Igual al comando \ref{get_all_values_fs} pero si es necesario enciende los senso
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
-	\item{COMANDO:} 0x50
+	\item{COMANDO:} 0x4A
 	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
-	\item{COMANDO:} 0x50
+	\item{COMANDO:} 0x4A
 	\item{DATO:} Consta de 5 valores entre 0x0000 y 0x03FF concatenados, uno para cada uno de los sensores conectados al controlador.
 	Valor en voltios de la lectura que representa la distancia al objeto.
 \end{itemize}
@@ -1231,7 +1229,7 @@ Obtiene el valor en voltios de la bater\'ia.
 
 \begin{itemize}
 	\item{COMANDO:} 0x40
-	\item{DATO:} Valor de 0x0000 a 0x03FF con el valor en voltios de la bateria.
+	\item{DATO:} Valor de 0x0000 a 0x03FF que representa la carga en voltios de la bateria.
 \end{itemize}
 
 \subsection{BATTERY FULL ALARM}
@@ -1259,7 +1257,7 @@ Establece el valor de la bater\'ia para ser tomado como cr\'itico.
 
 \begin{itemize}
 	\item{COMANDO:} 0x42
-	\item{DATO:} Valor de 0x0000 a 0x03FF con el valor en voltios de la bater\'ia.
+	\item{DATO:} Valor de 0x0000 a 0x03FF que representa la carga en voltios de la bater\'ia.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -1275,7 +1273,7 @@ Mensaje enviado desde el controlador de la bater\'ia informando que de el voltaj
 
 \begin{itemize}
 	\item{COMANDO:} 0x43
-	\item{DATO:} Valor de 0x0000 a 0x03FF con el valor en voltios de la bater\'ia.
+	\item{DATO:} Valor de 0x0000 a 0x03FF que representa la carga en voltios de la bater\'ia.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
