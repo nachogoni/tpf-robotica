@@ -38,7 +38,7 @@ findContours(IplImage * image){
 			sizeof(CvContour),CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, 
 			cvPoint(0,0) );
 			
-	if( (polygonArray=(void**)malloc(sizeof(CvSeq*)*(numberOfContours+1)))==NULL){
+	if( (polygonArray=(CvSeq**)malloc(sizeof(CvSeq*)*(numberOfContours+1)))==NULL){
 		perror("Out of memory");
 		return NULL;
 	} 

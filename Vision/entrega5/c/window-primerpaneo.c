@@ -10,6 +10,7 @@
 #include "histogram.h"
 
 
+// image preprocessing values
 #define THRESHOLD_VALUE 240
 #define MORPH_KERNEL_SIZE 2
 #define MORPH_DILATE_ITER 2
@@ -52,6 +53,8 @@ int main(int argc,char * argv[]){
 	}
 	
 	
+	//image for the histogram-based filter
+	//could be a parameter
 	model=cvLoadImage("../images/colilla-sinBlanco.png",1);
 	CvHistogram * testImageHistogram=getHShistogramFromRGB(model,HIST_H_BINS,HIST_S_BINS);
 	
@@ -60,7 +63,7 @@ int main(int argc,char * argv[]){
 	
 	
 	
-	//video image size
+	//gets a frame for setting  image size
 	//CvSize srcSize = cvSize(frameWidth,frameHeight);
 	src=cvQueryFrame(capture);
 	CvSize srcSize = cvGetSize(src);
@@ -70,6 +73,8 @@ int main(int argc,char * argv[]){
 	IplImage* h_plane = cvCreateImage( srcSize, 8, 1 );
 	IplImage* s_plane = cvCreateImage( srcSize, 8, 1 );
 	IplImage* v_plane = cvCreateImage( srcSize, 8, 1 );
+	
+	
 	
 	//Image for thresholding
 	IplImage * threshImage=cvCreateImage(srcSize,8,1);
@@ -159,7 +164,6 @@ int main(int argc,char * argv[]){
 		}
 		
 		cvShowImage("output",contourImage);
-		
 		cvWaitKey(0);
 
 	} 
