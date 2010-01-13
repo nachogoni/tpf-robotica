@@ -10,6 +10,7 @@
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
 #include "contours.h"
+#include "histogram.h"
 #include <stdio.h>
 
 
@@ -134,27 +135,49 @@ boxAreaFilter(CvSeq * contour,double minAreaRatio){
 	return ret > minAreaRatio;
 }
 
+/*
+ * @src Frame image
+ * @contour  contour processing
+ * @testImageHistogram histogram from model image
+ * @h_bins number of hue bins
+ * @s_bins number of sat bins 
+ * @min minimum similarity to achieve when comparing histograms
+ */
 int
-histogramMatchingFilter(IplImage * frame,CvHistogram * testImageHistogram,
+histogramMatchingFilter(IplImage * src,CvSeq * contour,
+CvHistogram * testImageHistogram,int h_bins,int s_bins,
 double min){
-	//~ CvBox2d box;
-	//~ CvMemStorage* mem = cvCreateMemStorage(0);
-	//~ 
-	//~ 
-	//~ box=cvMinAreaRect2(contour,mem);
-	//~ void cvSetImageROI( IplImage* image, CvRect rect );
-//~ 
-	//~ 
-	//~ 
-	//~ 
+	CvRect box;
+	CvMemStorage* mem = cvCreateMemStorage(0);
+	
+	double val;
 	
 	
-	return 0;
+	//get contour bounding box
+	box=cvBoundingRect(contour,0);
 	
+	printf("box x:%d y:%d \n",box.x,box.y);
 	
+	IplImage * src_bbox=cvCreateImage(cvSize(box.width,box.height),src->depth,src->nChannels);
+	
+	//gets subimage bounded by box
+    cvGetSubArr( src,(CvMat*)src_bbox, box );
 
-
+	printf("armo la subImagen \n");
+	//gets subimage histogram
+	CvHistogram* hist=getHShistogramFromRGB(src_bbox,h_bins,s_bins);
+	//compares with object histogram
+	val=cvCompareHist(hist,testImageHistogram,CV_COMP_BHATTACHARYYA);
+	
+	cvReleaseHist(&hist);
+	cvReleaseImage(&src_bbox);
+	
+	printf("%g\n",val);
+	
+	return (val<min);
 }
+//30,32,10
+
 
 
 
