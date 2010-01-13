@@ -57,7 +57,7 @@ boxAreaFilter(CvSeq * contour,double minAreaRatio);
  * the actual minimum boundingbox containing the contour. min determines
  * the minimum value of similiarity they must comply.
  */
-int
-histogramMatchingFilter(IplImage * frame,CvHistogram * testImageHistogram,
-double min);
+int 
+histogramMatchingFilter(IplImage * src,CvSeq * contour,
+CvHistogram * testImageHistogram,int h_bins,int s_bins,double min);
 

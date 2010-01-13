@@ -7,6 +7,7 @@
 #include <opencv/highgui.h>
 #include <stdio.h>
 #include "contours.h"
+#include "histogram.h"
 
 
 #define THRESHOLD_VALUE 240
@@ -18,6 +19,8 @@
 #define _GREEN cvScalar (0, 255, 0, 0)
 
 
+
+//contour filters constants
 #define MINCONTOUR_AREA 1000
 #define MAXCONTOUR_AREA 10000
 #define BOXFILTER_TOLERANCE 0.55
@@ -25,6 +28,9 @@
 #define MAXCONTOUR_PERIMETER 1000
 #define CONTOUR_RECTANGULAR_MIN_RATIO 1.2
 #define CONTOUR_RECTANGULAR_MAX_RATIO 3.0
+#define HIST_S_BINS 8
+#define HIST_H_BINS 8
+#define HIST_MIN 0.7
 
 
 
@@ -37,6 +43,8 @@ int main(int argc,char * argv[]){
 	
 	//frame from video
 	IplImage * src;
+	//object model
+	IplImage * model;
 	
 	if( argc != 2 || (capture=cvCreateFileCapture( argv[1]))== 0 ){
 		perror("Invalid capture");
@@ -44,6 +52,8 @@ int main(int argc,char * argv[]){
 	}
 	
 	
+	model=cvLoadImage("../images/colilla-sinBlanco.png",1);
+	CvHistogram * testImageHistogram=getHShistogramFromRGB(model,HIST_H_BINS,HIST_S_BINS);
 	
 	//~ int frameWidth=cvGetCaptureProperty(capture,CV_CAP_PROP_FRAME_WIDTH);
 	//~ int frameHeight=cvGetCaptureProperty(capture,CV_CAP_PROP_FRAME_HEIGHT);
@@ -92,6 +102,7 @@ int main(int argc,char * argv[]){
 	while(src=cvQueryFrame(capture)){
 		
 		frameCounter++;
+		printf("frame number:%d\n",frameCounter);
 		
 		//convert image to hsv
 		cvCvtColor( src, hsv, CV_BGR2HSV );
@@ -113,9 +124,10 @@ int main(int argc,char * argv[]){
         cvErode(morphImage,morphImage,element,MORPH_ERODE_ITER);
 	
 		//apply smooth gaussian-filter
-        //~ cvSmooth(morphImage,smoothImage,CV_GAUSSIAN,3,0,0,0);
+        cvSmooth(morphImage,smoothImage,CV_GAUSSIAN,3,0,0,0);
 		
-		contours=findContours(morphImage);
+		//get all contours
+		contours=findContours(smoothImage);
 		
 		cont_index=0;
 		cvCopy(src,contourImage,0);
@@ -127,7 +139,9 @@ int main(int argc,char * argv[]){
 				//areaFilter(aContour,MINCONTOUR_AREA,MAXCONTOUR_AREA) &&
 				rectangularAspectFilter(aContour,CONTOUR_RECTANGULAR_MIN_RATIO,
 					CONTOUR_RECTANGULAR_MAX_RATIO) &&
-				boxAreaFilter(aContour,BOXFILTER_TOLERANCE)){
+				boxAreaFilter(aContour,BOXFILTER_TOLERANCE) &&
+				histogramMatchingFilter(src,aContour,testImageHistogram,
+					HIST_H_BINS,HIST_S_BINS,HIST_MIN)){
 
 					//if passed filters
 					printContour(aContour,3,cvScalar(127,127,0,0),
