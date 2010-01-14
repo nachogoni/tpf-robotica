@@ -46,6 +46,14 @@
 #bit tx=portb.5
 #bit rx=portb.2
 
+
+// Girar -> clockwise or unclockwise
+// Intercambiar entre el motor derecho y el izquierdo
+#define CLOCKWISE	1
+#define UNCLOCKWISE	-1
+
+signed int turn = CLOCKWISE;
+
 // Buffer del pto serial
 #define MAX_BUFFER_SIZE	50
 char buffer[MAX_BUFFER_SIZE];
@@ -60,12 +68,6 @@ float adc_value = 0;
 // Valor de duty del PWM
 signed long duty = 0;
 
-// Girar -> clockwise or unclockwise
-// Intercambiar entre el motor derecho y el izquierdo
-#define CLOCKWISE	1
-#define UNCLOCKWISE	-1
-
-signed int turn = CLOCKWISE;
 signed long counts_expected = 0;
 signed long counts_total = 0;
 signed long counts_to_stop = 0;
@@ -73,6 +75,9 @@ signed long last_counts = 0;
 signed long last_counts2 = 0;
 short counts_check = 0;
 short correct_duty = 1;
+
+short rs232c = 0;
+byte c = 0;
 
 /* Examina y ejecula el comando */
 void command(char * cmd);
@@ -93,7 +98,6 @@ void Timer0_INT()
 	//printf(":%d:",read_adc()); // DEBUG
 
 	// Agrego al historico de cuentas el ultimo acumulado
-	
 	tmr1 = get_timer1();
 	counts_total += (tmr1 - last_counts2) * turn;
 	last_counts2 = tmr1;
@@ -153,12 +157,22 @@ void Timer0_INT()
 	} else {
 		led1 = 0; // DEBUG?
 	}
+	return;
 }
 
-void main() {
+// Interrupcion del RS232
+#INT_RDA
+void RS232()
+{
+	c = getc();
+	putc(c);
+	rs232c = 1;
+	return;
+}
 
+void main()
+{
 	// Control de Velocidad comandado por RS232
-	byte c = 0;
 
 	set_tris_a(0b11100111);
 	set_tris_b(0b11100110);
@@ -188,28 +202,18 @@ void main() {
 	set_timer0(12);
 	// Interrupcion sobre el Timer0
 	enable_interrupts(INT_RTCC);
+	enable_interrupts(INT_RDA);
 
 	// Habilito las interrupciones
 	enable_interrupts(GLOBAL);
-
-	counts_check = 1;
-	counts_to_stop = 179;
-	counts_expected = 30;// DEBUG
-
-	// Splash
-	/*printf("\n\rINIT - CONTROL DE VELOCIDAD DE MOTOR - DEV: %s VERSION: %s", getenv("DEVICE"), VERSION);// DEBUG
-	printf("\n\rsc: clockwise, su: unclockwise, d<value>: set duty");
-	printf("\n\re<value>: set expected, t<value>: set counts to stop");
-	printf("\n\rf: dont stop, c: get total counts, z: set total counts to zero");
-	printf("\n\rv<value>: set counts to");*/
 	
-	// Recibe datos por serial -> pasarlo a interrupcion?
+	// FOREVER
 	while(1)
 	{
 		// Mini consola
-		c = getc();
-		if (c)
+		if (rs232c == 1)
 		{
+			rs232c = 0;
 			switch (c)
 			{
 				case 0:
@@ -235,7 +239,6 @@ void main() {
 						buffer[buffer_idx++] = c;
 					break;				
 			}
-			putc(c);
 		}
 	}
 
