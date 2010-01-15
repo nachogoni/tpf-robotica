@@ -30,6 +30,16 @@ DebugOptions=
 [File002]
 Location=Modulo_Motor_main.ESYM
 Folder=Intermediary
+DeviceName=
+LanguageToolSuiteID=
+LanguageToolID=
+LanguageToolLocation=
+PPAD=
+SOLK=
+SuiteArgsString=
+ToolArgsString=
+TraceCmdString=
+DebugOptions=
 [File003]
 Location=Modulo_Motor_main.HEX
 Folder=Output
