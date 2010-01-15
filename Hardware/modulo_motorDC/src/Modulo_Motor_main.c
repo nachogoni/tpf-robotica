@@ -46,6 +46,8 @@
 #bit tx=portb.5
 #bit rx=portb.2
 
+#define CARD_GROUP		0x01
+#define CARD_ID			0x01
 
 // Girar -> clockwise or unclockwise
 // Intercambiar entre el motor derecho y el izquierdo
@@ -77,10 +79,11 @@ short counts_check = 0;
 short correct_duty = 1;
 
 short rs232c = 0;
-byte c = 0;
+char c = 0;
+int command_size = 6;
 
 /* Examina y ejecula el comando */
-void command(char * cmd);
+void command(char * cmd, int size);
 /* Setea el PWM */
 void SetPWM(signed long pwm);
 
@@ -138,7 +141,7 @@ void Timer0_INT()
 		// Promedio el consumo segun la cantidad de tmr0_ticks
 		adc_value /= tmr0_ticks;
 		printf("\n\rTimer1: %ld | Expected: %ld | duty: %ld | ", tmr1, counts_expected, duty); // DEBUG
-		printf("consumtion: %d avrg: %g\n\r", read_adc(), adc_value); // DEBUG
+		printf("consumtion avrg: %g\n\r", adc_value); // DEBUG
 		tmr0_ticks = 0;
 
 		// Mantengo el consumo promedio desde que arranque y borro el temporal
@@ -165,7 +168,33 @@ void Timer0_INT()
 void RS232()
 {
 	c = getc();
+	
+	// Buffer ciclico
+	if (buffer_idx = MAX_BUFFER_SIZE)
+		buffer_idx = 0;
+	else
+		buffer_idx++;
+		
+	buffer[buffer_idx] = c;
+
+	// Campo LARGO
+	if (buffer_idx == 5)
+	{
+		command_size = 6 + 1 + buffer[buffer_idx];
+	}
+	
+	if (buffer_idx == command_size)
+	{
+		// Execute command
+		command(buffer, command_size);
+		// Clean buffer
+		for (buffer_idx = 0; buffer_idx <= command_size; buffer_idx++)
+			buffer[buffer_idx] = '\0';
+		buffer_idx = 0;
+	}		
+
 	putc(c);
+	
 	rs232c = 1;
 	return;
 }
@@ -214,31 +243,9 @@ void main()
 		if (rs232c == 1)
 		{
 			rs232c = 0;
-			switch (c)
-			{
-				case 0:
-					break;
-				case 13:
-					// Ingreso un comando...
-					buffer[buffer_idx] = '\0';
-					command(buffer);
-					buffer_idx = 0;
-					break;
-				case 8:
-					// Backspace
-					if (buffer_idx > 0)
-						buffer_idx--;
-					break;
-				case '*':
-					// Pido el valor del Timer0
-					printf("\n\rTimer0: %d\n\r", get_timer0());
-					break;
-				default:
-					// Otro caracter
-					if (buffer_idx <= MAX_BUFFER_SIZE)
-						buffer[buffer_idx++] = c;
-					break;				
-			}
+
+			//DoSomething
+
 		}
 	}
 
@@ -246,62 +253,21 @@ void main()
 }
 
 /* Verifica que el comando sea valido y lo ejecuta */
-void command(char * cmd)
+void command(char * cmd, int size)
 {
-	// TODO: Crear protocolo
-	if (cmd[0] == 't')
+	// Broadcast general
+	if (buffer[0] == 0xFF)
 	{
-		counts_check = 1;
-		counts_to_stop = atol(cmd + 1);
-		printf("\rCounts to stop: %ld", counts_to_stop);
-	} else 
-	if (cmd[0] == 'p')
+		// Atiende el mensaje
+	} 
+	else if ((buffer[0] & 0x7F) == CARD_GROUP)
 	{
-		printf("\rCounts to stop: %ld", counts_to_stop);
-	} else 
-	if (cmd[0] == 'c')
-	{
-		printf("\rCounts total: %ld", counts_total);
-	} else 
-	if (cmd[0] == 'v')
-	{
-		counts_total = atol(cmd + 1);
-		printf("\rCounts total: %ld", counts_total);
-	} else 
-	if (cmd[0] == 'z')
-	{
-		counts_total = 0;
-		printf("\rCounts total to zero");
-	} else 
-	if (cmd[0] == 'f')
-	{
-		counts_check = 0;
-		counts_to_stop = 0;
-		printf("\rDon't stop!");
-	} else 
-	if (cmd[0] == 'd')
-	{
-		duty = atol(cmd + 1);
-		SetPWM(duty);
-		printf("\rPWM duty to: %ld", duty);
-	} else 
-	if (cmd[0] == 'e')
-	{
-		counts_expected = atol(cmd + 1);
-		// Frenar el motor
-		if (atol(cmd + 1) == 0)
-			duty = 0;
-		printf("\rExpected changed to: %ld", counts_expected);
-	} else 
-	if (cmd[0] == 's')
-	{
-		turn = (cmd[1] == 'c') ? CLOCKWISE : UNCLOCKWISE;
-		if (turn == CLOCKWISE)
-			printf("\rSide changed to: clockwise");
-		else
-			printf("\rSide changed to: unclockwise");
+		if (((buffer[0] & 0x80) == 0x80) || (buffer[1] == CARD_ID))
+		{
+			// Atiende el mensaje
+		}	
 	}
-	
+
 	return;	
 }	
 
