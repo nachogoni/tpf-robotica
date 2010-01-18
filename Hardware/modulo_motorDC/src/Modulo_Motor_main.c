@@ -24,7 +24,7 @@
 #fuses HS,NOWDT,NOPROTECT,NOLVP
 #use delay (clock=20000000)
 //#device adc = 8
-#use rs232(BAUD=115200,PARITY=N,XMIT=PIN_B5,RCV=PIN_B2,BITS=8,ERRORS, TIMEOUT=1, STOP=1, UART1)
+#use rs232(BAUD=115200,PARITY=N,XMIT=PIN_B5,RCV=PIN_B2,BITS=8,ERRORS,TIMEOUT=1,STOP=1,UART1)
 #use fast_io(A)
 #use fast_io(B)
 
@@ -61,6 +61,10 @@ signed int turn = CLOCKWISE;
 char buffer[MAX_BUFFER_SIZE];
 int buffer_idx = 0;
 
+// Buffer de respuesta
+char resp[30];
+int resp_idx = 0;
+
 // Cantidad de overflows del TMR0
 long tmr0_ticks = 0;
 
@@ -86,7 +90,8 @@ int command_size = 6;
 void command(char * cmd, int size);
 /* Setea el PWM */
 void SetPWM(signed long pwm);
-
+/* Envia los datos por el pto serial */
+void send(char * response, int size);
 
 // Interrupcion del Timer0
 #INT_RTCC
@@ -163,42 +168,6 @@ void Timer0_INT()
 	return;
 }
 
-// Interrupcion del RS232
-#INT_RDA
-void RS232()
-{
-	c = getc();
-	
-	// Buffer ciclico
-	if (buffer_idx = MAX_BUFFER_SIZE)
-		buffer_idx = 0;
-	else
-		buffer_idx++;
-		
-	buffer[buffer_idx] = c;
-
-	// Campo LARGO
-	if (buffer_idx == 5)
-	{
-		command_size = 6 + 1 + buffer[buffer_idx];
-	}
-	
-	if (buffer_idx == command_size)
-	{
-		// Execute command
-		command(buffer, command_size);
-		// Clean buffer
-		for (buffer_idx = 0; buffer_idx <= command_size; buffer_idx++)
-			buffer[buffer_idx] = '\0';
-		buffer_idx = 0;
-	}		
-
-	putc(c);
-	
-	rs232c = 1;
-	return;
-}
-
 void main()
 {
 	// Control de Velocidad comandado por RS232
@@ -237,7 +206,7 @@ void main()
 	enable_interrupts(GLOBAL);
 	
 	// FOREVER
-	while(1)
+	while(true)
 	{
 		// Mini consola
 		if (rs232c == 1)
@@ -245,6 +214,18 @@ void main()
 			rs232c = 0;
 
 			//DoSomething
+			
+
+			
+			if (buffer_idx == command_size)
+			{
+				// Execute command
+				command(buffer, command_size);
+				// Clean buffer
+				for (buffer_idx = 0; buffer_idx <= command_size; buffer_idx++)
+					buffer[buffer_idx] = '\0';
+				buffer_idx = 0;
+			}		
 
 		}
 	}
@@ -252,22 +233,102 @@ void main()
 	return;
 }
 
+// Interrupcion del RS232
+#INT_RDA
+void RS232()
+{
+	// Agrego al buffer el caracter
+	buffer[buffer_idx] = c = getc();
+	
+	// Campo LARGO
+	if (buffer_idx == 5)
+	{
+		command_size = 6 + 1 + buffer[buffer_idx];
+	}
+	
+	// Comando completo
+	if (buffer_idx == command_size)
+		rs232c = 1;
+
+	// Buffer ciclico
+	if (buffer_idx == MAX_BUFFER_SIZE)
+		buffer_idx = 0;
+	else
+		buffer_idx++;
+	
+	return;
+}
+
 /* Verifica que el comando sea valido y lo ejecuta */
 void command(char * cmd, int size)
 {
+	short read = 0;
+	short echo = 0;
+	
 	// Broadcast general
 	if (buffer[0] == 0xFF)
 	{
 		// Atiende el mensaje
-	} 
+		read = 1;
+		// Repite el comando
+		echo = 1;
+	}
 	else if ((buffer[0] & 0x7F) == CARD_GROUP)
 	{
 		if (((buffer[0] & 0x80) == 0x80) || (buffer[1] == CARD_ID))
 		{
 			// Atiende el mensaje
-		}	
+			read = 1;
+			// Repite el comando
+			echo = ((buffer[0] & 0x80) == 0x80);
+		}
 	}
+	
+	if (read == 1)
+	{
+		// Parte comun a todas las respuestas
+		resp[0] = cmd[2] & 0x7F;
+		resp[1] = cmd[3];
+		resp[2] = CARD_GROUP;
+		resp[3] = CARD_ID;
 
+		switch (cmd[4])
+		{
+			case 0x03:
+				// Ping -> Pong
+				resp[4] = cmd[4];
+				resp[5] = 0;
+				resp_idx = 6;
+				send(resp, resp_idx);
+			break;
+
+			default:
+			break;
+		}	
+		
+		
+	}
+	
+	// Hacer echo si corresponde (TODO: ver CRC)
+	if (echo == 1)
+		send(buffer, size);
+
+	return;	
+}	
+
+/* Envia los datos por el pto serial */
+void send(char * response, int size)
+{
+	int i;
+	
+	for (i = 0; i < size; i++)
+	{
+		// TODO: Calcular el crc
+		putc(response[i]);
+	}	
+	
+	// TODO: Enviar el CRC
+	
 	return;	
 }	
 
