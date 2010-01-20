@@ -7,8 +7,8 @@
  * 		using openCV library
  */
 
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <cv.h>
+#include <highgui.h>
 #include "contours.h"
 #include "histogram.h"
 #include <stdio.h>

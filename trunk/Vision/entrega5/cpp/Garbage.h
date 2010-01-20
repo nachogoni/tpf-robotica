@@ -2,7 +2,7 @@
 #define utils_Garbage_h
 
 
-#include "Rectangle.h"
+#include "MinimalBoundingRectangle.h"
 
 
 
@@ -16,14 +16,14 @@ class Garbage {
 
      double distanceTo();
 
-     Rectangle* boundingBox();
+     MinimalBoundingRectangle::MinimalBoundingRectangle * boundingBox();
 
-     Garbage(Rectangle * hola);
+     Garbage(MinimalBoundingRectangle * hola);
 
  public:
     double angle;
     double distance;
-    Rectangle * mbr;
+    MinimalBoundingRectangle::MinimalBoundingRectangle * mbr;
 
 };
 

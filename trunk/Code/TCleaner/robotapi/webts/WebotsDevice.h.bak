@@ -1,0 +1,28 @@
+#ifndef robotapi_webots_WebotsDevice_h
+#define robotapi_webots_WebotsDevice_h
+
+#include <robotapi/IDevice.h>
+#include <robotapi/webts/WebotsDeviceTag.h>
+#include <webots/Device.hpp>
+
+namespace robotapi {
+namespace webts {
+//virtual public robotapi::IDevice,
+class WebotsDevice : public webots::Device {
+
+    public:
+        std::string dname;
+        IWbDeviceTag dtag;
+
+        WebotsDevice(std::string name, IWbDeviceTag tag);
+
+        std::string getName();
+
+        IWbDeviceTag &getTag();
+
+    };
+
+} /* End of namespace robotapi::webts */
+} /* End of namespace robotapi */
+
+#endif // robotapi_webots_WebotsDevice_h
