@@ -11,13 +11,13 @@
 //      Copyright 2010 dnul <dnul@alu.itba.edu.ar>
 //      
 
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <cv.h>
+#include <highgui.h>
 #include <stdio.h>
 #include "contours.h"
 #include "histogram.h"
 #include "Garbage.h"
-#include "Rectangle.h"
+#include "MinimalBoundingRectangle.h"
 #include <list>
 
 
@@ -44,7 +44,7 @@
 #define HIST_H_BINS 8
 #define HIST_MIN 0.7
 
-std::list<Garbage> *
+std::list<Garbage>
 garbageList(IplImage * src);
 
 int main(int argc,char * argv[]){
@@ -53,19 +53,19 @@ int main(int argc,char * argv[]){
 	
 	printf("%p\n",img);
 	
-	std::list<Garbage> * garbage; 
+	std::list<Garbage> garbage;
 	garbage=garbageList(img);
 	
-	Garbage aGarbage = garbage->front();
+	Garbage aGarbage = garbage.front();
 	
-	Rectangle * aRectangle=aGarbage.boundingBox();
+	MinimalBoundingRectangle * aMinimalBoundingRectangle=aGarbage.boundingBox();
 	
-	printf("%d %d\n",aRectangle->x,aRectangle->y);
+	printf("%d %d\n",aMinimalBoundingRectangle->x,aMinimalBoundingRectangle->y);
 	
 }
 
 
-std::list<Garbage> *
+std::list<Garbage>
 garbageList(IplImage * src){
 
 	
@@ -183,12 +183,12 @@ garbageList(IplImage * src){
 				
 				printf(" c %d,%d\n",boundingRect.x,boundingRect.y);
 				
-				Rectangle* aRectangle=new Rectangle(boundingRect.x,
+				MinimalBoundingRectangle* aMinimalBoundingRectangle=new MinimalBoundingRectangle(boundingRect.x,
 					boundingRect.y,boundingRect.width,boundingRect.height);
 				
 				
 				
-				Garbage* aGarbage= new Garbage(aRectangle);
+				Garbage* aGarbage= new Garbage(aMinimalBoundingRectangle);
 				
 				garbageList.push_back(*aGarbage); 	
 				
@@ -202,6 +202,5 @@ garbageList(IplImage * src){
 	cvWaitKey(0);
 
 
-	
-		
+	return garbageList;
 }

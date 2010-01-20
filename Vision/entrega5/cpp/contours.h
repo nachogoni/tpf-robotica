@@ -1,7 +1,7 @@
 
 
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <cv.h>
+#include <highgui.h>
 #include <stdio.h>
 
 

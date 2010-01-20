@@ -1,0 +1,29 @@
+#ifndef robotapi_webots_WebotsCamera_h
+#define robotapi_webots_WebotsCamera_h
+
+#include <robotapi/ICamera.h>
+#include <robotapi/webts/WebotsDevice.h>
+
+
+namespace robotapi {
+namespace webts {
+
+class WebotsCamera : virtual public robotapi::ICamera, robotapi::webts::WebotsDevice {
+
+public:
+    void enable(int ms);
+
+    void disable();
+
+    IImage &getImage();
+
+    int saveImage(std::string filename, int quality);
+
+    // Change parameter to Webots API camera
+    WebotsCamera( WebotsCamera * cam );
+    };
+
+} /* End of namespace robotapi::webts */
+} /* End of namespace robotapi */
+
+#endif // robotapi_webots_WebotsCamera_h
