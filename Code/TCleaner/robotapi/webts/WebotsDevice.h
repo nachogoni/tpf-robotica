@@ -11,16 +11,18 @@ namespace webts {
 class WebotsDevice : virtual public robotapi::IDevice {
 
     public:
-        std::string dname;
-        IWbDeviceTag dtag;
 
         WebotsDevice(webots::Device & dev);
 
-        WebotsDevice(std::string name, IWbDeviceTag tag);
+		WebotsDevice(std::string & name, IWbDeviceTag tag);
 
         std::string getName();
 
         IWbDeviceTag &getTag();
+
+	private:
+
+		void init(std::string & name, IWbDeviceTag tag);
 
     };
 

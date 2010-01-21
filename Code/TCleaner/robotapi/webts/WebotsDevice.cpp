@@ -2,37 +2,35 @@
 
 namespace robotapi {
 namespace webts {
-/*
-    WebotsDevice::WebotsDevice(std::string name, IWbDeviceTag tag){
+
+    std::string dname;
+   	IWbDeviceTag dtag;
+
+	void WebotsDevice::init(std::string & name, IWbDeviceTag tag){
         dname = name;
         dtag = tag;
     }
 
-    std::string WebotsDevice::getName(){
-        return dname;
-    }
-
-    IWbDeviceTag & WebotsDevice::getTag(){
-        return dtag;
-    }
-*/
-
-	webots::Device * mydev;
-	WebotsDeviceTag * wbt;
-	
     WebotsDevice::WebotsDevice( webots::Device & dev){
-		mydev = &dev;
-		wbt = new WebotsDeviceTag(3);
+        std::string aux = dev.getName();
+        IWbDeviceTag * iwdt = new WebotsDeviceTag(3);
+   		init(aux, *iwdt);
+
+//		mydev = &dev;
+//		wbt = ;
 	}
 
+    WebotsDevice::WebotsDevice(std::string & name, IWbDeviceTag tag){
+		init(name, tag);
+    }
+
     std::string WebotsDevice::getName(){
-		return mydev->getName();
+		return dname;
 	}
 
     IWbDeviceTag & WebotsDevice::getTag(){
-		return *wbt;
+		return dtag;
 	}
-
 
 } /* End of namespace robotapi::webts */
 } /* End of namespace robotapi */
