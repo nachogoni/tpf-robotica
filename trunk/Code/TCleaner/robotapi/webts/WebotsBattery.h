@@ -8,7 +8,7 @@
 namespace robotapi {
 namespace webts {
 //
-class WebotsBattery : public robotapi::IBattery , robotapi::webts::WebotsDevice {
+class WebotsBattery : public robotapi::IBattery, public robotapi::webts::WebotsDevice {
 
  public:
 
@@ -18,8 +18,7 @@ class WebotsBattery : public robotapi::IBattery , robotapi::webts::WebotsDevice 
 
     double getValue();
 
-    // Change parameter to Webots API Distance Sensor
-    WebotsBattery(WebotsBattery * name);
+    WebotsBattery(std::string & name, IWbDeviceTag tag);
 
     };
 

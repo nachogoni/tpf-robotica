@@ -11,8 +11,8 @@ PrivateResource=
 ResourceIncludes=
 MakeIncludes=
 Compiler=
-CppCompiler=
-Linker=
+CppCompiler=-LCppController_@@_
+Linker=-Wl,--enable-runtime-pseudo-reloc --enable-auto-import_@@__@@_"../../../../Archivos de programa/Webots/lib/libCppController.a"_@@_
 IsCpp=1
 Icon=
 ExeOutput=
@@ -26,7 +26,7 @@ UseCustomMakefile=0
 CustomMakefile=
 IncludeVersionInfo=0
 SupportXPThemes=0
-CompilerSet=0
+CompilerSet=1
 CompilerSettings=0000000000000001000000
 
 [Unit1]

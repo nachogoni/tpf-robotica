@@ -58,10 +58,14 @@ namespace webts {
     }
 
     IBattery & WebotsRobot::getBattery(std::string name){
-        WebotsBattery * b = new WebotsBattery(NULL);
+		IWbDeviceTag * wdt = new WebotsDeviceTag(3);
+        WebotsBattery * b = new WebotsBattery(name,*wdt);
         return * b;
     }
 
+	void WebotsRobot::step(int ms){
+		return ;
+	}
     
 } /* End of namespace robotapi::webts */
 } /* End of namespace robotapi */
