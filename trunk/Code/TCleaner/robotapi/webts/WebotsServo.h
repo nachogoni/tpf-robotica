@@ -9,7 +9,7 @@
 namespace robotapi {
 namespace webts {
 
-class WebotsServo : public robotapi::IServo, robotapi::webts::WebotsDevice, webots::Servo  {
+class WebotsServo : public robotapi::IServo, robotapi::webts::WebotsDevice {
 
  public:
 
@@ -35,9 +35,8 @@ class WebotsServo : public robotapi::IServo, robotapi::webts::WebotsDevice, webo
 
     void setPosition(double position);
 
-
     // Change parameter to Webots API Distance Sensor
-    WebotsServo(WebotsServo * name);
+    WebotsServo( webots::Servo & servo);
 
     };
 

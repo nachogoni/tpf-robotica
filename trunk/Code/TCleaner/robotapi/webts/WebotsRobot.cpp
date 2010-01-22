@@ -6,43 +6,50 @@
 #include <robotapi/webts/WebotsBattery.h>
 #include <robotapi/webts/WebotsDifferentialWheels.h>
 #include <webots/Camera.hpp>
+#include <webots/Robot.hpp>
 
 namespace robotapi {
 namespace webts {
 
+	webots::Robot * robot;
+
+    WebotsRobot::WebotsRobot( webots::DifferentialWheels & dw){
+		robot = &dw;
+	}
+
     std::string WebotsRobot::getName(){
-        return "HOLA";
+        return robot->getName();
     }
     
     double WebotsRobot::getTime(){
-        return 2.0;
+        return robot->getTime();
     }
 
     int WebotsRobot::getMode(){
-        return 0;
+        return robot->getMode();
     }
 
     bool WebotsRobot::getSynchronization(){
-        return true;
+        return robot->getSynchronization();
     }
     
     double WebotsRobot::getBasicTimeStep(){
-        return 2.0;
+        return robot->getBasicTimeStep();
     }
     
     ICamera & WebotsRobot::getCamera(std::string name){
 //        const_cast<webots::Camera>(
-        WebotsCamera * cam = new WebotsCamera(*new webots::Camera(name));
+        WebotsCamera * cam = new WebotsCamera(*robot->getCamera(name));
         return * cam;
     }
 
     IDistanceSensor & WebotsRobot::getDistanceSensor(std::string name){
-        WebotsDistanceSensor * ds = new WebotsDistanceSensor(NULL);
+        WebotsDistanceSensor * ds = new WebotsDistanceSensor(*robot->getDistanceSensor(name));
         return * ds;
     }
 
     IServo & WebotsRobot::getServo(std::string name){
-        WebotsServo * s = new WebotsServo(NULL);
+        WebotsServo * s = new WebotsServo(*robot->getServo(name));
         return * s;
     }
 
@@ -53,7 +60,7 @@ namespace webts {
     }
 
     IDifferentialWheels & WebotsRobot::getDifferentialWheels(std::string name){
-        WebotsDifferentialWheels * df = new WebotsDifferentialWheels(NULL);
+        WebotsDifferentialWheels * df = new WebotsDifferentialWheels((webots::DifferentialWheels&)*robot);
         return * df;
     }
 
@@ -64,6 +71,7 @@ namespace webts {
     }
 
 	void WebotsRobot::step(int ms){
+		robot->step(ms);
 		return ;
 	}
     

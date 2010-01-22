@@ -2,13 +2,17 @@
 #define robotapi_webts_WebotsRobot_h
 
 #include <robotapi/IRobot.h>
-
+#include <webots/DifferentialWheels.hpp>
 
 
 namespace robotapi {
 namespace webts {
 
-class WebotsRobot : public robotapi::IRobot {
+class WebotsRobot : virtual public robotapi::IRobot {
+
+public:
+
+	WebotsRobot(webots::DifferentialWheels & dw);
 
     std::string getName();
 

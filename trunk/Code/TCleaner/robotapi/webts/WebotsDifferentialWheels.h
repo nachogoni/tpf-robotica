@@ -8,7 +8,8 @@
 namespace robotapi {
 namespace webts {
 
-class WebotsDifferentialWheels : public robotapi::IDifferentialWheels , robotapi::webts::WebotsDevice  {
+//class WebotsDifferentialWheels : public robotapi::IDifferentialWheels , robotapi::webts::WebotsDevice  {
+class WebotsDifferentialWheels : public robotapi::IDifferentialWheels {
 
 public:
 
@@ -36,8 +37,12 @@ public:
 
     double getAverageConsumption();
 
-    // Change parameter to Webots API Distance Sensor
-    WebotsDifferentialWheels(WebotsDifferentialWheels * name);
+    std::string getName();
+
+    IWbDeviceTag & getTag();
+
+    // Change parameter to Webots API Differential Wheels
+    WebotsDifferentialWheels(webots::DifferentialWheels & wdw);
 
     };
 

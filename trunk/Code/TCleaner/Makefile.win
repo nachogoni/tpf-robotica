@@ -11,7 +11,7 @@ LIBS =  -L"C:/Dev-Cpp/lib" -L"C:/Archivos de programa/OpenCV/lib" -L"C:/Archivos
 INCS =  -I"C:/Dev-Cpp/include"  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Archivos de programa/OpenCV/cv/include"  -I"C:/Archivos de programa/OpenCV/cvaux/include"  -I"C:/Archivos de programa/OpenCV/ml/include"  -I"C:/Archivos de programa/OpenCV/otherlibs/highgui"  -I"C:/Archivos de programa/OpenCV/otherlibs/_graphics/include"  -I"C:/Archivos de programa/OpenCV/cxcore/include"  -I"C:/Archivos de programa/OpenCV/otherlibs/ffopencv"  -I"C:/projects/tpf-robotica/Code/TCleaner"  -I"C:/Archivos de programa/Webots/include/controller/cpp"  -I"C:/Archivos de programa/Webots/include/controller/cpp/webots" 
 CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include"  -I"C:/projects/tpf-robotica/Code/TCleaner"  -I"C:/Archivos de programa/Webots/include/controller/cpp"  -I"C:/Archivos de programa/Webots/include/controller/cpp/webots" 
 BIN  = Tcleaner.exe
-CXXFLAGS = $(CXXINCS) -LCppController   -L"C:\Archivos de Programa\OpenCV\lib" -lcxcore -lcv -lcvaux -lhighgui -lml -g3
+CXXFLAGS = $(CXXINCS)    -L"C:\Archivos de Programa\OpenCV\lib" -lcxcore -lcv -lcvaux -lhighgui -lml -g3
 CFLAGS = $(INCS)   -L"C:\Archivos de Programa\OpenCV\lib" -lcxcore -lcv -lcvaux -lhighgui -lml -g3
 RM = rm -f
 
