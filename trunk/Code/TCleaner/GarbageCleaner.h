@@ -1,7 +1,7 @@
 #ifndef GarbageCleaner_h
 #define GarbageCleaner_h
 
-#include <vector>
+#include <list>
 
 #include "behaviours/AbstractBehaviour.h"
 #include "robotapi/IRobot.h"
@@ -20,7 +20,10 @@ class GarbageCleaner {
     /**
      * @element-type AbstractBehaviour
      */
-    std::vector< behaviours::AbstractBehaviour* > myAbstractBehaviour;
+    std::list< behaviours::AbstractBehaviour* > myAbstractBehaviours;
+    
+ private:
+	void initializeBehaviours();
 };
 
 #endif // GarbageCleaner_h

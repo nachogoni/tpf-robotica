@@ -6,7 +6,21 @@
 
 namespace behaviours {
 
-class Wander : public AbstractBehaviour {};
+class Wander : public AbstractBehaviour {
+
+public:
+	Wander();
+
+    void sense();
+
+    std::string toString();
+    
+    void action();
+
+public:
+	std::string s;
+
+	};
 
 } /* End of namespace behaviours */
 
