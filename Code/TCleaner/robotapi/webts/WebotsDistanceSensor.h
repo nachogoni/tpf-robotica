@@ -2,8 +2,8 @@
 #define robotapi_webts_WebotsDistanceSensor_h
 
 #include <robotapi/IDistanceSensor.h>
-#include <robotapi/Webts/WebotsDevice.h>
-
+#include <robotapi/webts/WebotsDevice.h>
+#include <webots/DistanceSensor.hpp>
 
 namespace robotapi {
 namespace webts {
@@ -21,7 +21,7 @@ class WebotsDistanceSensor : public robotapi::IDistanceSensor, robotapi::webts::
     double getDistance();
 
     // Change parameter to Webots API Distance Sensor
-    WebotsDistanceSensor(WebotsDistanceSensor * name);
+    WebotsDistanceSensor( webots::DistanceSensor & ds);
 
     };
 
