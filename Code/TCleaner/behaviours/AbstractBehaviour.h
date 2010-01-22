@@ -17,6 +17,8 @@ class AbstractBehaviour {
 
     virtual std::string toString() = 0;
 
+	AbstractBehaviour();
+
  protected:
 
     virtual void action()  = 0;

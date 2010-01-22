@@ -9,6 +9,7 @@
 #include <robotapi/Webts/WebotsRobot.h>
 #include <robotapi/Webts/WebotsDifferentialWheels.h>
 #include <webots/DifferentialWheels.hpp>
+#include "GarbageCleaner.h"
 
 using namespace std;
 
@@ -18,6 +19,9 @@ int main(int argc, char *argv[])
     robotapi::webts::WebotsRobot * robot = new robotapi::webts::WebotsRobot(*wdw);
 	robotapi::webts::WebotsDifferentialWheels * rwdw = (robotapi::webts::WebotsDifferentialWheels *)&robot->getDifferentialWheels("HOLA");
 
+
+
+/*
 	cout << robot->getName();
 	int i = 0;
 	
@@ -27,6 +31,19 @@ int main(int argc, char *argv[])
 	while( i < 100 ){
 		robot->step(32);
 	}
+	*/
+	
+ /*
+	int i = 0;
+	while ( i < 10 ){
+       	behaviours::Wander * w = new behaviours::Wander();
+		cout << w->toString();
+		i++;
+	}
+ */
+
+	GarbageCleaner::GarbageCleaner * gc = new GarbageCleaner::GarbageCleaner(*robot);
+	gc->cleanGarbage();
     //robotapi::webts::WebotsDevice * device = new robotapi::webts::WebotsDevice;
     system("PAUSE");
     printf("HOLA");
