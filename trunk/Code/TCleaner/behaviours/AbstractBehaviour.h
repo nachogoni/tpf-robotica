@@ -25,6 +25,8 @@ class AbstractBehaviour {
 
     virtual bool isMyAction();
 
+	virtual void setStimulusPresent();
+
  public:
     int behaviour_id;
 

@@ -17,7 +17,7 @@ public:
     
     void action();
 
-public:
+private:
 	std::string s;
 
 	};
