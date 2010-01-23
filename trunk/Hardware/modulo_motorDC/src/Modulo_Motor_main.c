@@ -205,6 +205,8 @@ void main()
 	// Habilito las interrupciones
 	enable_interrupts(GLOBAL);
 	
+	//counts_expected = 30;
+	
 	// FOREVER
 	while(true)
 	{
@@ -239,7 +241,7 @@ void RS232()
 {
 	// Agrego al buffer el caracter
 	buffer[buffer_idx] = c = getc();
-	
+	/*
 	// Campo LARGO
 	if (buffer_idx == 5)
 	{
@@ -254,8 +256,8 @@ void RS232()
 	if (buffer_idx == MAX_BUFFER_SIZE)
 		buffer_idx = 0;
 	else
-		buffer_idx++;
-	
+		buffer_idx++;*/
+	putc(c);
 	return;
 }
 
