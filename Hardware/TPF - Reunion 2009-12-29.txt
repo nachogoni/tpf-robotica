@@ -24,17 +24,17 @@ Temas hablados:
     *Capacitor de 1000uF en la alimentacion de la logica (entrada del regulador) y en la alimentacion del L298
     *Capacitor de 0.1nF en la alimentacion de la logica (salida del regulador)
     *Reemplazo del jumper de programacion por una llave inversora RB6 a CLK o encoder del motor
-    -Darle footprints a los componentes y armar la placa -> tener en cuenta las medidas reales y los diametros de los pines
-    Pines con polaridad para el conector del motor y de programacion ICD2 - VER COMPONENTES REALES
+    *Darle footprints a los componentes y armar la placa -> tener en cuenta las medidas reales y los diametros de los pines
+    *Pines con polaridad para el conector del motor y de programacion ICD2 - VER COMPONENTES REALES
     *+12V Logic es +V Logic
-    Usar borneras enchufables para la alimentacion - VER COMPONENTES REALES
-    -Usar RJ9 (4P4C) para los pines de comunicacion serial - VER COMPONENTES REALES
+    *Usar borneras enchufables para la alimentacion - VER COMPONENTES REALES
+    *Usar RJ9 (4P4C) para los pines de comunicacion serial - VER COMPONENTES REALES
     *El promedio esta mal hecho :P Usar: (valor acumulado, promedio, #muestras) o un consumo semi-instantaneo para informar.
     *Arreglar el bug de cuentas para frenar "marcha atras"
     Lado del motor (IZQ o DER) por firmware -> usa algun pin libre?
     Mejorar la velocidad de respuesta y hacer que el incremento de duty sea menor a 5
-    COMPRAR COMPONENTES QUE FALTEN PARA VERIFICAR LOS FOOTPRINTS
-    RUEDAS
+    *COMPRAR COMPONENTES QUE FALTEN PARA VERIFICAR LOS FOOTPRINTS
+    -RUEDAS
 
 --Servos-- (http://www.imagesco.com/articles/picservo/04.html)
     Angulo del rotor en base al ancho del pulso de la entrada
@@ -58,7 +58,7 @@ Temas hablados:
     Uso de un pulsador que se presione a cierto nivel de basura para simplificar la deteccion (?)
     IDEAS (?)
 
---Medicion de las Baterias--
+--Medicion de las Baterias-- (http://uk.farnell.com/current-sensors?in_dim_search=true)
     Se puede usar un ADC para medir la tension en la o las baterias -> bastante malo, pero por ahora creo que es lo que va a ser
     Carga de baterias
     CUAL??
