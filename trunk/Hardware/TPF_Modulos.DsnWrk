@@ -1,0 +1,6 @@
+[ProjectGroup]
+Version=1.0
+[Project1]
+ProjectPath=modulo_motorDC\schema - v4\Modulo_MotorDC.PrjPCB
+[Project2]
+ProjectPath=modulo_generico\schema\Modulo_Generico.PrjPCB
