@@ -1,0 +1,30 @@
+# Project: proto_serial
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = 
+OBJ  = serial.o $(RES)
+LINKOBJ  = serial.o $(RES)
+LIBS =   
+INCS = 
+CXXINCS = 
+BIN  = proto_serial.exe
+CXXFLAGS = $(CXXINCS)  
+CFLAGS = $(INCS)  
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before proto_serial.exe all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o "proto_serial.exe" $(LIBS)
+
+serial.o: serial.cpp
+	$(CPP) -c serial.cpp -o serial.o $(CXXFLAGS)

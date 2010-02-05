@@ -321,15 +321,17 @@ void command(char * cmd, int size)
 /* Envia los datos por el pto serial */
 void send(char * response, int size)
 {
-	int i;
+	int i, checksum = 0;
 	
 	for (i = 0; i < size; i++)
 	{
-		// TODO: Calcular el crc
+		// Calcular el crc
+		checksum ^= response[i];
 		putc(response[i]);
-	}	
+	}
 	
-	// TODO: Enviar el CRC
+	// Enviar el CRC
+	putc(checksum);
 	
 	return;	
 }	
