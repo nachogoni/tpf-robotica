@@ -36,10 +36,10 @@
 #bit led2=porta.4
 // PWMs
 #bit pwm1=porta.2
-#bit pwm2=porta.1 // TODO: select another pin!
-#bit pwm3=porta.1 // TODO: select another pin!
-#bit pwm4=porta.1 // TODO: select another pin!
-#bit pwm5=porta.1 // TODO: select another pin!
+#bit pwm2=porta.2 // TODO: select another pin!
+#bit pwm3=porta.2 // TODO: select another pin!
+#bit pwm4=porta.2 // TODO: select another pin!
+#bit pwm5=porta.2 // TODO: select another pin!
 // MAX232
 #bit tx=portb.5
 #bit rx=portb.2
@@ -56,90 +56,106 @@ int buffer_idx = 0;
 char resp[30];
 int resp_idx = 0;
 
-// Valor de duty del PWM
-signed long duty = 0;
-
-signed long value = 0;
-signed long dutyv = 0;
-int change = 1;
-
 short rs232c = 0;
 char c = 0;
 int command_size = 6;
 
+
+
+// Software PWM
+long pwm1_t = 100;
+long pwm2_t = 200;
+long pwm3_t = 300;
+long pwm4_t = 400;
+long pwm5_t = 500;
+
+long pwm1_tt = 100;
+long pwm2_tt = 200;
+long pwm3_tt = 300;
+long pwm4_tt = 400;
+long pwm5_tt = 500;
+
+//
+#define PULSE_MAX	1000
+#define PWM_MAX		10000
+
 /* Examina y ejecula el comando */
 void command(char * cmd, int size);
-/* Setea el PWM */
-void SetPWM(signed long pwm);
 /* Envia los datos por el pto serial */
 void send(char * response, int size);
 
-// Interrupcion del Timer0
-#INT_RTCC
-void Timer0_INT()
-{
-	// Seteo el valor para que interrumpa cada 6.25ms
-    set_timer0(250);
-
-	pwm1++;
-	
-	return;
-}
-
 void main()
 {
+	long tmr1;
+	
 	// Control de Velocidad comandado por RS232
 
 	set_tris_a(0b11100011);  // TODO: check!
 	set_tris_b(0b11100110);
 	
-	// ***PWM***
-	setup_ccp1(CCP_PWM);
-	// Seteo al PWM con f: 4.88 kHz, duty = 0
-	set_pwm1_duty(0);
-	setup_timer_2(T2_DIV_BY_16, 255, 1);
-
-	// ***TIMER0 - TIME BASE***
-	// Seteo el Timer0 como clock -> dt = 6.25ms
-	setup_timer_0(RTCC_INTERNAL | RTCC_DIV_1);
-	set_timer0(250);
-
-	// Interrupcion sobre el Timer0
-	//enable_interrupts(INT_TIMER1);
+	// ***TIMER1 - ENCODER COUNTER***
+	// Seteo el Timer1 como fuente externa y sin divisor
+	setup_timer_1(T1_INTERNAL | T1_DIV_BY_1);
+	
+	// Interrupciones
 	enable_interrupts(INT_RDA);
 
 	// Habilito las interrupciones
 	enable_interrupts(GLOBAL);
 	
-	setPWM(0);
-	
-	dutyv = 168;
-	
+	// Inicio del periodo
+	set_timer1(0);
+	// Activo todos los servos
+	pwm1 = 1;
+	pwm2 = 1;
+	pwm3 = 1;
+	pwm4 = 1;
+	pwm5 = 1;
+
 	// FOREVER
 	while(1)
-	{
-	
-	if (change-- > 0)
-	{
-		// PWM x software
-		delay_us(5);
+	{	
+		// Software PWM
 
-		if (value == 0) {
+		// Tomo el tiempo
+		tmr1 = get_timer1();
+		
+		// Es hora de reiniciar el pulso?
+		if (tmr1 >= PWM_MAX)
+		{
+			// Inicio del periodo
+			set_timer1(0);
+			// Activo todos los servos
 			pwm1 = 1;
-		}
-		
-		if (value >= 40 && value == dutyv) {
+			pwm2 = 1;
+			pwm3 = 1;
+			pwm4 = 1;
+			pwm5 = 1;
+		} else
+		// Llego al final del pulso?
+		if (tmr1 >= PULSE_MAX)
+		{
 			pwm1 = 0;
-//		} else if (value == 250) {
-//			pwm1 = 0;
-		} else if (value >= 1710) {
-//		} else if (value == 15010) {
-			value = -1;
-			change = 0;
+			pwm2 = 0;
+			pwm3 = 0;
+			pwm4 = 0;
+			pwm5 = 0;
+		} else {
+			// Tomo el tiempo
+			tmr1 = get_timer1();
+
+			// Es tiempo de desactivar el PWM?
+			if (tmr1 >= pwm1_t)
+				pwm1 = 0;
+			if (tmr1 >= pwm2_t)
+				pwm2 = 0;
+			if (tmr1 >= pwm3_t)
+				pwm3 = 0;
+			if (tmr1 >= pwm4_t)
+				pwm4 = 0;
+			if (tmr1 >= pwm5_t)
+				pwm5 = 0;
 		}
-		
-		value++;
-	}	
 
 	        // Mini consola
 	        if (rs232c == 1)
@@ -192,12 +208,12 @@ void RS232()
 void command(char * cmd, int size)
 {
         // TODO: Crear protocolo
-        if (cmd[0] == '+')
+        /*if (cmd[0] == '+')
         {
 	        duty++;
 	        if (duty > 1023)
 	        	duty = 1023;
-			setPWM(duty);
+
 			printf("\rDuty a: %ld", duty);
         } else 
         if (cmd[0] == '-')
@@ -205,7 +221,7 @@ void command(char * cmd, int size)
 	        duty--;
 	        if (duty < 0)
 	        	duty = 0;
-			setPWM(duty);
+
 			printf("\rDuty a: %ld", duty);
         } else 
         if (cmd[0] == 'd')
@@ -215,13 +231,11 @@ void command(char * cmd, int size)
 	        	duty = 0;
 	        if (duty > 1023)
 	        	duty = 1023;
-			setPWM(duty);
+
 			printf("\rDuty a: %ld", duty);
-        }
+        }*/
         
-        change = 10;
-        dutyv = duty;
-        
+       
         return; 
 }  	
 
@@ -242,18 +256,3 @@ void send(char * response, int size)
 	
 	return;	
 }	
-
-/* Setea el duty del PWM segun el valor. Positivo o negativo determina el sentido */
-void setPWM(signed long pwm)
-{
-  long pset;
- 
-  pset = (abs(pwm));
-
-  if (pset > 1023L)
-    pset = 1023;
-
-  set_pwm1_duty(pset);
-  
-  return;
-}
