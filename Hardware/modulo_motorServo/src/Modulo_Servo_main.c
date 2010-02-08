@@ -1,4 +1,5 @@
-#define VERSION "0.1"
+//CCS PCM V4.023 COMPILER
+#define VERSION "1.0"
 
 /* Modulo Motor - main.c
  * PIC16F88 - MAX232 - SERVO
@@ -56,10 +57,9 @@ int buffer_idx = 0;
 char resp[30];
 int resp_idx = 0;
 
-short rs232c = 0;
-char c = 0;
+short check_comm = 0;
 int command_size = 6;
-
+int read_idx = 0;
 
 
 // Software PWM
@@ -77,16 +77,28 @@ long pwm5_tt = 500;
 
 //
 #define PULSE_MAX	1000
-#define PWM_MAX		10000
+#define PWM_MAX		18000
 
 /* Examina y ejecula el comando */
 void command(char * cmd, int size);
 /* Envia los datos por el pto serial */
 void send(char * response, int size);
 
+// Interrupcion del RS232
+#INT_RDA
+void RS232()
+{
+	// Agrego al buffer el caracter
+	buffer[buffer_idx++] = getc();
+	if (buffer_idx = MAX_BUFFER_SIZE)
+		buffer_idx = 0;
+	return;
+}
+
 void main()
 {
 	long tmr1;
+	int i;
 	
 	// Control de Velocidad comandado por RS232
 
@@ -123,6 +135,8 @@ void main()
 		// Es hora de reiniciar el pulso?
 		if (tmr1 >= PWM_MAX)
 		{
+			// Detiene el analisis de comandos
+			check_comm = 0;
 			// Inicio del periodo
 			set_timer1(0);
 			// Activo todos los servos
@@ -135,11 +149,14 @@ void main()
 		// Llego al final del pulso?
 		if (tmr1 >= PULSE_MAX)
 		{
+			// Pone las salidas a 0
 			pwm1 = 0;
 			pwm2 = 0;
 			pwm3 = 0;
 			pwm4 = 0;
 			pwm5 = 0;
+			// Analiza si hay comandos para ser atendidos
+			check_comm = 1;
 		} else {
 			// Tomo el tiempo
 			tmr1 = get_timer1();
@@ -157,50 +174,19 @@ void main()
 				pwm5 = 0;
 		}
 
-	        // Mini consola
-	        if (rs232c == 1)
-	        {
-	                rs232c = 0;
-	                switch (c)
-	                {
-	                        case 0:
-	                                break;
-	                        case 13:
-	                                // Ingreso un comando...
-	                                buffer[buffer_idx] = '\0';
-	                                command(buffer, 0);
-	                                buffer_idx = 0;
-	                                break;
-	                        case 8:
-	                                // Backspace
-	                                if (buffer_idx > 0)
-	                                        buffer_idx--;
-	                                break;
-	                        case '*':
-	                                // Pido el valor del Timer0
-	                                printf("\n\rTimer0: %d\n\r", get_timer0());
-	                                break;
-	                        default:
-	                                // Otro caracter
-	                                if (buffer_idx <= MAX_BUFFER_SIZE)
-	                                        buffer[buffer_idx++] = c;
-	                                break;                          
-	                }
-	        }
+        // Mini consola
+        if (check_comm == 1)
+        {
+	        printf("\r\nAnalizando...");
+	        // Analizo si hay un comando
+			for (i = (buffer_idx - read_idx); i > 0; i--)
+				putc(buffer[read_idx++]);
+			buffer_idx = 0;
+			read_idx = 0;
+        }
 	}
 
 
-	return;
-}
-
-// Interrupcion del RS232
-#INT_RDA
-void RS232()
-{
-	// Agrego al buffer el caracter
-	c = getc();
-	rs232c = 1;
-	putc(c);
 	return;
 }
 
