@@ -62,22 +62,17 @@ int command_size = 6;
 int read_idx = 0;
 
 
-// Software PWM
-long pwm1_t = 100;
-long pwm2_t = 200;
-long pwm3_t = 300;
-long pwm4_t = 400;
-long pwm5_t = 500;
+// Software PWM - Minimo 1750 (~0.71ms)
+long pwm1_t = 1750;
+long pwm2_t = 1750;
+long pwm3_t = 1750;
+long pwm4_t = 1750;
+long pwm5_t = 1750;
 
-long pwm1_tt = 100;
-long pwm2_tt = 200;
-long pwm3_tt = 300;
-long pwm4_tt = 400;
-long pwm5_tt = 500;
-
-//
-#define PULSE_MAX	1000
-#define PWM_MAX		18000
+// Tiempo maximo que puede durar un pulso - Maximo 6755(~2.71ms)
+#define PULSE_MAX	6755
+// Tiempo entre pulsos (~25ms -> 23ms fijos de espera)
+#define PWM_MAX		62500
 
 /* Examina y ejecula el comando */
 void command(char * cmd, int size);
@@ -90,7 +85,7 @@ void RS232()
 {
 	// Agrego al buffer el caracter
 	buffer[buffer_idx++] = getc();
-	if (buffer_idx = MAX_BUFFER_SIZE)
+	if (buffer_idx == MAX_BUFFER_SIZE)
 		buffer_idx = 0;
 	return;
 }
@@ -99,6 +94,8 @@ void main()
 {
 	long tmr1;
 	int i;
+	int c = 0;
+	int s = 0;
 	
 	// Control de Velocidad comandado por RS232
 
@@ -107,7 +104,7 @@ void main()
 	
 	// ***TIMER1 - ENCODER COUNTER***
 	// Seteo el Timer1 como fuente externa y sin divisor
-	setup_timer_1(T1_INTERNAL | T1_DIV_BY_1);
+	setup_timer_1(T1_INTERNAL | T1_DIV_BY_2);
 	
 	// Interrupciones
 	enable_interrupts(INT_RDA);
@@ -145,6 +142,29 @@ void main()
 			pwm3 = 1;
 			pwm4 = 1;
 			pwm5 = 1;
+			
+			if (s == 1 && c++ == 60)
+			{
+				pwm1_t -= 139;//28;
+				c = 0;
+			}
+			if (s == 0 && c++ == 60)
+			{
+				pwm1_t += 139;//28;
+				c = 0;
+			}
+			if (pwm1_t > 6750)
+			{
+				s = 1;
+			}
+			if (pwm1_t < 1750)
+			{
+				s = 0;
+			}
+			
+
+
+			
 		} else
 		// Llego al final del pulso?
 		if (tmr1 >= PULSE_MAX)
@@ -165,24 +185,27 @@ void main()
 			if (tmr1 >= pwm1_t)
 				pwm1 = 0;
 			if (tmr1 >= pwm2_t)
-				pwm2 = 0;
+				//pwm2 = 0;
+				pwm2_t = pwm2_t;
 			if (tmr1 >= pwm3_t)
-				pwm3 = 0;
+				//pwm3 = 0;
+				pwm3_t = pwm3_t;
 			if (tmr1 >= pwm4_t)
-				pwm4 = 0;
+				//pwm4 = 0;
+				pwm4_t = pwm4_t;
 			if (tmr1 >= pwm5_t)
-				pwm5 = 0;
+				//pwm5 = 0;
+				pwm5_t = pwm5_t;
 		}
 
         // Mini consola
         if (check_comm == 1)
         {
-	        printf("\r\nAnalizando...");
+	        //printf("\r\nAnalizando...");
 	        // Analizo si hay un comando
 			for (i = (buffer_idx - read_idx); i > 0; i--)
 				putc(buffer[read_idx++]);
-			buffer_idx = 0;
-			read_idx = 0;
+			read_idx = buffer_idx;
         }
 	}
 
