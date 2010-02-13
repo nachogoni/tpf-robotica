@@ -24,11 +24,15 @@ int main(int argc, char *argv[])
 	char error [] = {0x00, 'O', 'o', 'o', 'p', 's', '!', '!', '!', '!'};
 	p->setError();
 	p->addData(error,10);
+	p->calculateCRC();
 	if ( p->isError() ){
 		std::string s = p->getErrorString();
 		cout << s;
 	}
-	
+	if ( p->checkCRC() )
+	    printf("CRC OK\n");
+	else
+		printf("CRC FAILED\n");
 	getchar();
     return EXIT_SUCCESS;
 }
