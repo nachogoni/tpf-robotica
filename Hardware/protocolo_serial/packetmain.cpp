@@ -1,13 +1,13 @@
 #include <cstdlib>
 #include <iostream>
 #include "packet.h"
-#include "baseprotocol.h"
+#include "BasePacket.h"
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
-	BaseProtocol * p = new BaseProtocol();
+	BasePacket * p = new BasePacket();
 	p->calculateCRC();
 	p->setCommand(0x2D);
 	if ( p->checkCRC() )

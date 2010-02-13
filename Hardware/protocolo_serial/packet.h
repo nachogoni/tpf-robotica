@@ -43,7 +43,7 @@ class Packet
 		char getDataLength();
 		void addData(char * data,char length);
 	private:
-		char packet [257];
+		char packet [MAX_PACKET_SIZE];
 		char actualLength;
 		char dataIdx;
 		void setGroup(int field, char group);
