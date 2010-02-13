@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
 	    printf("CRC OK\n");
 	else
 		printf("CRC FAILED\n");
-    system("PAUSE");
+
+	getchar();
     return EXIT_SUCCESS;
 }
