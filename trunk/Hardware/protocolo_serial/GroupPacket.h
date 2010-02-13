@@ -3,7 +3,7 @@
 #ifndef GROUPPACKET_H
 #define GROUPPACKET_H
 
-#include "BasePacket.h" // inheriting class's header file
+#include "packet.h" // inheriting class's header file
 #include <string>
 
 #define BP_INIT 0x01
@@ -14,15 +14,23 @@
 /**
  * No description
  */
-class GroupPacket : public BasePacket
+class GroupPacket : public Packet
 {
 	public:
 		// class constructor
 		GroupPacket(char groupid);
 		// class destructor
 		~GroupPacket();
-	private:
+		void setInit();
+		void setReset();
+		void setPing();
+		void setError();
+		bool isError();
+		char getErrorCode();
+		std::string getErrorString();
+	protected:
 		char groupid;
 };
 
 #endif // GROUPPACKET_H
+

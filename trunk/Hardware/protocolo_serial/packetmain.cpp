@@ -2,6 +2,8 @@
 #include <iostream>
 #include "packet.h"
 #include "BasePacket.h"
+#include "DCMotorPacket.h"
+#include "ServoMotorPacket.h"
 
 using namespace std;
 
@@ -33,6 +35,10 @@ int main(int argc, char *argv[])
 	    printf("CRC OK\n");
 	else
 		printf("CRC FAILED\n");
+		
+	DCMotorPacket * dcm = new DCMotorPacket();
+	ServoMotorPacket * smp = new ServoMotorPacket();
 	getchar();
+	
     return EXIT_SUCCESS;
 }

@@ -14,3 +14,39 @@ GroupPacket::~GroupPacket()
 {
 	// insert your code here
 }
+
+void GroupPacket::setInit(){
+	this->setCommand(BP_INIT);
+}
+
+void GroupPacket::setReset(){
+   	this->setCommand(BP_RESET);
+}
+
+void GroupPacket::setPing(){
+	this->setCommand(BP_PING);
+}
+
+void GroupPacket::setError(){
+	this->setCommand(BP_ERROR);
+}
+
+bool GroupPacket::isError(){
+	return this->getCommand() == BP_ERROR;
+}
+
+char GroupPacket::getErrorCode(){
+	char * data = this->getData();
+	return data[0];
+}
+
+std::string GroupPacket::getErrorString(){
+   	char * data = this->getData();
+	char length = this->getDataLength();
+	char i;
+	std::string * out = new std::string();
+
+	for ( i = 1 ; i < length ; i++ )
+		out->append(1,data[i]);
+	return *out;
+}
