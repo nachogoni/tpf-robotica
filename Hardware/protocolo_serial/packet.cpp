@@ -6,6 +6,7 @@
 Packet::Packet()
 {
 	this->actualLength = MIN_PACKET_SIZE;
+	this->dataIdx = DATA_FIELD;
 	// insert your code here
 }
 
@@ -119,5 +120,24 @@ char Packet::getCommand(){
 }
 
 bool Packet::isACK(){
-	return this->actualLength == MIN_PACKET_SIZE;
+	return this->getDataLength() == 0;
+}
+
+char * Packet::getData(){
+	return &(this->packet[DATA_FIELD]);
+}
+
+char Packet::getDataLength(){
+	return this->actualLength - MIN_PACKET_SIZE;
+}
+
+void Packet::addData(char * data, char length){
+	if ( length < 1 )
+	    return;
+
+	char i;
+	for( i = 0 ; i < length ; i++ )
+	    packet[this->dataIdx+i] = data[i];
+
+	this->actualLength += length;
 }
