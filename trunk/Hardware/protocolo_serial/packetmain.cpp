@@ -1,12 +1,13 @@
 #include <cstdlib>
 #include <iostream>
 #include "packet.h"
+#include "baseprotocol.h"
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
-	Packet * p = new Packet();
+	BaseProtocol * p = new BaseProtocol();
 	p->calculateCRC();
 	p->setCommand(0x2D);
 	if ( p->checkCRC() )
@@ -20,6 +21,14 @@ int main(int argc, char *argv[])
 	else
 		printf("CRC FAILED\n");
 
+	char error [] = {0x00, 'O', 'o', 'o', 'p', 's', '!', '!', '!', '!'};
+	p->setError();
+	p->addData(error,10);
+	if ( p->isError() ){
+		std::string s = p->getErrorString();
+		cout << s;
+	}
+	
 	getchar();
     return EXIT_SUCCESS;
 }

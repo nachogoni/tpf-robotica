@@ -10,6 +10,7 @@
 #define ORIGIN_FIELD 1
 #define DESTINY_FIELD 2
 #define COMMAND_FIELD 3
+#define DATA_FIELD 4
 
 /**
  * No description
@@ -38,9 +39,13 @@ class Packet
 		void setCommand(char command);
 		char getCommand();
 		bool isACK();
+		char * getData();
+		char getDataLength();
+		void addData(char * data,char length);
 	private:
 		char packet [257];
 		char actualLength;
+		char dataIdx;
 		void setGroup(int field, char group);
 		void setId(int field, char id);
 		char getGroup(int field);
