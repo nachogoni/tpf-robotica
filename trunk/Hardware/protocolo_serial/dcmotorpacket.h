@@ -2,9 +2,24 @@
 
 #ifndef DCMOTORPACKET_H
 #define DCMOTORPACKET_H
+#include "GroupPacket.h" // inheriting class's header file
 
 #define DCMOTORPACKET_ID 0x01
-#include "GroupPacket.h" // inheriting class's header file
+
+#define CMD_SET_DIRECTION 0x40
+#define DIR_CLOCKWISE 0x00
+#define DIR_COUNTERCLOCKWISE 0x01
+
+#define CMD_SET_DC_SPEED 0x41
+#define CMD_SET_ENCODER 0x42
+#define CMD_GET_ENCODER 0x43
+#define CMD_RESET_ENCODER 0x44
+#define CMD_SET_ENCODER_T_S 0x45
+#define CMD_GET_ENCODER_T_S 0x46
+#define CMD_DONT_STOP 0x47
+#define CMD_MOTOR_CONSUMPTION 0x48
+#define CMD_STRESS_ALARM 0x49
+
 
 /**
  * No description
@@ -16,6 +31,25 @@ class DCMotorPacket : public GroupPacket
 		DCMotorPacket();
 		// class destructor
 		~DCMotorPacket();
+		
+		// Commands to be sent
+		void setDCSpeed(bool left, short speed);
+		void setDirection(bool left);
+		void setEncoder(short counts);
+		void getEncoder();
+		void resetEncoder();
+		void setEncoderToStop(short counts);
+		void getEncoderToStop();
+		void setNonStop();
+		void getMotorConsumption();
+
+		// Get data from package
+		bool isMotorAlarm();
+		short getEncoderValues();
+		short getEncoderValuesToStop();
+		int getMotorConsumptionValue();
+	private:
+		void setDirection(char dir);
 };
 
 #endif // DCMOTORPACKET_H

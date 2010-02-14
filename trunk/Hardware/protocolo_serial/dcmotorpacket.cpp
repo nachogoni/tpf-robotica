@@ -6,11 +6,76 @@
 DCMotorPacket::DCMotorPacket() : GroupPacket(DCMOTORPACKET_ID)
 {
 	// insert your code here
-	printf("%d\n",this->groupid);
 }
 
 // class destructor
 DCMotorPacket::~DCMotorPacket()
 {
 	// insert your code here
+}
+
+void DCMotorPacket::setDirection(bool left){
+	if ( left )
+	    this->setDirection((char)DIR_CLOCKWISE);
+	else
+	    this->setDirection((char)DIR_COUNTERCLOCKWISE);
+}
+
+void DCMotorPacket::setDirection(char dir){
+	this->setCommand(CMD_SET_DIRECTION);
+	this->addData(dir);
+}
+
+void DCMotorPacket::setDCSpeed(bool left, short speed){
+	this->setDirection(left);
+	this->addData(speed);
+	this->setCommand(CMD_SET_DC_SPEED);
+}
+
+void DCMotorPacket::setEncoder(short counts){
+	this->addData(counts);
+	this->setCommand(CMD_SET_ENCODER);
+}
+
+void DCMotorPacket::getEncoder(){
+	this->setCommand(CMD_GET_ENCODER);
+}
+
+void DCMotorPacket::resetEncoder(){
+	this->setCommand(CMD_RESET_ENCODER);
+}
+
+void DCMotorPacket::setEncoderToStop(short counts){
+	this->addData(counts);
+	this->setCommand(CMD_SET_ENCODER_T_S);
+}
+
+void DCMotorPacket::getEncoderToStop(){
+	this->setCommand(CMD_GET_ENCODER_T_S);
+}
+
+void DCMotorPacket::setNonStop(){
+	this->setCommand(CMD_DONT_STOP);
+}
+
+void DCMotorPacket::getMotorConsumption(){
+	this->setCommand(CMD_MOTOR_CONSUMPTION);
+}
+
+bool DCMotorPacket::isMotorAlarm(){
+	return this->getCommand() == CMD_STRESS_ALARM;
+}
+
+short DCMotorPacket::getEncoderValues(){
+	this->resetDataIdx();
+	return this->getShortData();
+}
+
+short DCMotorPacket::getEncoderValuesToStop(){
+	return this->getEncoderValues();
+}
+
+int DCMotorPacket::getMotorConsumptionValue(){
+	this->resetDataIdx();
+	return this->getIntData();
 }

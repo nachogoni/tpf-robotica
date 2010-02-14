@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "packet.h"
-#include "BasePacket.h"
+#include "GroupPacket.h"
 #include "DCMotorPacket.h"
 #include "ServoMotorPacket.h"
 
@@ -9,7 +9,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-	BasePacket * p = new BasePacket();
+	GroupPacket * p = new GroupPacket(0x09);
 	p->calculateCRC();
 	p->setCommand(0x2D);
 	if ( p->checkCRC() )
@@ -36,8 +36,9 @@ int main(int argc, char *argv[])
 	else
 		printf("CRC FAILED\n");
 		
-	DCMotorPacket * dcm = new DCMotorPacket();
 	ServoMotorPacket * smp = new ServoMotorPacket();
+	DCMotorPacket * dcm = new DCMotorPacket();
+
 	getchar();
 	
     return EXIT_SUCCESS;

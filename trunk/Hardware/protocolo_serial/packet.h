@@ -7,8 +7,8 @@
 #define MAX_PACKET_SIZE 257
 #define MIN_PACKET_SIZE 5
 
-#define ORIGIN_FIELD 1
-#define DESTINY_FIELD 2
+#define DESTINY_FIELD 1
+#define ORIGIN_FIELD 2
 #define COMMAND_FIELD 3
 #define DATA_FIELD 4
 
@@ -41,11 +41,17 @@ class Packet
 		bool isACK();
 		char * getData();
 		char getDataLength();
+		short getShortData();
+		int getIntData();
 		void addData(char * data,char length);
+		void addData(char data);
+		void addData(short data);
+	protected:
+		void resetDataIdx();
 	private:
 		char packet [MAX_PACKET_SIZE];
 		char actualLength;
-		char dataIdx;
+		int dataIdx;
 		void setGroup(int field, char group);
 		void setId(int field, char id);
 		char getGroup(int field);
