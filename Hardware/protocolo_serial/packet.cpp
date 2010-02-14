@@ -156,6 +156,10 @@ void Packet::resetDataIdx(){
 	this->dataIdx = DATA_FIELD;
 }
 
+char Packet::getCharData(){
+    return packet[this->dataIdx++];
+}
+
 short Packet::getShortData(){
     short up = packet[this->dataIdx++] & 0x00FF;
     short down = packet[this->dataIdx++] & 0x00FF;

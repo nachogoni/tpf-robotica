@@ -3,8 +3,20 @@
 #ifndef SERVOMOTORPACKET_H
 #define SERVOMOTORPACKET_H
 
-#define SERVOMOTORPACKET_ID 0x02
 #include "GroupPacket.h" // inheriting class's header file
+
+#define SERVOMOTORPACKET_ID 0x02
+
+#define CMD_SET_POSITION 0x40
+#define CMD_SET_ALL_POSITIONS 0x41
+#define CMD_GET_POSITION 0x42
+#define CMD_GET_ALL_POSITIONS 0x43
+#define CMD_SET_SPEED 0x44
+#define CMD_SET_ALL_SPEEDS 0x45
+#define CMD_GET_SPEED 0x46
+#define CMD_GET_ALL_SPEEDS 0x47
+#define CMD_FREE_SERVO 0x48
+#define CMD_FREE_ALL_SERVOS 0x49
 
 /**
  * No description
@@ -16,6 +28,24 @@ class ServoMotorPacket : public GroupPacket
 		ServoMotorPacket();
 		// class destructor
 		~ServoMotorPacket();
+
+		// Commands to be sent
+		void setPosition(char servoId, char angle);
+		void setPosition(char * angle, int qty);
+		void getPosition(char servoId);
+		void getPosition();
+		void setSpeed(char servoId, char dps);
+		void setSpeed(char * dps, int qty);
+		void getSpeed(char servoId);
+		void getSpeed();
+		void freeServo(char servoId);
+		void freeAllServos();
+		
+		// Get data from package
+		char getPositionValue();
+		char * getPositionValues();
+		char getSpeedValue();
+		char * getSpeedValues();
 };
 
 #endif // SERVOMOTORPACKET_H

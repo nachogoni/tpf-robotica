@@ -41,6 +41,7 @@ class Packet
 		bool isACK();
 		char * getData();
 		char getDataLength();
+		char getCharData();
 		short getShortData();
 		int getIntData();
 		void addData(char * data,char length);

@@ -47,7 +47,7 @@ class DCMotorPacket : public GroupPacket
 		bool isMotorAlarm();
 		short getEncoderValues();
 		short getEncoderValuesToStop();
-		int getMotorConsumptionValue();
+		short getMotorConsumptionValue();
 	private:
 		void setDirection(char dir);
 };

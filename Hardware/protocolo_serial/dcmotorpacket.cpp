@@ -75,7 +75,7 @@ short DCMotorPacket::getEncoderValuesToStop(){
 	return this->getEncoderValues();
 }
 
-int DCMotorPacket::getMotorConsumptionValue(){
+short DCMotorPacket::getMotorConsumptionValue(){
 	this->resetDataIdx();
 	return this->getIntData();
 }
