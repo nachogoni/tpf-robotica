@@ -6,7 +6,7 @@
 Packet::Packet()
 {
 	this->actualLength = MIN_PACKET_SIZE;
-	this->dataIdx = DATA_FIELD;
+	this->resetDataIdx();
 	// insert your code here
 }
 
@@ -137,7 +137,39 @@ void Packet::addData(char * data, char length){
 
 	char i;
 	for( i = 0 ; i < length ; i++ )
-	    packet[this->dataIdx+i] = data[i];
+	    this->addData(data[i]);
 
-	this->actualLength += length;
+}
+
+void Packet::addData(short data){
+	this->addData((char)(data & 0xFF00));
+	this->addData((char)(data & 0x00FF));
+}
+
+void Packet::addData(char data){
+    packet[this->dataIdx] = data;
+    this->dataIdx++;
+	this->actualLength += 1;
+}
+
+void Packet::resetDataIdx(){
+	this->dataIdx = DATA_FIELD;
+}
+
+short Packet::getShortData(){
+    short up = packet[this->dataIdx++] & 0x00FF;
+    short down = packet[this->dataIdx++] & 0x00FF;
+    short ret = 0xFFFF;
+    ret &= ( down << 8 );
+    ret &= up;
+    return ret;
+}
+
+int Packet::getIntData(){
+    int up = packet[this->dataIdx++] & 0x00FF;
+    int down = packet[this->dataIdx++] & 0x00FF;
+    int ret = 0xFFFF;
+    ret &= ( up << 8 );
+    ret &= down;
+    return ret;
 }
