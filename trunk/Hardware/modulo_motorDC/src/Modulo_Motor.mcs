@@ -28,6 +28,9 @@ ToolArgsString=
 TraceCmdString=
 DebugOptions=
 [File002]
+Location=C:\TPF\Hardware\modulo_motorDC\src\Modulo_Motor_main.o
+Folder=Intermediary
+[File003]
 Location=Modulo_Motor_main.HEX
 Folder=Output
 DeviceName=
@@ -40,7 +43,7 @@ SuiteArgsString=
 ToolArgsString=
 TraceCmdString=
 DebugOptions=
-[File003]
+[File004]
 Location=Modulo_Motor_main.LST
 Folder=Output
 DeviceName=
@@ -53,7 +56,7 @@ SuiteArgsString=
 ToolArgsString=
 TraceCmdString=
 DebugOptions=
-[File004]
+[File005]
 Location=Modulo_Motor_main.PJT
 Folder=Output
 DeviceName=
@@ -66,7 +69,7 @@ SuiteArgsString=
 ToolArgsString=
 TraceCmdString=
 DebugOptions=
-[File005]
+[File006]
 Location=Modulo_Motor_main.ERR
 Folder=Output
 DeviceName=
@@ -79,7 +82,7 @@ SuiteArgsString=
 ToolArgsString=
 TraceCmdString=
 DebugOptions=
-[File006]
+[File007]
 Location=Modulo_Motor_main.COF
 Folder=Output
 DeviceName=

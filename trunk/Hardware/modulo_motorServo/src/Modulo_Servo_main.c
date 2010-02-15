@@ -20,8 +20,10 @@
  */
 
 #include <16F88.h>
+#DEVICE ADC = 10
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #fuses HS,NOWDT,NOPROTECT,NOLVP
 #use delay (clock=20000000)
 
@@ -49,7 +51,7 @@
 #define CARD_ID			0x01
 
 // Buffer del pto serial
-#define MAX_BUFFER_SIZE	50
+#define MAX_BUFFER_SIZE	46
 char buffer[MAX_BUFFER_SIZE];
 int buffer_idx = 0;
 
@@ -82,20 +84,33 @@ void send(char * response, int size);
 // Interrupcion del RS232
 #INT_RDA
 void RS232()
-{
+{			led1=1;
 	// Agrego al buffer el caracter
 	buffer[buffer_idx++] = getc();
 	if (buffer_idx == MAX_BUFFER_SIZE)
 		buffer_idx = 0;
+					led1=0;
 	return;
 }
 
 void main()
 {
-	long tmr1;
+	long tmr1 = 1;
 	int i;
 	int c = 0;
 	int s = 0;
+
+/*	long j = 0;
+	float k = 0f;
+	char a = 0, b = 0;
+	
+	k = 54.37f;
+	
+	//a = (int)(k / 10) * 16 + ((int)k % 10);
+	//b = ((int)(k * 10) % 10) * 16 + ((int)(k * 100) % 10);
+	
+	c = k - floor(k);
+	s = (int)k;*/
 	
 	// Control de Velocidad comandado por RS232
 
@@ -134,6 +149,10 @@ void main()
 		{
 			// Detiene el analisis de comandos
 			check_comm = 0;
+			
+			//led1=1;
+			
+			
 			// Inicio del periodo
 			set_timer1(0);
 			// Activo todos los servos
@@ -177,6 +196,9 @@ void main()
 			pwm5 = 0;
 			// Analiza si hay comandos para ser atendidos
 			check_comm = 1;
+			
+//			led1=0;
+			
 		} else {
 			// Tomo el tiempo
 			tmr1 = get_timer1();

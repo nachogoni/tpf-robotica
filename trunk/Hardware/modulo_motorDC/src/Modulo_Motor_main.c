@@ -19,11 +19,12 @@
  */
 
 #include <16F88.h>
+#DEVICE ADC = 10
 #include <stdio.h>
 #include <stdlib.h>
 #fuses HS,NOWDT,NOPROTECT,NOLVP
 #use delay (clock=20000000)
-//#device adc = 8
+
 #use rs232(BAUD=115200,PARITY=N,XMIT=PIN_B5,RCV=PIN_B2,BITS=8,ERRORS,TIMEOUT=1,STOP=1,UART1)
 #use fast_io(A)
 #use fast_io(B)
@@ -57,19 +58,26 @@
 signed int turn = CLOCKWISE;
 
 // Buffer del pto serial
-#define MAX_BUFFER_SIZE	50
+#define MAX_BUFFER_SIZE	45
 char buffer[MAX_BUFFER_SIZE];
-int buffer_idx = 0;
+int buffer_write = 0;
+int buffer_read = 0;
+int data_length = -1;
 
-// Buffer de respuesta
-char resp[30];
-int resp_idx = 0;
+struct command_t{
+	int from;
+	int to;
+	int cmd;
+	int crc;
+	int len;
+	char* data;
+};	
 
 // Cantidad de overflows del TMR0
 long tmr0_ticks = 0;
 
 // Valor acumulado del ADC - Consumo aprox
-float adc_value = 0;
+long adc_value = 0;
 
 // Valor de duty del PWM
 signed long duty = 0;
@@ -83,8 +91,6 @@ short counts_check = 0;
 short correct_duty = 1;
 
 short rs232c = 0;
-char c = 0;
-int command_size = 6;
 
 /* Examina y ejecula el comando */
 void command(char * cmd, int size);
@@ -101,8 +107,9 @@ void Timer0_INT()
 	// Seteo el valor para que interrumpa cada 6.25ms
 	set_timer0(12);
 	
-	// Tomo la lectura del ADC
-	adc_value += read_adc();
+	// Comienza la lectura del ADC
+	read_adc(ADC_START_ONLY);
+	
 	//printf(":%d:",read_adc()); // DEBUG
 
 	// Agrego al historico de cuentas el ultimo acumulado
@@ -134,6 +141,9 @@ void Timer0_INT()
 		correct_duty = 1;
 	}
 	
+	// Tomo la muestra
+	adc_value += read_adc(ADC_READ_ONLY);
+	
 	if (++tmr0_ticks == 32)
 	{
 		// Entra cada 200ms
@@ -146,7 +156,7 @@ void Timer0_INT()
 		// Promedio el consumo segun la cantidad de tmr0_ticks
 		adc_value /= tmr0_ticks;
 		printf("\n\rTimer1: %ld | Expected: %ld | duty: %ld | ", tmr1, counts_expected, duty); // DEBUG
-		printf("consumtion avrg: %g\n\r", adc_value); // DEBUG
+		printf("consumtion avrg: %ld\n\r", adc_value); // DEBUG
 		tmr0_ticks = 0;
 
 		// Mantengo el consumo promedio desde que arranque y borro el temporal
@@ -219,15 +229,17 @@ void main()
 			
 
 			
-			if (buffer_idx == command_size)
+			
+			
+			if (buffer[buffer_read] == data_length)
 			{
+				// Hay un comando!
+				
+				
 				// Execute command
-				command(buffer, command_size);
-				// Clean buffer
-				for (buffer_idx = 0; buffer_idx <= command_size; buffer_idx++)
-					buffer[buffer_idx] = '\0';
-				buffer_idx = 0;
-			}		
+				//command(buffer, command_size);
+
+			}
 
 		}
 	}
@@ -239,25 +251,11 @@ void main()
 #INT_RDA
 void RS232()
 {
-	// Agrego al buffer el caracter
-	buffer[buffer_idx] = c = getc();
-	/*
-	// Campo LARGO
-	if (buffer_idx == 5)
-	{
-		command_size = 6 + 1 + buffer[buffer_idx];
-	}
-	
-	// Comando completo
-	if (buffer_idx == command_size)
-		rs232c = 1;
-
-	// Buffer ciclico
-	if (buffer_idx == MAX_BUFFER_SIZE)
-		buffer_idx = 0;
-	else
-		buffer_idx++;*/
-	putc(c);
+	// Un nuevo dato...
+	buffer[buffer_write ++] = getc();
+	data_length++;
+	if (buffer_write == MAX_BUFFER_SIZE)
+		buffer_write = 0;
 	return;
 }
 
@@ -289,19 +287,19 @@ void command(char * cmd, int size)
 	if (read == 1)
 	{
 		// Parte comun a todas las respuestas
-		resp[0] = cmd[2] & 0x7F;
-		resp[1] = cmd[3];
-		resp[2] = CARD_GROUP;
-		resp[3] = CARD_ID;
+//		resp[0] = cmd[2] & 0x7F;
+//		resp[1] = cmd[3];
+//		resp[2] = CARD_GROUP;
+//		resp[3] = CARD_ID;
 
 		switch (cmd[4])
 		{
 			case 0x03:
 				// Ping -> Pong
-				resp[4] = cmd[4];
-				resp[5] = 0;
-				resp_idx = 6;
-				send(resp, resp_idx);
+//				resp[4] = cmd[4];
+//				resp[5] = 0;
+//				resp_idx = 6;
+//				send(resp, resp_idx);
 			break;
 
 			default:
