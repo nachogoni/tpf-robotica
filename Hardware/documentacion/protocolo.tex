@@ -41,6 +41,8 @@
 \cfoot{\thepage}
 \renewcommand{\footrulewidth}{0.4pt}
 
+\makeindex
+
 %% Titulo %%
 \begin{document}
 \title{{\ Trabajo pr\'actico final \\ Robot recolector de residuos \\ Protocolo de comunicaci\'on}}
@@ -92,9 +94,9 @@ Tanto los paquetes de env\'io de datos como los de respuesta tienen el mismo for
 \subsection{LARGO}
 \label{largo}
 
-	Indica el largo en bytes del paquete completo, consta de 1 byte.
+	Indica el largo en bytes del paquete que viene detras, consta de 1 byte.
 	Necesario ante la existencia del campo \emph{DATO} de longitud variable.
-	En caso que la longitud del campo \emph{DATO} sea cero, es 0x05.
+	En caso que la longitud del campo \emph{DATO} sea cero, es 0x04.
 
 \subsection{DESTINO}
 \label{tipo_destinatario}
@@ -126,7 +128,7 @@ Tanto los paquetes de env\'io de datos como los de respuesta tienen el mismo for
 \label{dato}
 
 	Contiene los par\'ametros o datos extras que puedan ser necesarios para el comando enviado.
-	En el caso que el comando no los requiera, el campo debe ser nulo y el campo \emph{LARGO} ser\'a 0x05.
+	En el caso que el comando no los requiera, el campo debe ser nulo y el campo \emph{LARGO} ser\'a 0x04.
 
 \subsection{CRC}
 \label{crc}
@@ -442,7 +444,7 @@ Consulta sobre el consumo actual del motor
 
 \begin{itemize}
 	\item{COMANDO:} 0xC8
-	\item{DATO:} Valor en punto flotante del consumo promedio del \'ultimo segundo. -VER FORMATO DEL PUNTO FLOTANTE-
+	\item{DATO:} Valor entre 0x0000 y 0x03FF que representa el consumo promedio del \'ultimo segundo.
 \end{itemize}
 
 \subsection{MOTOR STRESS ALARM}
@@ -454,7 +456,7 @@ Indica al controlador principal que hay un consumo extremo en el motor, posiblem
 
 \begin{itemize}
 	\item{COMANDO:} 0x49
-	\item{DATO:} Valor en punto flotante del consumo. -VER FORMATO DEL PUNTO FLOTANTE-
+	\item{DATO:} Valor entre 0x0000 y 0x03FF que representa el consumo ante el que sono la alarma.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -479,7 +481,7 @@ Determina la posici\'on en la que debe colocarse el servo motor indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x40
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del servo al que se le aplicar\'a la posici\'on.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del servo al que se le aplicar\'a la posici\'on.
 	Valor entre 0x00 y 0xB4 que representa el rango de $0^{\circ}$ a $180^{\circ}$ con $1^{\circ}$ de presici\'on.
 \end{itemize}
 
@@ -519,14 +521,14 @@ Obtiene la \'ultima posici\'on del servomotor indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x42
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del servo del que se requiere la posici\'on.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del servo del que se requiere la posici\'on.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
 	\item{COMANDO:} 0xC2
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del servo del que se requiri\'o la posici\'on.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del servo del que se requiri\'o la posici\'on.
 	Valor entre 0x00 y 0xB4 que representa el rango de $0^{\circ}$ a $180^{\circ}$ con $1^{\circ}$ de presici\'on.
 \end{itemize}
 
@@ -559,7 +561,7 @@ Determina la velocidad a la que el servomotor indicado llegar\'a a la posici\'on
 
 \begin{itemize}
 	\item{COMANDO:} 0x44
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del servo al que se le aplicar\'a la velocidad.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del servo al que se le aplicar\'a la velocidad.
 	Valor entre 0x00 y 0xB4, velocidad en grados por segundo.
 \end{itemize}
 
@@ -593,20 +595,20 @@ Determina las velocidades a la que cada uno de los servomotores llegar\'a a la p
 \subsection{GET SERVO SPEED}
 \label{get_servo_speed}
 
-Obtiene la velocidad asiganda al servomotor indicado.
+Obtiene la velocidad asignada al servomotor indicado.
 
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x46
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del servo del que se requiere la velocidad.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del servo del que se requiere la velocidad.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
 	\item{COMANDO:} 0xC6
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del servo del que se requiri\'o la velocidad.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del servo del que se requiri\'o la velocidad.
 	Valor entre 0x00 y 0xB4, velocidad en grados por segundo.
 \end{itemize}
 
@@ -639,7 +641,7 @@ Deja de aplicar fuerza sobre el servo indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x48
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del servo a liberar.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del servo a liberar.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -683,7 +685,7 @@ Enciende el sensor de distancia indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x40
-	\item{DATO:} Valor de 0x00 a 0x05 que representa el id del sensor a encender.
+	\item{DATO:} Valor de 0x00 a 0x04 que representa el id del sensor a encender.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -702,7 +704,7 @@ Apaga el sensor de distancia indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x41
-	\item{DATO:} Valor de 0x00 a 0x05 que representa el id del sensor a apagar.
+	\item{DATO:} Valor de 0x00 a 0x04 que representa el id del sensor a apagar.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -743,14 +745,14 @@ Obtiene el valor promedio de la entrada del sensor indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x43
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que se quiere la lectura.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
 	\item{COMANDO:} 0xC3
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que proviene el la lectura de distancia.
 	Valor de 0x0000 a 0x03FF con el valor de la lectura que representa la distancia al objeto.
 \end{itemize}
 
@@ -784,14 +786,14 @@ Igual al comando \ref{get_value_ds} pero si es necesario enciende el sensor, tom
 
 \begin{itemize}
 	\item{COMANDO:} 0x45
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que se quiere la lectura.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
 	\item{COMANDO:} 0xC5
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que proviene el la lectura de distancia.
 	Valor de 0x0000 a 0x03FF con el valor de la lectura que representa la distancia al objeto.
 \end{itemize}
 
@@ -831,7 +833,7 @@ Enciende el sensor de piso indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x40
-	\item{DATO:} Valor de 0x00 a 0x05 que representa el id del sensor a encender.
+	\item{DATO:} Valor de 0x00 a 0x04 que representa el id del sensor a encender.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -850,7 +852,7 @@ Apaga el sensor de piso indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x41
-	\item{DATO:} Valor de 0x00 a 0x05 que representa el id del sensor a apagar.
+	\item{DATO:} Valor de 0x00 a 0x04 que representa el id del sensor a apagar.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -890,14 +892,14 @@ Obtiene el valor promedio de la entrada del sensor indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x43
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que se quiere la lectura.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
 	\item{COMANDO:} 0xC3
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que proviene el la lectura de distancia.
 	Valor de 0x0000 a 0x03FF con el valor de la lectura que representa la distancia al objeto.
 \end{itemize}
 
@@ -931,14 +933,14 @@ Igual al comando \ref{get_value_fs} pero si es necesario enciende el sensor, tom
 
 \begin{itemize}
 	\item{COMANDO:} 0x45
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que se quiere la lectura.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
 	\item{COMANDO:} 0xC5
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que proviene el la lectura de distancia.
 	Valor de 0x0000 a 0x03FF con el valor de la lectura que representa la distancia al objeto.
 \end{itemize}
 
@@ -978,7 +980,7 @@ Enciende el sensor de ultrasonido indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x40
-	\item{DATO:} Valor de 0x00 a 0x05 que representa el id del sensor a encender.
+	\item{DATO:} Valor de 0x00 a 0x04 que representa el id del sensor a encender.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -997,7 +999,7 @@ Apaga el sensor de ultrasonido indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x41
-	\item{DATO:} Valor de 0x00 a 0x05 que representa el id del sensor a apagar.
+	\item{DATO:} Valor de 0x00 a 0x04 que representa el id del sensor a apagar.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -1037,14 +1039,14 @@ Obtiene el valor promedio de la entrada del sensor indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x43
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que se quiere la lectura.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
 	\item{COMANDO:} 0xC3
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que proviene el la lectura de distancia.
 	Valor de 0x0000 a 0x03FF con el valor de la lectura que representa la distancia al objeto.
 \end{itemize}
 
@@ -1078,14 +1080,14 @@ Igual al comando \ref{get_value_us} pero si es necesario enciende el sensor, tom
 
 \begin{itemize}
 	\item{COMANDO:} 0x45
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que se quiere la lectura.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que se quiere la lectura.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
 	\item{COMANDO:} 0xC5
-	\item{DATO:} Valor de 0x00 a 0x05 que determina el id del sensor del que proviene el la lectura de distancia.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que proviene el la lectura de distancia.
 	Valor de 0x0000 a 0x03FF con el valor de la lectura que representa la distancia al objeto.
 \end{itemize}
 
