@@ -3,7 +3,7 @@
 #include "batterypacket.h" // class's header file
 
 // class constructor
-BatteryPacket::BatteryPacket() : GroupPacket(BATTERYSENSOR_ID)
+BatteryPacket::BatteryPacket(char groupid, char boardid) : BoardPacket(groupid,boardid)
 {
 }
 

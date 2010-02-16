@@ -3,7 +3,7 @@
 #include "ultrasonicsensorpacket.h" // class's header file
 
 // class constructor
-UltrasonicSensorPacket::UltrasonicSensorPacket() : DistanceSensorPacket()
+UltrasonicSensorPacket::UltrasonicSensorPacket(char groupid, char boardid) : DistanceSensorPacket(groupid, boardid)
 {
 }
 

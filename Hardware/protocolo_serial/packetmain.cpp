@@ -1,5 +1,7 @@
 #include <cstdlib>
 #include <iostream>
+#include <stdio.h>
+#include <thread>
 #include "packet.h"
 #include "GroupPacket.h"
 #include "DCMotorPacket.h"
@@ -36,9 +38,17 @@ int main(int argc, char *argv[])
 	else
 		printf("CRC FAILED\n");
 		
-	ServoMotorPacket * smp = new ServoMotorPacket();
-	DCMotorPacket * dcm = new DCMotorPacket();
+	ServoMotorPacket * smp = new ServoMotorPacket(0x07,0x00);
+	smp->prepareToSend();
+	DCMotorPacket * dcm = new DCMotorPacket(0x01,0x00);
+	dcm->prepareToSend();
 
+	int a = (int)(smp->getDestinationGroup());
+	int b = (int)(smp->getDestinationId());
+	printf("%d - %d\n",a,b);
+	a = (int)(dcm->getDestinationGroup());
+	b = (int)(dcm->getDestinationId());
+	printf("%d - %d\n",a,b);
 	getchar();
 	
     return EXIT_SUCCESS;

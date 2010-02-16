@@ -3,7 +3,7 @@
 #include "trashbinpacket.h" // class's header file
 
 // class constructor
-TrashBinPacket::TrashBinPacket() : GroupPacket(TRASHBIN_ID)
+TrashBinPacket::TrashBinPacket(char groupid, char boardid) : BoardPacket(groupid, boardid)
 {
 }
 

@@ -16,6 +16,14 @@ Packet::~Packet()
 	// insert your code here
 }
 
+char * Packet::getPacket(){
+	return packet;
+}
+
+char Packet::getActualLength(){
+	return actualLength;
+}
+
 char Packet::getOriginGroup(){
 	return this->getGroup(ORIGIN_FIELD);
 }

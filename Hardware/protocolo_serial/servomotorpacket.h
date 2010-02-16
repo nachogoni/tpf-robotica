@@ -3,9 +3,7 @@
 #ifndef SERVOMOTORPACKET_H
 #define SERVOMOTORPACKET_H
 
-#include "GroupPacket.h" // inheriting class's header file
-
-#define SERVOMOTORPACKET_ID 0x02
+#include "BoardPacket.h" // inheriting class's header file
 
 #define CMD_SET_POSITION 0x40
 #define CMD_SET_ALL_POSITIONS 0x41
@@ -21,11 +19,11 @@
 /**
  * No description
  */
-class ServoMotorPacket : public GroupPacket
+class ServoMotorPacket : public BoardPacket
 {
 	public:
 		// class constructor
-		ServoMotorPacket();
+		ServoMotorPacket(char groupid, char boardid);
 		// class destructor
 		~ServoMotorPacket();
 

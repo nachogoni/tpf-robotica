@@ -3,9 +3,7 @@
 #ifndef DISTANCESENSORPACKET_H
 #define DISTANCESENSORPACKET_H
 
-#include "GroupPacket.h" // inheriting class's header file
-
-#define DISTANCESENSORPACKET_ID 0x02
+#include "BoardPacket.h" // inheriting class's header file
 
 #define CMD_ENABLE 0x40
 #define CMD_DISABLE 0x41
@@ -17,11 +15,11 @@
 /**
  * No description
  */
-class DistanceSensorPacket : public GroupPacket
+class DistanceSensorPacket : public BoardPacket
 {
 	public:
 		// class constructor
-		DistanceSensorPacket();
+		DistanceSensorPacket(char groupid, char boardid);
 		// class destructor
 		~DistanceSensorPacket();
 
