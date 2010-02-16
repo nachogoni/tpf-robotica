@@ -34,3 +34,7 @@ void PacketServer::sendAPacket(Packet * p){
 	}
 	this->waitingForResponse.push_back(p);
 }
+
+void PacketServer::run(void){
+
+}
