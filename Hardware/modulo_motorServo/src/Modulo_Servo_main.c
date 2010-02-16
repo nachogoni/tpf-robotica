@@ -71,9 +71,11 @@ long pwm3_t = 1750;
 long pwm4_t = 1750;
 long pwm5_t = 1750;
 
+// 1º ~ 27.77 cuentas ~ 69.4us
+
 // Tiempo maximo que puede durar un pulso - Maximo 6755(~2.71ms)
 #define PULSE_MAX	6755
-// Tiempo entre pulsos (~25ms -> 23ms fijos de espera)
+// Tiempo entre pulsos (~25ms -> ~22.29ms fijos de espera)
 #define PWM_MAX		62500
 
 /* Examina y ejecula el comando */
