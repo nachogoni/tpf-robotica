@@ -5,8 +5,8 @@ CPP  = g++.exe
 CC   = gcc.exe
 WINDRES = windres.exe
 RES  = 
-OBJ  = packetmain.o packet.o GroupPacket.o dcmotorpacket.o servomotorpacket.o distancesensorpacket.o ultrasonicsensorpacket.o floorsensorpacket.o batterypacket.o trashbinpacket.o BoardPacket.o PacketServer.o BoardPacketHandler.o $(RES)
-LINKOBJ  = packetmain.o packet.o GroupPacket.o dcmotorpacket.o servomotorpacket.o distancesensorpacket.o ultrasonicsensorpacket.o floorsensorpacket.o batterypacket.o trashbinpacket.o BoardPacket.o PacketServer.o BoardPacketHandler.o $(RES)
+OBJ  = packetmain.o packet.o GroupPacket.o dcmotorpacket.o servomotorpacket.o distancesensorpacket.o ultrasonicsensorpacket.o floorsensorpacket.o batterypacket.o trashbinpacket.o BoardPacket.o PacketServer.o BoardPacketHandler.o ServoBoardPacketHandler.o DCMotorBoardPacketHandler.o $(RES)
+LINKOBJ  = packetmain.o packet.o GroupPacket.o dcmotorpacket.o servomotorpacket.o distancesensorpacket.o ultrasonicsensorpacket.o floorsensorpacket.o batterypacket.o trashbinpacket.o BoardPacket.o PacketServer.o BoardPacketHandler.o ServoBoardPacketHandler.o DCMotorBoardPacketHandler.o $(RES)
 LIBS =  -L"C:/Dev-Cpp/lib" -g -Wall  
 INCS =  -I"C:/Dev-Cpp/include"  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include" 
 CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include" 
@@ -64,3 +64,9 @@ PacketServer.o: PacketServer.cpp
 
 BoardPacketHandler.o: BoardPacketHandler.cpp
 	$(CPP) -c BoardPacketHandler.cpp -o BoardPacketHandler.o $(CXXFLAGS)
+
+ServoBoardPacketHandler.o: ServoBoardPacketHandler.cpp
+	$(CPP) -c ServoBoardPacketHandler.cpp -o ServoBoardPacketHandler.o $(CXXFLAGS)
+
+DCMotorBoardPacketHandler.o: DCMotorBoardPacketHandler.cpp
+	$(CPP) -c DCMotorBoardPacketHandler.cpp -o DCMotorBoardPacketHandler.o $(CXXFLAGS)

@@ -21,6 +21,7 @@ class PacketServer
 		~PacketServer();
 		
 		void sendPacket(Packet * p);
+		void run(void);
 	private:
 		void sendAPacket(Packet * p);
 		std::queue<Packet *> toSend;

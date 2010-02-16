@@ -11,10 +11,8 @@
 class BoardPacketHandler
 {
 	public:
-		// class constructor
-		BoardPacketHandler();
 		// class destructor
-		virtual ~BoardPacketHandler() = 0;
+		virtual ~BoardPacketHandler(){};
 		
 		virtual void handlePacket(Packet * p) = 0;
 };
