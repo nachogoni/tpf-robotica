@@ -1,0 +1,26 @@
+---------------------------------------------------------------------------
+NCDrill File Report For: Modulo_MotorDC.PcbDoc   15/02/2010  09:59:38 p.m.
+---------------------------------------------------------------------------
+
+Layer Pair : Top Layer to Bottom Layer
+ASCII RoundHoles File : Modulo_MotorDC.TXT
+EIA File   : Modulo_MotorDC.DRL
+
+Tool         Hole Size           Hole Type     Hole Count Plated       Tool Travel
+---------------------------------------------------------------------------
+T1        25mil (0.635mm)          Round          20               4.62 Inch (117.31 mm)
+T2        30mil (0.762mm)          Round          39               14.34 Inch (364.14 mm)
+T3        33mil (0.8382mm)         Round          18               8.95 Inch (227.28 mm)
+T4        35mil (0.889mm)          Round          67               19.67 Inch (499.62 mm)
+T5        39mil (0.9906mm)         Round          10               5.50 Inch (139.67 mm)
+T6        40mil (1.016mm)          Round          2                0.20 Inch (5.08 mm)
+T7        50mil (1.27mm)           Round          4                0.42 Inch (10.67 mm)
+T8        60mil (1.524mm)          Round          3                0.20 Inch (5.08 mm)
+T9        67mil (1.7018mm)         Round          8                3.04 Inch (77.26 mm)
+T10       80mil (2.032mm)          Round          5                0.96 Inch (24.50 mm)
+T11       118mil (2.9972mm)        Round          1                0.00 Inch (0.00 mm)
+T12       128mil (3.2512mm)        Round          4         NPTH   1.13 Inch (28.58 mm)
+---------------------------------------------------------------------------
+Totals                                            181              59.02 Inch (1499.18 mm)
+
+Total Processing Time (hh:mm:ss) : 00:00:01

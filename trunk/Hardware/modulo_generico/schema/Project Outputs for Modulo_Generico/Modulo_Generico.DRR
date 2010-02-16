@@ -1,0 +1,25 @@
+---------------------------------------------------------------------------
+NCDrill File Report For: Modulo_Generico.PcbDoc   15/02/2010  10:00:36 p.m.
+---------------------------------------------------------------------------
+
+Layer Pair : Top Layer to Bottom Layer
+ASCII RoundHoles File : Modulo_Generico.TXT
+EIA File   : Modulo_Generico.DRL
+
+Tool         Hole Size           Hole Type     Hole Count Plated       Tool Travel
+---------------------------------------------------------------------------
+T1        25mil (0.635mm)          Round          10               0.90 Inch (22.86 mm)
+T2        30mil (0.762mm)          Round          31               7.82 Inch (198.70 mm)
+T3        33mil (0.8382mm)         Round          6                2.04 Inch (51.72 mm)
+T4        35mil (0.889mm)          Round          50               11.37 Inch (288.68 mm)
+T5        39mil (0.9906mm)         Round          10               5.34 Inch (135.75 mm)
+T6        40mil (1.016mm)          Round          18               4.21 Inch (106.95 mm)
+T7        50mil (1.27mm)           Round          4                0.42 Inch (10.67 mm)
+T8        60mil (1.524mm)          Round          3                0.20 Inch (5.08 mm)
+T9        80mil (2.032mm)          Round          3                0.40 Inch (10.16 mm)
+T10       118mil (2.9972mm)        Round          1                0.00 Inch (0.00 mm)
+T11       128mil (3.2512mm)        Round          4         NPTH   1.13 Inch (28.58 mm)
+---------------------------------------------------------------------------
+Totals                                            140              33.82 Inch (859.14 mm)
+
+Total Processing Time (hh:mm:ss) : 00:00:01

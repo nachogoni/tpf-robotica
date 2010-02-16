@@ -1,0 +1,13 @@
+Output: NC Drill Files
+Type  : NC Drill
+From  : Project [Modulo_MotorDC.PrjPCB]
+   Generated File[Modulo_MotorDC.TXT]
+   Generated File[Modulo_MotorDC.DRL]
+   Generated File[Modulo_MotorDC.LDP]
+   Generated File[Modulo_MotorDC.DRR]
+
+
+Files Generated   : 4
+Documents Printed : 0
+
+Finished Output Generation At 09:59:39 p.m. On 15/02/2010

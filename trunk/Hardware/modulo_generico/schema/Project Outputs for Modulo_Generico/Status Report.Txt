@@ -1,0 +1,13 @@
+Output: NC Drill Files
+Type  : NC Drill
+From  : Project [Modulo_Generico.PrjPCB]
+   Generated File[Modulo_Generico.TXT]
+   Generated File[Modulo_Generico.DRL]
+   Generated File[Modulo_Generico.LDP]
+   Generated File[Modulo_Generico.DRR]
+
+
+Files Generated   : 4
+Documents Printed : 0
+
+Finished Output Generation At 10:00:37 p.m. On 15/02/2010
