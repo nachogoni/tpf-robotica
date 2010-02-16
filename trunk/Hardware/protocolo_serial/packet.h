@@ -47,6 +47,8 @@ class Packet
 		void addData(char * data,char length);
 		void addData(char data);
 		void addData(short data);
+		char * getPacket();
+		char getActualLength();
 	protected:
 		void resetDataIdx();
 	private:

@@ -3,9 +3,7 @@
 #ifndef TRASHBINPACKET_H
 #define TRASHBINPACKET_H
 
-#include "GroupPacket.h" // inheriting class's header file
-
-#define TRASHBIN_ID 0x06
+#include "BoardPacket.h" // inheriting class's header file
 
 #define CMD_TRASHBIN_VALUE 0x40
 #define CMD_FULL_TRASHBIN_ALARM 0x41
@@ -13,11 +11,11 @@
 /**
  * No description
  */
-class TrashBinPacket : public GroupPacket
+class TrashBinPacket : public BoardPacket
 {
 	public:
 		// class constructor
-		TrashBinPacket();
+		TrashBinPacket(char groupid, char boardid);
 		// class destructor
 		~TrashBinPacket();
 

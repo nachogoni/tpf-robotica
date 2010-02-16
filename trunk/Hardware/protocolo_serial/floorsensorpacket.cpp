@@ -3,7 +3,7 @@
 #include "floorsensorpacket.h" // class's header file
 
 // class constructor
-FloorSensorPacket::FloorSensorPacket() : DistanceSensorPacket()
+FloorSensorPacket::FloorSensorPacket(char groupid, char boardid) : DistanceSensorPacket(groupid, boardid)
 {
 }
 

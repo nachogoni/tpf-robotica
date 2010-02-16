@@ -12,7 +12,7 @@ class UltrasonicSensorPacket : public DistanceSensorPacket
 {
 	public:
 		// class constructor
-		UltrasonicSensorPacket();
+		UltrasonicSensorPacket(char groupid, char boardid);
 		// class destructor
 		~UltrasonicSensorPacket();
 

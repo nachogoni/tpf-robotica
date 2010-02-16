@@ -12,7 +12,7 @@ class FloorSensorPacket : public DistanceSensorPacket
 {
 	public:
 		// class constructor
-		FloorSensorPacket();
+		FloorSensorPacket(char groupid, char boardid);
 		// class destructor
 		~FloorSensorPacket();
 

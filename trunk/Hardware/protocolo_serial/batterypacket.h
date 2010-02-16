@@ -3,9 +3,7 @@
 #ifndef BATTERYPACKET_H
 #define BATTERYPACKET_H
 
-#include "GroupPacket.h" // inheriting class's header file
-
-#define BATTERYSENSOR_ID 0x06
+#include "BoardPacket.h" // inheriting class's header file
 
 #define CMD_BATTERY_VALUE 0x40
 #define CMD_FULL_BATTERY_ALARM 0x41
@@ -15,11 +13,11 @@
 /**
  * No description
  */
-class BatteryPacket : public GroupPacket
+class BatteryPacket : public BoardPacket
 {
 	public:
 		// class constructor
-		BatteryPacket();
+		BatteryPacket(char groupid, char boardid);
 		// class destructor
 		~BatteryPacket();
 

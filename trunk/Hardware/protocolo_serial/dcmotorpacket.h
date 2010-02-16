@@ -2,9 +2,7 @@
 
 #ifndef DCMOTORPACKET_H
 #define DCMOTORPACKET_H
-#include "GroupPacket.h" // inheriting class's header file
-
-#define DCMOTORPACKET_ID 0x01
+#include "BoardPacket.h" // inheriting class's header file
 
 #define CMD_SET_DIRECTION 0x40
 #define DIR_CLOCKWISE 0x00
@@ -24,11 +22,11 @@
 /**
  * No description
  */
-class DCMotorPacket : public GroupPacket
+class DCMotorPacket : public BoardPacket
 {
 	public:
 		// class constructor
-		DCMotorPacket();
+		DCMotorPacket(char groupid, char boardid);
 		// class destructor
 		~DCMotorPacket();
 		

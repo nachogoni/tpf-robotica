@@ -10,6 +10,8 @@
 #define BP_RESET 0x02
 #define BP_PING 0x03
 #define BP_ERROR 0x04
+#define ORIGIN_GROUP 0x00
+#define ORIGIN_ID 0x00
 
 /**
  * No description
@@ -28,6 +30,8 @@ class GroupPacket : public Packet
 		bool isError();
 		char getErrorCode();
 		std::string getErrorString();
+		void prepareToSend();
+		void analysePacket(Packet * p);
 	protected:
 		char groupid;
 };
