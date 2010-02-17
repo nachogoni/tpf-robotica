@@ -3,7 +3,7 @@
 #ifndef GROUPPACKET_H
 #define GROUPPACKET_H
 
-#include "packet.h" // inheriting class's header file
+#include "Packet.h" // inheriting class's header file
 #include <string>
 
 #define BP_INIT 0x01

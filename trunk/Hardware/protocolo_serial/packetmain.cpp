@@ -2,7 +2,7 @@
 #include <iostream>
 #include <stdio.h>
 //#include <thread>
-#include "packet.h"
+#include "Packet.h"
 #include "GroupPacket.h"
 #include "DCMotorPacket.h"
 #include "ServoMotorPacket.h"
