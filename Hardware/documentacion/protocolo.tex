@@ -309,9 +309,8 @@ Seteo de la velocidad del motor en cuentas del encoder por segundo
 
 \begin{itemize}
 	\item{COMANDO:} 0x41
-	\item{DATO:} consta de 3 bytes.
-		SENTIDO = 0x00 para sentido horario \'o 0x01 para sentido anti-horario.
-		VELOCIDAD = 0x0000 a 0xFFFF. Valores positivos, en cuentas por seguntos.
+	\item{DATO:} 0x00 para sentido horario \'o 0x01 para sentido anti-horario.
+		N\'umero entero de 16 bits con signo, que representa la velocidad en cuentas por segundos.
 		Ver apartado \ref{codificacion} para mayor informaci\'on.
 \end{itemize}
 
@@ -499,6 +498,26 @@ Enviado luego de sucesivos avisos del comando \ref{motor_stress_alarm}.
 \begin{itemize}
 	\item{COMANDO:} 0xCA
 	\item{DATO:} vac\'io
+\end{itemize}
+
+\subsection{GET DC SPEED}
+\label{set_dc_speed}
+
+Obtiene la velocidad del motor en cuentas del encoder por segundo
+
+\subsubsection*{Comando enviado}
+\begin{itemize}
+	\item{COMANDO:} 0x4B
+	\item{DATO:} vac\'io
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0xCB
+	\item{DATO:} 0x00 para sentido horario \'o 0x01 para sentido anti-horario.
+		N\'umero entero de 16 bits con signo, que representa la velocidad en cuentas por segundos.
+		Ver apartado \ref{codificacion} para mayor informaci\'on.
 \end{itemize}
 
 \section{SERVO MOTOR}
@@ -1359,9 +1378,9 @@ Mensaje enviado desde el controlador del cesto de basura informando que se compl
 Para mantener la compatibilidad entre los distintos agentes dentro de la cadena de tranmisi\'on de datos,
 los n\'umeros enteros a trav\'es del protocolo son codificados bajo el formato \emph{little-endian} con elementos at\'omicos de 8 bits.
 
-Por ejemplo, si el valor entro 1023, codificaco en un entero de 16 bits en hexadecimal es 0x03FF,
+Por ejemplo, si el valor 1023, codificaco en un entero de 16 bits en hexadecimal es 0x03FF,
 entonces se env\'ia primero el byte 0xFF y luego el 0x03.
-Si fuera el caso del valor entero 1193046, que codificado en un entero de 32 bits, cuyo hexadecimal es 0x00123456,
+Si fuera el caso del valor 1193046, que codificado en un entero de 32 bits, cuyo hexadecimal es 0x00123456,
 se env\'ia primero el byte 0x56, luego el 0x34, 0x12 y por \'ultimo, 0x00.
 
 El env\'io de n\'umeros con punto flotante no est\'a previsto en el protocolo.
