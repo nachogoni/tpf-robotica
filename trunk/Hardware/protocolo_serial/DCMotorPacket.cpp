@@ -66,13 +66,13 @@ bool DCMotorPacket::isMotorAlarm(){
 	return this->getCommand() == CMD_STRESS_ALARM;
 }
 
-short DCMotorPacket::getEncoderValues(){
+short DCMotorPacket::getEncoderValue(){
 	this->resetDataIdx();
 	return this->getShortData();
 }
 
-short DCMotorPacket::getEncoderValuesToStop(){
-	return this->getEncoderValues();
+short DCMotorPacket::getEncoderValueToStop(){
+	return this->getEncoderValue();
 }
 
 short DCMotorPacket::getMotorConsumptionValue(){

@@ -43,8 +43,8 @@ class DCMotorPacket : public BoardPacket
 
 		// Get data from package
 		bool isMotorAlarm();
-		short getEncoderValues();
-		short getEncoderValuesToStop();
+		short getEncoderValue();
+		short getEncoderValueToStop();
 		short getMotorConsumptionValue();
 	private:
 		void setDirection(char dir);

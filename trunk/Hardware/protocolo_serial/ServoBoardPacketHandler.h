@@ -5,6 +5,7 @@
 
 #include "BoardPacketHandler.h" // inheriting class's header file
 #include "Packet.h"
+#include "PacketServer.h"
 
 /**
  * No description
@@ -13,11 +14,25 @@ class ServoBoardPacketHandler : public BoardPacketHandler
 {
 	public:
 		// class constructor
-		ServoBoardPacketHandler();
+		ServoBoardPacketHandler(PacketServer * ps, char groupid, char boardid);
 		// class destructor
 		~ServoBoardPacketHandler();
 		
 		void handlePacket(Packet * p);
+		
+		void setPosition(int servoId, double position);
+
+		void setSpeed(int servoId, double speed);
+		
+		double getPosition(int servoId);
+		
+		void setForce(int servoId, double force);
+	private:
+		char groupid;
+		char boardid;
+		PacketServer * ps;
+		
+		double positionValue [5];
 };
 
 #endif // SERVOBOARDPACKETHANDLER_CPP

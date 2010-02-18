@@ -37,6 +37,9 @@ class DCMotorBoardPacketHandler : public BoardPacketHandler
 		char groupid;
 		char boardid;
 		PacketServer * ps;
+		
+		double encoderValue;
+		double consumptionValue;
 };
 
 #endif // DCMOTORBOARDPACKETHANDLER_CPP
