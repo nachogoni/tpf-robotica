@@ -10,6 +10,8 @@ DCMotorBoardPacketHandler::DCMotorBoardPacketHandler(PacketServer * ps, char gro
 	this->groupid = groupid;
 	this->boardid = boardid;
 	this->ps = ps;
+	this->encoderValue = 0;
+	this->consumptionValue = 0;
 }
 
 // class destructor
@@ -19,6 +21,23 @@ DCMotorBoardPacketHandler::~DCMotorBoardPacketHandler()
 }
 
 void DCMotorBoardPacketHandler::handlePacket(Packet * p){
+	DCMotorPacket * dcmp = new DCMotorPacket(groupid,boardid);
+	dcmp->analysePacket(p);
+	
+	if ( p->getCommand() == CMD_GET_ENCODER ){
+		int value = dcmp->getEncoderValue();
+		// TODO convert from int(4 bytes) to double
+		// Lock Mutex
+		this->encoderValue = value;
+		// Release Mutex
+	}
+ 	if ( p->getCommand() == CMD_GET_ENCODER ){
+		int value = dcmp->getMotorConsumptionValue();
+		// TODO convert from int(4 bytes) to double
+		// Lock Mutex
+		this->consumptionValue= value;
+		// Release Mutex
+	}
 }
 
 void DCMotorBoardPacketHandler::setSpeed(double value){
@@ -30,32 +49,32 @@ void DCMotorBoardPacketHandler::setSpeed(double value){
 	this->ps->sendPacket(p);
 }
 
-void DCMotorBoardPacketHandler::enableEncoder(){
-	DCMotorPacket * p = new DCMotorPacket(groupid,boardid);
-	p->setInit();
+double DCMotorBoardPacketHandler::getEncoder(){
+   	DCMotorPacket * p = new DCMotorPacket(groupid,boardid);
+	p->getEncoder();
 	p->prepareToSend();
 	this->ps->sendPacket(p);
-}
-
-double DCMotorBoardPacketHandler::getEncoder(){
-	return 2.0;
+	return this->encoderValue;
 }
 
 void DCMotorBoardPacketHandler::moveWheel(double value){
 	DCMotorPacket * p = new DCMotorPacket(groupid,boardid);
-	p->setInit();
+	// TODO convert from double to short
+	p->setEncoderToStop(value);
 	p->prepareToSend();
 	this->ps->sendPacket(p);
 }
 
 void DCMotorBoardPacketHandler::moveWheel(double counts, double speed){
-
+	this->moveWheel(counts);
+	this->setSpeed(speed);
 }
 
 double DCMotorBoardPacketHandler::getMotorConsumption(){
-	return 2.0;
+   	DCMotorPacket * p = new DCMotorPacket(groupid,boardid);
+	p->getMotorConsumption();
+	p->prepareToSend();
+	this->ps->sendPacket(p);
+	return this->consumptionValue;
 }
 
-double DCMotorBoardPacketHandler::getAverageConsumption(){
-	return 2.0;
-}
