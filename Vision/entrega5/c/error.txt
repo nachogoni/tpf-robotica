@@ -1,72 +1,22 @@
-window-primerpaneo.c:6:23: error: opencv/cv.h: No such file or directory
-window-primerpaneo.c:7:28: error: opencv/highgui.h: No such file or directory
-In file included from window-primerpaneo.c:9:
-contours.h:9: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
-contours.h:14: error: expected ‘)’ before ‘*’ token
-contours.h:28: error: expected ‘)’ before ‘*’ token
-contours.h:36: error: expected ‘)’ before ‘*’ token
-contours.h:44: error: expected ‘)’ before ‘*’ token
-contours.h:53: error: expected ‘)’ before ‘*’ token
-contours.h:61: error: expected ‘)’ before ‘*’ token
-In file included from window-primerpaneo.c:10:
-histogram.h:7: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
-histogram.h:11: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
-window-primerpaneo.c: In function ‘main’:
-window-primerpaneo.c:41: error: ‘CV_WINDOW_AUTOSIZE’ undeclared (first use in this function)
-window-primerpaneo.c:41: error: (Each undeclared identifier is reported only once
-window-primerpaneo.c:41: error: for each function it appears in.)
-window-primerpaneo.c:43: error: ‘CvCapture’ undeclared (first use in this function)
-window-primerpaneo.c:43: error: ‘capture’ undeclared (first use in this function)
-window-primerpaneo.c:46: error: ‘IplImage’ undeclared (first use in this function)
-window-primerpaneo.c:46: error: ‘src’ undeclared (first use in this function)
-window-primerpaneo.c:48: error: ‘model’ undeclared (first use in this function)
-window-primerpaneo.c:59: error: ‘CvHistogram’ undeclared (first use in this function)
-window-primerpaneo.c:59: error: ‘testImageHistogram’ undeclared (first use in this function)
-window-primerpaneo.c:69: error: ‘CvSize’ undeclared (first use in this function)
-window-primerpaneo.c:69: error: expected ‘;’ before ‘srcSize’
-window-primerpaneo.c:72: error: ‘hsv’ undeclared (first use in this function)
-window-primerpaneo.c:72: error: ‘srcSize’ undeclared (first use in this function)
-window-primerpaneo.c:73: error: ‘h_plane’ undeclared (first use in this function)
-window-primerpaneo.c:74: error: ‘s_plane’ undeclared (first use in this function)
-window-primerpaneo.c:75: error: ‘v_plane’ undeclared (first use in this function)
-window-primerpaneo.c:80: error: ‘threshImage’ undeclared (first use in this function)
-window-primerpaneo.c:83: error: ‘equalizedImage’ undeclared (first use in this function)
-window-primerpaneo.c:86: error: ‘morphImage’ undeclared (first use in this function)
-window-primerpaneo.c:89: error: ‘smoothImage’ undeclared (first use in this function)
-window-primerpaneo.c:92: error: ‘contourImage’ undeclared (first use in this function)
-window-primerpaneo.c:99: error: ‘IplConvKernel’ undeclared (first use in this function)
-window-primerpaneo.c:99: error: ‘element’ undeclared (first use in this function)
-window-primerpaneo.c:101: error: ‘CvRect’ undeclared (first use in this function)
-window-primerpaneo.c:101: error: expected ‘;’ before ‘boundingRect’
-window-primerpaneo.c:104: error: ‘CvSeq’ undeclared (first use in this function)
-window-primerpaneo.c:104: error: ‘contours’ undeclared (first use in this function)
-window-primerpaneo.c:113: error: ‘CV_BGR2HSV’ undeclared (first use in this function)
-window-primerpaneo.c:121: error: ‘CV_THRESH_BINARY’ undeclared (first use in this function)
-window-primerpaneo.c:126: error: ‘CV_SHAPE_RECT’ undeclared (first use in this function)
-window-primerpaneo.c:132: error: ‘CV_GAUSSIAN’ undeclared (first use in this function)
-window-primerpaneo.c:140: error: ‘aContour’ undeclared (first use in this function)
-window-primerpaneo.c:156: error: ‘boundingRect’ undeclared (first use in this function)
-contours.c:10:23: error: opencv/cv.h: No such file or directory
-contours.c:11:28: error: opencv/highgui.h: No such file or directory
-In file included from contours.c:12:
-contours.h:9: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
-contours.h:14: error: expected ‘)’ before ‘*’ token
-contours.h:28: error: expected ‘)’ before ‘*’ token
-contours.h:36: error: expected ‘)’ before ‘*’ token
-contours.h:44: error: expected ‘)’ before ‘*’ token
-contours.h:53: error: expected ‘)’ before ‘*’ token
-contours.h:61: error: expected ‘)’ before ‘*’ token
-In file included from contours.c:13:
-histogram.h:7: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
-histogram.h:11: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
-contours.c:24: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
-contours.c:68: error: expected ‘)’ before ‘*’ token
-contours.c:80: error: expected ‘)’ before ‘*’ token
-contours.c:89: error: expected ‘)’ before ‘*’ token
-contours.c:99: error: expected ‘)’ before ‘*’ token
-contours.c:125: error: expected ‘)’ before ‘*’ token
-contours.c:150: error: expected ‘)’ before ‘*’ token
-histogram.c:8:23: error: opencv/cv.h: No such file or directory
-histogram.c:9:28: error: opencv/highgui.h: No such file or directory
-histogram.c:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
-histogram.c:35: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘*’ token
+[wmv3 @ 0x9bc73c0]Extra data: 8 bits left, value: 0
+OpenCV ERROR: Bad argument (Array should be CvMat or IplImage)
+	in function cvGetSize, cxarray.cpp(1453)
+Terminating the application...
+	called from cvUnregisterType, cxpersistence.cpp(4933)
+Terminating the application...
+	called from cvUnregisterType, cxpersistence.cpp(4933)
+Terminating the application...
+	called from cvUnregisterType, cxpersistence.cpp(4933)
+Terminating the application...
+	called from cvUnregisterType, cxpersistence.cpp(4933)
+Terminating the application...
+	called from cvUnregisterType, cxpersistence.cpp(4933)
+Terminating the application...
+	called from cvUnregisterType, cxpersistence.cpp(4933)
+Terminating the application...
+	called from cvUnregisterType, cxpersistence.cpp(4933)
+Terminating the application...
+	called from cvUnregisterType, cxpersistence.cpp(4933)
+Terminating the application...
+	called from cvUnregisterType, cxpersistence.cpp(4933)
+Terminating the application...
