@@ -7,6 +7,7 @@
 
 #define CMD_TRASHBIN_VALUE 0x40
 #define CMD_FULL_TRASHBIN_ALARM 0x41
+#define CMD_FULL_TRASHBIN_VALUE 0x42
 
 /**
  * No description
@@ -21,6 +22,7 @@ class TrashBinPacket : public BoardPacket
 
 		void senseTrashBin();
 		bool isTrashBinFull();
+		void setTrashBinFullThreshold(short value);
 		
 		short getTrashBinValue();
 };
