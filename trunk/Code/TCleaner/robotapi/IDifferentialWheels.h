@@ -29,10 +29,13 @@ class IDifferentialWheels : virtual public IDevice {
 
     virtual void moveRightWheel(double right, double speed)  = 0;
 
-    virtual double getMotorConsumption()  = 0;
+    virtual double getLeftMotorConsumption()  = 0;
 
-    virtual double getAverageConsumption()  = 0;
+    virtual double getRightMotorConsumption()  = 0;
+    
+    virtual bool isAlarmPresent()  = 0;
 
+    virtual bool isMotorOff()  = 0;
     // virtual destructor for interface
     virtual ~IDifferentialWheels() { }
 };

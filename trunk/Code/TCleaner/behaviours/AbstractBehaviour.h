@@ -2,6 +2,8 @@
 #define behaviours_AbstractBehaviour_h
 
 #include <string>
+#include <robotapi/IRobot.h>
+
 
 class GarbageCleaner;
 
@@ -29,10 +31,7 @@ class AbstractBehaviour {
 
  public:
     int behaviour_id;
-
- public:
-
-    GarbageCleaner *myGarbageCleaner;
+	void setGarbageCleaner(GarbageCleaner * garbageCleaner);
 };
 
 } /* End of namespace behaviours */

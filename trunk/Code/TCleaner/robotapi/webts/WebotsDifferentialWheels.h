@@ -33,9 +33,13 @@ public:
 
     void moveRightWheel(double right, double speed);
 
-    double getMotorConsumption();
+    double getLeftMotorConsumption();
 
-    double getAverageConsumption();
+    double getRightMotorConsumption();
+
+	bool isAlarmPresent();
+
+	bool isMotorOff();
 
     std::string getName();
 

@@ -18,6 +18,14 @@ class WebotsBattery : public robotapi::IBattery, public robotapi::webts::WebotsD
 
     double getValue();
 
+    bool isFull();
+
+    void setEmptyBias(double bias);
+
+    bool isEmpty();
+
+    void setFullBias(double bias);
+
     WebotsBattery(std::string & name, IWbDeviceTag tag);
 
     };

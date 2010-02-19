@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
 
 
-/*
+
 	cout << robot->getName();
 	int i = 0;
 	
@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 	while( i < 100 ){
 		robot->step(32);
 	}
-	*/
+
 	
  /*
 	int i = 0;
