@@ -1,2 +1,2 @@
 rm *.o
-g++ *.c* -o packets -std=c++0x
+g++ *.c* packets/*.c* handlers/*.c* -o packetserver -I. -std=c++0x
