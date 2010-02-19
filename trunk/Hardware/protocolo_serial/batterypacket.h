@@ -9,6 +9,7 @@
 #define CMD_FULL_BATTERY_ALARM 0x41
 #define CMD_BATTERY_EMPTY_VALUE 0x42
 #define CMD_BATTERY_EMPTY_ALARM 0x43
+#define CMD_BATTERY_FULL_VALUE 0x44
 
 /**
  * No description
@@ -25,6 +26,7 @@ class BatteryPacket : public BoardPacket
 		bool isBatteryFull();
 		void setBatteryEmptyThreshold(short value);
 		bool isBatteryEmpty();
+		void setBatteryFullThreshold(short value);
 		
 		short getBatteryValue();
 };

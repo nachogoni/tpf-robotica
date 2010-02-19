@@ -30,6 +30,11 @@ bool BatteryPacket::isBatteryEmpty(){
 	return this->getCommand() == CMD_BATTERY_EMPTY_ALARM;
 }
 
+void BatteryPacket::setBatteryFullThreshold(short value){
+	this->setCommand(CMD_BATTERY_FULL_VALUE);
+	this->addData(value);
+}
+
 short BatteryPacket::getBatteryValue(){
 	return this->getShortData();
 }

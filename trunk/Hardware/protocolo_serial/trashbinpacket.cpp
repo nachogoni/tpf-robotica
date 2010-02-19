@@ -21,6 +21,10 @@ bool TrashBinPacket::isTrashBinFull(){
 	return this->getCommand() == CMD_FULL_TRASHBIN_ALARM;
 }
 
+void TrashBinPacket::setTrashBinFullThreshold(short value){
+	this->setCommand(CMD_FULL_TRASHBIN_VALUE);
+}
+
 short TrashBinPacket::getTrashBinValue(){
 	return this->getShortData();
 }
