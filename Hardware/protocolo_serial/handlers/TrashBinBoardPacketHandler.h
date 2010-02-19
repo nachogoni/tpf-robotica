@@ -3,9 +3,11 @@
 #ifndef TRASHBINBOARDPACKETHANDLER_H
 #define TRASHBINBOARDPACKETHANDLER_H
 
-#include "BoardPacketHandler.h" // inheriting class's header file
-#include "Packet.h"
-#include "PacketServer.h"
+#include <BoardPacketHandler.h> // inheriting class's header file
+#include <Packet.h>
+#include <PacketServer.h>
+
+namespace handlers {
 
 /**
  * No description
@@ -34,5 +36,7 @@ class TrashBinBoardPacketHandler : public BoardPacketHandler
 		double currentValue;
 		bool full;
 };
+
+}
 
 #endif // TRASHBINBOARDPACKETHANDLER_CPP

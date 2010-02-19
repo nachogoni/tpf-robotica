@@ -3,7 +3,7 @@
 #ifndef GROUPPACKET_H
 #define GROUPPACKET_H
 
-#include "Packet.h" // inheriting class's header file
+#include <Packet.h> // inheriting class's header file
 #include <string>
 
 #define BP_INIT 0x01
@@ -12,6 +12,8 @@
 #define BP_ERROR 0x04
 #define ORIGIN_GROUP 0x00
 #define ORIGIN_ID 0x00
+
+namespace packets {
 
 /**
  * No description
@@ -36,5 +38,6 @@ class GroupPacket : public Packet
 		char groupid;
 };
 
+}
 #endif // GROUPPACKET_H
 

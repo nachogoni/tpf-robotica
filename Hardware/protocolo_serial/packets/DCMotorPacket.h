@@ -2,7 +2,7 @@
 
 #ifndef DCMOTORPACKET_H
 #define DCMOTORPACKET_H
-#include "BoardPacket.h" // inheriting class's header file
+#include <packets/BoardPacket.h> // inheriting class's header file
 
 #define CMD_SET_DIRECTION 0x40
 #define DIR_CLOCKWISE 0x00
@@ -18,11 +18,12 @@
 #define CMD_MOTOR_CONSUMPTION 0x48
 #define CMD_STRESS_ALARM 0x49
 
+namespace packets {
 
 /**
  * No description
  */
-class DCMotorPacket : public BoardPacket
+class DCMotorPacket : public packets::BoardPacket
 {
 	public:
 		// class constructor
@@ -49,5 +50,7 @@ class DCMotorPacket : public BoardPacket
 	private:
 		void setDirection(char dir);
 };
+
+}
 
 #endif // DCMOTORPACKET_H

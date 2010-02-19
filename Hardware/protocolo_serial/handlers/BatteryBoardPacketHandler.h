@@ -3,9 +3,11 @@
 #ifndef BATTERYBOARDPACKETHANDLER_H
 #define BATTERYBOARDPACKETHANDLER_H
 
-#include "BoardPacketHandler.h" // inheriting class's header file
-#include "Packet.h"
-#include "PacketServer.h"
+#include <BoardPacketHandler.h> // inheriting class's header file
+#include <Packet.h>
+#include <PacketServer.h>
+
+namespace handlers {
 
 /**
  * No description
@@ -39,5 +41,7 @@ class BatteryBoardPacketHandler : public BoardPacketHandler
 		bool full;
 		bool empty;
 };
+
+}
 
 #endif // BATTERYBOARDPACKETHANDLER_CPP

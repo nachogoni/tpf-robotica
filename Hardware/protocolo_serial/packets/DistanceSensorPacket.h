@@ -3,7 +3,7 @@
 #ifndef DISTANCESENSORPACKET_H
 #define DISTANCESENSORPACKET_H
 
-#include "BoardPacket.h" // inheriting class's header file
+#include <packets/BoardPacket.h> // inheriting class's header file
 
 #define CMD_ENABLE 0x40
 #define CMD_DISABLE 0x41
@@ -12,10 +12,13 @@
 #define CMD_GET_ALL_VALUES 0x44
 #define CMD_GET_SHOT_VALUE 0x45
 #define CMD_GET_SHOT_ALL_VALUES 0x46
+
+namespace packets {
+
 /**
  * No description
  */
-class DistanceSensorPacket : public BoardPacket
+class DistanceSensorPacket : public packets::BoardPacket
 {
 	public:
 		// class constructor
@@ -39,5 +42,7 @@ class DistanceSensorPacket : public BoardPacket
 		short getShotSensorValue();
 		short * getShotSensorValues();
 };
+
+}
 
 #endif // DISTANCESENSORPACKET_H

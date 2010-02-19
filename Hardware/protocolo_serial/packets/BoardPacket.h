@@ -3,12 +3,14 @@
 #ifndef BOARDPACKET_H
 #define BOARDPACKET_H
 
-#include "GroupPacket.h" // inheriting class's header file
+#include <packets/GroupPacket.h> // inheriting class's header file
+
+namespace packets {
 
 /**
  * No description
  */
-class BoardPacket : public GroupPacket
+class BoardPacket : public packets::GroupPacket
 {
 	public:
 		// class constructor
@@ -19,6 +21,8 @@ class BoardPacket : public GroupPacket
 	protected:
 		char boardid;
 };
+
+}
 
 #endif // BOARDPACKET_H
 

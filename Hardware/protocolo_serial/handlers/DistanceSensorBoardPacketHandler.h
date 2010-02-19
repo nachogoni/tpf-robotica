@@ -3,9 +3,11 @@
 #ifndef DISTANCESENSORBOARDPACKETHANDLER_H
 #define DISTANCESENSORBOARDPACKETHANDLER_H
 
-#include "BoardPacketHandler.h" // inheriting class's header file
-#include "Packet.h"
-#include "PacketServer.h"
+#include <BoardPacketHandler.h> // inheriting class's header file
+#include <Packet.h>
+#include <PacketServer.h>
+
+namespace handlers {
 
 /**
  * No description
@@ -33,5 +35,7 @@ class DistanceSensorBoardPacketHandler : public BoardPacketHandler
 		
 		double dsValue [5];
 };
+
+}
 
 #endif // DISTANCESENSORBOARDPACKETHANDLER_CPP

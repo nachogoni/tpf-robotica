@@ -3,12 +3,14 @@
 #ifndef ULTRASONICSENSORPACKET_H
 #define ULTRASONICSENSORPACKET_H
 
-#include "DistanceSensorPacket.h" // inheriting class's header file
+#include <packets/DistanceSensorPacket.h> // inheriting class's header file
+
+namespace packets {
 
 /**
  * No description
  */
-class UltrasonicSensorPacket : public DistanceSensorPacket
+class UltrasonicSensorPacket : public packets::DistanceSensorPacket
 {
 	public:
 		// class constructor
@@ -18,4 +20,5 @@ class UltrasonicSensorPacket : public DistanceSensorPacket
 
 };
 
+}
 #endif // ULTRASONICSENSORPACKET_H
