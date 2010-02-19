@@ -16,5 +16,19 @@ namespace webts {
 		return 2.0;
 	}
 
+    bool WebotsBattery::isFull(){
+		return false;
+	}
+
+    void WebotsBattery::setEmptyBias(double bias){
+	}
+
+    bool WebotsBattery::isEmpty(){
+		return false;
+	}
+
+    void WebotsBattery::setFullBias(double bias){
+	}
+
 } /* End of namespace robotapi::webts */
 } /* End of namespace robotapi */

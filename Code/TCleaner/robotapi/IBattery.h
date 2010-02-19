@@ -15,6 +15,15 @@ class IBattery : virtual public IDevice {
 
     virtual double getValue() = 0;
 
+    virtual bool isFull() = 0;
+
+    virtual void setEmptyBias(double bias) = 0;
+
+    virtual bool isEmpty() = 0;
+
+    virtual void setFullBias(double bias) = 0;
+
+
     // virtual destructor for interface
     virtual ~IBattery() { }
     

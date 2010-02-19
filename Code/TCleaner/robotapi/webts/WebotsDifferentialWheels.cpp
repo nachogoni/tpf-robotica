@@ -55,14 +55,22 @@ namespace webts {
 
 	}
 
-    double WebotsDifferentialWheels::getMotorConsumption(){
+    double WebotsDifferentialWheels::getLeftMotorConsumption(){
 		return 1.2;
 	}
 
-    double WebotsDifferentialWheels::getAverageConsumption(){
+    double WebotsDifferentialWheels::getRightMotorConsumption(){
 		return 1.2;
 	}
 
+	bool WebotsDifferentialWheels::isAlarmPresent(){
+		return false;
+	}
+
+	bool WebotsDifferentialWheels::isMotorOff(){
+		return false;
+	}
+	
     std::string WebotsDifferentialWheels::getName(){
 		return dwname;
 	}

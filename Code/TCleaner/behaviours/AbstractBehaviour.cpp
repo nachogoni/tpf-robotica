@@ -1,10 +1,15 @@
 #include "AbstractBehaviour.h"
+#include <robotapi/IRobot.h>
+#include <robotapi/IDistanceSensor.h>
+#include <vector>
+#include <sstream>
 
 namespace behaviours {
 
 	int nextid = 0;
-	
+    robotapi::IRobot * myIRobot = NULL;
 	int stimuli_present = 0;
+    GarbageCleaner * myGarbageCleaner = NULL;
 
 	AbstractBehaviour::AbstractBehaviour(){
 		behaviour_id = nextid;
@@ -50,4 +55,8 @@ namespace behaviours {
 		stimuli_present = stimuli_present | behaviour_id;
 	}
 
+	void AbstractBehaviour::setGarbageCleaner(GarbageCleaner * garbageCleaner){
+		if ( myGarbageCleaner == NULL )
+            myGarbageCleaner = garbageCleaner;
+	}
 } /* End of namespace behaviours */
