@@ -3,7 +3,7 @@
 #ifndef BATTERYPACKET_H
 #define BATTERYPACKET_H
 
-#include "BoardPacket.h" // inheriting class's header file
+#include <packets/BoardPacket.h> // inheriting class's header file
 
 #define CMD_BATTERY_VALUE 0x40
 #define CMD_FULL_BATTERY_ALARM 0x41
@@ -11,10 +11,12 @@
 #define CMD_BATTERY_EMPTY_ALARM 0x43
 #define CMD_BATTERY_FULL_VALUE 0x44
 
+namespace packets {
+
 /**
  * No description
  */
-class BatteryPacket : public BoardPacket
+class BatteryPacket : public packets::BoardPacket
 {
 	public:
 		// class constructor
@@ -30,5 +32,7 @@ class BatteryPacket : public BoardPacket
 		
 		short getBatteryValue();
 };
+
+}
 
 #endif // BATTERYPACKET_H

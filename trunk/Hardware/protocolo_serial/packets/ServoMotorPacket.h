@@ -3,7 +3,7 @@
 #ifndef SERVOMOTORPACKET_H
 #define SERVOMOTORPACKET_H
 
-#include "BoardPacket.h" // inheriting class's header file
+#include <packets/BoardPacket.h> // inheriting class's header file
 
 #define CMD_SET_POSITION 0x40
 #define CMD_SET_ALL_POSITIONS 0x41
@@ -16,10 +16,12 @@
 #define CMD_FREE_SERVO 0x48
 #define CMD_FREE_ALL_SERVOS 0x49
 
+namespace packets {
+
 /**
  * No description
  */
-class ServoMotorPacket : public BoardPacket
+class ServoMotorPacket : public packets::BoardPacket
 {
 	public:
 		// class constructor
@@ -46,4 +48,5 @@ class ServoMotorPacket : public BoardPacket
 		char * getSpeedValues();
 };
 
+}
 #endif // SERVOMOTORPACKET_H

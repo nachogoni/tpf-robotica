@@ -3,12 +3,14 @@
 #ifndef FLOORSENSORPACKET_H
 #define FLOORSENSORPACKET_H
 
-#include "DistanceSensorPacket.h" // inheriting class's header file
+#include <packets/DistanceSensorPacket.h> // inheriting class's header file
 
+namespace packets {
+	
 /**
  * No description
  */
-class FloorSensorPacket : public DistanceSensorPacket
+class FloorSensorPacket : public packets::DistanceSensorPacket
 {
 	public:
 		// class constructor
@@ -18,4 +20,5 @@ class FloorSensorPacket : public DistanceSensorPacket
 
 };
 
+}
 #endif // FLOORSENSORPACKET_H

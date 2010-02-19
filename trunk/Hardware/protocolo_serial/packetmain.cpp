@@ -2,16 +2,16 @@
 #include <iostream>
 #include <stdio.h>
 //#include <thread>
-#include "Packet.h"
-#include "GroupPacket.h"
-#include "DCMotorPacket.h"
-#include "ServoMotorPacket.h"
+#include <Packet.h>
+#include <packets/GroupPacket.h>
+#include <packets/DCMotorPacket.h>
+#include <packets/ServoMotorPacket.h>
 
 using namespace std;
 
 int main(int argc, char *argv[])
 {
-	GroupPacket * p = new GroupPacket(0x09);
+	packets::GroupPacket * p = new packets::GroupPacket(0x09);
 	p->calculateCRC();
 	p->setCommand(0x2D);
 	if ( p->checkCRC() )
@@ -38,9 +38,9 @@ int main(int argc, char *argv[])
 	else
 		printf("CRC FAILED\n");
 		
-	ServoMotorPacket * smp = new ServoMotorPacket(0x07,0x00);
+	packets::ServoMotorPacket * smp = new packets::ServoMotorPacket(0x07,0x00);
 	smp->prepareToSend();
-	DCMotorPacket * dcm = new DCMotorPacket(0x01,0x00);
+	packets::DCMotorPacket * dcm = new packets::DCMotorPacket(0x01,0x00);
 	dcm->prepareToSend();
 
 	int a = (int)(smp->getDestinationGroup());

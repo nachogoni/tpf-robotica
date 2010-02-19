@@ -3,9 +3,11 @@
 #ifndef DCMOTORBOARDPACKETHANDLER_H
 #define DCMOTORBOARDPACKETHANDLER_H
 
-#include "BoardPacketHandler.h" // inheriting class's header file
-#include "Packet.h"
-#include "PacketServer.h"
+#include <BoardPacketHandler.h> // inheriting class's header file
+#include <Packet.h>
+#include <PacketServer.h>
+
+namespace handlers {
 
 /**
  * No description
@@ -41,5 +43,7 @@ class DCMotorBoardPacketHandler : public BoardPacketHandler
 		double encoderValue;
 		double consumptionValue;
 };
+
+}
 
 #endif // DCMOTORBOARDPACKETHANDLER_CPP

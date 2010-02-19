@@ -3,9 +3,11 @@
 #ifndef SERVOBOARDPACKETHANDLER_H
 #define SERVOBOARDPACKETHANDLER_H
 
-#include "BoardPacketHandler.h" // inheriting class's header file
-#include "Packet.h"
-#include "PacketServer.h"
+#include <BoardPacketHandler.h> // inheriting class's header file
+#include <Packet.h>
+#include <PacketServer.h>
+
+namespace handlers {
 
 /**
  * No description
@@ -34,5 +36,7 @@ class ServoBoardPacketHandler : public BoardPacketHandler
 		
 		double positionValue [5];
 };
+
+}
 
 #endif // SERVOBOARDPACKETHANDLER_CPP

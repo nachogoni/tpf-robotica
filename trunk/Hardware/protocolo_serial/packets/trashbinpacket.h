@@ -3,16 +3,18 @@
 #ifndef TRASHBINPACKET_H
 #define TRASHBINPACKET_H
 
-#include "BoardPacket.h" // inheriting class's header file
+#include <packets/BoardPacket.h> // inheriting class's header file
 
 #define CMD_TRASHBIN_VALUE 0x40
 #define CMD_FULL_TRASHBIN_ALARM 0x41
 #define CMD_FULL_TRASHBIN_VALUE 0x42
 
+namespace packets {
+
 /**
  * No description
  */
-class TrashBinPacket : public BoardPacket
+class TrashBinPacket : public packets::BoardPacket
 {
 	public:
 		// class constructor
@@ -27,4 +29,5 @@ class TrashBinPacket : public BoardPacket
 		short getTrashBinValue();
 };
 
+}
 #endif // TRASHBINPACKET_H
