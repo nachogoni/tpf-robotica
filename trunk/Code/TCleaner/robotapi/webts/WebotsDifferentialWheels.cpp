@@ -17,6 +17,16 @@ namespace webts {
 
     void WebotsDifferentialWheels::setSpeed(double left, double right){
 		dw->setSpeed(left,right);
+		this->leftSpeed = left;
+		this->rightSpeed = right;
+	}
+
+	double WebotsDifferentialWheels::getLeftSpeed(){
+		return this->leftSpeed;
+	}
+
+	double WebotsDifferentialWheels::getRightSpeed(){
+		return this->rightSpeed;
 	}
 
     void WebotsDifferentialWheels::enableEncoders(int ms){
@@ -67,10 +77,18 @@ namespace webts {
 		return false;
 	}
 
-	bool WebotsDifferentialWheels::isMotorOff(){
+	bool WebotsDifferentialWheels::motorIsOff(){
 		return false;
 	}
 	
+	bool WebotsDifferentialWheels::isAlarmPresent(bool left){
+		return false;
+	}
+
+	bool WebotsDifferentialWheels::motorIsOff(bool left){
+		return false;
+	}
+
     std::string WebotsDifferentialWheels::getName(){
 		return dwname;
 	}

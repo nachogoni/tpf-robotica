@@ -11,6 +11,10 @@ class IDifferentialWheels : virtual public IDevice {
 
     virtual void setSpeed(double left, double right)  = 0;
 
+    virtual double getLeftSpeed()  = 0;
+
+    virtual double getRightSpeed()  = 0;
+
     virtual void enableEncoders(int ms)  = 0;
 
     virtual void disableEncoders()  = 0;
@@ -34,8 +38,12 @@ class IDifferentialWheels : virtual public IDevice {
     virtual double getRightMotorConsumption()  = 0;
     
     virtual bool isAlarmPresent()  = 0;
+    
+    virtual bool isAlarmPresent(bool left)  = 0;
 
-    virtual bool isMotorOff()  = 0;
+    virtual bool motorIsOff()  = 0;
+
+    virtual bool motorIsOff(bool left)  = 0;
     // virtual destructor for interface
     virtual ~IDifferentialWheels() { }
 };

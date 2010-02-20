@@ -8,10 +8,12 @@ namespace real {
 	}
 
 	void RealBattery::enable(int ms){
+		this->bbph->enable();
 		return;
 	}
 
 	void RealBattery::disable(){
+		this->bbph->disable();
 		return;
 	}
 

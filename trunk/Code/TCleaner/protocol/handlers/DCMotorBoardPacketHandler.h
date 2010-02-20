@@ -25,6 +25,8 @@ class DCMotorBoardPacketHandler : public protocol::BoardPacketHandler
 		
 		void setSpeed(double value);
 
+		double getSpeed();
+
 		void enableEncoder();
 
 		double getEncoder();
@@ -35,15 +37,20 @@ class DCMotorBoardPacketHandler : public protocol::BoardPacketHandler
 
 		double getMotorConsumption();
 
-		// TODO Remove this method and add isAlarmPresent and motorIsOff
-		double getAverageConsumption();
+		bool isAlarmPresent();
+		
+		bool motorIsOff();
+
 	private:
 		char groupid;
 		char boardid;
 		PacketServer * ps;
 		
 		double encoderValue;
+		double speedValue;
 		double consumptionValue;
+		bool stressAlarm;
+		bool shutdownAlarm;
 };
 
 }

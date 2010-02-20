@@ -15,6 +15,10 @@ public:
 
     void setSpeed(double left, double right);
 
+	double getLeftSpeed();
+
+	double getRightSpeed();
+
     void enableEncoders(int ms);
 
     void disableEncoders();
@@ -39,7 +43,11 @@ public:
 
 	bool isAlarmPresent();
 
-	bool isMotorOff();
+	bool isAlarmPresent(bool left);
+
+	bool motorIsOff();
+
+	bool motorIsOff(bool left);
 
     std::string getName();
 
@@ -48,6 +56,9 @@ public:
     // Change parameter to Webots API Differential Wheels
     WebotsDifferentialWheels(webots::DifferentialWheels & wdw);
 
+	private:
+		double leftSpeed;
+		double rightSpeed;
     };
 
 } /* End of namespace robotapi::webts */

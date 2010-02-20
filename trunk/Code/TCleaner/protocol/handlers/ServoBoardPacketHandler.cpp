@@ -27,11 +27,11 @@ ServoBoardPacketHandler::~ServoBoardPacketHandler()
 }
 
 void ServoBoardPacketHandler::handlePacket(Packet * p){
-	packets::ServoMotorPacket * dcmp = new packets::ServoMotorPacket(groupid,boardid);
-	dcmp->analysePacket(p);
+	packets::ServoMotorPacket * smp = new packets::ServoMotorPacket(groupid,boardid);
+	smp->analysePacket(p);
 	
-	if ( p->getCommand() == CMD_GET_ALL_POSITIONS ){
-		char * value = dcmp->getPositionValues();
+	if ( smp->getCommand() == CMD_GET_ALL_POSITIONS ){
+		char * value = smp->getPositionValues();
 		// TODO convert from short to double
 		// Lock Mutex
 		this->positionValue[0] = value[0];

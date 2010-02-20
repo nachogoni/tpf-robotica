@@ -27,11 +27,11 @@ DistanceSensorBoardPacketHandler::~DistanceSensorBoardPacketHandler()
 }
 
 void DistanceSensorBoardPacketHandler::handlePacket(Packet * p){
-	packets::DistanceSensorPacket * dcmp = new packets::DistanceSensorPacket(groupid,boardid);
-	dcmp->analysePacket(p);
+	packets::DistanceSensorPacket * dsp = new packets::DistanceSensorPacket(groupid,boardid);
+	dsp->analysePacket(p);
 	
-	if ( p->getCommand() == CMD_GET_ALL_VALUES ){
-		short * value = dcmp->getSensorValues();
+	if ( dsp->getCommand() == CMD_GET_ALL_VALUES ){
+		short * value = dsp->getSensorValues();
 		// TODO convert from short to double
 		// Lock Mutex
 		this->dsValue[0] = value[0];
@@ -59,7 +59,7 @@ void DistanceSensorBoardPacketHandler::disable(int dsId){
 	this->ps->sendPacket(p);
 }
 
-double DistanceSensorBoardPacketHandler::getValue(int dsId){
+int DistanceSensorBoardPacketHandler::getValue(int dsId){
 	// TODO Put timestamps to prevent flooding
    	packets::DistanceSensorPacket * p = new packets::DistanceSensorPacket(groupid,boardid);
 	p->getSensor();

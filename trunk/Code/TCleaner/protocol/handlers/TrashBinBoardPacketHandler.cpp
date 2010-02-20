@@ -24,17 +24,17 @@ TrashBinBoardPacketHandler::~TrashBinBoardPacketHandler()
 }
 
 void TrashBinBoardPacketHandler::handlePacket(Packet * p){
-	packets::TrashBinPacket * dcmp = new packets::TrashBinPacket(groupid,boardid);
-	dcmp->analysePacket(p);
+	packets::TrashBinPacket * tbp = new packets::TrashBinPacket(groupid,boardid);
+	tbp->analysePacket(p);
 	
-	if ( dcmp->getCommand() == CMD_TRASHBIN_VALUE ){
-		short value = dcmp->getTrashBinValue();
+	if ( tbp->getCommand() == CMD_TRASHBIN_VALUE ){
+		short value = tbp->getTrashBinValue();
 		// TODO convert from short to double
 		// Lock Mutex
 		this->currentValue = value;
 		// Release Mutex
 	}
-	if ( dcmp->getCommand() == CMD_FULL_TRASHBIN_ALARM ){
+	if ( tbp->getCommand() == CMD_FULL_TRASHBIN_ALARM ){
 		// Lock Mutex
 		this->full = true;
 		// Release Mutex

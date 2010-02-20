@@ -16,6 +16,14 @@ BatteryPacket::~BatteryPacket()
 	// insert your code here
 }
 
+void BatteryPacket::enable(){
+	this->setCommand(CMD_BATTERY_ENABLE);
+}
+
+void BatteryPacket::disable(){
+	this->setCommand(CMD_BATTERY_DISABLE);
+}
+
 void BatteryPacket::senseBattery(){
 	this->setCommand(CMD_BATTERY_VALUE);
 }

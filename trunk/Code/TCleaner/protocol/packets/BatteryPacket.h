@@ -5,11 +5,13 @@
 
 #include <protocol/packets/BoardPacket.h> // inheriting class's header file
 
-#define CMD_BATTERY_VALUE 0x40
-#define CMD_FULL_BATTERY_ALARM 0x41
-#define CMD_BATTERY_EMPTY_VALUE 0x42
-#define CMD_BATTERY_EMPTY_ALARM 0x43
-#define CMD_BATTERY_FULL_VALUE 0x44
+#define CMD_BATTERY_ENABLE 0x40
+#define CMD_BATTERY_DISABLE 0x41
+#define CMD_BATTERY_VALUE 0x42
+#define CMD_FULL_BATTERY_ALARM 0x43
+#define CMD_BATTERY_EMPTY_VALUE 0x44
+#define CMD_BATTERY_EMPTY_ALARM 0x45
+#define CMD_BATTERY_FULL_VALUE 0x46
 
 namespace protocol {
 namespace packets {
@@ -25,6 +27,8 @@ class BatteryPacket : public protocol::packets::BoardPacket
 		// class destructor
 		~BatteryPacket();
 
+		void enable();
+		void disable();
 		void senseBattery();
 		bool isBatteryFull();
 		void setBatteryEmptyThreshold(short value);

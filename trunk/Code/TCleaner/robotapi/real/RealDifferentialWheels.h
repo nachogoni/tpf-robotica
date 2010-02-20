@@ -17,6 +17,10 @@ class RealDifferentialWheels : public robotapi::IDifferentialWheels , public rob
 
     	void setSpeed(double left, double right);
 
+		double getLeftSpeed();
+
+		double getRightSpeed();
+
     	void enableEncoders(int ms);
 
     	void disableEncoders();
@@ -41,7 +45,11 @@ class RealDifferentialWheels : public robotapi::IDifferentialWheels , public rob
 
     	bool isAlarmPresent();
 
-    	bool isMotorOff();
+		bool isAlarmPresent(bool left);
+
+		bool motorIsOff();
+
+		bool motorIsOff(bool left);
 
 	private:
 		protocol::handlers::DCMotorBoardPacketHandler * leftBoard;

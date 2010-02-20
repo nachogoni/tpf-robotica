@@ -25,28 +25,42 @@ BatteryBoardPacketHandler::~BatteryBoardPacketHandler()
 }
 
 void BatteryBoardPacketHandler::handlePacket(Packet * p){
-	packets::BatteryPacket * dcmp = new packets::BatteryPacket(groupid,boardid);
-	dcmp->analysePacket(p);
+	packets::BatteryPacket * bp = new packets::BatteryPacket(groupid,boardid);
+	bp->analysePacket(p);
 	
-	if ( dcmp->getCommand() == CMD_BATTERY_VALUE ){
-		short value = dcmp->getBatteryValue();
+	if ( bp->getCommand() == CMD_BATTERY_VALUE ){
+		short value = bp->getBatteryValue();
 		// TODO convert from short to double
 		// Lock Mutex
 		this->currentValue = value;
 		// Release Mutex
 	}
-	if ( dcmp->isBatteryFull() ){
+	if ( bp->isBatteryFull() ){
 		// TODO convert from short to double
 		// Lock Mutex
 		this->full = true;
 		// Release Mutex
 	}
-	if ( dcmp->isBatteryEmpty() ){
+	if ( bp->isBatteryEmpty() ){
 		// TODO convert from short to double
 		// Lock Mutex
 		this->empty = true;
 		// Release Mutex
 	}
+}
+
+void BatteryBoardPacketHandler::enable(){
+ 	packets::BatteryPacket * p = new packets::BatteryPacket(groupid,boardid);
+	p->enable();
+	p->prepareToSend();
+	this->ps->sendPacket(p);
+}
+
+void BatteryBoardPacketHandler::disable(){
+ 	packets::BatteryPacket * p = new packets::BatteryPacket(groupid,boardid);
+	p->disable();
+	p->prepareToSend();
+	this->ps->sendPacket(p);
 }
 
 double BatteryBoardPacketHandler::getValue(){

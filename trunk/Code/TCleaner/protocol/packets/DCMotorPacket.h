@@ -17,6 +17,8 @@
 #define CMD_DONT_STOP 0x47
 #define CMD_MOTOR_CONSUMPTION 0x48
 #define CMD_STRESS_ALARM 0x49
+#define CMD_SHUTDOWN_ALARM 0x4A
+#define CMD_GET_DC_SPEED 0x4B
 
 namespace protocol {
 namespace packets {
@@ -33,8 +35,9 @@ class DCMotorPacket : public protocol::packets::BoardPacket
 		~DCMotorPacket();
 		
 		// Commands to be sent
-		void setDCSpeed(bool left, short speed);
-		void setDirection(bool left);
+		void setDCSpeed(bool clockwise, short speed);
+		void getDCSpeed();
+		void setDirection(bool clockwise);
 		void setEncoder(short counts);
 		void getEncoder();
 		void resetEncoder();
@@ -45,8 +48,10 @@ class DCMotorPacket : public protocol::packets::BoardPacket
 
 		// Get data from package
 		bool isMotorAlarm();
+		bool isMotorShutDown();
 		short getEncoderValue();
 		short getEncoderValueToStop();
+		short getSpeedValue();
 		short getMotorConsumptionValue();
 	private:
 		void setDirection(char dir);
