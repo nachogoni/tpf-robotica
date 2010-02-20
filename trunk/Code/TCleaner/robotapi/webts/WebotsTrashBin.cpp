@@ -22,8 +22,8 @@ namespace webts {
 		return false;
 	}
 
-	int WebotsTrashBin::setFullBias(double bias){
-		return 0;
+	void WebotsTrashBin::setFullBias(double bias){
+		return;
 	}
 
 } /* End of namespace robotapi::webts */

@@ -19,7 +19,7 @@ class WebotsTrashBin : public robotapi::ITrashBin, robotapi::webts::WebotsDevice
 
 		bool isFull();
 
-		int setFullBias(double bias);
+		void setFullBias(double bias);
 
 	    WebotsTrashBin(std::string & name, IWbDeviceTag tag);
     };

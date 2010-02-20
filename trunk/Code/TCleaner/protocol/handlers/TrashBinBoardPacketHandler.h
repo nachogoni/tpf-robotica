@@ -23,7 +23,7 @@ class TrashBinBoardPacketHandler : public protocol::BoardPacketHandler
 		
 		void handlePacket(Packet * p);
 		
-		double getValue();
+		int getValue();
 
 		bool isFull();
 
@@ -34,7 +34,7 @@ class TrashBinBoardPacketHandler : public protocol::BoardPacketHandler
 		char boardid;
 		PacketServer * ps;
 		
-		double currentValue;
+		int currentValue;
 		bool full;
 };
 
