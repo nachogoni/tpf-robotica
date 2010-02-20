@@ -23,7 +23,6 @@ class IBattery : virtual public IDevice {
 
     virtual void setFullBias(double bias) = 0;
 
-
     // virtual destructor for interface
     virtual ~IBattery() { }
     
