@@ -27,14 +27,14 @@ class DistanceSensorBoardPacketHandler : public protocol::BoardPacketHandler
 
 		void disable(int dsId);
 		
-		double getValue(int dsId);
+		int getValue(int dsId);
 		
 	private:
 		char groupid;
 		char boardid;
 		PacketServer * ps;
 		
-		double dsValue [5];
+		int dsValue [5];
 };
 
 }

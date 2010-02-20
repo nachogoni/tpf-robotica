@@ -22,7 +22,11 @@ class BatteryBoardPacketHandler : public protocol::BoardPacketHandler
 		~BatteryBoardPacketHandler();
 		
 		void handlePacket(Packet * p);
-		
+
+		void enable();
+
+		void disable();
+
 		double getValue();
 
 		bool isFull();

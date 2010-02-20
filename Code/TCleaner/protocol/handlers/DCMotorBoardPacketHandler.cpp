@@ -14,7 +14,10 @@ DCMotorBoardPacketHandler::DCMotorBoardPacketHandler(PacketServer * ps, char gro
 	this->boardid = boardid;
 	this->ps = ps;
 	this->encoderValue = 0;
+	this->speedValue = 0;
 	this->consumptionValue = 0;
+	this->stressAlarm = false;
+	this->shutdownAlarm = false;
 }
 
 // class destructor
@@ -27,18 +30,35 @@ void DCMotorBoardPacketHandler::handlePacket(Packet * p){
 	packets::DCMotorPacket * dcmp = new packets::DCMotorPacket(groupid,boardid);
 	dcmp->analysePacket(p);
 	
-	if ( p->getCommand() == CMD_GET_ENCODER ){
+	if ( dcmp->getCommand() == CMD_GET_ENCODER ){
 		int value = dcmp->getEncoderValue();
 		// TODO convert from int(4 bytes) to double
 		// Lock Mutex
 		this->encoderValue = value;
 		// Release Mutex
 	}
- 	if ( p->getCommand() == CMD_GET_ENCODER ){
+	if ( dcmp->getCommand() == CMD_GET_DC_SPEED ){
+		int value = dcmp->getSpeedValue();
+		// TODO convert from int(4 bytes) to double
+		// Lock Mutex
+		this->speedValue = value;
+		// Release Mutex
+	}
+ 	if ( dcmp->getCommand() == CMD_MOTOR_CONSUMPTION ){
 		int value = dcmp->getMotorConsumptionValue();
 		// TODO convert from int(4 bytes) to double
 		// Lock Mutex
 		this->consumptionValue = value;
+		// Release Mutex
+	}
+ 	if ( dcmp->isMotorAlarm() ){
+		// Lock Mutex
+		this->stressAlarm = true;
+		// Release Mutex
+	}
+	if ( dcmp->isMotorShutDown() ){
+		// Lock Mutex
+		this->shutdownAlarm = true;
 		// Release Mutex
 	}
 }
@@ -52,12 +72,26 @@ void DCMotorBoardPacketHandler::setSpeed(double value){
 	this->ps->sendPacket(p);
 }
 
+double DCMotorBoardPacketHandler::getSpeed(){
+   	packets::DCMotorPacket * p = new packets::DCMotorPacket(groupid,boardid);
+	p->getDCSpeed();
+	p->prepareToSend();
+	this->ps->sendPacket(p);
+	// Lock mutex
+    double current = this->speedValue;
+	// Release mutex
+	return current;
+}
+
 double DCMotorBoardPacketHandler::getEncoder(){
    	packets::DCMotorPacket * p = new packets::DCMotorPacket(groupid,boardid);
 	p->getEncoder();
 	p->prepareToSend();
 	this->ps->sendPacket(p);
-	return this->encoderValue;
+	// Lock mutex
+    double current = this->encoderValue;
+	// Release mutex
+	return current;
 }
 
 void DCMotorBoardPacketHandler::moveWheel(double value){
@@ -80,6 +114,21 @@ double DCMotorBoardPacketHandler::getMotorConsumption(){
 	this->ps->sendPacket(p);
 	return this->consumptionValue;
 }
+
+bool DCMotorBoardPacketHandler::isAlarmPresent(){
+	// Lock mutex
+	bool value = this->stressAlarm;
+	// Release mutex
+	return value;
+}
+
+bool DCMotorBoardPacketHandler::motorIsOff(){
+	// Lock mutex
+	bool value = this->shutdownAlarm;
+	// Release mutex
+	return value;
+}
+
 
 }
 }

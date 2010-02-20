@@ -184,6 +184,7 @@ short Packet::getShortData(){
     return ret;
 }
 
+//TODO
 int Packet::getIntData(){
     int up = packet[this->dataIdx++] & 0x00FF;
     int down = packet[this->dataIdx++] & 0x00FF;

@@ -30,6 +30,14 @@ double RealDifferentialWheels::getRightEncoder(){
 	return this->rightBoard->getEncoder();
 }
 
+double RealDifferentialWheels::getLeftSpeed(){
+	return this->leftBoard->getSpeed();
+}
+
+double RealDifferentialWheels::getRightSpeed(){
+	return this->rightBoard->getSpeed();
+}
+
 void RealDifferentialWheels::moveWheels(double left, double right){
 	this->moveLeftWheel(left);
 	this->moveRightWheel(right);
@@ -60,13 +68,25 @@ double RealDifferentialWheels::getRightMotorConsumption(){
 }
 
 bool RealDifferentialWheels::isAlarmPresent(){
-	// TODO use DCMotorBoardPacketHandler Method
-	return false;
+	return this->isAlarmPresent(true) || this->isAlarmPresent(false);
 }
 
-bool RealDifferentialWheels::isMotorOff(){
-	// TODO use DCMotorBoardPacketHandler Method
-	return false;
+bool RealDifferentialWheels::isAlarmPresent(bool left){
+	if ( left )
+		return this->leftBoard->isAlarmPresent();
+
+	return this->rightBoard->isAlarmPresent();
+}
+
+bool RealDifferentialWheels::motorIsOff(){
+	return this->motorIsOff(true) || this->motorIsOff(false);
+}
+
+bool RealDifferentialWheels::motorIsOff(bool left){
+	if ( left )
+		return this->leftBoard->motorIsOff();
+
+	return this->rightBoard->motorIsOff();
 }
 
 } /* End of namespace robotapi::real */

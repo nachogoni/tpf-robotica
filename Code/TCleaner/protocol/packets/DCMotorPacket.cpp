@@ -17,8 +17,8 @@ DCMotorPacket::~DCMotorPacket()
 	// insert your code here
 }
 
-void DCMotorPacket::setDirection(bool left){
-	if ( left )
+void DCMotorPacket::setDirection(bool clockwise){
+	if ( clockwise )
 	    this->setDirection((char)DIR_CLOCKWISE);
 	else
 	    this->setDirection((char)DIR_COUNTERCLOCKWISE);
@@ -29,10 +29,14 @@ void DCMotorPacket::setDirection(char dir){
 	this->addData(dir);
 }
 
-void DCMotorPacket::setDCSpeed(bool left, short speed){
-	this->setDirection(left);
+void DCMotorPacket::setDCSpeed(bool clockwise, short speed){
+	this->setDirection(clockwise);
 	this->addData(speed);
 	this->setCommand(CMD_SET_DC_SPEED);
+}
+
+void DCMotorPacket::getDCSpeed(){
+	this->setCommand(CMD_GET_DC_SPEED);
 }
 
 void DCMotorPacket::setEncoder(short counts){
@@ -69,6 +73,10 @@ bool DCMotorPacket::isMotorAlarm(){
 	return this->getCommand() == CMD_STRESS_ALARM;
 }
 
+bool DCMotorPacket::isMotorShutDown(){
+	return this->getCommand() == CMD_SHUTDOWN_ALARM;
+}
+
 short DCMotorPacket::getEncoderValue(){
 	this->resetDataIdx();
 	return this->getShortData();
@@ -81,6 +89,11 @@ short DCMotorPacket::getEncoderValueToStop(){
 short DCMotorPacket::getMotorConsumptionValue(){
 	this->resetDataIdx();
 	return this->getIntData();
+}
+
+short DCMotorPacket::getSpeedValue(){
+	this->resetDataIdx();
+	return this->getShortData();
 }
 
 }
