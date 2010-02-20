@@ -42,7 +42,7 @@ class BatteryBoardPacketHandler : public protocol::BoardPacketHandler
 		char boardid;
 		PacketServer * ps;
 		
-		double currentValue;
+		int currentValue;
 		bool full;
 		bool empty;
 };

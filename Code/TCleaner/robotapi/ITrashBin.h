@@ -17,7 +17,7 @@ class ITrashBin : virtual public robotapi::IDevice {
 
     virtual bool isFull()  = 0;
 
-    virtual int setFullBias(double bias)  = 0;
+    virtual void setFullBias(double bias)  = 0;
 
 public:
     // virtual destructor for interface 

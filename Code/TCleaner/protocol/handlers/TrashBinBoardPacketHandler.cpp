@@ -29,7 +29,7 @@ void TrashBinBoardPacketHandler::handlePacket(Packet * p){
 	
 	if ( tbp->getCommand() == CMD_TRASHBIN_VALUE ){
 		short value = tbp->getTrashBinValue();
-		// TODO convert from short to double
+		// TODO convert from short to int
 		// Lock Mutex
 		this->currentValue = value;
 		// Release Mutex
@@ -41,7 +41,7 @@ void TrashBinBoardPacketHandler::handlePacket(Packet * p){
 	}
 }
 
-double TrashBinBoardPacketHandler::getValue(){
+int TrashBinBoardPacketHandler::getValue(){
  	packets::TrashBinPacket * p = new packets::TrashBinPacket(groupid,boardid);
 	p->senseTrashBin();
 	p->prepareToSend();
