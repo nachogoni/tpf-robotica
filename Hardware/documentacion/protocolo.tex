@@ -1371,6 +1371,26 @@ Mensaje enviado desde el controlador del cesto de basura informando que se compl
 	\item{DATO:} vac\'io
 \end{itemize}
 
+\subsection{SET FULL BIN VALUE}
+\label{set_battery_empty_value}
+
+Establece el valor para el cual se env\'ia la alarma \ref{bin_full_alarm} indicando un nivel alto en el cesto de basura.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x42
+	\item{DATO:} N\'umero entero positivo de 16 bits, en el rango desde 0x0000 hasta 0x03FF,
+		que representa la lectura del nivel del cesto de basura.
+		Ver apartado \ref{codificacion} para mayor informaci\'on.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0xC2
+	\item{DATO:} vac\'io
+\end{itemize}
 
 \section{Codificaci\'on de los valores enviados}
 \label{codificacion}
