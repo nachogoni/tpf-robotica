@@ -8,7 +8,7 @@
 namespace robotapi {
 namespace real {
 
-class RealDevice : virtual public robotapi::IDevice {};
+class RealDevice : public robotapi::IDevice {};
 
 } /* End of namespace robotapi::real */
 } /* End of namespace robotapi */

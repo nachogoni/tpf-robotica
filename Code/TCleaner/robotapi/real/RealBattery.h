@@ -3,12 +3,12 @@
 
 #include "robotapi/IBattery.h"
 #include <protocol/handlers/BatteryBoardPacketHandler.h>
-
+#include <robotapi/real/RealDevice.h>
 
 namespace robotapi {
 namespace real {
 
-class RealBattery : virtual public robotapi::IBattery {
+class RealBattery : public robotapi::IBattery , public robotapi::real::RealDevice {
 
 	public:
 		RealBattery::RealBattery(protocol::handlers::BatteryBoardPacketHandler * bbph);

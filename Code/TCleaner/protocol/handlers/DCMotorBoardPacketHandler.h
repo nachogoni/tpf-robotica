@@ -35,6 +35,7 @@ class DCMotorBoardPacketHandler : public protocol::BoardPacketHandler
 
 		double getMotorConsumption();
 
+		// TODO Remove this method and add isAlarmPresent and motorIsOff
 		double getAverageConsumption();
 	private:
 		char groupid;

@@ -38,7 +38,7 @@ void DCMotorBoardPacketHandler::handlePacket(Packet * p){
 		int value = dcmp->getMotorConsumptionValue();
 		// TODO convert from int(4 bytes) to double
 		// Lock Mutex
-		this->consumptionValue= value;
+		this->consumptionValue = value;
 		// Release Mutex
 	}
 }
