@@ -41,7 +41,7 @@ void GarbageCleaner::initializeSensors(){
 		ids->enable(TIME_STEP);
 		dss.push_back(ids);
 	}
-	for( int i=0 ; i < FLOOR_SENSORS ; i++ ){
+/*	for( int i=0 ; i < FLOOR_SENSORS ; i++ ){
 		std::stringstream sstr;
 		sstr << "fs" << i;
 		robotapi::IDistanceSensor * ifs = &myIRobot.getDistanceSensor(sstr.str());
@@ -57,7 +57,7 @@ void GarbageCleaner::initializeSensors(){
 
 	camera = &myIRobot.getCamera("camera");
 	camera->enable(TIME_STEP);
-	
+*/
 	
 }
 

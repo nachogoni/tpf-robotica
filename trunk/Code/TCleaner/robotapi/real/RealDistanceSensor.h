@@ -3,16 +3,16 @@
 
 #include <robotapi/IDistanceSensor.h>
 #include <protocol/handlers/DistanceSensorBoardPacketHandler.h>
-
+#include <robotapi/real/RealDevice.h>
 
 namespace robotapi {
 namespace real {
 
-class RealDistanceSensor : virtual public robotapi::IDistanceSensor {
+class RealDistanceSensor : public robotapi::IDistanceSensor , public robotapi::real::RealDevice {
 
 	public:
-		RealDistanceSensor::RealDistanceSensor(protocol::handlers::DistanceSensorBoardPacketHandler * dsbph,
-												int sensorNumber);
+		RealDistanceSensor(protocol::handlers::DistanceSensorBoardPacketHandler * dsbph,
+												int sensorNumber, std::string name);
 
 		void enable(int ms);
 

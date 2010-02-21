@@ -3,7 +3,8 @@
 namespace robotapi {
 namespace real {
 
-RealServo::RealServo(protocol::handlers::ServoBoardPacketHandler * sbph, int sensorNumber){
+RealServo::RealServo(protocol::handlers::ServoBoardPacketHandler * sbph, int sensorNumber,std::string name)
+							: RealDevice(&name){
 	this->boardHandler = sbph;
 	this->id = sensorNumber;
 }

@@ -3,7 +3,8 @@
 namespace robotapi {
 namespace real {
 
-RealTrashBin::RealTrashBin(protocol::handlers::TrashBinBoardPacketHandler * tbbph){
+RealTrashBin::RealTrashBin(protocol::handlers::TrashBinBoardPacketHandler * tbbph,std::string name)
+							: RealDevice(&name){
 	this->boardHandler = tbbph;
 }
 

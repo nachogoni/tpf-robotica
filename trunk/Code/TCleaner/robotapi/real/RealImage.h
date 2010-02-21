@@ -8,7 +8,16 @@
 namespace robotapi {
 namespace real {
 
-class RealImage : virtual public robotapi::IImage {};
+class RealImage : virtual public robotapi::IImage {
+
+	public:
+		int getWidth();
+
+		int getHeight();
+
+		int getDepth();
+
+	};
 
 } /* End of namespace robotapi::real */
 } /* End of namespace robotapi */

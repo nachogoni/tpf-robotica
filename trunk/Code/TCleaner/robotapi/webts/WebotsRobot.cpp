@@ -5,6 +5,7 @@
 #include <robotapi/webts/WebotsServo.h>
 #include <robotapi/webts/WebotsBattery.h>
 #include <robotapi/webts/WebotsDifferentialWheels.h>
+#include <robotapi/webts/WebotsTrashBin.h>
 #include <webots/Camera.hpp>
 #include <webots/Robot.hpp>
 
@@ -69,6 +70,12 @@ namespace webts {
         WebotsBattery * b = new WebotsBattery(name,*wdt);
         return * b;
     }
+
+	ITrashBin & WebotsRobot::getTrashBin(std::string name){
+		IWbDeviceTag * wdt = new WebotsDeviceTag(3);
+        WebotsTrashBin * tb = new WebotsTrashBin(name,*wdt);
+        return * tb;
+	}
 
 	void WebotsRobot::step(int ms){
 		robot->step(ms);

@@ -9,6 +9,8 @@
 #include <protocol/Packet.h>
 #include <protocol/BoardPacketHandler.h>
 
+#define SERIALDEVICE "/dev/ttyUSB0"
+
 namespace protocol {
 
 /**
@@ -23,6 +25,7 @@ class PacketServer
 		~PacketServer();
 		
 		void sendPacket(Packet * p);
+		void registerHandler(BoardPacketHandler * bph,int groupid,int boardid);
 		void run(void);
 	private:
 		void sendAPacket(Packet * p);

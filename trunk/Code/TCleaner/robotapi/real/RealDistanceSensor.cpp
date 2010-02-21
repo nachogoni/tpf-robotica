@@ -4,7 +4,8 @@ namespace robotapi {
 namespace real {
 
 RealDistanceSensor::RealDistanceSensor(protocol::handlers::DistanceSensorBoardPacketHandler * dsbph,
-												int sensorNumber){
+												int sensorNumber,std::string name)
+							: RealDevice(&name){
 	this->boardHandler = dsbph;
 	this->id = sensorNumber;
 }

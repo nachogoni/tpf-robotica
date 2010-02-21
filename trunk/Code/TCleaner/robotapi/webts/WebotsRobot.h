@@ -32,9 +32,11 @@ public:
 
     IDevice & getDevice(std::string name);
 
-    IDifferentialWheels &getDifferentialWheels(std::string name);
+    IDifferentialWheels & getDifferentialWheels(std::string name);
 
-    IBattery &getBattery(std::string name);
+    IBattery & getBattery(std::string name);
+
+	ITrashBin & getTrashBin(std::string name);
 
     void step(int ms);
 

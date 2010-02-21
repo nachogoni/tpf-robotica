@@ -41,4 +41,11 @@ void PacketServer::run(void){
 
 }
 
+void PacketServer::registerHandler(BoardPacketHandler * bph,int groupid,int boardid){
+	char gid = groupid;
+	char bid = boardid;
+//   	this->handlers.insert( std::pair<char, std::pair<char, BoardPacketHandler *> > (gid,(bid,bph)) );
+   	this->handlers[gid][bid] = bph;
+}
+
 }

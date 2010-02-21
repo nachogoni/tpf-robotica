@@ -3,14 +3,15 @@
 
 #include <robotapi/ITrashBin.h>
 #include <protocol/handlers/TrashBinBoardPacketHandler.h>
+#include <robotapi/real/RealDevice.h>
 
 namespace robotapi {
 namespace real {
 
-class RealTrashBin : virtual public robotapi::ITrashBin {
+class RealTrashBin : virtual public robotapi::ITrashBin , public robotapi::real::RealDevice {
 
 	public:
-		RealTrashBin::RealTrashBin(protocol::handlers::TrashBinBoardPacketHandler * tbbph);
+		RealTrashBin(protocol::handlers::TrashBinBoardPacketHandler * tbbph, std::string name);
 
 		int enable(int ms);
 
