@@ -237,7 +237,8 @@ Informa que ha habido un error.
 	\item{COMANDO:} 0x04
 	\item{DATO:} 1 byte con el c\'odigo de error y la descripci\'on del error en texto plano.
 	El valor 0x00 indica un error de CRC en el paquete.
-	Cualquier otro valor, indica otro error que depende de la placa y el comando enviado.
+	El valor 0x01 indica que el comando es desconocido para la placa destinataria.
+	Cualquier otro valor, indica un error que depende de la placa y el comando enviado.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -1420,9 +1421,9 @@ todos los bytes del paquete.
 
 \begin{table}[h]
 \begin{center}
-\begin{tabular}{|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|}
 \hline
-05 & 11 & 00 & 40 & 01 & 55 \\
+04 & 11 & 00 & 40 & 55 \\
 \hline
 \end{tabular}
 \caption{Paquete de datos del ejemplo 1}
