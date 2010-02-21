@@ -8,7 +8,12 @@
 namespace robotapi {
 namespace real {
 
-class RealDeviceTag : virtual public robotapi::IWbDeviceTag {};
+class RealDeviceTag : virtual public robotapi::IWbDeviceTag {
+
+	public:
+		RealDeviceTag();
+
+	};
 
 } /* End of namespace robotapi::real */
 } /* End of namespace robotapi */

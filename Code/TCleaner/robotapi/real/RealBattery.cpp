@@ -3,7 +3,8 @@
 namespace robotapi {
 namespace real {
 
-	RealBattery::RealBattery(protocol::handlers::BatteryBoardPacketHandler * bbph){
+	RealBattery::RealBattery(protocol::handlers::BatteryBoardPacketHandler * bbph,std::string name)
+							: RealDevice(&name){
 		this->bbph = bbph;
 	}
 

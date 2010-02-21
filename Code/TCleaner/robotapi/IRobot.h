@@ -7,6 +7,7 @@
 #include "IDifferentialWheels.h"
 #include "IDistanceSensor.h"
 #include "IServo.h"
+#include "ITrashBin.h"
 #include <string>
 
 class GarbageCleaner;
@@ -35,9 +36,11 @@ class IRobot {
 
     virtual IDevice & getDevice(std::string name)  = 0;
 
-    virtual IDifferentialWheels &getDifferentialWheels(std::string name)  = 0;
+    virtual IDifferentialWheels & getDifferentialWheels(std::string name)  = 0;
 
-    virtual IBattery &getBattery(std::string name)  = 0;
+    virtual IBattery & getBattery(std::string name)  = 0;
+
+    virtual ITrashBin & getTrashBin(std::string name)  = 0;
 
     virtual void step(int ms)  = 0;
 

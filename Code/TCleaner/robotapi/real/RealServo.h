@@ -3,14 +3,15 @@
 
 #include <robotapi/IServo.h>
 #include <protocol/handlers/ServoBoardPacketHandler.h>
+#include <robotapi/real/RealDevice.h>
 
 namespace robotapi {
 namespace real {
 
-class RealServo : virtual public robotapi::IServo {
+class RealServo : public robotapi::IServo , public robotapi::real::RealDevice {
 
 	public:
-		RealServo::RealServo(protocol::handlers::ServoBoardPacketHandler * sbph, int sensorNumber);
+		RealServo(protocol::handlers::ServoBoardPacketHandler * sbph, int sensorNumber , std::string name);
 
 		void setAcceleration(double force);
 

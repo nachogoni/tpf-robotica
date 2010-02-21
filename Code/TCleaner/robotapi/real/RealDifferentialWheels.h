@@ -12,8 +12,11 @@ namespace real {
 class RealDifferentialWheels : public robotapi::IDifferentialWheels , public robotapi::real::RealDevice {
 
 	public:
-		RealDifferentialWheels::RealDifferentialWheels(protocol::handlers::DCMotorBoardPacketHandler * dcmbphl,
-														protocol::handlers::DCMotorBoardPacketHandler * dcmbphr);
+		RealDifferentialWheels(protocol::handlers::DCMotorBoardPacketHandler * dcmbphl,
+								protocol::handlers::DCMotorBoardPacketHandler * dcmbphr,
+								std::string name);
+
+		~RealDifferentialWheels();
 
     	void setSpeed(double left, double right);
 
@@ -54,6 +57,7 @@ class RealDifferentialWheels : public robotapi::IDifferentialWheels , public rob
 	private:
 		protocol::handlers::DCMotorBoardPacketHandler * leftBoard;
 		protocol::handlers::DCMotorBoardPacketHandler * rightBoard;
+
 	};
 
 } /* End of namespace robotapi::real */

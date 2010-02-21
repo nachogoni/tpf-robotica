@@ -8,7 +8,18 @@
 namespace robotapi {
 namespace real {
 
-class RealCamera : virtual public robotapi::ICamera {};
+class RealCamera : virtual public robotapi::ICamera {
+
+	public:
+		void enable(int ms);
+
+		void disable();
+
+		IImage & getImage();
+
+		int saveImage(std::string filename, int quality);
+
+	};
 
 } /* End of namespace robotapi::real */
 } /* End of namespace robotapi */
