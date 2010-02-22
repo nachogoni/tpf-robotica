@@ -7,7 +7,9 @@ namespace protocol {
 // class constructor
 PacketServer::PacketServer()
 {
-	// insert your code here
+	#ifdef LINUX
+	this->toSendMutex = new Mutex();
+	#endif
 }
 
 // class destructor
@@ -18,16 +20,22 @@ PacketServer::~PacketServer()
 
 void PacketServer::sendPacket(Packet * p){
 	// Apply mutex
-	
+	#ifdef LINUX
+	this->toSendMutex->enterMutex();
+	#endif
+
 	this->toSend.push(p);
-	
+
 	// Release mutex
+	#ifdef LINUX
+	this->toSendMutex->leaveMutex();
+	#endif
 }
 
 void PacketServer::sendAPacket(Packet * p){
 	unsigned char length = (unsigned char) p->getActualLength();
 	unsigned char i;
-//	char * packet = p->getPacket();
+	char * packet = p->getPacket();
 	
 	for ( i = 0 ; i < length ; i++ ){
 	    // Write in fd
