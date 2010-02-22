@@ -27,7 +27,7 @@
  */
 
 #include <16F88.h>
-//#DEVICE ADC = 10
+#DEVICE ADC = 10
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -96,6 +96,10 @@ void init()
 	buffer_read = 0;
 	data_length = -1;
 
+	// Seteo el Timer1 como fuente externa y sin divisor
+	setup_timer_1(T1_INTERNAL | T1_DIV_BY_1);
+	set_timer1(0);
+
 	// Interrupcion Rcv
 	enable_interrupts(INT_RDA);
 
@@ -110,10 +114,13 @@ void init()
 void main()
 {
 	// Placa Generica - Implementacion del protocolo
+
+long tmr1;
+long tmr2;
 	
 	init();
 
-/*	buffer[0] = 0x04; // Falla x crc
+	buffer[0] = 0x04; // Falla x crc
 	buffer[1] = 0x11;
 	buffer[2] = 0x00;
 	buffer[3] = 0x40;
@@ -130,9 +137,10 @@ void main()
 	buffer[14] = 0x00;
 	buffer[15] = 0x40;
 	buffer[16] = 0xBB;
-	data_length = 17;*/
+	buffer_read = 12;
+	data_length = 17;
 
-	buffer[0] = 'A';
+/*	buffer[0] = 'A';
 	buffer[1] = 'S';
 	buffer[2] = 'A';
 	buffer[3] = 0x48;
@@ -149,15 +157,20 @@ void main()
 	buffer[43] = 0x40;
 	buffer[44] = 'C';
 	buffer_read = 40;
-	data_length = 9;
+	data_length = 9;*/
 	
 	// FOREVER
-	while(true)
+//	while(true)
 	{
 		// Hace sus funciones...
 
 		// Protocolo
+		tmr1 = get_timer1();
 		runProtocol();
+		tmr2 = get_timer1();
+		
+		printf("\n\rT1: %ld - T2: %ld - DIFF: %ld\n\r", tmr1, tmr2, tmr2 - tmr1);
+		
 	}
 
 	return;
@@ -247,26 +260,26 @@ void send(struct command_t cmd)
 	int i, len;
 	
 	len = cmd.len - 4;
-/*	putc(cmd.len);
+	putc(cmd.len);
 	putc(cmd.to);
 	putc(cmd.from);
 	putc(cmd.cmd);
-*/	
-		printf("LEN:%X\n\r", cmd.len);	// DEBUG
+	
+/*		printf("LEN:%X\n\r", cmd.len);	// DEBUG
 		printf("TO:%X\n\r", cmd.to);	// DEBUG
 		printf("FROM:%X\n\r", cmd.from);	// DEBUG
 		printf("CMD:%X\n\r", cmd.cmd);	// DEBUG
 
 		printf("DATA:\n");	// DEBUG
-	for (i = 0; i < len; i++)
+*/	for (i = 0; i < len; i++)
 	{
-//		putc((cmd.data)[i]);
-			printf("%X ", (cmd.data)[i]);	// DEBUG
+		putc((cmd.data)[i]);
+//			printf("%X ", (cmd.data)[i]);	// DEBUG
 	}
 	
 	// Enviar el CRC
-//	putc(cmd.crc);
-		printf("\n\rCRC:%X\n\r\n\r", cmd.crc);	// DEBUG
+	putc(cmd.crc);
+//		printf("\n\rCRC:%X\n\r\n\r", cmd.crc);	// DEBUG
 	
 	return;	
 }	
