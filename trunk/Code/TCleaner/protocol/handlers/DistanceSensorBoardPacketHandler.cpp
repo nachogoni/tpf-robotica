@@ -34,12 +34,20 @@ void DistanceSensorBoardPacketHandler::handlePacket(Packet * p){
 		short * value = dsp->getSensorValues();
 		// TODO convert from short to double
 		// Lock Mutex
+		#ifdef LINUX
+		this->dsValueMutex->enterMutex();
+		#endif
+		
 		this->dsValue[0] = value[0];
 		this->dsValue[1] = value[1];
 		this->dsValue[2] = value[2];
 		this->dsValue[3] = value[3];
 		this->dsValue[4] = value[4];
+		
 		// Release Mutex
+		#ifdef LINUX
+		this->dsValueMutex->leaveMutex();
+		#endif
 	}
 }
 
@@ -65,7 +73,19 @@ int DistanceSensorBoardPacketHandler::getValue(int dsId){
 	p->getSensor();
 	p->prepareToSend();
 	this->ps->sendPacket(p);
-	return this->dsValue[dsId];
+
+	// Lock Mutex
+	#ifdef LINUX
+	this->dsValueMutex->enterMutex();
+	#endif
+
+	int value = this->dsValue[dsId];
+
+	// Release Mutex
+	#ifdef LINUX
+	this->dsValueMutex->leaveMutex();
+	#endif
+	return value;
 }
 
 }

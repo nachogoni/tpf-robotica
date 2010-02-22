@@ -36,13 +36,29 @@ void TrashBinBoardPacketHandler::handlePacket(Packet * p){
 		short value = tbp->getTrashBinValue();
 		// TODO convert from short to int
 		// Lock Mutex
+		#ifdef LINUX
+		this->currentMutex->enterMutex();
+		#endif
+		
 		this->currentValue = value;
+		
 		// Release Mutex
+		#ifdef LINUX
+		this->currentMutex->leaveMutex();
+		#endif
+
 	}
 	if ( tbp->getCommand() == CMD_FULL_TRASHBIN_ALARM ){
 		// Lock Mutex
+		#ifdef LINUX
+		this->fullMutex->enterMutex();
+		#endif
 		this->full = true;
 		// Release Mutex
+		#ifdef LINUX
+		this->fullMutex->leaveMutex();
+		#endif
+
 	}
 }
 
@@ -55,9 +71,18 @@ int TrashBinBoardPacketHandler::getValue(){
 }
 
 bool TrashBinBoardPacketHandler::isFull(){
-	// Lock mutex
+	// Lock Mutex
+	#ifdef LINUX
+	this->fullMutex->enterMutex();
+	#endif
+
 	bool full = this->full;
+
 	// Release mutex
+	#ifdef LINUX
+	this->fullMutex->leaveMutex();
+	#endif
+
 	return full;
 }
 

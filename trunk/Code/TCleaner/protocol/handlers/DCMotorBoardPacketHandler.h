@@ -52,8 +52,8 @@ class DCMotorBoardPacketHandler : public protocol::BoardPacketHandler
 		bool stressAlarm;
 		bool shutdownAlarm;
 #ifdef LINUX
-		Mutex::Mutex encoderValueMutex;
-		Mutex::Mutex speedValueMutex;
+		Mutex::Mutex encoderMutex;
+		Mutex::Mutex speedMutex;
 		Mutex::Mutex consumptionValueMutex;
 		Mutex::Mutex stressMutex;
 		Mutex::Mutex shutdownMutex;

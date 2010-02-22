@@ -18,6 +18,9 @@ ServoBoardPacketHandler::ServoBoardPacketHandler(PacketServer * ps, char groupid
 	this->positionValue[2] = 0;
 	this->positionValue[3] = 0;
 	this->positionValue[4] = 0;
+	#ifdef LINUX
+	this->positionValueMutex = new Mutex();
+	#endif
 }
 
 // class destructor
@@ -33,13 +36,23 @@ void ServoBoardPacketHandler::handlePacket(Packet * p){
 	if ( smp->getCommand() == CMD_GET_ALL_POSITIONS ){
 		char * value = smp->getPositionValues();
 		// TODO convert from short to double
+		
 		// Lock Mutex
+		#ifdef LINUX
+		this->positionValueMutex->enterMutex();
+		#endif
+		
 		this->positionValue[0] = value[0];
 		this->positionValue[1] = value[1];
 		this->positionValue[2] = value[2];
 		this->positionValue[3] = value[3];
 		this->positionValue[4] = value[4];
+
 		// Release Mutex
+		#ifdef LINUX
+		this->positionValueMutex->leaveMutex();
+		#endif
+
 	}
 }
 
@@ -67,7 +80,19 @@ double ServoBoardPacketHandler::getPosition(int servoId){
 	p->getPosition();
 	p->prepareToSend();
 	this->ps->sendPacket(p);
-	return this->positionValue[servoId];
+
+	// Lock Mutex
+	#ifdef LINUX
+	this->positionValueMutex->enterMutex();
+	#endif
+
+	double value = this->positionValue[servoId];
+
+	// Release Mutex
+	#ifdef LINUX
+	this->positionValueMutex->leaveMutex();
+	#endif
+	return value;
 }
 
 void ServoBoardPacketHandler::setForce(int servoId, double force){

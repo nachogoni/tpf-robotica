@@ -11,6 +11,11 @@
 
 #define SERIALDEVICE "/dev/ttyUSB0"
 
+#ifdef LINUX
+#include <mutex>
+#include <thread>
+#endif
+
 namespace protocol {
 
 /**
@@ -32,6 +37,11 @@ class PacketServer
 		std::queue<Packet *> toSend;
 		std::list<Packet *> waitingForResponse;
 		std::map<char, std::map<char, BoardPacketHandler *> > handlers;
+
+		#ifdef LINUX
+		Mutex::Mutex toSendMutex;
+		#endif
+		
 };
 
 }

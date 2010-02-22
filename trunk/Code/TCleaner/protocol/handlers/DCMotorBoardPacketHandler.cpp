@@ -18,6 +18,13 @@ DCMotorBoardPacketHandler::DCMotorBoardPacketHandler(PacketServer * ps, char gro
 	this->consumptionValue = 0;
 	this->stressAlarm = false;
 	this->shutdownAlarm = false;
+	#ifdef LINUX
+	this->encoderMutex = new Mutex();
+	this->speedMutex = new Mutex();
+	this->consumptionValueMutex = new Mutex();
+	this->stressMutex = new Mutex();
+	this->shutdownMutex = new Mutex();
+	#endif
 }
 
 // class destructor
@@ -34,32 +41,67 @@ void DCMotorBoardPacketHandler::handlePacket(Packet * p){
 		int value = dcmp->getEncoderValue();
 		// TODO convert from int(4 bytes) to double
 		// Lock Mutex
+		#ifdef LINUX
+		this->encoderMutex->enterMutex();
+		#endif
 		this->encoderValue = value;
 		// Release Mutex
+		#ifdef LINUX
+		this->encoderMutex->leaveMutex();
+		#endif
+
 	}
 	if ( dcmp->getCommand() == CMD_GET_DC_SPEED ){
 		int value = dcmp->getSpeedValue();
 		// TODO convert from int(4 bytes) to double
 		// Lock Mutex
+		#ifdef LINUX
+		this->speedMutex->enterMutex();
+		#endif
 		this->speedValue = value;
 		// Release Mutex
+		#ifdef LINUX
+		this->speedMutex->leaveMutex();
+		#endif
+
 	}
  	if ( dcmp->getCommand() == CMD_MOTOR_CONSUMPTION ){
 		int value = dcmp->getMotorConsumptionValue();
 		// TODO convert from int(4 bytes) to double
 		// Lock Mutex
+		#ifdef LINUX
+		this->consumptionMutex->enterMutex();
+		#endif
 		this->consumptionValue = value;
 		// Release Mutex
+		#ifdef LINUX
+		this->consumptionMutex->leaveMutex();
+		#endif
+
 	}
  	if ( dcmp->isMotorAlarm() ){
 		// Lock Mutex
+		#ifdef LINUX
+		this->stressMutex->enterMutex();
+		#endif
 		this->stressAlarm = true;
 		// Release Mutex
+		#ifdef LINUX
+		this->stressMutex->leaveMutex();
+		#endif
+
 	}
 	if ( dcmp->isMotorShutDown() ){
 		// Lock Mutex
+		#ifdef LINUX
+		this->shutdownMutex->enterMutex();
+		#endif
 		this->shutdownAlarm = true;
 		// Release Mutex
+		#ifdef LINUX
+		this->shutdownMutex->leaveMutex();
+		#endif
+
 	}
 }
 
@@ -78,8 +120,18 @@ double DCMotorBoardPacketHandler::getSpeed(){
 	p->prepareToSend();
 	this->ps->sendPacket(p);
 	// Lock mutex
-    double current = this->speedValue;
-	// Release mutex
+
+	#ifdef LINUX
+	this->speedMutex->enterMutex();
+	#endif
+
+	double current = this->speedValue;
+
+	// Release Mutex
+	#ifdef LINUX
+	this->speedMutex->leaveMutex();
+	#endif
+
 	return current;
 }
 
@@ -88,9 +140,19 @@ double DCMotorBoardPacketHandler::getEncoder(){
 	p->getEncoder();
 	p->prepareToSend();
 	this->ps->sendPacket(p);
+
 	// Lock mutex
+	#ifdef LINUX
+	this->encoderMutex->enterMutex();
+	#endif
+
     double current = this->encoderValue;
-	// Release mutex
+
+	// Release Mutex
+	#ifdef LINUX
+	this->encoderMutex->leaveMutex();
+	#endif
+
 	return current;
 }
 
@@ -112,19 +174,51 @@ double DCMotorBoardPacketHandler::getMotorConsumption(){
 	p->getMotorConsumption();
 	p->prepareToSend();
 	this->ps->sendPacket(p);
-	return this->consumptionValue;
+
+	// Lock Mutex
+	#ifdef LINUX
+	this->consumptionMutex->enterMutex();
+	#endif
+
+	double value = this->consumptionValue;
+
+	// Release Mutex
+	#ifdef LINUX
+	this->consumptionMutex->leaveMutex();
+	#endif
+
+	return value;
 }
 
 bool DCMotorBoardPacketHandler::isAlarmPresent(){
-	// Lock mutex
+	// Lock Mutex
+	#ifdef LINUX
+	this->stressMutex->enterMutex();
+	#endif
+
 	bool value = this->stressAlarm;
-	// Release mutex
+
+	// Release Mutex
+	#ifdef LINUX
+	this->stressMutex->leaveMutex();
+	#endif
+	
 	return value;
 }
 
 bool DCMotorBoardPacketHandler::motorIsOff(){
 	// Lock mutex
+	#ifdef LINUX
+	this->shutdownMutex->enterMutex();
+	#endif
+
 	bool value = this->shutdownAlarm;
+
+	// Release Mutex
+	#ifdef LINUX
+	this->shutdownMutex->leaveMutex();
+	#endif
+
 	// Release mutex
 	return value;
 }

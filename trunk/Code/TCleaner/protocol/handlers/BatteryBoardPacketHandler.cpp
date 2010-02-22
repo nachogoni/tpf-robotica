@@ -17,11 +17,11 @@ BatteryBoardPacketHandler::BatteryBoardPacketHandler(PacketServer * ps, char gro
 	this->full = false;
 	this->empty = false;
 
-#ifdef LINUX
+	#ifdef LINUX
 	this->currentValueMutex = new Mutex();
 	this->fullMutex = new Mutex();
 	this->emptyMutex = new Mutex();
-#endif
+	#endif
 }
 
 // class destructor
@@ -102,19 +102,31 @@ double BatteryBoardPacketHandler::getValue(){
 	p->prepareToSend();
 	this->ps->sendPacket(p);
 	// Lock mutex
-	// this->currentValueMutex->enterMutex();
+	#ifdef LINUX
+	this->currentValueMutex->enterMutex();
+	#endif
+
 	double value = this->currentValue;
+
 	// Release mutex
-	// this->currentValueMutex->leaveMutex();
+	#ifdef LINUX
+	this->currentValueMutex->leaveMutex();
+	#endif
 	return value;
 }
 
 bool BatteryBoardPacketHandler::isFull(){
 	// Lock mutex
-	// this->fullMutex->enterMutex();
+	#ifdef LINUX
+	this->fullMutex->enterMutex();
+	#endif
+
 	bool full = this->full;
+
 	// Release mutex
-	// this->fullMutex->leaveMutex();
+	#ifdef LINUX
+	this->fullMutex->leaveMutex();
+	#endif
 	return full;
 }
 
@@ -128,10 +140,16 @@ void BatteryBoardPacketHandler::setEmptyBias(double bias){
 
 bool BatteryBoardPacketHandler::isEmpty(){
 	// Lock mutex
-	// this->emptyMutex->enterMutex();
+	#ifdef LINUX
+	this->emptyMutex->enterMutex();
+	#endif
+
 	bool empty = this->empty;
+
 	// Release mutex
-	// this->emptyMutex->leaveMutex();
+	#ifdef LINUX
+	this->emptyMutex->leaveMutex();
+	#endif
 	return empty;
 }
 
