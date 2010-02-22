@@ -6,6 +6,7 @@
 #include <protocol/BoardPacketHandler.h> // inheriting class's header file
 #include <protocol/Packet.h>
 #include <protocol/PacketServer.h>
+//#include <mutex>
 
 namespace protocol {
 namespace handlers {
@@ -42,9 +43,17 @@ class BatteryBoardPacketHandler : public protocol::BoardPacketHandler
 		char boardid;
 		PacketServer * ps;
 		
+
 		int currentValue;
 		bool full;
 		bool empty;
+
+#ifdef LINUX
+		Mutex::Mutex currentValueMutex;
+		Mutex::Mutex fullMutex;
+		Mutex::Mutex emptyMutex;
+#endif
+
 };
 
 }

@@ -36,6 +36,9 @@ class ServoBoardPacketHandler : public protocol::BoardPacketHandler
 		PacketServer * ps;
 		
 		double positionValue [5];
+#ifdef LINUX
+		Mutex::Mutex positionValueMutex;
+#endif
 };
 
 }

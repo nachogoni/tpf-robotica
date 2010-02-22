@@ -5,6 +5,10 @@
 
 #include <protocol/Packet.h>
 
+#ifdef LINUX
+	#include <mutex>
+#endif
+
 namespace protocol {
 
 /**

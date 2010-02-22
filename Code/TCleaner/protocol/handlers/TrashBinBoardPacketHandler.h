@@ -36,6 +36,11 @@ class TrashBinBoardPacketHandler : public protocol::BoardPacketHandler
 		
 		int currentValue;
 		bool full;
+		
+#ifdef LINUX
+		Mutex::Mutex currentValueMutex;
+		Mutex::Mutex fullMutex;
+#endif
 };
 
 }
