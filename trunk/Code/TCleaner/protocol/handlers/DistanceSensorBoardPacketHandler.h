@@ -33,7 +33,10 @@ class DistanceSensorBoardPacketHandler : public protocol::BoardPacketHandler
 		char groupid;
 		char boardid;
 		PacketServer * ps;
-		
+
+#ifdef LINUX
+		Mutex::Mutex dsValueMutex;
+#endif
 		int dsValue [5];
 };
 

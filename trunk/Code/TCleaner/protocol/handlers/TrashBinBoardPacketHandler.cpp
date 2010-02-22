@@ -15,6 +15,11 @@ TrashBinBoardPacketHandler::TrashBinBoardPacketHandler(PacketServer * ps, char g
 	this->ps = ps;
 	this->currentValue = 0;
 	this->full = false;
+
+#ifdef LINUX
+	this->currentValueMutex = new Mutex();
+	this->fullMutex = new Mutex();
+#endif
 }
 
 // class destructor

@@ -16,6 +16,12 @@ BatteryBoardPacketHandler::BatteryBoardPacketHandler(PacketServer * ps, char gro
 	this->currentValue = 0;
 	this->full = false;
 	this->empty = false;
+
+#ifdef LINUX
+	this->currentValueMutex = new Mutex();
+	this->fullMutex = new Mutex();
+	this->emptyMutex = new Mutex();
+#endif
 }
 
 // class destructor
@@ -31,21 +37,48 @@ void BatteryBoardPacketHandler::handlePacket(Packet * p){
 	if ( bp->getCommand() == CMD_BATTERY_VALUE ){
 		short value = bp->getBatteryValue();
 		// TODO convert from short to double
+
 		// Lock Mutex
+		#ifdef LINUX
+		this->currentValueMutex->enterMutex();
+		#endif
+
 		this->currentValue = value;
+
 		// Release Mutex
+		#ifdef LINUX
+		this->currentValueMutex->leaveMutex();
+		#endif
 	}
 	if ( bp->isBatteryFull() ){
 		// TODO convert from short to double
+
 		// Lock Mutex
+		#ifdef LINUX
+		this->fullMutex->enterMutex();
+		#endif
+
 		this->full = true;
+
 		// Release Mutex
+		#ifdef LINUX
+		this->fullMutex->leaveMutex();
+		#endif
 	}
 	if ( bp->isBatteryEmpty() ){
 		// TODO convert from short to double
+
 		// Lock Mutex
+		#ifdef LINUX
+		this->emptyMutex->enterMutex();
+		#endif
+
 		this->empty = true;
+
 		// Release Mutex
+		#ifdef LINUX
+		this->emptyMutex->leaveMutex();
+		#endif
 	}
 }
 
@@ -68,13 +101,20 @@ double BatteryBoardPacketHandler::getValue(){
 	p->senseBattery();
 	p->prepareToSend();
 	this->ps->sendPacket(p);
-	return this->currentValue;
+	// Lock mutex
+	// this->currentValueMutex->enterMutex();
+	double value = this->currentValue;
+	// Release mutex
+	// this->currentValueMutex->leaveMutex();
+	return value;
 }
 
 bool BatteryBoardPacketHandler::isFull(){
 	// Lock mutex
+	// this->fullMutex->enterMutex();
 	bool full = this->full;
 	// Release mutex
+	// this->fullMutex->leaveMutex();
 	return full;
 }
 
@@ -88,8 +128,10 @@ void BatteryBoardPacketHandler::setEmptyBias(double bias){
 
 bool BatteryBoardPacketHandler::isEmpty(){
 	// Lock mutex
+	// this->emptyMutex->enterMutex();
 	bool empty = this->empty;
 	// Release mutex
+	// this->emptyMutex->leaveMutex();
 	return empty;
 }
 
