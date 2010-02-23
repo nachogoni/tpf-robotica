@@ -89,18 +89,18 @@ void Packet::setId(int field, char id){
 
 bool Packet::checkCRC(){
 	int length = this->actualLength - 1;
-	char calculated = 0;
-	int i=0;
-	for ( i = 0 ; i < length ; i++ )
+	char calculated = this->packet[0];
+	int i;
+	for ( i = 1 ; i < length ; i++ )
 	    calculated ^= this->packet[i];
 	return this->packet[i] == calculated;
 }
 
 void Packet::calculateCRC(){
 	int length = this->actualLength - 1;
-	char calculated = 0;
-	int i=0;
-	for ( i = 0 ; i < length ; i++ )
+	char calculated = this->packet[0];
+	int i;
+	for ( i = 1 ; i < length ; i++ )
 	    calculated ^= this->packet[i];
 	this->packet[i] = calculated;
 }
