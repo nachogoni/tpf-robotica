@@ -1,0 +1,11 @@
+Errores cometidos en las placas
+
+- El conector P1 tiene los agujeros muy chicos. Usar las medidas 40mils
+- Los agujeros de VR1 podrian ser un poco mas chicos
+- Los agujeros de CON1 podrian ser mas chicos
+- Los agujeros de C6, C7, C8, C9 y C10 deberian ser un poco mas grandes
+- Los agujeros de S1 tienen que ser mas grandes
+- El diodo D5 lo reemplace por un puente
+- Los agujeros para las patitas de plastico de los conectores J1 y J2 estan corridos hacia los costados, tienen que estar mas al centro
+- Los conectores J1 y J2 tienen escrito GND - TX RX y GND - RX TX respectivamente. Estan en orden inverso, van RX TX - GND y TX RX - GND respectivamente.
+
