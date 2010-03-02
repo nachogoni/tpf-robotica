@@ -8,7 +8,8 @@ namespace protocol {
 // class constructor
 Packet::Packet()
 {
-	this->actualLength = MIN_PACKET_SIZE;
+	this->actualLength = (char)MIN_PACKET_SIZE;
+	this->packet[0] = this->actualLength - 1;
 	this->resetDataIdx();
 	// insert your code here
 }
