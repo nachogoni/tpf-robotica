@@ -1,6 +1,12 @@
-#define DESC			"PLACA GENERICA - 1.0" // Maximo DATA_SIZE bytes
-#define CARD_GROUP		1	// Valor entre 0 y E
-#define CARD_ID			1	// Valor entre 0 y E
+// Constantes del protocolo
+#include <protocol.h>
+
+#define CARD_GROUP	MOTOR_DC	// Ver protocol.h
+#define CARD_ID		1		// Valor entre 0 y E
+
+// Descripcion de la placa
+#define DESC		"PLACA GENERICA - 1.0" // Maximo DATA_SIZE bytes
+
 // Si la placa es la ultima en la familia -> comentar la siguiente linea
 #define RESEND_GROUP_BROADCAST
 
@@ -31,6 +37,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
 #fuses HS,NOWDT,NOPROTECT,NOLVP
 #use delay (clock=20000000)
 
@@ -49,8 +56,8 @@
 #bit tx=portb.5
 #bit rx=portb.2
 
-#define THIS_CARD		(CARD_GROUP * 16 + CARD_ID)
-#define THIS_GROUP		(CARD_GROUP * 16)
+#define THIS_CARD		(CARD_GROUP + CARD_ID)
+#define THIS_GROUP		(CARD_GROUP)
 
 struct command_t {
 	int len;
@@ -198,9 +205,9 @@ void command(struct command_t * cmd)
 		resp.len = 0x05;
 		resp.to = cmd->from;
 		resp.from = THIS_CARD;
-		resp.cmd = 0x04;
+		resp.cmd = COMMON_ERROR;
 		resp.data[0] = 0x00;
-		resp.crc = 0x05 ^ resp.to ^ THIS_CARD ^ 0x04 ^ 0x00;
+		resp.crc = 0x05 ^ resp.to ^ THIS_CARD ^ COMMON_ERROR ^ 0x00;
 		return;
 	}
 
@@ -213,32 +220,30 @@ void command(struct command_t * cmd)
 	switch (cmd->cmd)
 	{
 		// Comandos comunes
-		case 0x01: 
-			// INIT
+		case COMMON_INIT: 
 			// Enviar la descripcion de la placa en texto plano
 			strcpy(resp.data, DESC);
 			resp.len += strlen(resp.data);
 		break;
-		case 0x02: 
-			// RESET
+		case COMMON_RESET: 
 			// Enviar la descripcion de la placa en texto plano
 			strcpy(resp.data, DESC);
 			resp.len += strlen(resp.data);
 			// Reset!
 			reset = true;
 		break;
-		case 0x03: 
-			// PING
+		case COMMON_PING: 
+
 		break;
-		case 0x04:
-			// ERROR -> Por ahora se ignora el comando
+ 		case COMMON_ERROR:
+			// Por ahora se ignora el comando
 		break;
 		
 		// Comandos especificos
 
 		default:
 			resp.len++;
-			resp.cmd = 0x04;
+			resp.cmd = ERROR;
 			resp.data[0] = 0x01; // Comando desconocido
 		break;
 	}	
