@@ -94,8 +94,10 @@ void GarbageCleaner::initializeBehaviours(){
 	myAbstractBehaviours.push_back(ab);
 	ab = new behaviours::CollectGarbage( servoFront , servoBottom );
 	myAbstractBehaviours.push_back(ab);
-//	ab = new behaviours::CollectGarbage( servoFront , servoBottom );
-//	myAbstractBehaviours.push_back(ab);
+	ab = new behaviours::FindLine( robotBattery , pcBattery , wheels );
+	myAbstractBehaviours.push_back(ab);
+	ab = new behaviours::GoToBase( robotBattery , pcBattery , wheels );
+	myAbstractBehaviours.push_back(ab);
 }
 
 void GarbageCleaner::cleanGarbage()

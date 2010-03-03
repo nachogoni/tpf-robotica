@@ -7,6 +7,7 @@
 #include <robotapi/real/RealDifferentialWheels.h>
 #include <robotapi/real/RealTrashBin.h>
 #include <robotapi/real/RealPCBattery.h>
+#include <robotapi/real/RealDevice.h>
 
 #define DC_GROUP 0x01
 #define DC_LEFT_ID 0x00
@@ -145,7 +146,10 @@ IServo & RealRobot::getServo(std::string name){
 	return *this->servos[name];
 }
 
-//IDevice & RealRobot::getDevice(std::string name)
+IDevice & RealRobot::getDevice(std::string name){
+	IDevice * device = new RealDevice(&name);
+    return *device;
+}
 
 IDifferentialWheels & RealRobot::getDifferentialWheels(std::string name){
 	return *this->wheels[name];
