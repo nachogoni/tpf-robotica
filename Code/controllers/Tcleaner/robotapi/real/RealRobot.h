@@ -36,7 +36,7 @@ class RealRobot : virtual public robotapi::IRobot {
 
 		IServo & getServo(std::string name);
 
-//		IDevice & getDevice(std::string name);
+		IDevice & getDevice(std::string name);
 
 		IDifferentialWheels & getDifferentialWheels(std::string name);
 

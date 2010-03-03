@@ -10,7 +10,16 @@ class FindLine : public AbstractBehaviour {
 
 	public:
 
-		FindLine();
+		FindLine(robotapi::IBattery * robotBatt, robotapi::IBattery * pcBatt, robotapi::IDifferentialWheels * wheels);
+		
+		void sense();
+
+	    void action();
+
+	private:
+		robotapi::IBattery * robotBatt;
+		robotapi::IBattery * pcBatt;
+		robotapi::IDifferentialWheels * wheels;
 	};
 
 } /* End of namespace behaviours */

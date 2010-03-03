@@ -10,7 +10,17 @@ class GoToBase : public AbstractBehaviour {
 
 	public:
 
-        GoToBase();
+		GoToBase(robotapi::IBattery * robotBatt, robotapi::IBattery * pcBatt, robotapi::IDifferentialWheels * wheels);
+
+		void sense();
+
+	    void action();
+
+	private:
+		robotapi::IBattery * robotBatt;
+		robotapi::IBattery * pcBatt;
+		robotapi::IDifferentialWheels * wheels;
+
 
 
 	};
