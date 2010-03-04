@@ -56,8 +56,21 @@
 #bit tx=portb.5
 #bit rx=portb.2
 
+<<<<<<< .mine
+// PLACA DE PRUEBAS
+#bit telemetroIN  	= porta.0
+#bit telemetroOUT 	= portb.0
+#bit servoPWM		= portb.1
+#bit pisoIN		  	= porta.2
+#bit pisoOUT	  	= portb.3
+
+
+#define THIS_CARD		(CARD_GROUP * 16 + CARD_ID)
+#define THIS_GROUP		(CARD_GROUP * 16)
+=======
 #define THIS_CARD		(CARD_GROUP + CARD_ID)
 #define THIS_GROUP		(CARD_GROUP)
+>>>>>>> .r127
 
 struct command_t {
 	int len;
@@ -69,6 +82,7 @@ struct command_t {
 };
 
 short reset;
+short crcOK;
 
 char buffer[MAX_BUFFER_SIZE];
 int buffer_write;
@@ -76,32 +90,40 @@ int buffer_read;
 int data_length;
 
 // Comando parseado
-struct command_t cmd;
+struct command_t command;
 // Respuesta
-struct command_t resp;
+struct command_t response;
 
 /* Examina y ejecula el comando */
-void command(struct command_t * cmd);
+void doCommand(struct command_t * cmd);
 /* Envia los datos por el pto serial */
-void send(struct command_t cmd);
+void send(struct command_t * cmd);
 /* Inicializa puertos y variables */
 void init();
 /* Analiza el buffer, ejecuta los 
 comandos y envia las respuestas */
-void runProtocol();
-
-
+void runProtocol(struct command_t * cmd);
 
 void init()
 {
 	// Inicializa puertos
-	set_tris_a(0b11100111);
+	set_tris_a(0b11100101);
 	set_tris_b(0b11100110);
+
+
+	// ***ADC***
+	setup_port_a(sAN2);//|VSS_VREF);
+	setup_adc(ADC_CLOCK_INTERNAL);
+	set_adc_channel(2);
+	setup_adc_ports(sAN2);
+	// Deberia usar VREF_A2... probar
+	setup_vref(VREF_HIGH | 8); // VREF a 2.5V -> no hay cambios...
+
 	
 	// Variables de comunicacion
 	buffer_write = 0;
 	buffer_read = 0;
-	data_length = -1;
+	data_length = 0;
 
 	// Seteo el Timer1 como fuente externa y sin divisor
 	setup_timer_1(T1_INTERNAL | T1_DIV_BY_1);
@@ -114,24 +136,64 @@ void init()
 	enable_interrupts(GLOBAL);
 
 	reset = false;
-		
+	crcOK = false;
+	
 	return;	
 }	
 
 void main()
 {
+long adc_value[5];
+int i = 0;
+
 	// Placa Generica - Implementacion del protocolo
-
-long tmr1;
-long tmr2;
-	
 	init();
+/*
+// PLACA DE PRUEBAS
+while (1)
+{
+	led1=1;
+//	telemetroOUT=0;
+	pisoOUT = 0;
+	delay_ms(1000);
+	led1=0;
+//	telemetroOUT=1;
+	pisoOUT = 1;
+	delay_ms(1000);
+}		
+*/
 
+while(1)
+{
+	for (i = 0; i < 5; i++)
+	{
+		// Apago
+		pisoOUT = 1;
+		read_adc(ADC_START_ONLY);
+		delay_ms(1);
+		// Leo
+		adc_value[i] = read_adc(ADC_READ_ONLY);
+		// Enciendo
+		pisoOUT = 0;
+		read_adc(ADC_START_ONLY);
+		delay_ms(1);
+		// Leo
+		adc_value[i] = read_adc(ADC_READ_ONLY) - adc_value[i];
+	}
+	printf("Value: %ld %ld %ld %ld %ld ->  %ld\r\n", 
+		adc_value[0], adc_value[1], adc_value[2], adc_value[3], adc_value[4],
+		(adc_value[0] + adc_value[1] + adc_value[2] + adc_value[3] + adc_value[4]) );
+	delay_ms(255);
+}	
+
+//while (1);
+
+/*
 	buffer[0] = 0x04; // Falla x crc
-	buffer[1] = 0x11;
+	buffer[1] = 0xFF;
 	buffer[2] = 0x00;
-	buffer[3] = 0x40;
-	buffer[4] = 0xAA;//55;
+	buffer[3] = 0x01;
+	buffer[4] = 0xFA;//55;
 	buffer[5] = 0x06; // No es para mi
 	buffer[6] = 0x00;
 	buffer[7] = 0x62;
@@ -144,7 +206,7 @@ long tmr2;
 	buffer[14] = 0x00;
 	buffer[15] = 0x40;
 	buffer[16] = 0xBB;
-	buffer_read = 12;
+	buffer_read = 0;
 	data_length = 17;
 
 /*	buffer[0] = 'A';
@@ -165,18 +227,15 @@ long tmr2;
 	buffer[44] = 'C';
 	buffer_read = 40;
 	data_length = 9;*/
-	
+
 	// FOREVER
-//	while(true)
+	while(true)
 	{
 		// Hace sus funciones...
+		led1 = 0;
 
 		// Protocolo
-		tmr1 = get_timer1();
-		runProtocol();
-		tmr2 = get_timer1();
-		
-		printf("\n\rT1: %ld - T2: %ld - DIFF: %ld\n\r", tmr1, tmr2, tmr2 - tmr1);
+		runProtocol(&command);
 		
 	}
 
@@ -184,7 +243,7 @@ long tmr2;
 }
 
 /* Verifica que el comando sea valido y lo ejecuta */
-void command(struct command_t * cmd)
+void doCommand(struct command_t * cmd)
 {
 	int crc, i, len;
 		
@@ -202,33 +261,46 @@ void command(struct command_t * cmd)
 	if (cmd->crc != crc)
 	{		
 		// Creo respuesta de error
+<<<<<<< .mine
+		response.len = 0x05;
+		response.to = cmd->from;
+		response.from = THIS_CARD;
+		response.cmd = 0x04;
+		response.data[0] = 0x00;
+		response.crc = 0x05 ^ response.to ^ THIS_CARD ^ 0x04 ^ 0x00;
+		crcOK = false;
+=======
 		resp.len = 0x05;
 		resp.to = cmd->from;
 		resp.from = THIS_CARD;
 		resp.cmd = COMMON_ERROR;
 		resp.data[0] = 0x00;
 		resp.crc = 0x05 ^ resp.to ^ THIS_CARD ^ COMMON_ERROR ^ 0x00;
+>>>>>>> .r127
 		return;
 	}
 
+	crcOK = true;
+	
 	// Minimo todos setean esto
-	resp.len = 0x04;
-	resp.to = cmd->from & 0x77;
-	resp.from = THIS_CARD;
-	resp.cmd = cmd->cmd | 0x80;
+	response.len = 0x04;
+	response.to = cmd->from & 0x77;
+	response.from = THIS_CARD;
+	response.cmd = cmd->cmd | 0x80;
 
 	switch (cmd->cmd)
 	{
 		// Comandos comunes
 		case COMMON_INIT: 
+			init();
 			// Enviar la descripcion de la placa en texto plano
-			strcpy(resp.data, DESC);
-			resp.len += strlen(resp.data);
+			strcpy(response.data, DESC);
+			response.len += strlen(response.data);
 		break;
 		case COMMON_RESET: 
 			// Enviar la descripcion de la placa en texto plano
-			strcpy(resp.data, DESC);
-			resp.len += strlen(resp.data);
+			strcpy(response.data, DESC);
+			response.len += strlen(response.data);
 			// Reset!
 			reset = true;
 		break;
@@ -242,49 +314,47 @@ void command(struct command_t * cmd)
 		// Comandos especificos
 
 		default:
+<<<<<<< .mine
+			response.len++;
+			response.cmd = 0x04;
+			response.data[0] = 0x01; // Comando desconocido
+=======
 			resp.len++;
 			resp.cmd = ERROR;
 			resp.data[0] = 0x01; // Comando desconocido
+>>>>>>> .r127
 		break;
 	}	
 
 	// Calcular el crc
-	resp.crc = resp.len ^ resp.to ^ THIS_CARD ^ resp.cmd;
-	len = resp.len - 4;
+	response.crc = response.len ^ response.to ^ THIS_CARD ^ response.cmd;
+	len = response.len - 4;
 	for (i = 0; i < len; i++)
 	{
-		resp.crc ^= (resp.data)[i];
+		response.crc ^= (response.data)[i];
 	}
 
 	return;
 }
 
 /* Envia los datos por el pto serial */
-void send(struct command_t cmd)
+void send(struct command_t * cmd)
 {
 	int i, len;
 	
-	len = cmd.len - 4;
-	putc(cmd.len);
-	putc(cmd.to);
-	putc(cmd.from);
-	putc(cmd.cmd);
+	len = cmd->len - 4;
+	putc(cmd->len);
+	putc(cmd->to);
+	putc(cmd->from);
+	putc(cmd->cmd);
 	
-/*		printf("LEN:%X\n\r", cmd.len);	// DEBUG
-		printf("TO:%X\n\r", cmd.to);	// DEBUG
-		printf("FROM:%X\n\r", cmd.from);	// DEBUG
-		printf("CMD:%X\n\r", cmd.cmd);	// DEBUG
-
-		printf("DATA:\n");	// DEBUG
-*/	for (i = 0; i < len; i++)
+	for (i = 0; i < len; i++)
 	{
-		putc((cmd.data)[i]);
-//			printf("%X ", (cmd.data)[i]);	// DEBUG
+		putc((cmd->data)[i]);
 	}
 	
 	// Enviar el CRC
-	putc(cmd.crc);
-//		printf("\n\rCRC:%X\n\r\n\r", cmd.crc);	// DEBUG
+	putc(cmd->crc);
 	
 	return;	
 }	
@@ -293,100 +363,113 @@ void send(struct command_t cmd)
 #INT_RDA
 void RS232()
 {
+int c;
+	led1 = 1;
+c = getc();
+putc(c);
+
+/*
+	led1 = 1;
 	// Un nuevo dato...
 	buffer[buffer_write++] = getc();
 	data_length++;
 	if (buffer_write == MAX_BUFFER_SIZE)
 		buffer_write = 0;
-	return;
+*/	return;
 }
 
-void runProtocol()
+void runProtocol(struct command_t * cmd)
 {
 	// Analiza el buffer
 	if (data_length >= 0x04 && buffer[buffer_read] <= data_length)
 	{
 		data_length -= buffer[buffer_read] + 1;
 	
-		cmd.len = buffer[buffer_read++];
+		cmd->len = buffer[buffer_read++];
 	
 		if (buffer_read == MAX_BUFFER_SIZE)
 			buffer_read = 0;
 	
-		cmd.to = buffer[buffer_read++];
+		cmd->to = buffer[buffer_read++];
 	
 		if (buffer_read == MAX_BUFFER_SIZE)
 			buffer_read = 0;
 	
-		cmd.from = buffer[buffer_read++];
+		cmd->from = buffer[buffer_read++];
 	
 		if (buffer_read == MAX_BUFFER_SIZE)
 			buffer_read = 0;
 	
-		cmd.cmd = buffer[buffer_read++];
+		cmd->cmd = buffer[buffer_read++];
 	
 		if (buffer_read == MAX_BUFFER_SIZE)
 			buffer_read = 0;
 	
 		// Obtiene el campo DATA
-		if ((buffer_read + cmd.len - 0x04) > MAX_BUFFER_SIZE)
+		if ((buffer_read + cmd->len - 0x04) > MAX_BUFFER_SIZE)
 		{
 			// DATA esta partido en el buffer ciclico
-			memcpy(cmd.data, buffer + buffer_read, MAX_BUFFER_SIZE - buffer_read);
-			memcpy(cmd.data + MAX_BUFFER_SIZE - buffer_read, buffer, cmd.len - 0x04 - MAX_BUFFER_SIZE + buffer_read);
+			memcpy(cmd->data, buffer + buffer_read, MAX_BUFFER_SIZE - buffer_read);
+			memcpy(cmd->data + MAX_BUFFER_SIZE - buffer_read, buffer, cmd->len - 0x04 - MAX_BUFFER_SIZE + buffer_read);
 		} else {
 			// DATA esta continuo
-			memcpy(cmd.data, buffer + buffer_read, cmd.len - 0x04);
+			memcpy(cmd->data, buffer + buffer_read, cmd->len - 0x04);
 		}
 	
-		buffer_read += cmd.len - 0x04;
+		buffer_read += cmd->len - 0x04;
 		if (buffer_read >= MAX_BUFFER_SIZE)
 			buffer_read -= MAX_BUFFER_SIZE;
 	
-		cmd.crc = buffer[buffer_read++];
+		cmd->crc = buffer[buffer_read++];
 	
 		if (buffer_read == MAX_BUFFER_SIZE)
 			buffer_read = 0;
-	
+
 		// Soy el destinatario?
-		if (cmd.to == THIS_CARD)
+		if (cmd->to == THIS_CARD)
 		{
 			// Ejecuta el comando
-			command(&cmd);
-		}	
-		else // Es broadcast?
-			if ((cmd.to & 0xF0) == 0xF0)
+			doCommand(cmd);
+		} else // Es broadcast?
+			if ((cmd->to & 0xF0) == 0xF0)
 		{
 			// Ejecuta el comando
-			command(&cmd);
-			// Envia la respuesta
-			send(resp);
-			// Envia nuevamente el comando recibido
-			resp = cmd;
-		}	
-		else // Es broadcast para mi grupo? 
-			if ((cmd.to & THIS_GROUP) == THIS_GROUP)
+			doCommand(cmd);
+
+			if (crcOK == true)
+			{
+				// Envia la respuesta
+				send(&response);
+				// Envia nuevamente el comando recibido
+				response = *cmd;
+			}
+		} else // Es broadcast para mi grupo? 
+			if ((cmd->to & THIS_GROUP) == THIS_GROUP)
 		{
 			// Ejecuta el comando
-			command(&cmd);	
+			doCommand(cmd);	
 #ifdef RESEND_GROUP_BROADCAST
-			// Envia la respuesta
-			send(resp);
-			// Envia nuevamente el comando recibido
-			resp = cmd;
+			if (crcOK == true)
+			{
+				// Envia la respuesta
+				send(&response);
+				// Envia nuevamente el comando recibido
+				response = *cmd;
+			}
 #endif
-		}	
-		else
-		{
-			resp = cmd;
+		} else {
+			response = *cmd;
 		}
 	
 		// Envia la respuesta...
-		send(resp);
+		send(&response);
 	}
 	
 	// Reset del micro
 	if (reset == true)
+	{
+		delay_ms(10);
 		reset_cpu();
+	}	
 
 }
