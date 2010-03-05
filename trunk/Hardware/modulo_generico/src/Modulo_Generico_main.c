@@ -1,5 +1,5 @@
 // Constantes del protocolo
-#include <protocol.h>
+#include <../../protocol.h>
 
 #define CARD_GROUP	MOTOR_DC	// Ver protocol.h
 #define CARD_ID		1		// Valor entre 0 y E
@@ -56,7 +56,6 @@
 #bit tx=portb.5
 #bit rx=portb.2
 
-<<<<<<< .mine
 // PLACA DE PRUEBAS
 #bit telemetroIN  	= porta.0
 #bit telemetroOUT 	= portb.0
@@ -67,10 +66,8 @@
 
 #define THIS_CARD		(CARD_GROUP * 16 + CARD_ID)
 #define THIS_GROUP		(CARD_GROUP * 16)
-=======
-#define THIS_CARD		(CARD_GROUP + CARD_ID)
-#define THIS_GROUP		(CARD_GROUP)
->>>>>>> .r127
+
+#define MIN_LENGTH		0x04
 
 struct command_t {
 	int len;
@@ -149,7 +146,7 @@ int i = 0;
 	// Placa Generica - Implementacion del protocolo
 	init();
 /*
-// PLACA DE PRUEBAS
+// TELEMETRO
 while (1)
 {
 	led1=1;
@@ -162,7 +159,8 @@ while (1)
 	delay_ms(1000);
 }		
 */
-
+/*
+// CNY70
 while(1)
 {
 	for (i = 0; i < 5; i++)
@@ -184,10 +182,11 @@ while(1)
 		adc_value[0], adc_value[1], adc_value[2], adc_value[3], adc_value[4],
 		(adc_value[0] + adc_value[1] + adc_value[2] + adc_value[3] + adc_value[4]) );
 	delay_ms(255);
-}	
+}	*/
 
 //while (1);
 
+// PRUEBAS DE BUFFER
 /*
 	buffer[0] = 0x04; // Falla x crc
 	buffer[1] = 0xFF;
@@ -232,11 +231,9 @@ while(1)
 	while(true)
 	{
 		// Hace sus funciones...
-		led1 = 0;
 
 		// Protocolo
 		runProtocol(&command);
-		
 	}
 
 	return;
@@ -250,7 +247,7 @@ void doCommand(struct command_t * cmd)
 	// Calculo del CRC
 	crc = cmd->len ^ cmd->to ^ cmd->from ^ cmd->cmd;
 	
-	len = cmd->len - 4;
+	len = cmd->len - MIN_LENGTH;
 
 	for (i = 0; i < len; i++)
 	{
@@ -261,29 +258,20 @@ void doCommand(struct command_t * cmd)
 	if (cmd->crc != crc)
 	{		
 		// Creo respuesta de error
-<<<<<<< .mine
 		response.len = 0x05;
 		response.to = cmd->from;
 		response.from = THIS_CARD;
-		response.cmd = 0x04;
+		response.cmd = COMMON_ERROR;
 		response.data[0] = 0x00;
-		response.crc = 0x05 ^ response.to ^ THIS_CARD ^ 0x04 ^ 0x00;
+		response.crc = 0x05 ^ response.to ^ THIS_CARD ^ COMMON_ERROR ^ 0x00;
 		crcOK = false;
-=======
-		resp.len = 0x05;
-		resp.to = cmd->from;
-		resp.from = THIS_CARD;
-		resp.cmd = COMMON_ERROR;
-		resp.data[0] = 0x00;
-		resp.crc = 0x05 ^ resp.to ^ THIS_CARD ^ COMMON_ERROR ^ 0x00;
->>>>>>> .r127
 		return;
 	}
 
 	crcOK = true;
 	
 	// Minimo todos setean esto
-	response.len = 0x04;
+	response.len = MIN_LENGTH;
 	response.to = cmd->from & 0x77;
 	response.from = THIS_CARD;
 	response.cmd = cmd->cmd | 0x80;
@@ -305,7 +293,7 @@ void doCommand(struct command_t * cmd)
 			reset = true;
 		break;
 		case COMMON_PING: 
-
+			// No hace falta hacer mas nada
 		break;
  		case COMMON_ERROR:
 			// Por ahora se ignora el comando
@@ -314,21 +302,15 @@ void doCommand(struct command_t * cmd)
 		// Comandos especificos
 
 		default:
-<<<<<<< .mine
 			response.len++;
-			response.cmd = 0x04;
+			response.cmd = COMMON_ERROR;
 			response.data[0] = 0x01; // Comando desconocido
-=======
-			resp.len++;
-			resp.cmd = ERROR;
-			resp.data[0] = 0x01; // Comando desconocido
->>>>>>> .r127
 		break;
 	}	
 
 	// Calcular el crc
 	response.crc = response.len ^ response.to ^ THIS_CARD ^ response.cmd;
-	len = response.len - 4;
+	len = response.len - MIN_LENGTH;
 	for (i = 0; i < len; i++)
 	{
 		response.crc ^= (response.data)[i];
@@ -363,25 +345,18 @@ void send(struct command_t * cmd)
 #INT_RDA
 void RS232()
 {
-int c;
-	led1 = 1;
-c = getc();
-putc(c);
-
-/*
-	led1 = 1;
 	// Un nuevo dato...
 	buffer[buffer_write++] = getc();
 	data_length++;
 	if (buffer_write == MAX_BUFFER_SIZE)
 		buffer_write = 0;
-*/	return;
+	return;
 }
 
 void runProtocol(struct command_t * cmd)
 {
 	// Analiza el buffer
-	if (data_length >= 0x04 && buffer[buffer_read] <= data_length)
+	if (data_length >= MIN_LENGTH && buffer[buffer_read] <= data_length)
 	{
 		data_length -= buffer[buffer_read] + 1;
 	
@@ -406,17 +381,17 @@ void runProtocol(struct command_t * cmd)
 			buffer_read = 0;
 	
 		// Obtiene el campo DATA
-		if ((buffer_read + cmd->len - 0x04) > MAX_BUFFER_SIZE)
+		if ((buffer_read + cmd->len - MIN_LENGTH) > MAX_BUFFER_SIZE)
 		{
 			// DATA esta partido en el buffer ciclico
 			memcpy(cmd->data, buffer + buffer_read, MAX_BUFFER_SIZE - buffer_read);
-			memcpy(cmd->data + MAX_BUFFER_SIZE - buffer_read, buffer, cmd->len - 0x04 - MAX_BUFFER_SIZE + buffer_read);
+			memcpy(cmd->data + MAX_BUFFER_SIZE - buffer_read, buffer, cmd->len - MIN_LENGTH - MAX_BUFFER_SIZE + buffer_read);
 		} else {
 			// DATA esta continuo
-			memcpy(cmd->data, buffer + buffer_read, cmd->len - 0x04);
+			memcpy(cmd->data, buffer + buffer_read, cmd->len - MIN_LENGTH);
 		}
 	
-		buffer_read += cmd->len - 0x04;
+		buffer_read += cmd->len - MIN_LENGTH;
 		if (buffer_read >= MAX_BUFFER_SIZE)
 			buffer_read -= MAX_BUFFER_SIZE;
 	
