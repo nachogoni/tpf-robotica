@@ -117,7 +117,7 @@ int main( int argc, const char **argv)
         {
             // Have things in buffer! :P
             c = (char) getchar();
-            packet = command(c);
+            packet = command(c); //TODO: pasarle el buffer...
             printMenu(bc);
         }
 
