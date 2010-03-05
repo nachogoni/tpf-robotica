@@ -1,1 +1,1 @@
-g++ -g miserver.cpp packet.cpp -I../.
+g++ -g -o server miserver.cpp packet.cpp -I../.
