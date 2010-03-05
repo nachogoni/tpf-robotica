@@ -7,14 +7,40 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-
 #include "Packet.h"
 
 #define SERIAL_PORT "/dev/ttyUSB0"
 
 #define MAX(a,b) (a>b?a:b)
 
+typedef struct {
+    const char * cmd;
+    void (*f)(char * data);
+    const char * cmd_help;
+} cmd_type;
+
+bool quit = false;
 int fd;
+
+bool init();
+
+// Command functions
+void cmd_help(char * data);
+void cmd_quit(char * data);
+void cmd_init(char * data);
+void cmd_reset(char * data);
+void cmd_error(char * data);
+
+// Command list
+cmd_type commands[] = {
+    {"init", cmd_init, "Send init command"},
+    {"reset", cmd_reset, "Send reset command"},
+    {"error", cmd_error, "Send error command. Needs an error number as parameter"},
+    // More commands here
+    {"help", cmd_help, "This menu"},
+    {"quit", cmd_quit, "Quit to system"},
+    {NULL, cmd_quit}
+};
 
 bool init()
 {
@@ -42,36 +68,36 @@ bool init()
     return true;
 }
 
-protocol::Packet * command(int c)
+protocol::Packet * command(char * cmd, int lenght)
 {
+    int i = 0;
+    bool found = false;
+    
+    while (!found && commands[i].cmd != NULL)
+    {
+        if (strcmp(commands[i].cmd, cmd) == 0)
+        {
+            // Command found!
+            commands[i].f(NULL); // TODO: Generar un packet
+            found = true;
+        }
+        i++;
+    }
+    
     return NULL;
-}
-
-int printMenu(int broadcast)
-{
-    printf("Menu de envio de paquetes\n\n");
-    printf("1 - Init\n");
-    printf("2 - Reset\n");
-    printf("3 - Ping\n");
-    printf("4 - Error\n");
-    printf("5 - ?\n");
-    printf("6 - ?\n");
-    printf("\nEstado actual: %s\n", (broadcast == 1?"broadcast":""));
-
-    return 0;
 }
 
 int main( int argc, const char **argv)
 {
     int maxfd = 0, select_resp = 0;
-    char buf[200] = {0};
-    char c = 0;
+    char stdin_buffer[256] = {0}, serial_buffer[256] = {0};
+    int stdin_idx = 0;
+    int c = 0;
     struct timeval timeout;
     fd_set readfd, writefd;
     fd_set readfd_b, writefd_b;
     protocol::Packet * packet = NULL;
-    int bc = 0;
-
+    
     if (init() != true)
     {
         return -1;
@@ -81,16 +107,17 @@ int main( int argc, const char **argv)
     FD_SET(fd,&readfd);
     FD_SET(0,&readfd);
 
-    maxfd = MAX(fd,0)+1;
+    maxfd = MAX(fd,0) + 1;
 
     readfd_b = readfd;
     writefd_b = writefd;
     
-    printMenu(bc);
-    while ( c != 'q' )
+    cmd_help(NULL);
+
+    while ( quit != true )
     {
 
-        if ((select_resp = select(maxfd,&readfd,&writefd,NULL,NULL)) == 0)
+        if ((select_resp = select(maxfd, &readfd, &writefd, NULL, NULL)) == 0)
         {
             // Select timed out!
             // TODO: retransmitir la lista de mensajes sin responder...
@@ -99,26 +126,34 @@ int main( int argc, const char **argv)
 
         if (errno == EINTR)
         {
-            // A signal was delivered befor time_out
+            // A signal was delivered befor time_out 
             errno = 0;
             continue;
         }
 
         // SERIAL PORT
-        if ( FD_ISSET(fd,&readfd) )
+        if ( FD_ISSET(fd, &readfd) )
         {
             // Have things in buffer! :P
-            read(fd,buf,1);
-            printf("caracter : %X\n",buf[0]);
+            read(fd, serial_buffer, 1);
+            // TODO: hacer lo mismo que en los pics para interpretar el comando
+            printf("caracter : %X\n", serial_buffer[0]);
         }
 
         // STDIN
-        if ( FD_ISSET(0,&readfd) )
+        if ( FD_ISSET(0, &readfd) )
         {
             // Have things in buffer! :P
-            c = (char) getchar();
-            packet = command(c); //TODO: pasarle el buffer...
-            printMenu(bc);
+            c = read(0, stdin_buffer + stdin_idx, 1);
+            
+            if (stdin_buffer[stdin_idx] == '\n')
+            {
+                stdin_buffer[stdin_idx] = '\0';
+                packet = command(stdin_buffer, stdin_idx);
+                stdin_idx = 0;
+            } else {
+                stdin_idx++;
+            }
         }
 
         // Restore structures from backup
@@ -149,4 +184,43 @@ int main( int argc, const char **argv)
 
     */
     return 0;
+}
+
+void cmd_help(char * data)
+{
+    int i = 0;
+    
+    printf("Posibles comandos:\n\n");
+
+    while (commands[i].cmd != NULL)
+    {
+        printf("%s\t%s\n", commands[i].cmd, commands[i].cmd_help);
+        i++;
+    }
+    
+    return;
+}
+
+void cmd_quit(char * data)
+{
+    quit = true;
+    return;
+}
+
+void cmd_init(char * data)
+{
+    // TODO: armar paquete de init
+    return;
+}
+
+void cmd_reset(char * data)
+{
+    // TODO: armar paquete de reset
+    return;
+}
+
+void cmd_error(char * data)
+{
+    // TODO: armar paquete de error
+    return;
 }
