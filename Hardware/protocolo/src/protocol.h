@@ -86,4 +86,44 @@
 #define TRASH_BIN_BIN_FULL_ALARM	0X41
 #define TRASH_BIN_SET_FULL_BIN_VALUE	0X42
 
+/* STANDAR PACKAGE LENGTH */
+#define MIN_LENGTH		0x04
+
+/* Buffer del puerto serial */
+#define MAX_BUFFER_SIZE	45
+#define DATA_SIZE		20
+
+/* COMMAND TYPE */
+struct command_t {
+	int len;
+	int to;
+	int from;
+	int cmd;
+	char data[DATA_SIZE + 1];
+	int crc;
+};
+
+/* CARD IDs */
+#define THIS_CARD		(CARD_GROUP * 16 + CARD_ID)
+#define THIS_GROUP		(CARD_GROUP * 16)
+
+// Si la placa es la ultima en la familia -> comentar la siguiente linea
+#define RESEND_GROUP_BROADCAST
+
+/* Inicializa puertos y variables */
+void init();
+
+/* Examina y ejecula el comando */
+void doCommand(struct command_t * cmd);
+
+/* Envia los datos por el pto serial */
+void send(struct command_t * cmd);
+
+/* Inicializa puertos y variables */
+void initProtocol();
+
+/* Analiza el buffer, ejecuta los 
+comandos y envia las respuestas */
+void runProtocol(struct command_t * cmd);
+
 #endif

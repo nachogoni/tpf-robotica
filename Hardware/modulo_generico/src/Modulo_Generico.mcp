@@ -35,6 +35,7 @@ file_007=.
 file_008=.
 file_009=.
 file_010=.
+file_011=.
 [GENERATED_FILES]
 file_000=no
 file_001=no
@@ -47,6 +48,7 @@ file_007=no
 file_008=no
 file_009=no
 file_010=no
+file_011=no
 [OTHER_FILES]
 file_000=no
 file_001=no
@@ -59,6 +61,7 @@ file_007=no
 file_008=yes
 file_009=yes
 file_010=yes
+file_011=yes
 [FILE_INFO]
 file_000=Modulo_Generico_main.c
 file_001=C:\ARCHIV~1\PICC\devices\16F88.h
@@ -67,10 +70,11 @@ file_003=C:\ARCHIV~1\PICC\drivers\string.h
 file_004=C:\ARCHIV~1\PICC\drivers\stddef.h
 file_005=C:\ARCHIV~1\PICC\drivers\ctype.h
 file_006=C:\ARCHIV~1\PICC\drivers\stdlib.h
-file_007=D:\TPF\Hardware\protocol.h
+file_007=D:\TPF\Hardware\protocolo\src\protocol.h
 file_008=Modulo_Generico_main.SYM
 file_009=Modulo_Generico_main.TRE
 file_010=Modulo_Generico_main.STA
+file_011=Modulo_Generico_main.OSYM
 [SUITE_INFO]
 suite_guid={BA86BF99-4C07-4CE2-A9E7-C2A337910996}
 suite_state=
