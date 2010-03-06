@@ -32,6 +32,7 @@ void cmd_help(char * data);
 void cmd_quit(char * data);
 void cmd_init(char * data);
 void cmd_reset(char * data);
+void cmd_ping(char * data);
 void cmd_error(char * data);
 void cmd_dest(char * data);
 void cmd_from(char * data);
@@ -42,6 +43,7 @@ void cmd_fullBC(char * data);
 cmd_type commands[] = {
     {"init", cmd_init, "Send init command"},
     {"reset", cmd_reset, "Send reset command"},
+    {"ping", cmd_ping, "Send ping command"},
     {"error", cmd_error, "Send error command. Params: \%d for error"},
     // More commands here
     {"dest", cmd_dest, "Set group and card id for destination. Params: \%d \%d for group and card (0 to 15)"},
@@ -292,6 +294,12 @@ void cmd_reset(char * data)
 void cmd_error(char * data)
 {
     // TODO: armar paquete de error y mandarlo
+    return;
+}
+
+void cmd_ping(char * data)
+{
+    // TODO: armar paquete de ping y mandarlo
     return;
 }
 
