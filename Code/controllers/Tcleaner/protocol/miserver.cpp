@@ -19,10 +19,13 @@ typedef struct {
     const char * cmd_help;
 } cmd_type;
 
-bool quit = false;
+bool quit = false, groupBC = false, fullBC = false;
 int fd;
+int dest_group = 0, dest_card = 0, from_group = 0, from_card = 0;
 
 bool init();
+char getFrom();
+char getDest();
 
 // Command functions
 void cmd_help(char * data);
@@ -30,17 +33,47 @@ void cmd_quit(char * data);
 void cmd_init(char * data);
 void cmd_reset(char * data);
 void cmd_error(char * data);
+void cmd_dest(char * data);
+void cmd_from(char * data);
+void cmd_groupBC(char * data);
+void cmd_fullBC(char * data);
 
 // Command list
 cmd_type commands[] = {
     {"init", cmd_init, "Send init command"},
     {"reset", cmd_reset, "Send reset command"},
-    {"error", cmd_error, "Send error command. Needs an error number as parameter"},
+    {"error", cmd_error, "Send error command. Params: \%d for error"},
     // More commands here
-    {"help", cmd_help, "This menu"},
+    {"dest", cmd_dest, "Set group and card id for destination. Params: \%d \%d for group and card (0 to 15)"},
+    {"from", cmd_from, "Set group and card id for origin. Params: \%d \%d for group and card (0 to 15)"},
+    {"groupBC", cmd_groupBC, "Change group broadcast state"},
+    {"fullBC", cmd_fullBC, "Change full broadcast state"},
+    {"help", cmd_help, "This help"},
     {"quit", cmd_quit, "Quit to system"},
     {NULL, cmd_quit}
 };
+
+char getFrom()
+{
+    return (from_group & 0x0F) * 16 + (from_card & 0x0F);
+}
+
+char getDest()
+{
+    int group = dest_group & 0x0F;
+    int card = dest_card & 0x0F;
+    
+    if (fullBC == true)
+    {
+        group = 0x0F;
+        card = 0x0F;
+    } else if (groupBC == true)
+    {
+        card = 0x0F;
+    } 
+    
+    return group * 16 + card;
+}
 
 bool init()
 {
@@ -72,17 +105,28 @@ protocol::Packet * command(char * cmd, int lenght)
 {
     int i = 0;
     bool found = false;
+    char * data = NULL;
     
-    while (!found && commands[i].cmd != NULL)
+    // Get parameters
+    if ((data = strstr(cmd, " ")) != NULL)
+    {
+        data[0] = '\0';
+        data++;
+    }
+    
+    while (found == false && commands[i].cmd != NULL)
     {
         if (strcmp(commands[i].cmd, cmd) == 0)
         {
             // Command found!
-            commands[i].f(NULL); // TODO: Generar un packet
+            commands[i].f(data);
             found = true;
         }
         i++;
     }
+    
+    if (found == false)
+        printf("Command not found\n");
     
     return NULL;
 }
@@ -190,13 +234,39 @@ void cmd_help(char * data)
 {
     int i = 0;
     
-    printf("Posibles comandos:\n\n");
+    printf("\nPossible commands:\n\n");
 
     while (commands[i].cmd != NULL)
     {
-        printf("%s\t%s\n", commands[i].cmd, commands[i].cmd_help);
+        printf("%s\t\t%s\n", commands[i].cmd, commands[i].cmd_help);
         i++;
     }
+    
+    return;
+}
+
+void cmd_dest(char * data)
+{
+    if (data == NULL || sscanf(data, "%d %d", &dest_group, &dest_card) != 2)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+        
+    printf("GroupID: %d CardID: %d -> (%X)\n", dest_group, dest_card, getDest());
+    
+    return;
+}
+
+void cmd_from(char * data)
+{
+    if (data == NULL || sscanf(data, "%d %d", &from_group, &from_card) != 2)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+    
+    printf("GroupID: %d CardID: %d -> (%X)\n", from_group, from_card, getFrom());
     
     return;
 }
@@ -209,18 +279,32 @@ void cmd_quit(char * data)
 
 void cmd_init(char * data)
 {
-    // TODO: armar paquete de init
+    // TODO: armar paquete de init y mandarlo
     return;
 }
 
 void cmd_reset(char * data)
 {
-    // TODO: armar paquete de reset
+    // TODO: armar paquete de reset y mandarlo
     return;
 }
 
 void cmd_error(char * data)
 {
-    // TODO: armar paquete de error
+    // TODO: armar paquete de error y mandarlo
+    return;
+}
+
+void cmd_groupBC(char * data)
+{
+    groupBC = !groupBC;
+    printf("Group broadcast state: %s\n", (groupBC?"Activated":"Deactivated"));
+    return;
+}
+
+void cmd_fullBC(char * data)
+{
+    fullBC = !fullBC;
+    printf("Full broadcast state: %s\n", (fullBC?"Activated":"Deactivated"));
     return;
 }
