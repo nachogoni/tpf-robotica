@@ -1,18 +1,8 @@
-// Constantes del protocolo
-#include <../../protocol.h>
-
 #define CARD_GROUP	MOTOR_DC	// Ver protocol.h
 #define CARD_ID		1		// Valor entre 0 y E
 
 // Descripcion de la placa
 #define DESC		"PLACA GENERICA - 1.0" // Maximo DATA_SIZE bytes
-
-// Si la placa es la ultima en la familia -> comentar la siguiente linea
-#define RESEND_GROUP_BROADCAST
-
-// Buffer del puerto serial
-#define MAX_BUFFER_SIZE	45
-#define DATA_SIZE		20
 
 /* Modulo Generico - main.c
  * PIC16F88 - MAX232 - GENERICO
@@ -63,43 +53,27 @@
 #bit pisoIN		  	= porta.2
 #bit pisoOUT	  	= portb.3
 
+#include <../../protocolo/src/protocol.c>
+/*
+** Variables definidas en protocol.c
 
-#define THIS_CARD		(CARD_GROUP * 16 + CARD_ID)
-#define THIS_GROUP		(CARD_GROUP * 16)
+short reset; // Variable para hacer el reset
+short crcOK; // Informa si el CRC del paquete parseado fue correcto
 
-#define MIN_LENGTH		0x04
+char buffer[MAX_BUFFER_SIZE];	// Buffer de recepcion de comandos
+int buffer_write;				// Indice de escritura
+int buffer_read;				// Indice de lectura
+int data_length;				// Largo de los datos en el buffer
 
-struct command_t {
-	int len;
-	int to;
-	int from;
-	int cmd;
-	char data[DATA_SIZE + 1];
-	int crc;
-};
+struct command_t command; 	// Comando parseado
+struct command_t response; 	// Respuesta
 
-short reset;
-short crcOK;
+** Implementar las siguientes funciones (usadas por el protocolo)
 
-char buffer[MAX_BUFFER_SIZE];
-int buffer_write;
-int buffer_read;
-int data_length;
+void init(); // Inicializa puertos y variables
+void doCommand(struct command_t * cmd); // Examina y ejecula el comando
 
-// Comando parseado
-struct command_t command;
-// Respuesta
-struct command_t response;
-
-/* Examina y ejecula el comando */
-void doCommand(struct command_t * cmd);
-/* Envia los datos por el pto serial */
-void send(struct command_t * cmd);
-/* Inicializa puertos y variables */
-void init();
-/* Analiza el buffer, ejecuta los 
-comandos y envia las respuestas */
-void runProtocol(struct command_t * cmd);
+***/
 
 void init()
 {
@@ -107,33 +81,23 @@ void init()
 	set_tris_a(0b11100101);
 	set_tris_b(0b11100110);
 
-
-	// ***ADC***
+/*	// ***ADC***
 	setup_port_a(sAN2);//|VSS_VREF);
 	setup_adc(ADC_CLOCK_INTERNAL);
 	set_adc_channel(2);
 	setup_adc_ports(sAN2);
 	// Deberia usar VREF_A2... probar
 	setup_vref(VREF_HIGH | 8); // VREF a 2.5V -> no hay cambios...
-
-	
-	// Variables de comunicacion
-	buffer_write = 0;
-	buffer_read = 0;
-	data_length = 0;
-
+*/	
 	// Seteo el Timer1 como fuente externa y sin divisor
 	setup_timer_1(T1_INTERNAL | T1_DIV_BY_1);
 	set_timer1(0);
 
-	// Interrupcion Rcv
-	enable_interrupts(INT_RDA);
-
-	// Habilito las interrupciones
-	enable_interrupts(GLOBAL);
-
+	// Variable para hacer el reset
 	reset = false;
-	crcOK = false;
+
+	// Init del protocol
+	initProtocol();
 	
 	return;	
 }	
@@ -317,134 +281,4 @@ void doCommand(struct command_t * cmd)
 	}
 
 	return;
-}
-
-/* Envia los datos por el pto serial */
-void send(struct command_t * cmd)
-{
-	int i, len;
-	
-	len = cmd->len - 4;
-	putc(cmd->len);
-	putc(cmd->to);
-	putc(cmd->from);
-	putc(cmd->cmd);
-	
-	for (i = 0; i < len; i++)
-	{
-		putc((cmd->data)[i]);
-	}
-	
-	// Enviar el CRC
-	putc(cmd->crc);
-	
-	return;	
-}	
-
-// Interrupcion del RS232
-#INT_RDA
-void RS232()
-{
-	// Un nuevo dato...
-	buffer[buffer_write++] = getc();
-	data_length++;
-	if (buffer_write == MAX_BUFFER_SIZE)
-		buffer_write = 0;
-	return;
-}
-
-void runProtocol(struct command_t * cmd)
-{
-	// Analiza el buffer
-	if (data_length >= MIN_LENGTH && buffer[buffer_read] <= data_length)
-	{
-		data_length -= buffer[buffer_read] + 1;
-	
-		cmd->len = buffer[buffer_read++];
-	
-		if (buffer_read == MAX_BUFFER_SIZE)
-			buffer_read = 0;
-	
-		cmd->to = buffer[buffer_read++];
-	
-		if (buffer_read == MAX_BUFFER_SIZE)
-			buffer_read = 0;
-	
-		cmd->from = buffer[buffer_read++];
-	
-		if (buffer_read == MAX_BUFFER_SIZE)
-			buffer_read = 0;
-	
-		cmd->cmd = buffer[buffer_read++];
-	
-		if (buffer_read == MAX_BUFFER_SIZE)
-			buffer_read = 0;
-	
-		// Obtiene el campo DATA
-		if ((buffer_read + cmd->len - MIN_LENGTH) > MAX_BUFFER_SIZE)
-		{
-			// DATA esta partido en el buffer ciclico
-			memcpy(cmd->data, buffer + buffer_read, MAX_BUFFER_SIZE - buffer_read);
-			memcpy(cmd->data + MAX_BUFFER_SIZE - buffer_read, buffer, cmd->len - MIN_LENGTH - MAX_BUFFER_SIZE + buffer_read);
-		} else {
-			// DATA esta continuo
-			memcpy(cmd->data, buffer + buffer_read, cmd->len - MIN_LENGTH);
-		}
-	
-		buffer_read += cmd->len - MIN_LENGTH;
-		if (buffer_read >= MAX_BUFFER_SIZE)
-			buffer_read -= MAX_BUFFER_SIZE;
-	
-		cmd->crc = buffer[buffer_read++];
-	
-		if (buffer_read == MAX_BUFFER_SIZE)
-			buffer_read = 0;
-
-		// Soy el destinatario?
-		if (cmd->to == THIS_CARD)
-		{
-			// Ejecuta el comando
-			doCommand(cmd);
-		} else // Es broadcast?
-			if ((cmd->to & 0xF0) == 0xF0)
-		{
-			// Ejecuta el comando
-			doCommand(cmd);
-
-			if (crcOK == true)
-			{
-				// Envia la respuesta
-				send(&response);
-				// Envia nuevamente el comando recibido
-				response = *cmd;
-			}
-		} else // Es broadcast para mi grupo? 
-			if ((cmd->to & THIS_GROUP) == THIS_GROUP)
-		{
-			// Ejecuta el comando
-			doCommand(cmd);	
-#ifdef RESEND_GROUP_BROADCAST
-			if (crcOK == true)
-			{
-				// Envia la respuesta
-				send(&response);
-				// Envia nuevamente el comando recibido
-				response = *cmd;
-			}
-#endif
-		} else {
-			response = *cmd;
-		}
-	
-		// Envia la respuesta...
-		send(&response);
-	}
-	
-	// Reset del micro
-	if (reset == true)
-	{
-		delay_ms(10);
-		reset_cpu();
-	}	
-
 }
