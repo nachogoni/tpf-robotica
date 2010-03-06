@@ -104,8 +104,8 @@ struct command_t {
 };
 
 /* CARD IDs */
-#define THIS_CARD		(CARD_GROUP * 16 + CARD_ID)
-#define THIS_GROUP		(CARD_GROUP * 16)
+#define THIS_CARD		(CARD_GROUP + CARD_ID)
+#define THIS_GROUP		(CARD_GROUP)
 
 // Si la placa es la ultima en la familia -> comentar la siguiente linea
 #define RESEND_GROUP_BROADCAST
