@@ -1,4 +1,10 @@
-#define VERSION "0.1"
+//CCS PCM V4.023 COMPILER
+
+#define CARD_GROUP	MOTOR_DC	// Ver protocol.h
+#define CARD_ID		0		// Valor entre 0 y E
+
+// Descripcion de la placa
+#define DESC		"CONTROL MOTOR DC 1.0" // Maximo DATA_SIZE bytes
 
 /* Modulo Motor - main.c
  * PIC16F88 - MAX232 - L298 - MR-2-60-FA
@@ -21,7 +27,9 @@
 #include <16F88.h>
 #DEVICE ADC = 10
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
+
 #fuses HS,NOWDT,NOPROTECT,NOLVP
 #use delay (clock=20000000)
 
@@ -31,73 +39,77 @@
 
 #byte porta=0x05
 #byte portb=0x06
+
+// MAX232
+#bit tx=portb.5
+#bit rx=portb.2
+
 // Led
 #bit led1=porta.3
 #bit led2=porta.4
+
 // L298
 #bit inputA=portb.4
 #bit inputB=portb.3
 #bit enable=portb.0
 #bit sensor=porta.0
+
 // Motor inuts
 #bit motorIDX=portb.1
 #bit channelA=portb.6
 #bit channelB=porta.1
-// MAX232
-#bit tx=portb.5
-#bit rx=portb.2
 
-#define CARD_GROUP		0x01
-#define CARD_ID			0x01
+#include <../../protocolo/src/protocol.c>
+/*
+** Variables definidas en protocol.c
+
+short reset; // Variable para hacer el reset
+short crcOK; // Informa si el CRC del paquete parseado fue correcto
+
+char buffer[MAX_BUFFER_SIZE];	// Buffer de recepcion de comandos
+int buffer_write;				// Indice de escritura
+int buffer_read;				// Indice de lectura
+int data_length;				// Largo de los datos en el buffer
+
+struct command_t command; 	// Comando parseado
+struct command_t response; 	// Respuesta
+
+** Implementar las siguientes funciones (usadas por el protocolo)
+
+void init(); // Inicializa puertos y variables
+void doCommand(struct command_t * cmd); // Examina y ejecula el comando
+
+***/
 
 // Girar -> clockwise or unclockwise
 // Intercambiar entre el motor derecho y el izquierdo
 #define CLOCKWISE	1
 #define UNCLOCKWISE	-1
 
-signed int turn = CLOCKWISE;
-
-// Buffer del pto serial
-#define MAX_BUFFER_SIZE	45
-char buffer[MAX_BUFFER_SIZE];
-int buffer_write = 0;
-int buffer_read = 0;
-int data_length = -1;
-
-struct command_t{
-	int from;
-	int to;
-	int cmd;
-	int crc;
-	int len;
-	char* data;
-};	
-
+// Sentido de giro del motor
+signed int turn;
 // Cantidad de overflows del TMR0
-long tmr0_ticks = 0;
-
+long tmr0_ticks;
 // Valor acumulado del ADC - Consumo aprox
-long adc_value = 0;
-
+long adc_value;
 // Valor de duty del PWM
-signed long duty = 0;
+signed long duty;
+// Cantidad de cuentas del encoder esperadas por intervalo
+signed long counts_expected;
+// Cantidad de cuentas del encoder totales
+signed long counts_total;
+// Cantidad de cuentas del encoder restantes para deterner el motor
+signed long counts_to_stop;
+// Cantidad de cuentas del encoder desde el ultimo intevalo
+signed long last_counts;
+signed long last_counts2;
+// Tengo una cantidad de cuentas para hacer?
+short counts_check;
+// Corrijo el PWM segun lo esperado?
+short correct_duty;
 
-signed long counts_expected = 0;
-signed long counts_total = 0;
-signed long counts_to_stop = 0;
-signed long last_counts = 0;
-signed long last_counts2 = 0;
-short counts_check = 0;
-short correct_duty = 1;
-
-short rs232c = 0;
-
-/* Examina y ejecula el comando */
-void command(char * cmd, int size);
 /* Setea el PWM */
 void SetPWM(signed long pwm);
-/* Envia los datos por el pto serial */
-void send(char * response, int size);
 
 // Interrupcion del Timer0
 #INT_RTCC
@@ -110,8 +122,6 @@ void Timer0_INT()
 	// Comienza la lectura del ADC
 	read_adc(ADC_START_ONLY);
 	
-	//printf(":%d:",read_adc()); // DEBUG
-
 	// Agrego al historico de cuentas el ultimo acumulado
 	tmr1 = get_timer1();
 	counts_total += (tmr1 - last_counts2) * turn;
@@ -147,7 +157,7 @@ void Timer0_INT()
 	if (++tmr0_ticks == 32)
 	{
 		// Entra cada 200ms
-		led1 = 1;// DEBUG?
+
 		// Obtengo la cantidad de cuentas desde la ultima entrada
 		tmr1 = get_timer1();
 		set_timer1(0);
@@ -155,8 +165,6 @@ void Timer0_INT()
 		last_counts2 = 0;
 		// Promedio el consumo segun la cantidad de tmr0_ticks
 		adc_value /= tmr0_ticks;
-		printf("\n\rTimer1: %ld | Expected: %ld | duty: %ld | ", tmr1, counts_expected, duty); // DEBUG
-		printf("consumtion avrg: %ld\n\r", adc_value); // DEBUG
 		tmr0_ticks = 0;
 
 		// Mantengo el consumo promedio desde que arranque y borro el temporal
@@ -172,19 +180,16 @@ void Timer0_INT()
 				duty = 0;
 			SetPWM(duty * turn);
 		}
-	} else {
-		led1 = 0; // DEBUG?
 	}
 	return;
 }
 
-void main()
+void init()
 {
-	// Control de Velocidad comandado por RS232
-
+	// Inicializa puertos
 	set_tris_a(0b11100111);
 	set_tris_b(0b11100110);
-	
+
 	// ***ADC***
 	setup_port_a(sAN0);//|VSS_VREF);
 	setup_adc(ADC_CLOCK_INTERNAL);
@@ -210,127 +215,35 @@ void main()
 	set_timer0(12);
 	// Interrupcion sobre el Timer0
 	enable_interrupts(INT_RTCC);
-	enable_interrupts(INT_RDA);
 
 	// Habilito las interrupciones
 	enable_interrupts(GLOBAL);
 	
-	//counts_expected = 30;
-	
-	// FOREVER
-	while(true)
-	{
-		// Mini consola
-		if (rs232c == 1)
-		{
-			rs232c = 0;
+	// Variable para hacer el reset
+	reset = false;
 
-			//DoSomething
-			
+	// Sentido de giro del motor
+	turn = CLOCKWISE;
+	// Cantidad de overflows del TMR0
+	tmr0_ticks = 0;
+	// Valor acumulado del ADC - Consumo aprox
+	adc_value = 0;
+	// Valor de duty del PWM
+	duty = 0;
+	// Cantidad de cuentas del encoder esperadas por intervalo
+	counts_expected = 0;
+	// Cantidad de cuentas del encoder totales
+	counts_total = 0;
+	// Cantidad de cuentas del encoder restantes para deterner el motor
+	counts_to_stop = 0;
+	// Cantidad de cuentas del encoder desde el ultimo intevalo
+	last_counts = 0;
+	last_counts2 = 0;
+	// Tengo una cantidad de cuentas para hacer?
+	counts_check = 0;
+	// Corrijo el PWM segun lo esperado?
+	correct_duty = 1;
 
-			
-			
-			
-			if (buffer[buffer_read] == data_length)
-			{
-				// Hay un comando!
-				
-				
-				// Execute command
-				//command(buffer, command_size);
-
-			}
-
-		}
-	}
-
-	return;
-}
-
-// Interrupcion del RS232
-#INT_RDA
-void RS232()
-{
-	// Un nuevo dato...
-	buffer[buffer_write ++] = getc();
-	data_length++;
-	if (buffer_write == MAX_BUFFER_SIZE)
-		buffer_write = 0;
-	return;
-}
-
-/* Verifica que el comando sea valido y lo ejecuta */
-void command(char * cmd, int size)
-{
-	short read = 0;
-	short echo = 0;
-	
-	// Broadcast general
-	if (buffer[0] == 0xFF)
-	{
-		// Atiende el mensaje
-		read = 1;
-		// Repite el comando
-		echo = 1;
-	}
-	else if ((buffer[0] & 0x7F) == CARD_GROUP)
-	{
-		if (((buffer[0] & 0x80) == 0x80) || (buffer[1] == CARD_ID))
-		{
-			// Atiende el mensaje
-			read = 1;
-			// Repite el comando
-			echo = ((buffer[0] & 0x80) == 0x80);
-		}
-	}
-	
-	if (read == 1)
-	{
-		// Parte comun a todas las respuestas
-//		resp[0] = cmd[2] & 0x7F;
-//		resp[1] = cmd[3];
-//		resp[2] = CARD_GROUP;
-//		resp[3] = CARD_ID;
-
-		switch (cmd[4])
-		{
-			case 0x03:
-				// Ping -> Pong
-//				resp[4] = cmd[4];
-//				resp[5] = 0;
-//				resp_idx = 6;
-//				send(resp, resp_idx);
-			break;
-
-			default:
-			break;
-		}	
-		
-		
-	}
-	
-	// Hacer echo si corresponde (TODO: ver CRC)
-	if (echo == 1)
-		send(buffer, size);
-
-	return;	
-}	
-
-/* Envia los datos por el pto serial */
-void send(char * response, int size)
-{
-	int i, checksum = 0;
-	
-	for (i = 0; i < size; i++)
-	{
-		// Calcular el crc
-		checksum ^= response[i];
-		putc(response[i]);
-	}
-	
-	// Enviar el CRC
-	putc(checksum);
-	
 	return;	
 }	
 
@@ -356,4 +269,231 @@ void setPWM(signed long pwm)
   set_pwm1_duty(pset);
   
   return;
+}
+
+void main()
+{
+	// Placa Generica - Implementacion del protocolo
+	init();
+
+	// Init del protocol
+	initProtocol();
+
+	// FOREVER
+	while(true)
+	{
+		// Hace sus funciones -> interrupcion
+
+		// Protocolo
+		runProtocol(&command);
+	}
+
+	return;
+}
+
+/* Verifica que el comando sea valido y lo ejecuta */
+void doCommand(struct command_t * cmd)
+{
+	int crc, i, len;
+		
+	// Calculo del CRC
+	crc = cmd->len ^ cmd->to ^ cmd->from ^ cmd->cmd;
+	
+	len = cmd->len - MIN_LENGTH;
+
+	for (i = 0; i < len; i++)
+	{
+		crc ^= (cmd->data)[i];
+	}
+	
+	// CRC ok?
+	if (cmd->crc != crc)
+	{		
+		// Creo respuesta de error
+		response.len = 0x05;
+		response.to = cmd->from;
+		response.from = THIS_CARD;
+		response.cmd = COMMON_ERROR;
+		response.data[0] = 0x00;
+		response.crc = 0x05 ^ response.to ^ THIS_CARD ^ COMMON_ERROR ^ 0x00;
+		crcOK = false;
+		return;
+	}
+
+	crcOK = true;
+	
+	// Minimo todos setean esto
+	response.len = MIN_LENGTH;
+	response.to = cmd->from & 0x77;
+	response.from = THIS_CARD;
+	response.cmd = cmd->cmd | 0x80;
+
+	switch (cmd->cmd)
+	{
+		// Comandos comunes
+		case COMMON_INIT: 
+			init();
+			// Enviar la descripcion de la placa en texto plano
+			strcpy(response.data, DESC);
+			response.len += strlen(response.data);
+		break;
+		case COMMON_RESET: 
+			// Enviar la descripcion de la placa en texto plano
+			strcpy(response.data, DESC);
+			response.len += strlen(response.data);
+			// Reset!
+			reset = true;
+		break;
+		case COMMON_PING: 
+			// No hace falta hacer mas nada
+		break;
+ 		case COMMON_ERROR:
+			// Por ahora se ignora el comando
+		break;
+		
+		/* Comandos especificos */
+
+ 		case DC_MOTOR_SET_DIRECTION:
+			/* Seteo del sentido de giro del motor
+			:DATO:
+			0x00 para sentido horario o 0x01 para sentido anti-horario.
+			:RESP:
+			-
+			*/
+			if (((cmd->data)[0] & 0x01) == 0)
+			{
+				turn = CLOCKWISE;
+			} else {
+				turn = UNCLOCKWISE;
+			}	
+		break;
+ 		case DC_MOTOR_SET_DC_SPEED:
+			/* Seteo de la velocidad del motor en cuentas del encoder por segundo
+			:DATO:
+			0x00 para sentido horario o 0x01 para sentido anti-horario. Numero 
+			entero de 16 bits con signo, que representa la velocidad en cuentas 
+			por segundos.
+			:RESP:
+			-
+			*/
+			if (((cmd->data)[0] & 0x01) == 0)
+			{
+				turn = CLOCKWISE;
+			} else {
+				turn = UNCLOCKWISE;
+			}
+			
+			// TODO: 16bits
+			
+		break;
+ 		case DC_MOTOR_SET_ENCODER:
+			/* Seteo de la cantidad de cuentas historicas del encoder
+			:DATO:
+			Numero entero de 32 bits con signo, con el valor para setear en el
+			historico del encoder.
+			:RESP:
+			-
+			*/
+		break;
+ 		case DC_MOTOR_GET_ENCODER:
+			/* Obtener la cantidad de cuentas historicas del encoder
+			:DATO:
+			-
+			:RESP:
+			Numero entero de 32 bits con signo, que representa el valor historico
+			del encoder.
+			*/
+		break;
+ 		case DC_MOTOR_RESET_ENCODER:
+			/* Resetear las cuentas historicas a cero
+			:DATO:
+			-
+			:RESP:
+			-
+			*/
+		break;
+ 		case DC_MOTOR_SET_ENCODER_TO_STOP:
+			/* Seteo de cuantas cuentas debe girar hasta detenerse
+			:DATO:
+			Numero entero de 16 bits con signo, que representa la cantidad de
+			cuentas del encoder restantes para que el motor se detenga.
+			:RESP:
+			-
+			*/
+		break;
+ 		case DC_MOTOR_GET_ENCODER_TO_STOP:
+			/* Obtener la cantidad de las cuentas restantes que quedan por 
+			realizar hasta detenerse.
+			:DATO:
+			-
+			:RESP:
+			Numero entero de 16 bits con signo, que representa la cantidad
+			de cuentas del encoder restantes para detener el motor.
+			*/
+		break;
+ 		case DC_MOTOR_DONT_STOP:
+			/* Deshace los comandos DC_MOTOR_DONT_STOP y DC_MOTOR_GET_ENCODER_TO_STOP, 
+			deshabilita el conteo de cuentas para frenar y sigue en el estado actual.
+			:DATO:
+			-
+			:RESP:
+			-
+			*/
+		break;
+ 		case DC_MOTOR_MOTOR_CONSUMPTION:
+			/* Numero entero positivo de 16 bits en el rango desde 0x0000 hasta
+			0x03FF, que representa el consumo promedio del ultimo segundo.
+			:DATO:
+			-
+			:RESP:
+			-
+			*/
+		break;
+ 		case DC_MOTOR_MOTOR_STRESS_ALARM:
+			/* Indica al controlador principal que hay un consumo extremo en el motor,
+			posiblemente un atasco del motor o de la rueda.
+			:DATO:
+			Numero entero positivo de 16 bits en el rango desde 0x0000 hasta
+			0x03FF, que representa el consumo ante el que sono la alarma.
+			:RESP:
+			-
+			*/
+		break;
+ 		case DC_MOTOR_MOTOR_SHUT_DOWN_ALARM:
+			/* Indica al controlador principal que el motor ha sido apagado debido al alto
+			consumo. Enviado luego de sucesivos avisos del comando DC_MOTOR_MOTOR_STRESS_ALARM.
+			:DATO:
+			Numero entero positivo de 16 bits en el rango desde 0x0000 hasta
+			0x03FF, que representa el consumo ante el que sono la alarma.
+			:RESP:
+			-
+			*/
+		break;
+ 		case DC_MOTOR_GET_DC_SPEED:
+			/* Obtiene la velocidad del motor en cuentas del encoder por segundo
+			:DATO:
+			0x00 para sentido horario o 0x01 para sentido anti-horario. Numero
+			entero de 16 bits con signo, que representa la velocidad en cuentas
+			por segundos.
+			:RESP:
+			-
+			*/
+		break;
+
+		default:
+			response.len++;
+			response.cmd = COMMON_ERROR;
+			response.data[0] = 0x01; // Comando desconocido
+		break;
+	}	
+
+	// Calcular el crc
+	response.crc = response.len ^ response.to ^ THIS_CARD ^ response.cmd;
+	len = response.len - MIN_LENGTH;
+	for (i = 0; i < len; i++)
+	{
+		response.crc ^= (response.data)[i];
+	}
+
+	return;
 }

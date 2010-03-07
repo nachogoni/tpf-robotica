@@ -1,5 +1,7 @@
+//CCS PCM V4.023 COMPILER
+
 #define CARD_GROUP	MOTOR_DC	// Ver protocol.h
-#define CARD_ID		1		// Valor entre 0 y E
+#define CARD_ID		0		// Valor entre 0 y E
 
 // Descripcion de la placa
 #define DESC		"PLACA GENERICA - 1.0" // Maximo DATA_SIZE bytes
@@ -46,13 +48,6 @@
 #bit tx=portb.5
 #bit rx=portb.2
 
-// PLACA DE PRUEBAS
-#bit telemetroIN  	= porta.0
-#bit telemetroOUT 	= portb.0
-#bit servoPWM		= portb.1
-#bit pisoIN		  	= porta.2
-#bit pisoOUT	  	= portb.3
-
 #include <../../protocolo/src/protocol.c>
 /*
 ** Variables definidas en protocol.c
@@ -81,115 +76,19 @@ void init()
 	set_tris_a(0b11100101);
 	set_tris_b(0b11100110);
 
-/*	// ***ADC***
-	setup_port_a(sAN2);//|VSS_VREF);
-	setup_adc(ADC_CLOCK_INTERNAL);
-	set_adc_channel(2);
-	setup_adc_ports(sAN2);
-	// Deberia usar VREF_A2... probar
-	setup_vref(VREF_HIGH | 8); // VREF a 2.5V -> no hay cambios...
-*/	
-	// Seteo el Timer1 como fuente externa y sin divisor
-	setup_timer_1(T1_INTERNAL | T1_DIV_BY_1);
-	set_timer1(0);
-
 	// Variable para hacer el reset
 	reset = false;
 
-	// Init del protocol
-	initProtocol();
-	
 	return;	
 }	
 
 void main()
 {
-long adc_value[5];
-int i = 0;
-
 	// Placa Generica - Implementacion del protocolo
 	init();
-/*
-// TELEMETRO
-while (1)
-{
-	led1=1;
-//	telemetroOUT=0;
-	pisoOUT = 0;
-	delay_ms(1000);
-	led1=0;
-//	telemetroOUT=1;
-	pisoOUT = 1;
-	delay_ms(1000);
-}		
-*/
-/*
-// CNY70
-while(1)
-{
-	for (i = 0; i < 5; i++)
-	{
-		// Apago
-		pisoOUT = 1;
-		read_adc(ADC_START_ONLY);
-		delay_ms(1);
-		// Leo
-		adc_value[i] = read_adc(ADC_READ_ONLY);
-		// Enciendo
-		pisoOUT = 0;
-		read_adc(ADC_START_ONLY);
-		delay_ms(1);
-		// Leo
-		adc_value[i] = read_adc(ADC_READ_ONLY) - adc_value[i];
-	}
-	printf("Value: %ld %ld %ld %ld %ld ->  %ld\r\n", 
-		adc_value[0], adc_value[1], adc_value[2], adc_value[3], adc_value[4],
-		(adc_value[0] + adc_value[1] + adc_value[2] + adc_value[3] + adc_value[4]) );
-	delay_ms(255);
-}	*/
 
-//while (1);
-
-// PRUEBAS DE BUFFER
-/*
-	buffer[0] = 0x04; // Falla x crc
-	buffer[1] = 0xFF;
-	buffer[2] = 0x00;
-	buffer[3] = 0x01;
-	buffer[4] = 0xFA;//55;
-	buffer[5] = 0x06; // No es para mi
-	buffer[6] = 0x00;
-	buffer[7] = 0x62;
-	buffer[8] = 0x45;
-	buffer[9] = 0x6B;
-	buffer[10] = 0x03;
-	buffer[11] = 0x49;
-	buffer[12] = 0x04;// Msg broadcast
-	buffer[13] = 0xFF;
-	buffer[14] = 0x00;
-	buffer[15] = 0x40;
-	buffer[16] = 0xBB;
-	buffer_read = 0;
-	data_length = 17;
-
-/*	buffer[0] = 'A';
-	buffer[1] = 'S';
-	buffer[2] = 'A';
-	buffer[3] = 0x48;
-	buffer[4] = 0x00;
-	buffer[5] = 0x00;
-	buffer[6] = 0x00;
-	buffer[7] = 0x00;
-	buffer[8] = 0x00;
-	buffer[9] = 0x00;
-
-	buffer[40] = 0x08;// Msg con DATA partido
-	buffer[41] = 0x11;
-	buffer[42] = 0x00;
-	buffer[43] = 0x40;
-	buffer[44] = 'C';
-	buffer_read = 40;
-	data_length = 9;*/
+	// Init del protocol
+	initProtocol();
 
 	// FOREVER
 	while(true)
@@ -263,7 +162,16 @@ void doCommand(struct command_t * cmd)
 			// Por ahora se ignora el comando
 		break;
 		
-		// Comandos especificos
+		/* Comandos especificos */
+
+ 		case 0x40:
+			/* 
+			:DATO:
+			-
+			:RESP:
+			-
+			*/
+		break;
 
 		default:
 			response.len++;

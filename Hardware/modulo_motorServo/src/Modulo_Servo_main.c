@@ -1,29 +1,35 @@
 //CCS PCM V4.023 COMPILER
-#define VERSION "1.0"
 
-/* Modulo Motor - main.c
+#define CARD_GROUP	SERVO_MOTOR	// Ver protocol.h
+#define CARD_ID		0			// Valor entre 0 y E
+
+// Descripcion de la placa
+#define DESC		"SERVOR CONTROL - 1.0" // Maximo DATA_SIZE bytes
+
+/* Modulo Servo - main.c
  * PIC16F88 - MAX232 - SERVO
  *
  *                               PIC16F88
  *                .------------------------------------.
- *  SOFTWARE_PWM -|RA2/AN2/CVREF/VREF           RA1/AN1|- 
+ *       MOTOR_4 -|RA2/AN2/CVREF/VREF           RA1/AN1|- MOTOR_5
  *           LED -|RA3/AN3/VREF+/C1OUT          RA0/AN0|- 
  *           LED -|RA4/AN4/T0CKI/C2OUT    RA7/OSC1/CLKI|- XT CLOCK pin1, 27pF to GND
  * RST/ICD2:MCLR -|RA5/MCLR/VPP           RA6/OSC2/CLKO|- XT CLOCK pin2, 27pF to GND
  *           GND -|VSS                              VDD|- +5v
- *  HARDWARE_PWM -|RB0/INT/CCP1       RB7/AN6/PGD/T1OSI|- ICD2:PGD
- *               -|RB1/SDI/SDA  RB6/AN5/PGC/T1OSO/T1CKI|- ICD2:PGC
+ *       MOTOR_1 -|RB0/INT/CCP1       RB7/AN6/PGD/T1OSI|- ICD2:PGD
+ *       MOTOR_2 -|RB1/SDI/SDA  RB6/AN5/PGC/T1OSO/T1CKI|- ICD2:PGC
  *  MAX232:R1OUT -|RB2/SDO/RX/DT           RB5/SS/TX/CK|- MAX232:T1IN
- *      ICD2:PGM -|RB3/PGM/CCP1             RB4/SCK/SCL|- 
- *                '------------------------------------'
+ *     ICD2:PGM/ -|RB3/PGM/CCP1             RB4/SCK/SCL|- 
+ *     MOTOR_3    '------------------------------------'
  *    
  */
 
 #include <16F88.h>
 #DEVICE ADC = 10
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
-#include <math.h>
+
 #fuses HS,NOWDT,NOPROTECT,NOLVP
 #use delay (clock=20000000)
 
@@ -35,112 +41,117 @@
 #byte portb=0x06
 
 // Led
-#bit led1=porta.3
+#bit led1=porta.1
 #bit led2=porta.4
-// PWMs
-#bit pwm1=porta.2
-#bit pwm2=porta.2 // TODO: select another pin!
-#bit pwm3=porta.2 // TODO: select another pin!
-#bit pwm4=porta.2 // TODO: select another pin!
-#bit pwm5=porta.2 // TODO: select another pin!
+
 // MAX232
 #bit tx=portb.5
 #bit rx=portb.2
 
-#define CARD_GROUP		0x01
-#define CARD_ID			0x01
+// PWMs
+#bit pwm1=portb.0
+#bit pwm2=portb.1
+#bit pwm3=portb.3
+#bit pwm4=porta.2
+#bit pwm5=porta.1
 
-// Buffer del pto serial
-#define MAX_BUFFER_SIZE	46
-char buffer[MAX_BUFFER_SIZE];
-int buffer_idx = 0;
+#include <../../protocolo/src/protocol.c>
+/*
+** Variables definidas en protocol.c
 
-// Buffer de respuesta
-char resp[30];
-int resp_idx = 0;
+short reset; // Variable para hacer el reset
+short crcOK; // Informa si el CRC del paquete parseado fue correcto
 
-short check_comm = 0;
-int command_size = 6;
-int read_idx = 0;
+char buffer[MAX_BUFFER_SIZE];	// Buffer de recepcion de comandos
+int buffer_write;				// Indice de escritura
+int buffer_read;				// Indice de lectura
+int data_length;				// Largo de los datos en el buffer
 
+struct command_t command; 	// Comando parseado
+struct command_t response; 	// Respuesta
+
+** Implementar las siguientes funciones (usadas por el protocolo)
+
+void init(); // Inicializa puertos y variables
+void doCommand(struct command_t * cmd); // Examina y ejecuta el comando
+
+***/
 
 // Software PWM - Minimo 1750 (~0.71ms)
-long pwm1_t = 1750;
-long pwm2_t = 1750;
-long pwm3_t = 1750;
-long pwm4_t = 1750;
-long pwm5_t = 1750;
-
-// 1º ~ 27.77 cuentas ~ 69.4us
-
+#define PULSE_MIN	1750
 // Tiempo maximo que puede durar un pulso - Maximo 6755(~2.71ms)
 #define PULSE_MAX	6755
 // Tiempo entre pulsos (~25ms -> ~22.29ms fijos de espera)
 #define PWM_MAX		62500
+// 1º ~ 27.8 cuentas ~ 69.4us
+#define DEGREE		27.8f
 
-/* Examina y ejecula el comando */
-void command(char * cmd, int size);
-/* Envia los datos por el pto serial */
-void send(char * response, int size);
+// Valor que representa el ancho del pulso para cada servo
+long pwm_t[5];
+// Angulo de cada servo
+long pos[5];
+// On/Off de cada servo
+short servo[5];
 
-// Interrupcion del RS232
-#INT_RDA
-void RS232()
-{			led1=1;
-	// Agrego al buffer el caracter
-	buffer[buffer_idx++] = getc();
-	if (buffer_idx == MAX_BUFFER_SIZE)
-		buffer_idx = 0;
-					led1=0;
-	return;
-}
+void init()
+{
+	// Inicializa puertos
+	set_tris_a(0b11100001);
+	set_tris_b(0b11110100);
+
+	// Seteo el Timer1 como fuente interna
+	setup_timer_1(T1_INTERNAL | T1_DIV_BY_2);
+	set_timer1(0);
+
+	// Variable para hacer el reset
+	reset = false;
+
+	// Activo los servos segun este o no habilitado
+	pwm1 = servo[0];
+	pwm2 = servo[1];
+	pwm3 = servo[2];
+	pwm4 = servo[3];
+	pwm5 = servo[4];
+	
+	// Valor que representa el ancho del pulso para cada servo
+	pwm_t[0] = PULSE_MIN;
+	pwm_t[1] = PULSE_MIN;
+	pwm_t[2] = PULSE_MIN;
+	pwm_t[3] = PULSE_MIN;
+	pwm_t[4] = PULSE_MIN;
+	
+	// Angulo de cada servo
+	pos[0] = 0;
+	pos[1] = 0;
+	pos[2] = 0;
+	pos[3] = 0;
+	pos[4] = 0;
+	
+	// On/Off de cada servo
+	servo[0] = 0;
+	servo[1] = 0;
+	servo[2] = 0;
+	servo[3] = 0;
+	servo[4] = 0;
+		
+	return;	
+}	
 
 void main()
 {
-	long tmr1 = 1;
-	int i;
-	int c = 0;
-	int s = 0;
+	short check_comm = 0;
+	long tmr1;
+	
+	// Control de servomotores
+	init();
 
-/*	long j = 0;
-	float k = 0f;
-	char a = 0, b = 0;
-	
-	k = 54.37f;
-	
-	//a = (int)(k / 10) * 16 + ((int)k % 10);
-	//b = ((int)(k * 10) % 10) * 16 + ((int)(k * 100) % 10);
-	
-	c = k - floor(k);
-	s = (int)k;*/
-	
-	// Control de Velocidad comandado por RS232
+	// Init del protocol
+	initProtocol();
 
-	set_tris_a(0b11100011);  // TODO: check!
-	set_tris_b(0b11100110);
-	
-	// ***TIMER1 - ENCODER COUNTER***
-	// Seteo el Timer1 como fuente externa y sin divisor
-	setup_timer_1(T1_INTERNAL | T1_DIV_BY_2);
-	
-	// Interrupciones
-	enable_interrupts(INT_RDA);
-
-	// Habilito las interrupciones
-	enable_interrupts(GLOBAL);
-	
-	// Inicio del periodo
-	set_timer1(0);
-	// Activo todos los servos
-	pwm1 = 1;
-	pwm2 = 1;
-	pwm3 = 1;
-	pwm4 = 1;
-	pwm5 = 1;
 
 	// FOREVER
-	while(1)
-	{	
+	while(true)
+	{
 		// Software PWM
 
 		// Tomo el tiempo
@@ -152,39 +163,14 @@ void main()
 			// Detiene el analisis de comandos
 			check_comm = 0;
 			
-			//led1=1;
-			
-			
 			// Inicio del periodo
 			set_timer1(0);
-			// Activo todos los servos
-			pwm1 = 1;
-			pwm2 = 1;
-			pwm3 = 1;
-			pwm4 = 1;
-			pwm5 = 1;
-			
-			if (s == 1 && c++ == 60)
-			{
-				pwm1_t -= 139;//28;
-				c = 0;
-			}
-			if (s == 0 && c++ == 60)
-			{
-				pwm1_t += 139;//28;
-				c = 0;
-			}
-			if (pwm1_t > 6750)
-			{
-				s = 1;
-			}
-			if (pwm1_t < 1750)
-			{
-				s = 0;
-			}
-			
-
-
+			// Activo los servos segun este o no habilitado
+			pwm1 = servo[0];
+			pwm2 = servo[1];
+			pwm3 = servo[2];
+			pwm4 = servo[3];
+			pwm5 = servo[4];
 			
 		} else
 		// Llego al final del pulso?
@@ -199,93 +185,247 @@ void main()
 			// Analiza si hay comandos para ser atendidos
 			check_comm = 1;
 			
-//			led1=0;
-			
 		} else {
 			// Tomo el tiempo
 			tmr1 = get_timer1();
 
 			// Es tiempo de desactivar el PWM?
-			if (tmr1 >= pwm1_t)
+			if (tmr1 >= pwm_t[0])
 				pwm1 = 0;
-			if (tmr1 >= pwm2_t)
-				//pwm2 = 0;
-				pwm2_t = pwm2_t;
-			if (tmr1 >= pwm3_t)
-				//pwm3 = 0;
-				pwm3_t = pwm3_t;
-			if (tmr1 >= pwm4_t)
-				//pwm4 = 0;
-				pwm4_t = pwm4_t;
-			if (tmr1 >= pwm5_t)
-				//pwm5 = 0;
-				pwm5_t = pwm5_t;
+			if (tmr1 >= pwm_t[1])
+				pwm2 = 0;
+			if (tmr1 >= pwm_t[2])
+				pwm3 = 0;
+			if (tmr1 >= pwm_t[3])
+				pwm4 = 0;
+			if (tmr1 >= pwm_t[4])
+				pwm5 = 0;
 		}
-
-        // Mini consola
-        if (check_comm == 1)
-        {
-	        //printf("\r\nAnalizando...");
-	        // Analizo si hay un comando
-			for (i = (buffer_idx - read_idx); i > 0; i--)
-				putc(buffer[read_idx++]);
-			read_idx = buffer_idx;
-        }
+		
+		// Protocolo
+		if (check_comm == 1)
+			runProtocol(&command);
 	}
-
 
 	return;
 }
 
 /* Verifica que el comando sea valido y lo ejecuta */
-void command(char * cmd, int size)
+void doCommand(struct command_t * cmd)
 {
-        // TODO: Crear protocolo
-        /*if (cmd[0] == '+')
-        {
-	        duty++;
-	        if (duty > 1023)
-	        	duty = 1023;
-
-			printf("\rDuty a: %ld", duty);
-        } else 
-        if (cmd[0] == '-')
-        {
-	        duty--;
-	        if (duty < 0)
-	        	duty = 0;
-
-			printf("\rDuty a: %ld", duty);
-        } else 
-        if (cmd[0] == 'd')
-        {
-            duty = atol(cmd + 1);
-	        if (duty < 0)
-	        	duty = 0;
-	        if (duty > 1023)
-	        	duty = 1023;
-
-			printf("\rDuty a: %ld", duty);
-        }*/
-        
-       
-        return; 
-}  	
-
-/* Envia los datos por el pto serial */
-void send(char * response, int size)
-{
-	int i, checksum = 0;
+	int crc, i, len;
+		
+	// Calculo del CRC
+	crc = cmd->len ^ cmd->to ^ cmd->from ^ cmd->cmd;
 	
-	for (i = 0; i < size; i++)
+	len = cmd->len - MIN_LENGTH;
+
+	for (i = 0; i < len; i++)
 	{
-		// Calcular el crc
-		checksum ^= response[i];
-		putc(response[i]);
+		crc ^= (cmd->data)[i];
 	}
 	
-	// Enviar el CRC
-	putc(checksum);
+	// CRC ok?
+	if (cmd->crc != crc)
+	{		
+		// Creo respuesta de error
+		response.len = 0x05;
+		response.to = cmd->from;
+		response.from = THIS_CARD;
+		response.cmd = COMMON_ERROR;
+		response.data[0] = 0x00;
+		response.crc = 0x05 ^ response.to ^ THIS_CARD ^ COMMON_ERROR ^ 0x00;
+		crcOK = false;
+		return;
+	}
+
+	crcOK = true;
 	
-	return;	
-}	
+	// Minimo todos setean esto
+	response.len = MIN_LENGTH;
+	response.to = cmd->from & 0x77;
+	response.from = THIS_CARD;
+	response.cmd = cmd->cmd | 0x80;
+
+	switch (cmd->cmd)
+	{
+		// Comandos comunes
+		case COMMON_INIT: 
+			init();
+			// Enviar la descripcion de la placa en texto plano
+			strcpy(response.data, DESC);
+			response.len += strlen(response.data);
+		break;
+		case COMMON_RESET: 
+			// Enviar la descripcion de la placa en texto plano
+			strcpy(response.data, DESC);
+			response.len += strlen(response.data);
+			// Reset!
+			reset = true;
+		break;
+		case COMMON_PING: 
+			// No hace falta hacer mas nada
+		break;
+ 		case COMMON_ERROR:
+			// Por ahora se ignora el comando
+		break;
+		
+		/* Comandos especificos */
+		
+ 		case SERVO_MOTOR_SET_POSITION:
+			/* Determina la posicion en la que debe colocarse el 
+			servo motor indicado.
+			:DATO:
+			Valor de 0x00 a 0x04 que determina el id del servo al
+			que se le aplicara la posicion. Valor entre 0x00 y 0xB4
+			que representa el rango de 0 a 180 con 1 de presicion.
+			:RESP:
+			-
+			*/
+			i = ((cmd->data)[0] & 0x07); // Servo destinatario
+			if (i < 5)
+			{
+				servo[i] = 1;
+				pos[i] = (unsigned char)((cmd->data)[1]);
+				pwm_t[i] = PULSE_MIN + pos[i] * DEGREE;
+			}	
+		break;
+ 		case SERVO_MOTOR_SET_ALL_POSITIONS:
+			/* Determina las posiciones en la que deben colocarse
+			cada uno de los servomotores
+			:DATO:
+			Consta de 5 valores entre 0x00 y 0xB4 concatenados, uno
+			para cada uno de los servos conectados al controlador.
+			Cada valor representa el rango de 0 a 180 con 1 de presicion.
+			:RESP:
+			-
+			*/
+			for (i = 0; i < 5; i++)
+			{
+				servo[i] = 1;
+				pos[i] = (unsigned char)((cmd->data)[i]);
+				pwm_t[i] = PULSE_MIN + pos[i] * DEGREE;
+			}	
+		break;
+ 		case SERVO_MOTOR_GET_POSITION:
+			/* Obtiene la ultima posicion del servomotor indicado.
+			:DATO:
+			Valor de 0x00 a 0x04 que determina el id del servo del que
+			se requiere la posicion.
+			:RESP:
+			Valor de 0x00 a 0x04 que determina el id del servo del que 
+			se requirio la posicion. Valor entre 0x00 y 0xB4 que representa
+			el rango de 0 a 180 con 1 de presicion.
+			*/
+			i = ((cmd->data)[0] & 0x07); // Servo destinatario
+			if (i < 5)
+			{
+				response.data[0] = pos[i];
+				response.len++;
+			}	
+		break;
+ 		case SERVO_MOTOR_GET_ALL_POSITIONS:
+			/* Obtiene las últimas posiciones de todos los servomotor
+			conectados al controlador.
+			:DATO:
+			-
+			:RESP:
+			Consta de 5 valores entre 0x00 y 0xB4 concatenados, uno para 
+			cada uno de los servos conectados al controlador. Cada valor 
+			representa el rango de 0 a 180 con 1 de presicion.
+			*/
+			response.data[0] = pos[0];
+			response.data[1] = pos[1];
+			response.data[2] = pos[2];
+			response.data[3] = pos[3];
+			response.data[4] = pos[4];
+			response.len += 5;
+		break;
+		case SERVO_MOTOR_SET_SERVO_SPEED:
+			/* Determina la velocidad a la que el servomotor indicado 
+			llegara a la posicion.
+			:DATO:
+			Valor de 0x00 a 0x04 que determina el id del servo al que 
+			se le aplicara la velocidad. Valor entre 0x00 y 0xB4, 
+			velocidad en grados por segundo.
+			:RESP:
+			-
+			*/
+		break;
+ 		case SERVO_MOTOR_SET_ALL_SPEEDS:
+			/* Determina las velocidades a la que cada uno de los 
+			servomotores llegara a la posicion indicada.
+			:DATO:
+			Consta de 5 valores entre 0x00 y 0xB4 concatenados, uno 
+			para cada uno de los servos conectados al controlador. 
+			Cada valor representa a la velocidad en grados por segundo.
+			:RESP:
+			-
+			*/
+		break;
+ 		case SERVO_MOTOR_GET_SERVO_SPEED:
+			/* Obtiene la velocidad asignada al servomotor indicado.
+			:DATO:
+			Valor de 0x00 a 0x04 que determina el id del servo del que
+			se requiere la velocidad.
+			:RESP:
+			Valor de 0x00 a 0x04 que determina el id del servo del que 
+			se requirio la velocidad. Valor entre 0x00 y 0xB4, velocidad 
+			en grados por segundo.
+			*/
+		break;
+ 		case SERVO_MOTOR_GET_ALL_SPEEDS:
+			/* Obtiene las velocidades de cada uno de los servomotor 
+			conectados al controlador.
+			:DATO:
+			-
+			:RESP:
+			Consta de 5 valores entre 0x00 y 0xB4 concatenados, uno para 
+			cada uno de los servos conectados al controlador. Cada valor 
+			representa a la velocidad en grados por segundo.
+			*/
+		break;
+ 		case SERVO_MOTOR_FREE_SERVO:
+			/* Deja de aplicar fuerza sobre el servo indicado.
+			:DATO:
+			Valor de 0x00 a 0x04 que determina el id del servo a liberar.
+			:RESP:
+			-
+			*/
+			i = ((cmd->data)[0] & 0x07); // Servo destinatario
+			if (i < 5)
+			{
+				servo[i] = 0;
+			}
+		break;
+ 		case SERVO_MOTOR_FREE_ALL_SERVOS:
+			/* Deja de aplicar fuerza sobre cada uno de los servomotor 
+			conectados al controlador.
+			:DATO:
+			-
+			:RESP:
+			-
+			*/
+			servo[0] = 0;
+			servo[1] = 0;
+			servo[2] = 0;
+			servo[3] = 0;
+			servo[4] = 0;
+		break;
+		default:
+			response.len++;
+			response.cmd = COMMON_ERROR;
+			response.data[0] = 0x01; // Comando desconocido
+		break;
+	}	
+
+	// Calcular el crc
+	response.crc = response.len ^ response.to ^ THIS_CARD ^ response.cmd;
+	len = response.len - MIN_LENGTH;
+	for (i = 0; i < len; i++)
+	{
+		response.crc ^= (response.data)[i];
+	}
+
+	return;
+}
