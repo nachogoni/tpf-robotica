@@ -30,6 +30,16 @@ DebugOptions=
 [File002]
 Location=C:\TPF\Hardware\modulo_motorDC\src\Modulo_Motor_main.o
 Folder=Intermediary
+DeviceName=
+LanguageToolSuiteID=
+LanguageToolID=
+LanguageToolLocation=
+PPAD=
+SOLK=
+SuiteArgsString=
+ToolArgsString=
+TraceCmdString=
+DebugOptions=
 [File003]
 Location=Modulo_Motor_main.HEX
 Folder=Output

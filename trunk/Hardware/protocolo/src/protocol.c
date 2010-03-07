@@ -153,7 +153,6 @@ void runProtocol(struct command_t * cmd)
 	// Reset del micro
 	if (reset == true)
 	{
-		delay_ms(10);
 		reset_cpu();
 	}	
 
