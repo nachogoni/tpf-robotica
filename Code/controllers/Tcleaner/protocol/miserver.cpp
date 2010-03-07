@@ -7,11 +7,15 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include "Packet.h"
+#include <protocol/packets/BoardPacket.h>
+#include <protocol/packets/ServoMotorPacket.h>
+#include <protocol/Packet.h>
 
 #define SERIAL_PORT "/dev/ttyUSB0"
 
 #define MAX(a,b) (a>b?a:b)
+#define PIPE_IN 0
+#define PIPE_OUT 1
 
 typedef struct {
     const char * cmd;
@@ -22,6 +26,8 @@ typedef struct {
 bool quit = false, groupBC = false, fullBC = false;
 int fd;
 int dest_group = 0, dest_card = 0, from_group = 0, from_card = 0;
+protocol::packets::ServoMotorPacket * packetToSend = NULL;
+int pipes[2];
 
 bool init();
 char getFrom();
@@ -34,6 +40,7 @@ void cmd_init(char * data);
 void cmd_reset(char * data);
 void cmd_ping(char * data);
 void cmd_error(char * data);
+void cmd_setpos(char * data);
 void cmd_dest(char * data);
 void cmd_from(char * data);
 void cmd_groupBC(char * data);
@@ -46,8 +53,9 @@ cmd_type commands[] = {
     {"ping", cmd_ping, "Send ping command"},
     {"error", cmd_error, "Send error command. Params: \%d for error"},
     // More commands here
-    {"dest", cmd_dest, "Set group and card id for destination. Params: \%d \%d for group and card (0 to 15)"},
-    {"from", cmd_from, "Set group and card id for origin. Params: \%d \%d for group and card (0 to 15)"},
+//    {"dest", cmd_dest, "Set group and card id for destination. Params: \%d \%d for group and card (0 to 15)"},
+//    {"from", cmd_from, "Set group and card id for origin. Params: \%d \%d for group and card (0 to 15)"},
+    {"setpos", cmd_setpos, "set position"},
     {"groupBC", cmd_groupBC, "Change group broadcast state"},
     {"fullBC", cmd_fullBC, "Change full broadcast state"},
     {"help", cmd_help, "This help"},
@@ -60,6 +68,7 @@ char getFrom()
     return (from_group & 0x0F) * 16 + (from_card & 0x0F);
 }
 
+void sendAPacket(protocol::Packet * p);
 char getDest()
 {
     int group = dest_group & 0x0F;
@@ -88,13 +97,13 @@ bool init()
         return false;
     }
     
-    struct termios tc; // 9600 baud, 8n1, no flow control
+    struct termios tc; // 115200 baud, 8n1, no flow control
     
     tc.c_iflag = IGNBRK;
     tc.c_oflag = 0;
     tc.c_cflag = CS8 | CREAD | CLOCAL | CSTOPB;
     tc.c_lflag = 0;
-
+ 
     cfsetispeed(&tc, B115200);
     cfsetospeed(&tc, B115200);
 
@@ -144,6 +153,15 @@ int main( int argc, const char **argv)
     fd_set readfd_b, writefd_b;
     protocol::Packet * packet = NULL;
     
+	if ( pipe(pipes) == -1 ){
+		printf("PIPE ERROR");
+		return 1;
+	}
+
+    packetToSend = new protocol::packets::ServoMotorPacket(0x02,0x00);
+    packetToSend->setOriginGroup(0);
+    packetToSend->setOriginId(0);
+    
     if (init() != true)
     {
         return -1;
@@ -151,6 +169,7 @@ int main( int argc, const char **argv)
 
     // Set file descriptors
     FD_SET(fd,&readfd);
+    FD_SET(pipes[PIPE_IN],&readfd);
     FD_SET(0,&readfd);
 
     maxfd = MAX(fd,0) + 1;
@@ -183,7 +202,20 @@ int main( int argc, const char **argv)
             // Have things in buffer! :P
             read(fd, serial_buffer, 1);
             // TODO: hacer lo mismo que en los pics para interpretar el comando
-            printf("caracter : %X\n", serial_buffer[0]);
+            printf("caracter : %X", serial_buffer[0]);
+			fflush(stdout);
+        }
+
+        // PIPE
+        if ( FD_ISSET(pipes[PIPE_IN], &readfd) )
+        {
+			int c;
+			int pipe_buf[256];
+            // Have things in buffer! :P
+            read(pipes[PIPE_IN], &c, 1);
+			write(fd,&c,1);
+            read(pipes[PIPE_IN], pipe_buf, c);
+			printf("escribi : %d bytes en el serial\n",write(fd,pipe_buf,c)+1);
         }
 
         // STDIN
@@ -207,29 +239,17 @@ int main( int argc, const char **argv)
         writefd = writefd_b;
     }
        
-    /*
-    protocol::Packet * p = new protocol::Packet();
-    p->setDestinationId(0x0F);
-    p->setDestinationGroup(0x0F);
-    p->setOriginId(0x00);
-    p->setOriginGroup(0x00);
-    p->setCommand(0x01);
-    p->calculateCRC();
-    char * data = p->getPacket();
-    printf("escribi : %d\n",write(fd,data,p->getActualLength()));
-    for(int i = 0; i < 5; i++ )
-    printf("caracter : %X\n",data[i]);
-    putchar('\n');
-    for(int i = 0; i < 10000000; i++ )
-    i= i + 1;
-
-
-    while ( -1 != ( c = read(fd,buf,1) ) )
-    if ( c != 0 )
-    printf("caracter : %X\n",buf[0]);
-
-    */
     return 0;
+}
+
+
+void sendAPacket(protocol::Packet * p){
+	unsigned char i;
+	p->calculateCRC();
+	char * packet = p->getPacket();
+	p->print();
+	printf("escribi : %d bytes en el pipe\n",write(pipes[PIPE_OUT],packet,p->getActualLength()));
+	//this->waitingForResponse.push_back(p);
 }
 
 void cmd_help(char * data)
@@ -254,7 +274,7 @@ void cmd_dest(char * data)
         printf("Wrong parameters\n");
         return;
     }
-        
+    packetToSend = new protocol::packets::ServoMotorPacket(dest_group,dest_card);
     printf("GroupID: %d CardID: %d -> (%X)\n", dest_group, dest_card, getDest());
     
     return;
@@ -268,6 +288,8 @@ void cmd_from(char * data)
         return;
     }
     
+    packetToSend->setOriginGroup(from_group);
+    packetToSend->setOriginId(from_card);
     printf("GroupID: %d CardID: %d -> (%X)\n", from_group, from_card, getFrom());
     
     return;
@@ -281,25 +303,55 @@ void cmd_quit(char * data)
 
 void cmd_init(char * data)
 {
-    // TODO: armar paquete de init y mandarlo
+    packetToSend->clear();
+    packetToSend->setInit();
+    packetToSend->prepareToSend();
+    sendAPacket(packetToSend);
     return;
 }
 
 void cmd_reset(char * data)
 {
-    // TODO: armar paquete de reset y mandarlo
+    packetToSend->clear();
+    packetToSend->setReset();
+    packetToSend->prepareToSend();
+    sendAPacket(packetToSend);
     return;
 }
 
 void cmd_error(char * data)
 {
+    packetToSend->clear();
+    packetToSend->setPing();
+    packetToSend->prepareToSend();
+    sendAPacket(packetToSend);
     // TODO: armar paquete de error y mandarlo
+    return;
+}
+
+void cmd_setpos(char * data)
+{
+	int servoid;
+	int servopos;
+    if (data == NULL || sscanf(data, "%d %d", &servoid, &servopos) != 2)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+    
+    packetToSend->clear();
+    packetToSend->setPosition(servoid,servopos);
+    packetToSend->prepareToSend();
+    sendAPacket(packetToSend);
     return;
 }
 
 void cmd_ping(char * data)
 {
-    // TODO: armar paquete de ping y mandarlo
+    packetToSend->clear();
+    packetToSend->setPing();
+    packetToSend->prepareToSend();
+    sendAPacket(packetToSend);
     return;
 }
 

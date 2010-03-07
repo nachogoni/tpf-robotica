@@ -19,8 +19,8 @@ BoardPacket::~BoardPacket()
 }
 
 void BoardPacket::prepareToSend(){
-	GroupPacket::prepareToSend();
 	this->setDestinationId(this->boardid);
+	GroupPacket::prepareToSend();
 }
 
 }

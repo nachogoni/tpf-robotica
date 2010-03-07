@@ -52,6 +52,7 @@ class Packet
 		char * getPacket();
 		char getActualLength();
 		void clear();
+		void print();
 	protected:
 		void resetDataIdx();
 	private:
