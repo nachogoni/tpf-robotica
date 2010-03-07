@@ -81,6 +81,8 @@ void doCommand(struct command_t * cmd); // Examina y ejecula el comando
 
 ***/
 
+#define INTERVAL_CORRECTION	5
+
 // Girar -> clockwise or unclockwise
 // Intercambiar entre el motor derecho y el izquierdo
 #define CLOCKWISE	1
@@ -94,10 +96,12 @@ long tmr0_ticks;
 long adc_value;
 // Valor de duty del PWM
 signed long duty;
+// Cantidad de cuentas del encoder medidas por intervalo
+signed long counts_real;
 // Cantidad de cuentas del encoder esperadas por intervalo
 signed long counts_expected;
-// Cantidad de cuentas del encoder totales
-signed long counts_total;
+// Cantidad de cuentas del encoder historicas (32 bits)
+signed int32 counts_total;
 // Cantidad de cuentas del encoder restantes para deterner el motor
 signed long counts_to_stop;
 // Cantidad de cuentas del encoder desde el ultimo intevalo
@@ -115,7 +119,6 @@ void SetPWM(signed long pwm);
 #INT_RTCC
 void Timer0_INT()
 {
-	long tmr1;
 	// Seteo el valor para que interrumpa cada 6.25ms
 	set_timer0(12);
 	
@@ -123,9 +126,9 @@ void Timer0_INT()
 	read_adc(ADC_START_ONLY);
 	
 	// Agrego al historico de cuentas el ultimo acumulado
-	tmr1 = get_timer1();
-	counts_total += (tmr1 - last_counts2) * turn;
-	last_counts2 = tmr1;
+	counts_real = get_timer1();
+	counts_total += (counts_real - last_counts2) * turn;
+	last_counts2 = counts_real;
 	
 	// Tengo una cantidad de cuentas para hacer?
 	if (counts_check == 1)
@@ -142,10 +145,10 @@ void Timer0_INT()
 			correct_duty = 0;
 			last_counts = 0;
 		} else {
-			tmr1 = get_timer1();
-			counts_to_stop -= (tmr1 - last_counts);// * turn;
+			counts_real = get_timer1();
+			counts_to_stop -= (counts_real - last_counts);// * turn;
 			correct_duty = 1;
-			last_counts = tmr1;
+			last_counts = counts_real;
 		}
 	} else {
 		correct_duty = 1;
@@ -159,7 +162,7 @@ void Timer0_INT()
 		// Entra cada 200ms
 
 		// Obtengo la cantidad de cuentas desde la ultima entrada
-		tmr1 = get_timer1();
+		counts_real = get_timer1();
 		set_timer1(0);
 		last_counts = 0;
 		last_counts2 = 0;
@@ -171,9 +174,9 @@ void Timer0_INT()
 		adc_value = 0;
 
 		// Corrijo el PWM segun lo esperado
-		if ((correct_duty == 1) && (tmr1 != counts_expected))
+		if ((correct_duty == 1) && (counts_real != counts_expected))
 		{
-			duty += (counts_expected - tmr1) * 5;
+			duty += (counts_expected - counts_real) * 5;
 			if (duty > 1023L)
 				duty = 1023;
 			else if (duty < 0)
@@ -250,8 +253,6 @@ void init()
 /* Setea el duty del PWM segun el valor. Positivo o negativo determina el sentido */
 void setPWM(signed long pwm)
 {
-  long pset;
- 
   if (pwm < 0)
   {
 	inputA = 0;
@@ -261,12 +262,12 @@ void setPWM(signed long pwm)
 	inputB = 0;
   }
 
-  pset = (abs(pwm));
+  pwm = (abs(pwm));
 
-  if (pset > 1023L)
-    pset = 1023;
+  if (pwm > 1023L)
+    pwm = 1023;
 
-  set_pwm1_duty(pset);
+  set_pwm1_duty(pwm);
   
   return;
 }
@@ -295,6 +296,8 @@ void main()
 void doCommand(struct command_t * cmd)
 {
 	int crc, i, len;
+	signed int32 * tmp32;
+	signed long * tmp16;
 		
 	// Calculo del CRC
 	crc = cmd->len ^ cmd->to ^ cmd->from ^ cmd->cmd;
@@ -382,9 +385,10 @@ void doCommand(struct command_t * cmd)
 			} else {
 				turn = UNCLOCKWISE;
 			}
-			
-			// TODO: 16bits
-			
+			// A la posicion 1 dentro de cmd->data la tomo como signed long *
+			tmp16 = (cmd->data) + 1;
+			// Le asigno el valor de la velocidad ajustada a 1 segundo
+			counts_real = (*tmp16) / INTERVAL_CORRECTION;
 		break;
  		case DC_MOTOR_SET_ENCODER:
 			/* Seteo de la cantidad de cuentas historicas del encoder
@@ -394,6 +398,10 @@ void doCommand(struct command_t * cmd)
 			:RESP:
 			-
 			*/
+			// A la posicion 0 dentro de cmd->data la tomo como signed int32 *
+			tmp32 = (cmd->data);
+			// Le asigno el valor de las cuentas historicas
+			counts_total = (*tmp32);
 		break;
  		case DC_MOTOR_GET_ENCODER:
 			/* Obtener la cantidad de cuentas historicas del encoder
@@ -403,6 +411,12 @@ void doCommand(struct command_t * cmd)
 			Numero entero de 32 bits con signo, que representa el valor historico
 			del encoder.
 			*/
+			// A la posicion 0 dentro de response->data la tomo como signed int32 *
+			tmp32 = (response.data);
+			// Le asigno el valor de las cuentas historicas
+			(*tmp32) = counts_total;
+			// Corrijo el largo del paquete
+			response.len += 4;
 		break;
  		case DC_MOTOR_RESET_ENCODER:
 			/* Resetear las cuentas historicas a cero
@@ -411,6 +425,7 @@ void doCommand(struct command_t * cmd)
 			:RESP:
 			-
 			*/
+			counts_total = 0;
 		break;
  		case DC_MOTOR_SET_ENCODER_TO_STOP:
 			/* Seteo de cuantas cuentas debe girar hasta detenerse
@@ -420,6 +435,12 @@ void doCommand(struct command_t * cmd)
 			:RESP:
 			-
 			*/
+			// A la posicion 0 dentro de cmd->data la tomo como signed long *
+			tmp16 = (cmd->data);
+			// Le asigno el valor de la velocidad ajustada a 1 segundo
+			counts_to_stop = (*tmp16);
+			// Habilito el chequeo de cuentas para detener el motor
+			counts_check = 1;
 		break;
  		case DC_MOTOR_GET_ENCODER_TO_STOP:
 			/* Obtener la cantidad de las cuentas restantes que quedan por 
@@ -430,6 +451,12 @@ void doCommand(struct command_t * cmd)
 			Numero entero de 16 bits con signo, que representa la cantidad
 			de cuentas del encoder restantes para detener el motor.
 			*/
+			// A la posicion 0 dentro de response->data la tomo como signed long *
+			tmp16 = (response.data);
+			// Le asigno el valor de la velocidad ajustada a 1 segundo
+			(*tmp16) = counts_to_stop;
+			// Corrijo el largo del paquete
+			response.len += 2;
 		break;
  		case DC_MOTOR_DONT_STOP:
 			/* Deshace los comandos DC_MOTOR_DONT_STOP y DC_MOTOR_GET_ENCODER_TO_STOP, 
@@ -439,6 +466,7 @@ void doCommand(struct command_t * cmd)
 			:RESP:
 			-
 			*/
+			counts_check = 0;
 		break;
  		case DC_MOTOR_MOTOR_CONSUMPTION:
 			/* Numero entero positivo de 16 bits en el rango desde 0x0000 hasta
@@ -448,6 +476,9 @@ void doCommand(struct command_t * cmd)
 			:RESP:
 			-
 			*/
+			
+			// TODO
+
 		break;
  		case DC_MOTOR_MOTOR_STRESS_ALARM:
 			/* Indica al controlador principal que hay un consumo extremo en el motor,
@@ -458,6 +489,9 @@ void doCommand(struct command_t * cmd)
 			:RESP:
 			-
 			*/
+			
+			// TODO
+
 		break;
  		case DC_MOTOR_MOTOR_SHUT_DOWN_ALARM:
 			/* Indica al controlador principal que el motor ha sido apagado debido al alto
@@ -468,6 +502,9 @@ void doCommand(struct command_t * cmd)
 			:RESP:
 			-
 			*/
+			
+			// TODO
+
 		break;
  		case DC_MOTOR_GET_DC_SPEED:
 			/* Obtiene la velocidad del motor en cuentas del encoder por segundo
@@ -478,6 +515,19 @@ void doCommand(struct command_t * cmd)
 			:RESP:
 			-
 			*/
+			// Sentido de giro del motor
+			if (turn == CLOCKWISE)
+			{
+				(response.data)[0] = 0x00;
+			} else {
+				(response.data)[0] = 0x01;
+			}
+			// A la posicion 1 dentro de response->data la tomo como signed long *
+			tmp16 = (response.data) + 1;
+			// Le asigno el valor de la velocidad ajustada a 1 segundo
+			(*tmp16) = counts_real * INTERVAL_CORRECTION;
+			// Corrijo el largo del paquete
+			response.len += 2;
 		break;
 
 		default:
