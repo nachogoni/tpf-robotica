@@ -1,13 +1,10 @@
 #ifndef utils_GarbageRecognition_h
 #define utils_GarbageRecognition_h
 
-#include <vector>
+#include <list>
 #include <robotapi/ICamera.h>
-
-
-namespace utils {
-class Garbage;
-} /* End of namespace utils */
+#include <utils/Garbage.h>
+#include <cv.h>
 
 namespace utils {
 
@@ -15,19 +12,15 @@ class GarbageRecognition {
 
  public:
 
-    static void setCamera(robotapi::ICamera &camera);
+    void setCamera(robotapi::ICamera &camera);
 
-    static bool thereIsGarbage();
+    bool thereIsGarbage();
 
-    static std::vector<Garbage*> getGarbageList();
+    std::list<utils::Garbage*> getGarbageList();
 
 
  private:
-    static robotapi::ICamera &cam;
-
- public:
-
-    static robotapi::ICamera *myICamera;
+    std::list<Garbage*> garbageList(IplImage * src, IplImage * model);
 
 };
 

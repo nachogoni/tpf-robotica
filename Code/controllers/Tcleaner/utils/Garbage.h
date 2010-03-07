@@ -1,25 +1,29 @@
 #ifndef utils_Garbage_h
 #define utils_Garbage_h
 
-namespace utils {
-class GarbageRecognition;
-class Rectangle;
-} /* End of namespace utils */
+#include <utils/MinimalBoundingRectangle.h>
 
-namespace utils {
+namespace utils{
 
-class Garbage {
+	class Garbage {
+		
+	 public:
+	
+	     double angleTo();
+	
+	     double distanceTo();
+	
+	     utils::MinimalBoundingRectangle * boundingBox();
+	
+	     Garbage(utils::MinimalBoundingRectangle * mbr);
+	
+	 private:
+	    double angle;
+	    double distance;
+	    utils::MinimalBoundingRectangle * mbr;
+	
+	};
 
- public:
-
-    virtual double angleTo();
-
-    virtual double distanceTo();
-
-    virtual Rectangle boundingBox();
-
-};
-
-} /* End of namespace utils */
+}
 
 #endif // utils_Garbage_h
