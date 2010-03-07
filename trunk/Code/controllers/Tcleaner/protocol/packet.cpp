@@ -2,6 +2,7 @@
 
 #include <protocol/Packet.h> // class's header file
 #include <string.h>
+#include <stdio.h>
 
 namespace protocol {
 
@@ -169,7 +170,7 @@ void Packet::resetDataIdx(){
 }
 
 void Packet::clear(){
-	memset(this->packet,'\0',this->actualLength);
+	memset(this->packet+COMMAND_FIELD,'\0',this->actualLength-COMMAND_FIELD);
 }
 
 char Packet::getCharData(){
@@ -193,6 +194,12 @@ int Packet::getIntData(){
     ret &= ( up << 8 );
     ret &= down;
     return ret;
+}
+
+void Packet::print(){
+    	for(int i = 0; i <this->getActualLength(); i++ )
+    		printf("%X:",this->packet[i]);
+	putchar('\n');
 }
 
 }

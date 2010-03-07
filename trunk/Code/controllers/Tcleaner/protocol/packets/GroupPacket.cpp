@@ -59,6 +59,7 @@ void GroupPacket::prepareToSend(){
 	this->setDestinationGroup(this->groupid);
 	this->setOriginGroup(ORIGIN_GROUP);
 	this->setOriginId(ORIGIN_ID);
+	this->calculateCRC();
 }
 
 void GroupPacket::analysePacket(Packet * p){
