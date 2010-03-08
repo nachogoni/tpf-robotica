@@ -24,10 +24,11 @@ typedef struct {
     const char * cmd;
     void (*f)(char * data);
     const char * cmd_help;
+    const char * cmd_help_param;
 } cmd_type;
 
 bool quit = false, groupBC = false, fullBC = false;
-int fd;
+int fd = 5;
 int dest_group = 0, dest_card = 0, from_group = 0, from_card = 0;
 protocol::packets::DCMotorPacket * packetToSend = NULL;
 int pipes[2];
@@ -51,79 +52,79 @@ void cmd_fullBC(char * data);
 // Command list
 cmd_type commands[] = {
     // Common commands
-    {"common", "dest", cmd_dest, "Set group and card id for destination. Params: \%d \%d for group and card (0 to 15)"},
-    {"common", "from", cmd_from, "Set group and card id for origin. Params: \%d \%d for group and card (0 to 15)"},
-    {"common", "groupBC", cmd_groupBC, "Change group broadcast state"},
-    {"common", "fullBC", cmd_fullBC, "Change full broadcast state"},
+    {"common", "dest", cmd_dest, "Set group and card id for destination", "\%d \%d for group and card (0 to 15)"},
+    {"common", "from", cmd_from, "Set group and card id for origin", "\%d \%d for group and card (0 to 15)"},
+    {"common", "groupBC", cmd_groupBC, "Change group broadcast state", ""},
+    {"common", "fullBC", cmd_fullBC, "Change full broadcast state", ""},
     // Commands for MainController (mc)
-    {"mc", "init", cmd_init, "Send init command"},
-    {"mc", "reset", cmd_reset, "Send reset command"},
-    {"mc", "ping", cmd_ping, "Send ping command"},
-    {"mc", "error", cmd_error, "Send error command. Params: \%d for error"},
+    {"mc", "init", cmd_init, "Send init command", ""},
+    {"mc", "reset", cmd_reset, "Send reset command", ""},
+    {"mc", "ping", cmd_ping, "Send ping command", ""},
+    {"mc", "error", cmd_error, "Send error command", "\%d for error"},
     // Commands for MotorDC (dc)                                                                      
-    {"dc", "dcSetDirection", cmd_dcSetDirection, "Set motor turn, Params: \%d for Clockwise:0 or Unclockwise:1"},
-    {"dc", "dcSetSpeed", cmd_dcSetSpeed, "Set motor speed, Params: \%d \%d for Clockwise:0 or Unclockwise:1 and counts per second"},
-    {"dc", "dcSetEncoder", cmd_dcSetEncoder, ""},
-    {"dc", "dcGetEncoder", cmd_dcGetEncoder, ""},
-    {"dc", "dcResetEncoder", cmd_dcResetEncoder, ""},
-    {"dc", "dcSetEncoderToStop", cmd_dcSetEncoderToStop, ""},
-    {"dc", "dcGetEncoderToStop", cmd_dcGetEncoderToStop, ""},
-    {"dc", "dcDontStop", cmd_dcDontStop, ""},        
-    {"dc", "dcConsumption", cmd_dcConsumption, ""},     
-    {"dc", "dcStressAlarm", cmd_dcStressAlarm, ""},     
-    {"dc", "dcShutDownAlarm", cmd_dcShutDownAlarm, ""},   
-    {"dc", "dcGetSpeed", cmd_dcGetSpeed, "Get motor speed in counts per second"},
+    {"dc", "dcSetDirection", cmd_dcSetDirection, "Set motor turn", "\%d for Clockwise:0 or Unclockwise:1"},
+    {"dc", "dcSetSpeed", cmd_dcSetSpeed, "Set motor speed", "\%d \%d for Clockwise:0 or Unclockwise:1 and counts per second"},
+    {"dc", "dcSetEncoder", cmd_dcSetEncoder, "", ""},
+    {"dc", "dcGetEncoder", cmd_dcGetEncoder, "", ""},
+    {"dc", "dcResetEncoder", cmd_dcResetEncoder, "", ""},
+    {"dc", "dcSetEncoderToStop", cmd_dcSetEncoderToStop, "", ""},
+    {"dc", "dcGetEncoderToStop", cmd_dcGetEncoderToStop, "", ""},
+    {"dc", "dcDontStop", cmd_dcDontStop, "", ""},
+    {"dc", "dcConsumption", cmd_dcConsumption, "", ""},
+    {"dc", "dcStressAlarm", cmd_dcStressAlarm, "", ""},
+    {"dc", "dcShutDownAlarm", cmd_dcShutDownAlarm, "", ""},   
+    {"dc", "dcGetSpeed", cmd_dcGetSpeed, "Get motor speed in counts per second", ""},
     // Commands for ServoMotor (sm)
-    {"sm", "smSetPos", cmd_smSetPos, "Set servo position"},
-    {"sm", "smSetAllPos", cmd_smSetAllPos, ""},
-    {"sm", "smGetPos", cmd_smGetPos, ""},   
-    {"sm", "smGetAllPos", cmd_smGetAllPos, ""},
-    {"sm", "smSetSpeed", cmd_smSetSpeed, ""}, 
-    {"sm", "smSetAllSpeed", cmd_smSetAllSpeed, ""},
-    {"sm", "smGetSpeed", cmd_smGetSpeed, ""},   
-    {"sm", "smGetAllSpeed", cmd_smGetAllSpeed, ""},
-    {"sm", "smFree", cmd_smFree, ""},       
-    {"sm", "smFreeAll", cmd_smFreeAll, ""},    
+    {"sm", "smSetPos", cmd_smSetPos, "Set servo position", ""},
+    {"sm", "smSetAllPos", cmd_smSetAllPos, "", ""},
+    {"sm", "smGetPos", cmd_smGetPos, "", ""},   
+    {"sm", "smGetAllPos", cmd_smGetAllPos, "", ""},
+    {"sm", "smSetSpeed", cmd_smSetSpeed, "", ""}, 
+    {"sm", "smSetAllSpeed", cmd_smSetAllSpeed, "", ""},
+    {"sm", "smGetSpeed", cmd_smGetSpeed, "", ""},   
+    {"sm", "smGetAllSpeed", cmd_smGetAllSpeed, "", ""},
+    {"sm", "smFree", cmd_smFree, "", ""},       
+    {"sm", "smFreeAll", cmd_smFreeAll, "", ""},    
     // Commands for DistanceSensor (ds)
-    {"ds", "dsEnable", cmd_dsEnable, ""},
-    {"ds", "dsDisable", cmd_dsDisable, ""},
-    {"ds", "dsSetAll", cmd_dsSetAll, ""}, 
-    {"ds", "dsGetValue", cmd_dsGetValue, ""},
-    {"ds", "dsGetAllValue", cmd_dsGetAllValue, ""},
-    {"ds", "dsGetOneValue", cmd_dsGetOneValue, ""},
-    {"ds", "dsGetOneValueAll", cmd_dsGetOneValueAll, ""},
+    {"ds", "dsEnable", cmd_dsEnable, "", ""},
+    {"ds", "dsDisable", cmd_dsDisable, "", ""},
+    {"ds", "dsSetAll", cmd_dsSetAll, "", ""}, 
+    {"ds", "dsGetValue", cmd_dsGetValue, "", ""},
+    {"ds", "dsGetAllValue", cmd_dsGetAllValue, "", ""},
+    {"ds", "dsGetOneValue", cmd_dsGetOneValue, "", ""},
+    {"ds", "dsGetOneValueAll", cmd_dsGetOneValueAll, "", ""},
     // Commands for FloorSensor (fs)      
-    {"fs", "fsEnable", cmd_fsEnable, ""},
-    {"fs", "fsDisable", cmd_fsDisable, ""},
-    {"fs", "fsSetAll", cmd_fsSetAll, ""},
-    {"fs", "fsGetValue", cmd_fsGetValue, ""},
-    {"fs", "fsGetAllValue", cmd_fsGetAllValue, ""},
-    {"fs", "fsGetOneValue", cmd_fsGetOneValue, ""},
-    {"fs", "fsGetOneValueAll", cmd_fsGetOneValueAll, ""},
+    {"fs", "fsEnable", cmd_fsEnable, "", ""},
+    {"fs", "fsDisable", cmd_fsDisable, "", ""},
+    {"fs", "fsSetAll", cmd_fsSetAll, "", ""},
+    {"fs", "fsGetValue", cmd_fsGetValue, "", ""},
+    {"fs", "fsGetAllValue", cmd_fsGetAllValue, "", ""},
+    {"fs", "fsGetOneValue", cmd_fsGetOneValue, "", ""},
+    {"fs", "fsGetOneValueAll", cmd_fsGetOneValueAll, "", ""},
     // Commands for UltraSonicSensor (us)
-    {"us", "usEnable", cmd_usEnable, ""},
-    {"us", "usDisable", cmd_usDisable, ""},
-    {"us", "usSetAll", cmd_usSetAll, ""},
-    {"us", "usGetValue", cmd_usGetValue, ""},
-    {"us", "usGetAllValue", cmd_usGetAllValue, ""},
-    {"us", "usGetOneValue", cmd_usGetOneValue, ""},
-    {"us", "usGetOneValueAll", cmd_usGetOneValueAll, ""},
+    {"us", "usEnable", cmd_usEnable, "", ""},
+    {"us", "usDisable", cmd_usDisable, "", ""},
+    {"us", "usSetAll", cmd_usSetAll, "", ""},
+    {"us", "usGetValue", cmd_usGetValue, "", ""},
+    {"us", "usGetAllValue", cmd_usGetAllValue, "", ""},
+    {"us", "usGetOneValue", cmd_usGetOneValue, "", ""},
+    {"us", "usGetOneValueAll", cmd_usGetOneValueAll, "", ""},
     // Commands for BatteryController (bc)
-    {"bc", "bcEnable", cmd_bcEnable, ""},
-    {"bc", "bcDisable", cmd_bcDisable, ""},
-    {"bc", "bcGetValue", cmd_bcGetValue, ""},
-    {"bc", "bcFullAlarm", cmd_bcFullAlarm, ""},
-    {"bc", "bcSetEmptyValue", cmd_bcSetEmptyValue, ""},
-    {"bc", "bcEmptyAlarm", cmd_bcEmptyAlarm, ""},
-    {"bc", "bcSetFullValue", cmd_bcSetFullValue, ""},
+    {"bc", "bcEnable", cmd_bcEnable, "", ""},
+    {"bc", "bcDisable", cmd_bcDisable, "", ""},
+    {"bc", "bcGetValue", cmd_bcGetValue, "", ""},
+    {"bc", "bcFullAlarm", cmd_bcFullAlarm, "", ""},
+    {"bc", "bcSetEmptyValue", cmd_bcSetEmptyValue, "", ""},
+    {"bc", "bcEmptyAlarm", cmd_bcEmptyAlarm, "", ""},
+    {"bc", "bcSetFullValue", cmd_bcSetFullValue, "", ""},
     // Commands for TrashBin (tb)
-    {"tb", "tbGetValue", cmd_tbGetValue, ""},
-    {"tb", "tbFullAlarm", cmd_tbFullAlarm, ""},
-    {"tb", "tbSetFullValue", cmd_tbSetFullValue, ""},
+    {"tb", "tbGetValue", cmd_tbGetValue, "", ""},
+    {"tb", "tbFullAlarm", cmd_tbFullAlarm, "", ""},
+    {"tb", "tbSetFullValue", cmd_tbSetFullValue, "", ""},
 
-    {"common", "help", cmd_help, "This help. Params: \%s one of: all, common, mc, dc, sm, ds, fs, us, bc, tb"},
-    {"common", "quit", cmd_quit, "Quit to system"},
-    {"common", NULL, cmd_quit}
+    {"common", "help", cmd_help, "This help", "\%s one of: all, common, mc, dc, sm, ds, fs, us, bc, tb"},
+    {"common", "quit", cmd_quit, "Quit to system", ""},
+    {"common", NULL, cmd_quit, "", ""}
 };
 
 char getFrom()
@@ -226,16 +227,16 @@ int main( int argc, const char **argv)
 //TODO:    packetToSend = new protocol::packets::(0x02,0x01);
     packetToSend->setOriginGroup(0);
     packetToSend->setOriginId(0);
-    
+/*    
     if (init() != true)
     {
         close(pipes[0]);
         close(pipes[1]);
         return -1;
     }
-
+*/
     // Set file descriptors
-    FD_SET(fd,&readfd);
+//    FD_SET(fd,&readfd);
     FD_SET(pipes[PIPE_IN],&readfd);
     FD_SET(0,&readfd);
 
@@ -262,7 +263,7 @@ int main( int argc, const char **argv)
             errno = 0;
             continue;
         }
-
+/*
         // SERIAL PORT
         if ( FD_ISSET(fd, &readfd) )
         {
@@ -272,7 +273,7 @@ int main( int argc, const char **argv)
             printf("caracter : %X", serial_buffer[0]);
             fflush(stdout);
         }
-
+*/
         // PIPE
         if ( FD_ISSET(pipes[PIPE_IN], &readfd) )
         {
@@ -336,7 +337,11 @@ void cmd_help(char * data)
     while (commands[i].cmd != NULL)
     {
         if (strcmp(commands[i].group, "all") == 0 || strcmp(commands[i].group, data) == 0)
+        {
             printf("%-25s%s\n", commands[i].cmd, commands[i].cmd_help);
+            if (commands[i].cmd_help_param[0] != '\0')
+                printf("%25sParams: %s\n", "", commands[i].cmd_help_param);
+        }
         i++;
     }
     
