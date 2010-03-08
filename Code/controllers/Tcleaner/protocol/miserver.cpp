@@ -9,6 +9,7 @@
 #include <sys/stat.h>
 #include <protocol/packets/BoardPacket.h>
 #include <protocol/packets/ServoMotorPacket.h>
+#include <protocol/packets/DCMotorPacket.h>
 #include <protocol/Packet.h>
 
 #define SERIAL_PORT "/dev/ttyUSB0"
@@ -26,7 +27,7 @@ typedef struct {
 bool quit = false, groupBC = false, fullBC = false;
 int fd;
 int dest_group = 0, dest_card = 0, from_group = 0, from_card = 0;
-protocol::packets::ServoMotorPacket * packetToSend = NULL;
+protocol::packets::DCMotorPacket * packetToSend = NULL;
 int pipes[2];
 
 bool init();
@@ -41,6 +42,7 @@ void cmd_reset(char * data);
 void cmd_ping(char * data);
 void cmd_error(char * data);
 void cmd_setpos(char * data);
+void cmd_setMotorSpeed(char * data);
 void cmd_dest(char * data);
 void cmd_from(char * data);
 void cmd_groupBC(char * data);
@@ -56,6 +58,7 @@ cmd_type commands[] = {
 //    {"dest", cmd_dest, "Set group and card id for destination. Params: \%d \%d for group and card (0 to 15)"},
 //    {"from", cmd_from, "Set group and card id for origin. Params: \%d \%d for group and card (0 to 15)"},
     {"setpos", cmd_setpos, "set position"},
+    {"setMotorSpeed", cmd_setMotorSpeed, "Mas cheleeee"},
     {"groupBC", cmd_groupBC, "Change group broadcast state"},
     {"fullBC", cmd_fullBC, "Change full broadcast state"},
     {"help", cmd_help, "This help"},
@@ -158,7 +161,8 @@ int main( int argc, const char **argv)
 		return 1;
 	}
 
-    packetToSend = new protocol::packets::ServoMotorPacket(0x02,0x00);
+    packetToSend = new protocol::packets::DCMotorPacket(0x01,0x00);
+//TODO:    packetToSend = new protocol::packets::(0x02,0x01);
     packetToSend->setOriginGroup(0);
     packetToSend->setOriginId(0);
     
@@ -274,7 +278,7 @@ void cmd_dest(char * data)
         printf("Wrong parameters\n");
         return;
     }
-    packetToSend = new protocol::packets::ServoMotorPacket(dest_group,dest_card);
+    packetToSend = new protocol::packets::DCMotorPacket(dest_group,dest_card);
     printf("GroupID: %d CardID: %d -> (%X)\n", dest_group, dest_card, getDest());
     
     return;
@@ -331,8 +335,8 @@ void cmd_error(char * data)
 
 void cmd_setpos(char * data)
 {
-	int servoid;
-	int servopos;
+    int servoid;
+    int servopos;
     if (data == NULL || sscanf(data, "%d %d", &servoid, &servopos) != 2)
     {
         printf("Wrong parameters\n");
@@ -340,7 +344,29 @@ void cmd_setpos(char * data)
     }
     
     packetToSend->clear();
-    packetToSend->setPosition(servoid,servopos);
+    //packetToSend->setPosition(servoid,servopos);
+    packetToSend->prepareToSend();
+    sendAPacket(packetToSend);
+    return;
+}
+
+void cmd_setMotorSpeed(char * data)
+{
+    int turn;
+    short speed;
+    if (data == NULL || sscanf(data, "%d %d", &turn, &speed) != 2)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+    
+    packetToSend = new protocol::packets::DCMotorPacket(0x01,0x00);
+//TODO:    packetToSend = new protocol::packets::(0x02,0x01);
+    packetToSend->setOriginGroup(0);
+    packetToSend->setOriginId(0);
+	bool clockwise = (turn == 0);
+
+    packetToSend->setDCSpeed(clockwise,speed);
     packetToSend->prepareToSend();
     sendAPacket(packetToSend);
     return;

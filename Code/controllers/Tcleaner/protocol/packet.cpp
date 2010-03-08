@@ -155,14 +155,15 @@ void Packet::addData(char * data, char length){
 }
 
 void Packet::addData(short data){
-	this->addData((char)(data & 0xFF00));
 	this->addData((char)(data & 0x00FF));
+	this->addData((char)((data & 0xFF00) >> 8 ));
 }
 
 void Packet::addData(char data){
     packet[this->dataIdx] = data;
     this->dataIdx++;
 	this->actualLength += 1;
+	this->packet[0]++;
 }
 
 void Packet::resetDataIdx(){
@@ -171,6 +172,7 @@ void Packet::resetDataIdx(){
 
 void Packet::clear(){
 	memset(this->packet+COMMAND_FIELD,'\0',this->actualLength-COMMAND_FIELD);
+	this->resetDataIdx();
 }
 
 char Packet::getCharData(){
