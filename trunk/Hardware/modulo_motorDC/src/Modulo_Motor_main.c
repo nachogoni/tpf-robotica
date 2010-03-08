@@ -81,6 +81,10 @@ void doCommand(struct command_t * cmd); // Examina y ejecula el comando
 
 ***/
 
+#define MAX_CONSUMPTION	200
+#define MAX_CONSUMPTION_COUNT	5
+
+// Correcion de la cantidad de cuentas por segundo en base al periodo del TMR0
 #define INTERVAL_CORRECTION	5
 
 // Girar -> clockwise or unclockwise
@@ -94,6 +98,8 @@ signed int turn;
 long tmr0_ticks;
 // Valor acumulado del ADC - Consumo aprox
 long adc_value;
+// Ultimo valor del consumo
+long last_consumption;
 // Valor de duty del PWM
 signed long duty;
 // Cantidad de cuentas del encoder medidas por intervalo
@@ -111,6 +117,18 @@ signed long last_counts2;
 short counts_check;
 // Corrijo el PWM segun lo esperado?
 short correct_duty;
+// Indica que hay que enviar una alarma de consumo
+short consumption_alarm;
+// Cuenta cuantas alarmas se enviaron
+int alarm_count;
+// Indica que hay que avisar que el motor se detuvo
+short shutdown_alarm;
+// Indica si se apagaron los motores por el alto consumo
+short motor_shutdown;
+
+// Variables temporales
+signed int32 * tmp32;
+signed long * tmp16;
 
 /* Setea el PWM */
 void SetPWM(signed long pwm);
@@ -167,7 +185,20 @@ void Timer0_INT()
 		last_counts = 0;
 		last_counts2 = 0;
 		// Promedio el consumo segun la cantidad de tmr0_ticks
-		adc_value /= tmr0_ticks;
+		last_consumption = adc_value / tmr0_ticks;
+		
+		if (last_consumption >= MAX_CONSUMPTION)
+		{
+			consumption_alarm = 1;
+			if (alarm_count++ == MAX_CONSUMPTION_COUNT)
+			{
+				motor_shutdown = 1;
+				alarm_count = 0;
+				consumption_alarm = 0;
+				shutdown_alarm = 1;
+			}	
+		}
+		
 		tmr0_ticks = 0;
 
 		// Mantengo el consumo promedio desde que arranque y borro el temporal
@@ -231,6 +262,7 @@ void init()
 	tmr0_ticks = 0;
 	// Valor acumulado del ADC - Consumo aprox
 	adc_value = 0;
+	last_consumption = 0;
 	// Valor de duty del PWM
 	duty = 0;
 	// Cantidad de cuentas del encoder esperadas por intervalo
@@ -246,6 +278,14 @@ void init()
 	counts_check = 0;
 	// Corrijo el PWM segun lo esperado?
 	correct_duty = 1;
+	// Indica que hay que enviar una alarma de consumo
+	consumption_alarm = 0;
+	// Cuenta cuantas alarmas se enviaron
+	alarm_count = 0;
+	// Indica que hay que enviar una alarma de consumo
+	shutdown_alarm = 0;
+	// Indica si se apagaron los motores por el alto consumo
+	motor_shutdown = 0;
 
 	return;	
 }	
@@ -253,23 +293,28 @@ void init()
 /* Setea el duty del PWM segun el valor. Positivo o negativo determina el sentido */
 void setPWM(signed long pwm)
 {
-  if (pwm < 0)
-  {
-	inputA = 0;
-	inputB = 1;
-  } else {
-	inputA = 1;
-	inputB = 0;
-  }
+	if (pwm < 0)
+	{
+		inputA = 0;
+		inputB = 1;
+	} else {
+		inputA = 1;
+		inputB = 0;
+	}
+	
+	if (motor_shutdown == 1)
+	{
+		pwm = 0;
+	} else {
+		pwm = (abs(pwm));
+		
+		if (pwm > 1023L)
+			pwm = 1023;
+	}
 
-  pwm = (abs(pwm));
-
-  if (pwm > 1023L)
-    pwm = 1023;
-
-  set_pwm1_duty(pwm);
-  
-  return;
+	set_pwm1_duty(pwm);
+	
+	return;
 }
 
 void main()
@@ -280,11 +325,61 @@ void main()
 	// Init del protocol
 	initProtocol();
 
+counts_expected = 30;
+
 	// FOREVER
 	while(true)
 	{
 		// Hace sus funciones -> interrupcion
-
+	
+		// Enviar alarma de alto consumo
+		if (consumption_alarm == 1)
+		{
+			/* Indica al controlador principal que hay un consumo extremo en el motor,
+			posiblemente un atasco del motor o de la rueda.
+			:DATO:
+			Numero entero positivo de 16 bits en el rango desde 0x0000 hasta
+			0x03FF, que representa el consumo ante el que sono la alarma.
+			:RESP:
+			-
+			*/
+			command.len = MIN_LENGTH + 2;
+			command.to = MAIN_CONTROLLER;
+			command.from = THIS_CARD;
+			command.cmd = DC_MOTOR_MOTOR_STRESS_ALARM;
+			// A la posicion 0 dentro de response->data la tomo como signed long *
+			tmp16 = (command.data);
+			// Le asigno el valor del ultimo consumo del motor
+			(*tmp16) = last_consumption;
+			command.crc = (MIN_LENGTH + 2) ^ MAIN_CONTROLLER ^ THIS_CARD ^ 
+				DC_MOTOR_MOTOR_STRESS_ALARM ^ (command.data)[0] ^ (command.data)[1];
+			consumption_alarm = 0;
+		}
+		
+		// Enviar aviso de motor apagado
+		if (shutdown_alarm == 1)
+		{
+			/* Indica al controlador principal que el motor ha sido apagado debido al alto
+			consumo. Enviado luego de sucesivos avisos del comando DC_MOTOR_MOTOR_STRESS_ALARM.
+			:DATO:
+			Numero entero positivo de 16 bits en el rango desde 0x0000 hasta
+			0x03FF, que representa el consumo ante el que sono la alarma.
+			:RESP:
+			-
+			*/
+			command.len = MIN_LENGTH + 2;
+			command.to = MAIN_CONTROLLER;
+			command.from = THIS_CARD;
+			command.cmd = DC_MOTOR_MOTOR_SHUT_DOWN_ALARM;
+			// A la posicion 0 dentro de response->data la tomo como signed long *
+			tmp16 = (command.data);
+			// Le asigno el valor del ultimo consumo del motor
+			(*tmp16) = last_consumption;
+			command.crc = (MIN_LENGTH + 2) ^ MAIN_CONTROLLER ^ THIS_CARD ^ 
+				DC_MOTOR_MOTOR_SHUT_DOWN_ALARM ^ (command.data)[0] ^ (command.data)[1];
+			shutdown_alarm = 0;
+		}
+			
 		// Protocolo
 		runProtocol(&command);
 	}
@@ -296,8 +391,6 @@ void main()
 void doCommand(struct command_t * cmd)
 {
 	int crc, i, len;
-	signed int32 * tmp32;
-	signed long * tmp16;
 		
 	// Calculo del CRC
 	crc = cmd->len ^ cmd->to ^ cmd->from ^ cmd->cmd;
@@ -313,7 +406,7 @@ void doCommand(struct command_t * cmd)
 	if (cmd->crc != crc)
 	{		
 		// Creo respuesta de error
-		response.len = 0x05;
+		response.len = MIN_LENGTH + 1;
 		response.to = cmd->from;
 		response.from = THIS_CARD;
 		response.cmd = COMMON_ERROR;
@@ -368,7 +461,7 @@ void doCommand(struct command_t * cmd)
 				turn = CLOCKWISE;
 			} else {
 				turn = UNCLOCKWISE;
-			}	
+			}
 		break;
  		case DC_MOTOR_SET_DC_SPEED:
 			/* Seteo de la velocidad del motor en cuentas del encoder por segundo
@@ -388,7 +481,9 @@ void doCommand(struct command_t * cmd)
 			// A la posicion 1 dentro de cmd->data la tomo como signed long *
 			tmp16 = (cmd->data) + 1;
 			// Le asigno el valor de la velocidad ajustada a 1 segundo
-			counts_real = (*tmp16) / INTERVAL_CORRECTION;
+			counts_expected = (*tmp16) / INTERVAL_CORRECTION;
+			// Habilita el motor
+			motor_shutdown = 0;
 		break;
  		case DC_MOTOR_SET_ENCODER:
 			/* Seteo de la cantidad de cuentas historicas del encoder
@@ -476,36 +571,17 @@ void doCommand(struct command_t * cmd)
 			:RESP:
 			-
 			*/
-			
-			// TODO
-
+			// A la posicion 0 dentro de response->data la tomo como signed long *
+			tmp16 = (response.data);
+			// Le asigno el valor del ultimo consumo del motor
+			(*tmp16) = last_consumption;
+			// Corrijo el largo del paquete
+			response.len += 2;
 		break;
- 		case DC_MOTOR_MOTOR_STRESS_ALARM:
-			/* Indica al controlador principal que hay un consumo extremo en el motor,
-			posiblemente un atasco del motor o de la rueda.
-			:DATO:
-			Numero entero positivo de 16 bits en el rango desde 0x0000 hasta
-			0x03FF, que representa el consumo ante el que sono la alarma.
-			:RESP:
-			-
-			*/
-			
-			// TODO
-
+ 		/*case DC_MOTOR_MOTOR_STRESS_ALARM:
 		break;
  		case DC_MOTOR_MOTOR_SHUT_DOWN_ALARM:
-			/* Indica al controlador principal que el motor ha sido apagado debido al alto
-			consumo. Enviado luego de sucesivos avisos del comando DC_MOTOR_MOTOR_STRESS_ALARM.
-			:DATO:
-			Numero entero positivo de 16 bits en el rango desde 0x0000 hasta
-			0x03FF, que representa el consumo ante el que sono la alarma.
-			:RESP:
-			-
-			*/
-			
-			// TODO
-
-		break;
+		break;*/
  		case DC_MOTOR_GET_DC_SPEED:
 			/* Obtiene la velocidad del motor en cuentas del encoder por segundo
 			:DATO:
