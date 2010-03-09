@@ -4,18 +4,16 @@
 namespace robotapi {
 namespace webts {
 
-	webots::Camera * mycam;
-
     WebotsCamera::WebotsCamera( webots::Camera & cam ) : WebotsDevice ( cam ){
-		mycam = &cam;
+		this->mycam = &cam;
 	}
 
     void WebotsCamera::enable(int ms){
-		mycam->enable(ms);
+		this->mycam->enable(ms);
 	}
 
     void WebotsCamera::disable(){
-		mycam->disable();
+		this->mycam->disable();
 	}
 
 	IImage & WebotsCamera::getImage(){
@@ -24,7 +22,7 @@ namespace webts {
 	}
 
     int WebotsCamera::saveImage(std::string filename, int quality){
-		return 4;
+		return this->mycam->saveImage(filename,quality);
 	}
 
 } /* End of namespace robotapi::webts */

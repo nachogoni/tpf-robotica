@@ -69,6 +69,9 @@ void GarbageCleaner::initializeSensors(){
 	
 	pcBattery = &myIRobot.getBattery("b1");
 	pcBattery->enable(TIME_STEP);
+	
+	camera = &myIRobot.getCamera("camera0");
+	//camera->enable(TIME_STEP);
 /*	for( int i=0 ; i < FLOOR_SENSORS ; i++ ){
 		std::stringstream sstr;
 		sstr << "fs" << i;
@@ -79,8 +82,7 @@ void GarbageCleaner::initializeSensors(){
 
 
 
-	camera = &myIRobot.getCamera("camera");
-	camera->enable(TIME_STEP);
+
 */
 	
 }
@@ -88,16 +90,25 @@ void GarbageCleaner::initializeSensors(){
 void GarbageCleaner::initializeBehaviours(){
 	behaviours::AbstractBehaviour * ab = new behaviours::Wander(wheels);
 	myAbstractBehaviours.push_back(ab);
-	ab = new behaviours::AvoidObstacle(wheels,dss);
+
+	ab = new behaviours::FocusGarbage( camera, wheels );
 	myAbstractBehaviours.push_back(ab);
-	ab = new behaviours::UnloadGarbage( trashBin , servoRear );
-	myAbstractBehaviours.push_back(ab);
+
 	ab = new behaviours::CollectGarbage( servoFront , servoBottom );
 	myAbstractBehaviours.push_back(ab);
+
+	ab = new behaviours::UnloadGarbage( trashBin , servoRear );
+	myAbstractBehaviours.push_back(ab);
+	
 	ab = new behaviours::FindLine( robotBattery , pcBattery , wheels );
 	myAbstractBehaviours.push_back(ab);
+	
 	ab = new behaviours::GoToBase( robotBattery , pcBattery , wheels );
 	myAbstractBehaviours.push_back(ab);
+	
+	ab = new behaviours::AvoidObstacle(wheels,dss);
+	myAbstractBehaviours.push_back(ab);
+
 }
 
 void GarbageCleaner::cleanGarbage()
@@ -106,14 +117,17 @@ void GarbageCleaner::cleanGarbage()
 {
 	while ( 1 ){
 		std::list<behaviours::AbstractBehaviour*>::iterator it;
-
+		behaviours::AbstractBehaviour::resetStimulusPresent();
 		//std::cout << "mylist contains:";
 
 		for ( it=myAbstractBehaviours.begin() ; it != myAbstractBehaviours.end(); it++ ){
-			std::cout << "\n" << (*it)->toString() << "\n";
-			//(*it)->sense();
-			//(*it)->act();
-
+			//std::cout << "\n" << (*it)->toString() << "\n";
+			(*it)->sense();
+		}
+		
+		for ( it=myAbstractBehaviours.begin() ; it != myAbstractBehaviours.end(); it++ ){
+			//std::cout << "\n" << (*it)->toString() << "\n";
+			(*it)->act();
 		}
 		std::cout << "Robot Battery : " << robotBattery->getValue() << "\n";
 		std::cout << "PC Battery : " << pcBattery->getValue() << "\n";

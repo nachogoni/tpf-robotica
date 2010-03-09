@@ -18,7 +18,7 @@
  * the image.
  */
 
-CvSeq ** findContours(IplImage * image){
+CvSeq ** myFindContours(IplImage * image){
 
 	CvMemStorage* storage = cvCreateMemStorage(0);
 	CvSeq * contours;
@@ -90,8 +90,9 @@ int Contours::areaFilter(double min_area,double max_area){
 int Contours::perimeterFilter(double min_per,double max_per){
 	
 	double per;
+	printf("PF %x",this->c);
 	per=cvContourPerimeter(this->c);
-	
+	printf("PA");
 	return per> min_per && per<max_per;	
 	
 }

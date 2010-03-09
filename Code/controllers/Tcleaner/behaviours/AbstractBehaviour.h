@@ -29,6 +29,7 @@ class AbstractBehaviour {
 
 	void setStimulusPresent();
 
+	static void AbstractBehaviour::resetStimulusPresent();
  public:
     int behaviour_id;
    	std::string s;

@@ -18,7 +18,7 @@ public:
 	void action();
 
 private:
-	std::string s;
+
 	robotapi::IDifferentialWheels* wheels;
 	};
 
