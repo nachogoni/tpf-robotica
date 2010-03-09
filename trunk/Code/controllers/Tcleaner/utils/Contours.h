@@ -4,7 +4,7 @@
 #include <cv.h>
 #include <highgui.h>
 
-CvSeq ** findContours(IplImage * image);
+CvSeq ** myFindContours(IplImage * image);
 
 namespace utils {
 

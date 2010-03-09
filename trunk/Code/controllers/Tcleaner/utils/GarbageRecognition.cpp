@@ -2,6 +2,7 @@
 
 #include <highgui.h>
 #include <stdio.h>
+#include <string>
 #include <utils/contours.h>
 #include <utils/histogram.h>
 #include <utils/Garbage.h>
@@ -27,36 +28,46 @@
 #define HIST_S_BINS 8
 #define HIST_H_BINS 8
 #define HIST_MIN 0.7
+#define TIME_THRESHOLD 15 //seconds
 
 namespace utils {
 
 robotapi::ICamera * cam;
 
 std::list<utils::Garbage*> garbages;
+time_t lastRequest;
 
 void GarbageRecognition::setCamera(robotapi::ICamera &camera)
 {
 	cam = &camera;
+	lastRequest = time(NULL);
 }
 
 bool GarbageRecognition::thereIsGarbage()
 {
+	this->getGarbageList();
     return garbages.empty();
 }
 
 std::list<Garbage*> GarbageRecognition::getGarbageList()
 {
-	cam->saveImage("./ss.png", 85);
-    IplImage * src = cvLoadImage("./ss.png",1);
-    IplImage * model = cvLoadImage("./ss.png",1);
+    time_t request = time(NULL);
     
-    return this->garbageList(src,model);
+    if ( request - lastRequest > TIME_THRESHOLD ){
+		lastRequest = request;
+		std::string fn ("./ss.jpg");
+		cam->saveImage(fn, 85);
+	    IplImage * src = cvLoadImage("./ss.jpg",1);
+	    IplImage * model = cvLoadImage("./ss.jpg",1);
+		garbages = this->garbageList(src,model);
+	}
+	return garbages;
 }
 
 std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 
 	std::list<Garbage*> garbageList;
-	cvNamedWindow("output",CV_WINDOW_AUTOSIZE);
+	//cvNamedWindow("output",CV_WINDOW_AUTOSIZE);
 	//object model
 
 	//image for the histogram-based filter
@@ -96,7 +107,6 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 
 	//image for contour-finding operations
 	IplImage * contourImage=cvCreateImage(srcSize,8,3);
-
 
 	int frameCounter=1;
 	int cont_index=0;
@@ -138,7 +148,7 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 	cvSmooth(morphImage,smoothImage,CV_GAUSSIAN,3,0,0,0);
 
 	//get all contours
-	contours = findContours(smoothImage);
+	contours = myFindContours(smoothImage);
 
 	cont_index=0;
 	cvCopy(src,contourImage,0);
@@ -146,20 +156,23 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 	while(contours[cont_index]!=NULL){
 		//CvSeq * aContour=contours[cont_index];
 		utils::Contours * ct = new Contours(contours[cont_index]);
+	printf("F");
+		int	pf = ct->perimeterFilter(MINCONTOUR_PERIMETER,MAXCONTOUR_PERIMETER);
+			printf("H");
+		int raf = ct->rectangularAspectFilter(CONTOUR_RECTANGULAR_MIN_RATIO, CONTOUR_RECTANGULAR_MAX_RATIO);
+			printf("J");
+		// int af = ct->areaFilter(MINCONTOUR_AREA,MAXCONTOUR_AREA);
+		int baf = ct->boxAreaFilter(BOXFILTER_TOLERANCE);
+			printf("K");
+		int hmf = ct->histogramMatchingFilter(src,testImageHistogram, HIST_H_BINS,HIST_S_BINS,HIST_MIN);
+			printf("L");
 		//apply filters
-		if(ct->perimeterFilter(MINCONTOUR_PERIMETER,
-			MAXCONTOUR_PERIMETER) &&
-			//ct->areaFilter(MINCONTOUR_AREA,MAXCONTOUR_AREA) &&
-			ct->rectangularAspectFilter(CONTOUR_RECTANGULAR_MIN_RATIO,
-				CONTOUR_RECTANGULAR_MAX_RATIO) &&
-			ct->boxAreaFilter(BOXFILTER_TOLERANCE) &&
-			ct->histogramMatchingFilter(src,testImageHistogram,
-				HIST_H_BINS,HIST_S_BINS,HIST_MIN)){
-
+		if( pf && raf && baf && hmf	){
+				printf("G");
 				//if passed filters
 				ct->printContour(3,cvScalar(127,127,0,0),
 					contourImage);
-
+				printf("G");
 				//get contour bounding box
 				boundingRect=cvBoundingRect(ct->getContour(),0);
 				cvRectangle(contourImage,cvPoint(boundingRect.x,boundingRect.y),
@@ -167,7 +180,7 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 						boundingRect.y+boundingRect.height),
 						_GREEN,1,8,0);
 				//build garbage List
-
+				printf("G");
 				printf(" c %d,%d\n",boundingRect.x,boundingRect.y);
 
 				utils::MinimalBoundingRectangle * r = new utils::MinimalBoundingRectangle(boundingRect.x,
@@ -181,12 +194,13 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 
 
 			}
+	printf("G");
 		delete ct;
 		cont_index++;
 	}
-
-	cvShowImage("output",contourImage);
-	cvWaitKey(0);
+	printf("H");
+//	cvShowImage("output",contourImage);
+//	cvWaitKey(0);
 	delete h;
 
 	return garbageList;

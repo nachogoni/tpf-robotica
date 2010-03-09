@@ -23,6 +23,10 @@ public:
     // Change parameter to Webots API camera
     WebotsCamera( webots::Camera & cam );
     
+private:
+
+	webots::Camera * mycam;
+
     };
 
 } /* End of namespace robotapi::webts */

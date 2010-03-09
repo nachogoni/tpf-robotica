@@ -46,6 +46,7 @@ namespace behaviours {
 
 			setLastStimuli(behaviour_id);
 			*/
+			printf("Stimulus Present: %s\n",this->s.c_str());
 			action();
 		}
 	}
@@ -64,6 +65,10 @@ namespace behaviours {
 
 	void AbstractBehaviour::setStimulusPresent(){
 		stimuli_present = stimuli_present | behaviour_id;
+	}
+
+	void AbstractBehaviour::resetStimulusPresent(){
+		stimuli_present = 0;
 	}
 
 	void AbstractBehaviour::setGarbageCleaner(GarbageCleaner * garbageCleaner){
