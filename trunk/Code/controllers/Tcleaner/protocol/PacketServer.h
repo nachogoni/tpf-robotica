@@ -9,25 +9,22 @@
 #include <protocol/Packet.h>
 #include <protocol/BoardPacketHandler.h>
 
-#define SERIALDEVICE "/dev/ttyUSB0"
+#define SERIAL_PORT "/dev/ttyUSB0"
 #define MAX(a,b) (a>b?a:b)
 #define PIPE_IN 0
 #define PIPE_OUT 1
 
 
-//#ifdef __linux__
-//#include <mutex>
-//#include <thread>
+#ifdef __linux__
 #include <cc++/thread.h>
-
-//#endif
+#endif
 
 namespace protocol {
 
 /**
  * No description
  */
-class PacketServer : public Thread {
+class PacketServer : public ost::Thread {
 	public:
 		// class constructor
 		PacketServer();
@@ -47,7 +44,7 @@ class PacketServer : public Thread {
 		#ifdef __linux__
 		int pipes[2];
 		int serfd;
-		Mutex toSendMutex;
+		ost::Mutex toSendMutex;
 		#endif
 		
 };

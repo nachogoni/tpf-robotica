@@ -1,6 +1,11 @@
 #ifndef _SERVERUI_H
 #define _SERVERUI_H
 
+// Commands for Main Controller (mc)
+void cmd_init(char * data);
+void cmd_reset(char * data);
+void cmd_ping(char * data);
+void cmd_error(char * data);
 // Commands for MotorDC (dc)                                                                      
 void cmd_dcSetDirection(char * data);
 void cmd_dcSetSpeed(char * data);    
