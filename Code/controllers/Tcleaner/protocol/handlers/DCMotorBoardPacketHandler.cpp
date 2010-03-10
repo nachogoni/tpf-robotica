@@ -3,6 +3,7 @@
 #include <protocol/handlers/DCMotorBoardPacketHandler.h> // class's header file
 #include <protocol/packets/DCMotorPacket.h>
 #include <math.h>
+#include <stdlib.h>
 
 namespace protocol {
 namespace handlers {
@@ -108,8 +109,11 @@ void DCMotorBoardPacketHandler::handlePacket(Packet * p){
 void DCMotorBoardPacketHandler::setSpeed(double value){
 	packets::DCMotorPacket * p = new packets::DCMotorPacket(groupid,boardid);
 	// TODO convert from double to short
-	short aux = (short) floor(value);
-	p->setDCSpeed(true, aux);
+	unsigned short aux = (unsigned short)abs(floor(value));
+	if ( value < 0 )
+		p->setDCSpeed(false, aux);
+	else
+		p->setDCSpeed(true, aux);
 	p->prepareToSend();
 	this->ps->sendPacket(p);
 }

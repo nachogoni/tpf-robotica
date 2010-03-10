@@ -10,7 +10,9 @@
 #include <protocol/packets/BoardPacket.h>
 #include <protocol/packets/ServoMotorPacket.h>
 #include <protocol/packets/DCMotorPacket.h>
+#include <protocol/handlers/DCMotorBoardPacketHandler.h> // class's header file
 #include <protocol/Packet.h>
+#include <protocol/PacketServer.h>
 #include "serverUI.h"
 
 #define SERIAL_PORT "/dev/ttyUSB0"
@@ -29,31 +31,29 @@ typedef struct {
 
 bool quit = false, groupBC = false, fullBC = false;
 int fd = 5;
-int dest_group = 0, dest_card = 0, from_group = 0, from_card = 0;
+int dest_group = 0x01, dest_card = 0x01;
 protocol::packets::DCMotorPacket * packetToSend = NULL;
+protocol::PacketServer * ps;
 int pipes[2];
+int lastCMD = -1;
 
 bool init();
-
+char getDest();
 void sendAPacket(protocol::Packet * p);
 
 // Common commands
-void cmd_init(char * data);
-void cmd_reset(char * data);
-void cmd_ping(char * data);
-void cmd_error(char * data);
 void cmd_help(char * data);
 void cmd_quit(char * data);
-void cmd_from(char * data);
-void cmd_dest(char * data);
+void cmd_getDest(char * data);
+void cmd_setDest(char * data);
 void cmd_groupBC(char * data);
 void cmd_fullBC(char * data);
 
 // Command list
 cmd_type commands[] = {
     // Common commands
-    {"common", "dest", cmd_dest, "Set group and card id for destination", "\%d \%d for group and card (0 to 15)"},
-    {"common", "from", cmd_from, "Set group and card id for origin", "\%d \%d for group and card (0 to 15)"},
+    {"common", "setDest", cmd_setDest, "Set group and card id for destination", "\%d \%d for group and card (0 to 15)"},
+    {"common", "getDest", cmd_getDest, "Get group and card id for destination", ""},
     {"common", "groupBC", cmd_groupBC, "Change group broadcast state", ""},
     {"common", "fullBC", cmd_fullBC, "Change full broadcast state", ""},
     // Commands for MainController (mc)
@@ -121,16 +121,11 @@ cmd_type commands[] = {
     {"tb", "tbGetValue", cmd_tbGetValue, "", ""},
     {"tb", "tbFullAlarm", cmd_tbFullAlarm, "", ""},
     {"tb", "tbSetFullValue", cmd_tbSetFullValue, "", ""},
-
+    
     {"common", "help", cmd_help, "This help", "\%s one of: all, common, mc, dc, sm, ds, fs, us, bc, tb"},
     {"common", "quit", cmd_quit, "Quit to system", ""},
     {"common", NULL, cmd_quit, "", ""}
 };
-
-char getFrom()
-{
-    return (from_group & 0x0F) * 16 + (from_card & 0x0F);
-}
 
 char getDest()
 {
@@ -149,32 +144,6 @@ char getDest()
     return group * 16 + card;
 }
 
-bool init()
-{
-    fd = open(SERIAL_PORT, O_RDWR | O_NOCTTY | O_NDELAY);
-    
-    if (fd < 0)
-    {
-        perror("/dev/ttyUSB0");
-        fprintf(stderr, "cannot connect to the serial port %s\n", SERIAL_PORT);
-        return false;
-    }
-    
-    struct termios tc; // 115200 baud, 8n1, no flow control
-    
-    tc.c_iflag = IGNBRK;
-    tc.c_oflag = 0;
-    tc.c_cflag = CS8 | CREAD | CLOCAL | CSTOPB;
-    tc.c_lflag = 0;
- 
-    cfsetispeed(&tc, B115200);
-    cfsetospeed(&tc, B115200);
-
-    tcsetattr(fd, TCSANOW, &tc);
-    
-    return true;
-}
-
 void command(char * cmd, int lenght)
 {
     int i = 0;
@@ -190,6 +159,10 @@ void command(char * cmd, int lenght)
     
     if (strlen(cmd) < 1)
         return;
+
+    // Resend last command?
+    if (strlen(cmd) >= 3 && cmd[0] == '\033' && cmd[1] == '[' && cmd[2] == 'A' && lastCMD != -1)
+        cmd = (char *)(commands[lastCMD].cmd);
     
     while (found == false && commands[i].cmd != NULL)
     {
@@ -198,6 +171,7 @@ void command(char * cmd, int lenght)
             // Command found!
             commands[i].f(data);
             found = true;
+            lastCMD = i;
         }
         i++;
     }
@@ -210,7 +184,7 @@ void command(char * cmd, int lenght)
 
 int main( int argc, const char **argv)
 {
-    int maxfd = 0, select_resp = 0;
+    int maxfd = 1, select_resp = 0;
     char stdin_buffer[256] = {0}, serial_buffer[256] = {0};
     int stdin_idx = 0;
     int c = 0;
@@ -218,29 +192,11 @@ int main( int argc, const char **argv)
     fd_set readfd, writefd;
     fd_set readfd_b, writefd_b;
     
-    if ( pipe(pipes) == -1 ){
-        printf("PIPE ERROR");
-        return 1;
-    }
+	ps = new protocol::PacketServer();
+//	ps->start();
 
-    packetToSend = new protocol::packets::DCMotorPacket(0x01,0x00);
-//TODO:    packetToSend = new protocol::packets::(0x02,0x01);
-    packetToSend->setOriginGroup(0);
-    packetToSend->setOriginId(0);
-/*    
-    if (init() != true)
-    {
-        close(pipes[0]);
-        close(pipes[1]);
-        return -1;
-    }
-*/
     // Set file descriptors
-//    FD_SET(fd,&readfd);
-    FD_SET(pipes[PIPE_IN],&readfd);
     FD_SET(0,&readfd);
-
-    maxfd = MAX(fd,0) + 1;
 
     readfd_b = readfd;
     writefd_b = writefd;
@@ -249,41 +205,17 @@ int main( int argc, const char **argv)
 
     while ( quit != true )
     {
-
         if ((select_resp = select(maxfd, &readfd, &writefd, NULL, NULL)) == 0)
         {
             // Select timed out!
             // TODO: retransmitir la lista de mensajes sin responder...
             printf("TIME OUT!\n");
         }
-
         if (errno == EINTR)
         {
             // A signal was delivered befor time_out 
             errno = 0;
             continue;
-        }
-/*
-        // SERIAL PORT
-        if ( FD_ISSET(fd, &readfd) )
-        {
-            // Have things in buffer! :P
-            read(fd, serial_buffer, 1);
-            // TODO: hacer lo mismo que en los pics para interpretar el comando
-            printf("caracter : %X", serial_buffer[0]);
-            fflush(stdout);
-        }
-*/
-        // PIPE
-        if ( FD_ISSET(pipes[PIPE_IN], &readfd) )
-        {
-            int c;
-            int pipe_buf[256];
-            // Have things in buffer! :P
-            read(pipes[PIPE_IN], &c, 1);
-            write(fd,&c,1);
-            read(pipes[PIPE_IN], pipe_buf, c);
-            printf("escribi : %d bytes en el serial\n",write(fd,pipe_buf,c)+1);
         }
 
         // STDIN
@@ -307,10 +239,6 @@ int main( int argc, const char **argv)
         writefd = writefd_b;
     }
     
-    close(fd);
-    close(pipes[0]);
-    close(pipes[1]);
-    
     return 0;
 }
 
@@ -320,7 +248,7 @@ void sendAPacket(protocol::Packet * p){
     p->calculateCRC();
     char * packet = p->getPacket();
     p->print();
-    printf("escribi : %d bytes en el pipe\n",write(pipes[PIPE_OUT],packet,p->getActualLength()));
+    printf("escribi: %d bytes en el pipe\n",write(pipes[PIPE_OUT],packet,p->getActualLength()));
     //this->waitingForResponse.push_back(p);
 }
 
@@ -336,7 +264,7 @@ void cmd_help(char * data)
     
     while (commands[i].cmd != NULL)
     {
-        if (strcmp(commands[i].group, "all") == 0 || strcmp(commands[i].group, data) == 0)
+        if (strcmp(data, "all") == 0 || strcmp(commands[i].group, data) == 0)
         {
             printf("%-25s%s\n", commands[i].cmd, commands[i].cmd_help);
             if (commands[i].cmd_help_param[0] != '\0')
@@ -395,7 +323,7 @@ void cmd_error(char * data)
     return;
 }
 
-void cmd_dest(char * data)
+void cmd_setDest(char * data)
 {
     if (data == NULL || sscanf(data, "%d %d", &dest_group, &dest_card) != 2)
     {
@@ -408,18 +336,9 @@ void cmd_dest(char * data)
     return;
 }
 
-void cmd_from(char * data)
+void cmd_getDest(char * data)
 {
-    if (data == NULL || sscanf(data, "%d %d", &from_group, &from_card) != 2)
-    {
-        printf("Wrong parameters\n");
-        return;
-    }
-    
-    packetToSend->setOriginGroup(from_group);
-    packetToSend->setOriginId(from_card);
-    printf("GroupID: %d CardID: %d -> (%X)\n", from_group, from_card, getFrom());
-    
+    printf("GroupID: %d CardID: %d -> (%X)\n", dest_group, dest_card, getDest());
     return;
 }
 
@@ -449,23 +368,25 @@ void cmd_dcSetDirection(char * data)
 // DC_MOTOR_SET_DC_SPEED       0X41
 void cmd_dcSetSpeed(char * data)
 {
-    int turn;
-    int speed;
+    int turn, speed;
+    
     if (data == NULL || sscanf(data, "%d %d", &turn, &speed) != 2)
     {
         printf("Wrong parameters\n");
         return;
     }
-    
-    packetToSend = new protocol::packets::DCMotorPacket(0x01,0x00);
-//TODO:    packetToSend = new protocol::packets::(0x02,0x01);
-    packetToSend->setOriginGroup(0);
-    packetToSend->setOriginId(0);
-    bool clockwise = (turn == 0);
 
-    packetToSend->setDCSpeed(clockwise,speed);
-    packetToSend->prepareToSend();
-    sendAPacket(packetToSend);
+    protocol::handlers::DCMotorBoardPacketHandler * packet = new 
+        protocol::handlers::DCMotorBoardPacketHandler( ps, dest_group, dest_card);
+
+    // Clockwise?
+    if (turn == 0)
+        turn = 1;
+    else
+        turn = -1;
+
+    // set speed
+    packet->setSpeed(speed * turn);
     return;
 }
 

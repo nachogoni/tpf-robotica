@@ -17,7 +17,6 @@ namespace protocol {
 PacketServer::PacketServer()
 {
 	#ifdef __linux__
-	this->toSendMutex = new Mutex();
 	this->init();
 	#endif
 }
@@ -31,14 +30,15 @@ PacketServer::~PacketServer()
 void PacketServer::sendPacket(Packet * p){
 	// Apply mutex
 	#ifdef __linux__
-	this->toSendMutex->enterMutex();
+	this->toSendMutex.enterMutex();
 	#endif
 
-	this->toSend.push(p);
+	//this->toSend.push(p);
+	this->sendAPacket(p);
 
 	// Release mutex
 	#ifdef __linux__
-	this->toSendMutex->leaveMutex();
+	this->toSendMutex.leaveMutex();
 	#endif
 }
 
@@ -48,7 +48,7 @@ void PacketServer::sendAPacket(Packet * p){
 	char * packet = p->getPacket();
 	p->print();
 	printf("escribi : %d bytes en el pipe\n",write(pipes[PIPE_OUT],packet,p->getActualLength()));
-	//this->waitingForResponse.push_back(p);
+	this->waitingForResponse.push_back(p);
 }
 
 void PacketServer::run(void){
@@ -64,7 +64,7 @@ void PacketServer::run(void){
     // Set file descriptors
     FD_SET(serfd,&readfd);
     FD_SET(this->pipes[PIPE_IN],&readfd);
-    maxfd = MAX(fd,0) + 1;
+    maxfd = MAX(serfd,this->pipes[PIPE_IN]) + 1;
     readfd_b = readfd;
     writefd_b = writefd;
     
@@ -91,20 +91,20 @@ void PacketServer::run(void){
             // Have things in buffer! :P
             read(serfd, &c, 1);
             // TODO: hacer lo mismo que en los pics para interpretar el comando
-            printf("caracter : %X", c);
+            printf("caracter : %X", (char)c);
 			fflush(stdout);
         }
 
         // PIPE
         if ( FD_ISSET(this->pipes[PIPE_IN], &readfd) )
         {
-			int c;
+			unsigned char c;
 			int pipe_buf[256];
             // Have things in buffer! :P
             read(pipes[PIPE_IN], &c, 1);
-			write(fd,&c,1);
+			write(serfd,&c,1);
             read(pipes[PIPE_IN], pipe_buf, c);
-			printf("escribi : %d bytes en el serial\n",write(fd,pipe_buf,c)+1);
+			printf("escribi : %d bytes en el serial\n",write(serfd,pipe_buf,c)+1);
         }
 
         // Restore structures from backup
