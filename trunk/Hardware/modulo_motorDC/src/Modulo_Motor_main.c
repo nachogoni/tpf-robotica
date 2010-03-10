@@ -213,7 +213,9 @@ void Timer0_INT()
 			else if (duty < 0)
 				duty = 0;
 			SetPWM(duty * turn);
-		}
+		} else if ((counts_expected == 0) && (duty != 0)) {		
+			SetPWM(duty = 0);
+		}	
 	}
 	return;
 }
