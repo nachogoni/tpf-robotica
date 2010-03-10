@@ -193,7 +193,7 @@ int main( int argc, const char **argv)
     fd_set readfd_b, writefd_b;
     
 	ps = new protocol::PacketServer();
-//	ps->start();
+	ps->start();
 
     // Set file descriptors
     FD_SET(0,&readfd);
