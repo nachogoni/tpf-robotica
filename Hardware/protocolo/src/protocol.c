@@ -129,7 +129,8 @@ void runProtocol(struct command_t * cmd)
 				response = *cmd;
 			}
 		} else // Es broadcast para mi grupo? 
-			if ((cmd->to & THIS_GROUP) == THIS_GROUP)
+			if (((cmd->to & 0x0F) == 0x0F) &&
+			 	((cmd->to & 0xF0) == THIS_GROUP))
 		{
 			// Ejecuta el comando
 			doCommand(cmd);	
