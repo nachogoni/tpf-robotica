@@ -20,8 +20,9 @@ namespace protocol {
 class Packet
 {
 	public:
-		// class constructor
+		// class constructors
 		Packet();
+        Packet(char * data, unsigned char length);
 		// class destructor
 		~Packet();
 		void setDestinationId(char id);
@@ -49,6 +50,7 @@ class Packet
 		void addData(char * data,char length);
 		void addData(char data);
 		void addData(short data);
+		void addData(int data);
 		char * getPacket();
 		char getActualLength();
 		void clear();

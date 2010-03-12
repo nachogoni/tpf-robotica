@@ -39,7 +39,7 @@ void DCMotorPacket::getDCSpeed(){
 	this->setCommand(CMD_GET_DC_SPEED);
 }
 
-void DCMotorPacket::setEncoder(short counts){
+void DCMotorPacket::setEncoder(int counts){
 	this->addData(counts);
 	this->setCommand(CMD_SET_ENCODER);
 }
@@ -77,9 +77,9 @@ bool DCMotorPacket::isMotorShutDown(){
 	return this->getCommand() == CMD_SHUTDOWN_ALARM;
 }
 
-short DCMotorPacket::getEncoderValue(){
+int DCMotorPacket::getEncoderValue(){
 	this->resetDataIdx();
-	return this->getShortData();
+	return this->getIntData();
 }
 
 short DCMotorPacket::getEncoderValueToStop(){

@@ -38,7 +38,7 @@ class DCMotorPacket : public protocol::packets::BoardPacket
 		void setDCSpeed(bool clockwise, short speed);
 		void getDCSpeed();
 		void setDirection(bool clockwise);
-		void setEncoder(short counts);
+		void setEncoder(int counts);
 		void getEncoder();
 		void resetEncoder();
 		void setEncoderToStop(short counts);
@@ -49,7 +49,7 @@ class DCMotorPacket : public protocol::packets::BoardPacket
 		// Get data from package
 		bool isMotorAlarm();
 		bool isMotorShutDown();
-		short getEncoderValue();
+		int getEncoderValue();
 		short getEncoderValueToStop();
 		short getSpeedValue();
 		short getMotorConsumptionValue();

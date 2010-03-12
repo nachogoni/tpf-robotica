@@ -24,7 +24,12 @@ namespace protocol {
 /**
  * No description
  */
+#ifdef __linux__
 class PacketServer : public ost::Thread {
+#else
+class PacketServer {
+#endif
+
 	public:
 		// class constructor
 		PacketServer();
@@ -33,12 +38,15 @@ class PacketServer : public ost::Thread {
 		
 		void sendPacket(Packet * p);
 		void registerHandler(BoardPacketHandler * bph,int groupid,int boardid);
+
 	private:
+		BoardPacketHandler * getHandler(unsigned char groupid,unsigned char boardid);
 		bool init();
 		void sendAPacket(Packet * p);
 		std::queue<Packet *> toSend;
 		std::list<Packet *> waitingForResponse;
 		std::map<char, std::map<char, BoardPacketHandler *> > handlers;
+		BoardPacketHandler * defaultHandler;
 		void run(void);
 
 		#ifdef __linux__

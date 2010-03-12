@@ -6,10 +6,8 @@ namespace protocol {
 namespace handlers {
 
 // class constructor
-DefaultBoardPacketHandler::DefaultBoardPacketHandler(PacketServer * ps, char groupid, char boardid)
+DefaultBoardPacketHandler::DefaultBoardPacketHandler(PacketServer * ps)
 {
-	this->groupid = groupid;
-	this->boardid = boardid;
 	this->ps = ps;
 
 }
@@ -21,8 +19,7 @@ DefaultBoardPacketHandler::~DefaultBoardPacketHandler()
 }
 
 void DefaultBoardPacketHandler::handlePacket(Packet * p){
-//	protocol::Packet * bp = new protocol::Packet();
-
+	p->print();
 }
 
 }
