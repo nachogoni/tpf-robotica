@@ -15,6 +15,12 @@ Packet::Packet()
 	// insert your code here
 }
 
+Packet::Packet(char * data, unsigned char length){
+	memcpy(this->packet,data,length);
+	this->actualLength = data[0] + 1;
+	this->resetDataIdx();
+}
+
 // class destructor
 Packet::~Packet()
 {
@@ -159,6 +165,13 @@ void Packet::addData(short data){
 	this->addData((char)((data & 0xFF00) >> 8 ));
 }
 
+void Packet::addData(int data){
+	this->addData((char)(data & 0x000000FF));
+	this->addData((char)((data & 0x0000FF00) >> 8));
+	this->addData((char)((data & 0x00FF0000) >> 16));
+	this->addData((char)((data & 0xFF000000) >> 24));
+}
+
 void Packet::addData(char data){
     packet[this->dataIdx] = data;
     this->dataIdx++;
@@ -200,7 +213,7 @@ int Packet::getIntData(){
 
 void Packet::print(){
     	for(int i = 0; i <this->getActualLength(); i++ )
-    		printf("%X:",this->packet[i]);
+    		printf("%X:",( (char) this->packet[i]) & 0x000000FF);
 	putchar('\n');
 }
 

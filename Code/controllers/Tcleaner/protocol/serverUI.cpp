@@ -361,7 +361,25 @@ void cmd_fullBC(char * data)
 // DC_MOTOR_SET_DIRECTION      0X40
 void cmd_dcSetDirection(char * data)
 {
+    int turn;
+    
+    if (data == NULL || sscanf(data, "%d", &turn) != 1)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+
     // TODO
+    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
+    if ( turn < 0 )
+        p->setDirection(false);
+    else
+        p->setDirection(true);
+    p->prepareToSend();
+    for (int i=0;i<1;i++)
+        ps->sendPacket(p);
+
+
     return;
 }
 
@@ -386,21 +404,40 @@ void cmd_dcSetSpeed(char * data)
         turn = -1;
 
     // set speed
-    packet->setSpeed(speed * turn);
+    for (int i=0;i<1;i++)
+        packet->setSpeed(speed * turn);
     return;
 }
 
 // DC_MOTOR_SET_ENCODER        0X42
 void cmd_dcSetEncoder(char * data)
 {
-    // TODO
+    int turn;
+    
+    if (data == NULL || sscanf(data, "%d", &turn) != 1)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+
+    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
+	p->setEncoder(turn);
+    p->prepareToSend();
+    for (int i=0;i<1;i++)
+        ps->sendPacket(p);
+
     return;
 }
 
 // DC_MOTOR_GET_ENCODER        0X43
 void cmd_dcGetEncoder(char * data)
 {
-    // TODO
+    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
+	p->getEncoder();
+    p->prepareToSend();
+    for (int i=0;i<1;i++)
+        ps->sendPacket(p);
+
     return;
 }
 
@@ -456,26 +493,12 @@ void cmd_dcShutDownAlarm(char * data)
 // DC_MOTOR_GET_DC_SPEED       0X4B
 void cmd_dcGetSpeed(char * data)
 {
-    
-    //TODO
-    
-    int turn;
-    int speed;
-    if (data == NULL || sscanf(data, "%d %d", &turn, &speed) != 2)
-    {
-        printf("Wrong parameters\n");
-        return;
-    }
-    
-    packetToSend = new protocol::packets::DCMotorPacket(0x01,0x00);
-//TODO:    packetToSend = new protocol::packets::(0x02,0x01);
-    packetToSend->setOriginGroup(0);
-    packetToSend->setOriginId(0);
-    bool clockwise = (turn == 0);
+    protocol::handlers::DCMotorBoardPacketHandler * packet = new 
+        protocol::handlers::DCMotorBoardPacketHandler( ps, dest_group, dest_card);
 
-    packetToSend->setDCSpeed(clockwise,speed);
-    packetToSend->prepareToSend();
-    sendAPacket(packetToSend);
+    // set speed
+    for (int i=0;i<1;i++)
+        packet->getSpeed();
     return;
 }
 

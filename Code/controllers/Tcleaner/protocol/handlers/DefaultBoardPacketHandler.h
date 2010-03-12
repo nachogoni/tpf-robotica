@@ -18,22 +18,15 @@ class DefaultBoardPacketHandler : public protocol::BoardPacketHandler
 {
 	public:
 		// class constructor
-		DefaultBoardPacketHandler(PacketServer * ps, char groupid, char boardid);
+		DefaultBoardPacketHandler(PacketServer * ps);
 		// class destructor
 		~DefaultBoardPacketHandler();
 		
 		void handlePacket(Packet * p);
 
 	private:
-		char groupid;
-		char boardid;
 		PacketServer * ps;
 		
-
-		int currentValue;
-		bool full;
-		bool empty;
-
 };
 
 }
