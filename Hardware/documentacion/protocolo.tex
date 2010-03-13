@@ -235,9 +235,13 @@ Informa que ha habido un error.
 
 \begin{itemize}
 	\item{COMANDO:} 0x04
-	\item{DATO:} 1 byte con el c\'odigo de error y la descripci\'on del error en texto plano.
-	El valor 0x00 indica un error de CRC en el paquete.
+	\item{DATO:} 1 byte con el c\'odigo de error.
+
+	El valor 0x00 indica un error de CRC en el paquete. 
+	En este caso, tambi\'en se agrega el paquete con el CRC err\'oneo y luego el CRC esperado.
+
 	El valor 0x01 indica que el comando es desconocido para la placa destinataria.
+
 	Cualquier otro valor, indica un error que depende de la placa y el comando enviado.
 \end{itemize}
 
