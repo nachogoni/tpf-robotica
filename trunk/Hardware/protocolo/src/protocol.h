@@ -93,6 +93,9 @@
 #define MAX_BUFFER_SIZE	45
 #define DATA_SIZE		20
 
+/* PATTERN FOR CRC GENERATION */
+#define CRC_PATTERN		0xFF
+
 /* COMMAND TYPE */
 struct command_t {
 	int len;

@@ -17,11 +17,13 @@ struct command_t response;
 #INT_RDA
 void RS232()
 {
+	disable_interrupts(INT_RDA);
 	// Un nuevo dato...
 	buffer[buffer_write++] = getc();
 	data_length++;
 	if (buffer_write == MAX_BUFFER_SIZE)
-		buffer_write = 0;
+		buffer_write -= MAX_BUFFER_SIZE;
+	enable_interrupts(INT_RDA);
 	return;
 }
 
@@ -66,7 +68,7 @@ void send(struct command_t * cmd)
 void runProtocol(struct command_t * cmd)
 {
 	// Analiza el buffer
-	if (data_length >= MIN_LENGTH && buffer[buffer_read] <= data_length)
+	if (buffer[buffer_read] < data_length)
 	{
 		data_length -= buffer[buffer_read] + 1;
 	
@@ -157,4 +159,54 @@ void runProtocol(struct command_t * cmd)
 		reset_cpu();
 	}	
 
+}
+
+int generate_8bit_crc(char* data, int length, int pattern)
+{
+	// TODO: reemplazar por el crc de verdad :P
+	
+	int crc_byte, i;
+
+	crc_byte = data[0];
+			
+	for (i = 1; i < length; i++)
+		crc_byte ^= data[i];
+	
+   /*int   *current_data;
+   int   crc_byte;
+   int byte_counter;
+   int   bit_counter;
+
+   current_data = data;
+   crc_byte = *current_data++;
+
+   for(byte_counter=0; byte_counter < (length-1); byte_counter++)
+   {
+      for(bit_counter=0; bit_counter < 8; bit_counter++)
+      {
+         if(!bit_test(crc_byte,7))
+         {
+            crc_byte <<= 1;
+            bit_test(*current_data, 7 - bit_counter) ?
+               bit_set(crc_byte,0) : bit_clear(crc_byte,0);
+            continue;
+         }
+         crc_byte <<= 1;
+         bit_test(*current_data, 7 - bit_counter) ?
+            bit_set(crc_byte,0) : bit_clear(crc_byte,0);
+         crc_byte ^= pattern;
+      }
+      current_data++;
+   }
+   for(bit_counter=0; bit_counter < 8; bit_counter++)
+   {
+      if(!bit_test(crc_byte,7))
+      {
+         crc_byte <<= 1;
+         continue;
+      }
+      crc_byte <<= 1;
+      crc_byte ^= pattern;
+   }*/
+   return crc_byte;
 }
