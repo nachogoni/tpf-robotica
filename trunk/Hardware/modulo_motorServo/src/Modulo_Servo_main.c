@@ -106,13 +106,6 @@ void init()
 	// Variable para hacer el reset
 	reset = false;
 
-	// Activo los servos segun este o no habilitado
-	pwm1 = servo[0];
-	pwm2 = servo[1];
-	pwm3 = servo[2];
-	pwm4 = servo[3];
-	pwm5 = servo[4];
-	
 	// Valor que representa el ancho del pulso para cada servo
 	pwm_t[0] = PULSE_MIN;
 	pwm_t[1] = PULSE_MIN;
@@ -133,7 +126,14 @@ void init()
 	servo[2] = 0;
 	servo[3] = 0;
 	servo[4] = 0;
-		
+	
+	// Activo los servos segun este o no habilitado
+	pwm1 = servo[0];
+	pwm2 = servo[1];
+	pwm3 = servo[2];
+	pwm4 = servo[3];
+	pwm5 = servo[4];
+	
 	return;	
 }	
 
@@ -216,25 +216,33 @@ void doCommand(struct command_t * cmd)
 	int crc, i, len;
 		
 	// Calculo del CRC
-	crc = cmd->len ^ cmd->to ^ cmd->from ^ cmd->cmd;
-	
-	len = cmd->len - MIN_LENGTH;
-
-	for (i = 0; i < len; i++)
-	{
-		crc ^= (cmd->data)[i];
-	}
+	crc = generate_8bit_crc((char *)cmd, cmd->len, CRC_PATTERN);
 	
 	// CRC ok?
 	if (cmd->crc != crc)
 	{		
 		// Creo respuesta de error
-		response.len = 0x05;
+		response.len = MIN_LENGTH + cmd->len + 2 + 1;
 		response.to = cmd->from;
 		response.from = THIS_CARD;
 		response.cmd = COMMON_ERROR;
 		response.data[0] = 0x00;
-		response.crc = 0x05 ^ response.to ^ THIS_CARD ^ COMMON_ERROR ^ 0x00;
+		// Agrego el paquete que contiene el error de CRC
+		response.data[1] = cmd->len;
+		response.data[2] = cmd->to;
+		response.data[3] = cmd->from;
+		response.data[4] = cmd->cmd;
+		// Campo data
+		len = cmd->len - MIN_LENGTH;
+		for (i = 0; i < len; i++)
+			response.data[5 + i] = (cmd->data)[i];
+		// CRC erroneo
+		response.data[5 + len] = cmd->crc;
+		// CRC esperado
+		response.data[5 + len + 1] = crc;
+		// CRC de la respuesta
+		response.crc = generate_8bit_crc((char *)(&response), response.len, CRC_PATTERN);
+	
 		crcOK = false;
 		return;
 	}

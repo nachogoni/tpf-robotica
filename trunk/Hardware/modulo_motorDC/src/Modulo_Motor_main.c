@@ -81,7 +81,7 @@ void doCommand(struct command_t * cmd); // Examina y ejecula el comando
 
 ***/
 
-#define MAX_CONSUMPTION	200
+#define MAX_CONSUMPTION	150
 #define MAX_CONSUMPTION_COUNT	5
 
 // Correcion de la cantidad de cuentas por segundo en base al periodo del TMR0
@@ -353,9 +353,10 @@ counts_expected = 30;
 			tmp16 = (command.data);
 			// Le asigno el valor del ultimo consumo del motor
 			(*tmp16) = last_consumption;
-			command.crc = (MIN_LENGTH + 2) ^ MAIN_CONTROLLER ^ THIS_CARD ^ 
-				DC_MOTOR_MOTOR_STRESS_ALARM ^ (command.data)[0] ^ (command.data)[1];
+			command.crc = generate_8bit_crc((char *)(&command), command.len, CRC_PATTERN);
 			consumption_alarm = 0;
+			// Envio del comando
+			send(&command);
 		}
 		
 		// Enviar aviso de motor apagado
@@ -377,9 +378,10 @@ counts_expected = 30;
 			tmp16 = (command.data);
 			// Le asigno el valor del ultimo consumo del motor
 			(*tmp16) = last_consumption;
-			command.crc = (MIN_LENGTH + 2) ^ MAIN_CONTROLLER ^ THIS_CARD ^ 
-				DC_MOTOR_MOTOR_SHUT_DOWN_ALARM ^ (command.data)[0] ^ (command.data)[1];
+			command.crc = generate_8bit_crc((char *)(&command), command.len, CRC_PATTERN);
 			shutdown_alarm = 0;
+			// Envio del comando
+			send(&command);
 		}
 			
 		// Protocolo
