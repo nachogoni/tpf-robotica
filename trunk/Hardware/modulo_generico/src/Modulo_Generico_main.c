@@ -188,13 +188,8 @@ void doCommand(struct command_t * cmd)
 		break;
 	}	
 
-	// Calcular el crc
-	response.crc = response.len ^ response.to ^ THIS_CARD ^ response.cmd;
-	len = response.len - MIN_LENGTH;
-	for (i = 0; i < len; i++)
-	{
-		response.crc ^= (response.data)[i];
-	}
+	// CRC de la respuesta
+	response.crc = generate_8bit_crc((char *)(&response), response.len, CRC_PATTERN);
 
 	return;
 }
