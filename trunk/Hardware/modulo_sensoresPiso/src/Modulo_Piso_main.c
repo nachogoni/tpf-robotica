@@ -1,25 +1,25 @@
 //CCS PCM V4.023 COMPILER
 
-#define CARD_GROUP	MOTOR_DC	// Ver protocol.h
+#define CARD_GROUP	FLOOR_SENSOR	// Ver protocol.h
 #define CARD_ID		0		// Valor entre 0 y E
 
 // Descripcion de la placa
-#define DESC		"PLACA GENERICA - 1.0" // Maximo DATA_SIZE bytes
+#define DESC		"PLACA PISO - 1.0" // Maximo DATA_SIZE bytes
 
 /* Modulo Generico - main.c
- * PIC16F88 - MAX232 - GENERICO
+ * PIC16F88 - MAX232 - SENSORES DE PISO
  *
  *                               PIC16F88
  *                .------------------------------------.
- *               -|RA2/AN2/CVREF/VREF           RA1/AN1|- LED
- *               -|RA3/AN3/VREF+/C1OUT          RA0/AN0|- 
- *           LED -|RA4/AN4/T0CKI/C2OUT    RA7/OSC1/CLKI|- XT CLOCK pin1, 27pF to GND
+ *       SENSE_3 -|RA2/AN2/CVREF/VREF           RA1/AN1|- SENSE_2
+ *       SENSE_4 -|RA3/AN3/VREF+/C1OUT          RA0/AN0|- SENSE_1
+ *       SENSE_5 -|RA4/AN4/T0CKI/C2OUT    RA7/OSC1/CLKI|- XT CLOCK pin1, 27pF to GND
  * RST/ICD2:MCLR -|RA5/MCLR/VPP           RA6/OSC2/CLKO|- XT CLOCK pin2, 27pF to GND
  *           GND -|VSS                              VDD|- +5v
- *               -|RB0/INT/CCP1       RB7/AN6/PGD/T1OSI|- ICD2:PGD/
- *               -|RB1/SDI/SDA  RB6/AN5/PGC/T1OSO/T1CKI|- ICD2:PGC/
+ * ON/OFF SWITCH -|RB0/INT/CCP1       RB7/AN6/PGD/T1OSI|- ICD2:PGD/SENSOR_5
+ *      SENSOR_1 -|RB1/SDI/SDA  RB6/AN5/PGC/T1OSO/T1CKI|- ICD2:PGC/SENSOR_4
  *  MAX232:R1OUT -|RB2/SDO/RX/DT           RB5/SS/TX/CK|- MAX232:T1IN
- *               -|RB3/PGM/CCP1             RB4/SCK/SCL|- 
+ *     	SENSOR_2 -|RB3/PGM/CCP1             RB4/SCK/SCL|- SENSOR_3
  *                '------------------------------------'
  *    
  */
@@ -40,13 +40,28 @@
 #byte porta=0x05
 #byte portb=0x06
 
-// Led
-#bit led1=porta.1
-#bit led2=porta.4
-
 // MAX232
 #bit tx=portb.5
 #bit rx=portb.2
+
+// Led - Comparte el pin con el switch On/Off
+#bit led1=portb.0
+// Pin para switch On/Off
+#bit inOnOff=portb.0
+
+// Sensores de piso - Base de los transistores
+#bit sensor1=portb.1
+#bit sensor2=portb.3
+#bit sensor3=portb.4
+#bit sensor4=portb.6
+#bit sensor5=portb.7
+
+// Sensores de piso - Salida del foto-transistor (SENSE)
+#bit sense1=porta.0
+#bit sense2=porta.1
+#bit sense3=porta.2
+#bit sense4=porta.3
+#bit sense5=porta.4
 
 #include <../../protocolo/src/protocol.c>
 /*
