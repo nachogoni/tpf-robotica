@@ -234,7 +234,7 @@ void doCommand(struct command_t * cmd)
 		break;
  		case DISTANCE_SENSOR_GET_ONE_VALUE:
 			/* Obtiene el valor de la entrada del sensor indicado.
-			Igual al comando \ref{get_value_ds} pero si es necesario enciende el sensor, toma la lectura y luego
+			Igual al comando DISTANCE_SENSOR_GET_VALUE pero si es necesario enciende el sensor, toma la lectura y luego
 			lo apaga para un mayor ahorro de energia.
 			:DATO:
 			Valor de 0x00 a 0x04 que determina el id del sensor del que se quiere la lectura.
@@ -246,7 +246,7 @@ void doCommand(struct command_t * cmd)
 		break;
 		case DISTANCE_SENSOR_GET_ONE_VALUE_FOR_ALL:
 			/* Obtiene las distancias de cada uno de los sensores conectados al controlador.
-			Igual al comando \ref{get_all_values_ds} pero si es necesario enciende los sensores, toma las lecturas
+			Igual al comando DISTANCE_SENSOR_GET_ALL_VALUES pero si es necesario enciende los sensores, toma las lecturas
 			y luego los apaga para un mayor ahorro de energia.
 			:DATO:
 			-

@@ -4,3 +4,5 @@ Version=1.0
 ProjectPath=modulo_motorDC\schema - v4\Modulo_MotorDC.PrjPCB
 [Project2]
 ProjectPath=modulo_generico\schema\Modulo_Generico.PrjPCB
+[Project3]
+ProjectPath=modulo_telemetros\schema\Modulo_Telemetros.PrjPCB
