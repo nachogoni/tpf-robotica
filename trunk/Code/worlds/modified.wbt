@@ -10,8 +10,8 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 1.6454
-  orientation -0.440952 0.76173 0.474688 1.90997
-  position 0.0270278 1.2513 0.54185
+  orientation -0.576647 0.582369 0.572996 2.08136
+  position -0.173992 0.272804 0.328116
 }
 PointLight {
   intensity 0.5
@@ -1510,9 +1510,10 @@ DEF E_PUCK DifferentialWheels {
           ]
         }
       ]
-      name "camera"
+      name "camera0"
       fieldOfView 1.1
-      height 48
+      width 320
+      height 240
       display FALSE
       near 0.004
       far 20
@@ -2125,7 +2126,7 @@ Charger {
   radius 0.05
 }
 DEF a_Wall Solid {
-  translation 0 0.05 -0.15
+  translation -0.01 0.05 -0.15
   rotation 0 1 0 4.71239
   children [
     DEF a_WALL_SHAPE Shape {
@@ -2135,14 +2136,14 @@ DEF a_Wall Solid {
         }
       }
       geometry Box {
-        size 0.02 0.1 0.3
+        size 0.02 0.1 0.32
       }
     }
   ]
   boundingObject USE a_WALL_SHAPE
 }
 DEF b_Wall Solid {
-  translation 0.155195 0.05 -0.539029
+  translation 0.14 0.05 -0.54
   children [
     DEF b_WALL_SHAPE Shape {
       appearance USE WALL_APPEARANCE
@@ -2154,7 +2155,7 @@ DEF b_Wall Solid {
   boundingObject USE b_WALL_SHAPE
 }
 DEF c_Wall Solid {
-  translation -0.182536 0.05 -0.920425
+  translation -0.2 0.05 -0.93
   rotation 0 1 0 1.5708
   children [
     DEF c_WALL_SHAPE Shape {
@@ -2167,7 +2168,7 @@ DEF c_Wall Solid {
   boundingObject USE c_WALL_SHAPE
 }
 DEF d_Wall Solid {
-  translation -0.524918 0.05 -0.456497
+  translation -0.54 0.05 -0.46
   rotation 0 1 0 3.14159
   children [
     DEF d_WALL_SHAPE Shape {
@@ -2180,7 +2181,7 @@ DEF d_Wall Solid {
   boundingObject USE d_WALL_SHAPE
 }
 DEF e_Wall Solid {
-  translation -0.715616 0.05 0.00900969
+  translation -0.73 0.05 0.01
   rotation 0 1 0 1.5708
   children [
     DEF e_WALL_SHAPE Shape {
@@ -2193,7 +2194,7 @@ DEF e_Wall Solid {
   boundingObject USE e_WALL_SHAPE
 }
 DEF f_Wall Solid {
-  translation -0.912978 0.05 0.0995999
+  translation -0.92 0.05 0.1
   rotation 0 1 0 3.14159
   children [
     DEF f_WALL_SHAPE Shape {
@@ -2206,7 +2207,7 @@ DEF f_Wall Solid {
   boundingObject USE f_WALL_SHAPE
 }
 DEF g_Wall Solid {
-  translation -0.715578 0.05 0.194891
+  translation -0.73 0.05 0.194891
   rotation 0 1 0 4.71239
   children [
     DEF g_WALL_SHAPE Shape {
@@ -2219,7 +2220,7 @@ DEF g_Wall Solid {
   boundingObject USE g_WALL_SHAPE
 }
 DEF h_Wall Solid {
-  translation -0.524348 0.05 0.563496
+  translation -0.54 0.05 0.56
   rotation 0 1 0 3.14159
   children [
     DEF h_WALL_SHAPE Shape {
@@ -2232,7 +2233,7 @@ DEF h_Wall Solid {
   boundingObject USE h_WALL_SHAPE
 }
 DEF i_Wall Solid {
-  translation -0.336193 0.05 0.922183
+  translation -0.35 0.05 0.925
   rotation 0 1 0 4.71239
   children [
     DEF i_WALL_SHAPE Shape {
@@ -2245,7 +2246,7 @@ DEF i_Wall Solid {
   boundingObject USE i_WALL_SHAPE
 }
 DEF j_Wall Solid {
-  translation -0.144929 0.05 0.648366
+  translation -0.16 0.05 0.66
   children [
     DEF j_WALL_SHAPE Shape {
       appearance USE WALL_APPEARANCE
@@ -2257,7 +2258,7 @@ DEF j_Wall Solid {
   boundingObject USE j_WALL_SHAPE
 }
 DEF k_Wall Solid {
-  translation -0.168319 0.05 0.379115
+  translation -0.184 0.05 0.395
   rotation 0 1 0 1.5708
   children [
     DEF k_WALL_SHAPE Shape {
@@ -2270,19 +2271,19 @@ DEF k_Wall Solid {
   boundingObject USE k_WALL_SHAPE
 }
 DEF l_Wall Solid {
-  translation -0.194171 0.05 0.327112
+  translation -0.21 0.05 0.34
   children [
     DEF l_WALL_SHAPE Shape {
       appearance USE WALL_APPEARANCE
       geometry Box {
-        size 0.02 0.1 0.1
+        size 0.02 0.1 0.13
       }
     }
   ]
   boundingObject USE l_WALL_SHAPE
 }
 DEF m_Wall Solid {
-  translation -0.170423 0.05 0.281751
+  translation -0.185 0.05 0.28
   rotation 0 1 0 4.71239
   children [
     DEF m_WALL_SHAPE Shape {
@@ -2295,7 +2296,7 @@ DEF m_Wall Solid {
   boundingObject USE m_WALL_SHAPE
 }
 DEF n_Wall Solid {
-  translation -0.143299 0.05 0.0699608
+  translation -0.16 0.05 0.065
   children [
     DEF n_WALL_SHAPE Shape {
       appearance USE WALL_APPEARANCE
@@ -2305,4 +2306,176 @@ DEF n_Wall Solid {
     }
   ]
   boundingObject USE n_WALL_SHAPE
+}
+DEF a_Line Solid {
+	translation -0.01 0 -0.18375
+	rotation 0 1 0 4.71239
+	children [
+		Shape {
+			appearance DEF LINE_APPEARANCE Appearance {
+				material Material {
+					diffuseColor 1 1 1
+				}
+			}
+			geometry Box {
+				size 0.0075 0.001 0.1725
+			}
+		}
+	]
+}
+DEF b_Line Solid {
+	translation 0.10625 0 -0.54
+	rotation 0 1 0 0
+	children [
+		Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 0.6525
+			}
+		}
+	]
+}
+DEF c_Line Solid {
+	translation -0.2 0 -0.89625
+	rotation 0 1 0 1.5708
+	children [
+		Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 0.5525
+			}
+		}
+	]
+}
+DEF d_Line Solid {
+	translation -0.50625 0 -0.46
+	rotation 0 1 0 3.14159
+	children [
+		Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 0.8025
+			}
+		}
+	]
+}
+DEF e_Line Solid {
+	translation -0.73 0 0.04375
+	rotation 0 1 0 1.5708
+	children [
+		Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 0.2525
+			}
+		}
+	]
+}
+DEF f_Line Solid {
+	translation -0.88625 0 0.1
+	rotation 0 1 0 3.14159
+	children [
+		Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 0.0525
+			}
+		}
+	]
+}
+DEF g_Line Solid {
+	translation -0.73 0 0.16114
+	rotation 0 1 0 4.71239
+	children [
+		Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 0.2525
+			}
+		}
+	]
+}
+DEF h_Line Solid {
+	translation -0.50625 0 0.56
+	rotation 0 1 0 3.14159
+	children [
+		Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 0.6025
+			}
+		}
+	]
+}
+DEF i_Line Solid {
+	translation -0.35 0 0.89125
+	rotation 0 1 0 4.71239
+	children [
+		Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 0.2525
+			}
+		}
+	]
+}
+DEF j_Line Solid {
+	translation -0.19375 0 0.66
+	rotation 0 1 0 0
+	children [
+		Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 0.4025
+			}
+		}
+	]
+}
+DEF k_Line Solid {
+	translation -0.184 0 0.42875
+	rotation 0 1 0 1.5708
+	children [
+		Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 -0.0775
+			}
+		}
+	]
+}
+DEF l_Line Solid {
+	translation -0.24375 0 0.34
+	rotation 0 1 0 0
+	children [
+		Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 -0.0175
+			}
+		}
+	]
+}
+DEF m_Line Solid {
+	translation -0.185 0 0.24625
+	rotation 0 1 0 4.71239
+	children [
+		Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 -0.0775
+			}
+		}
+	]
+}
+DEF n_Line Solid {
+	translation -0.19375 0 0.065
+	rotation 0 1 0 0
+	children [
+		Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 0.3025
+			}
+		}
+	]
 }
