@@ -6,3 +6,5 @@ ProjectPath=modulo_motorDC\schema - v4\Modulo_MotorDC.PrjPCB
 ProjectPath=modulo_generico\schema\Modulo_Generico.PrjPCB
 [Project3]
 ProjectPath=modulo_telemetros\schema\Modulo_Telemetros.PrjPCB
+[Project4]
+ProjectPath=modulo_motorServo\schema\Modulo_Servos.PrjPCB
