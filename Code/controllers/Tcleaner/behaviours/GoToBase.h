@@ -2,7 +2,7 @@
 #define behaviours_GoToBase_h
 
 #include "AbstractBehaviour.h"
-
+#include <vector>
 
 namespace behaviours {
 
@@ -10,18 +10,15 @@ class GoToBase : public AbstractBehaviour {
 
 	public:
 
-		GoToBase(robotapi::IBattery * robotBatt, robotapi::IBattery * pcBatt, robotapi::IDifferentialWheels * wheels);
+		GoToBase(robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & fss);
 
 		void sense();
 
 	    void action();
 
 	private:
-		robotapi::IBattery * robotBatt;
-		robotapi::IBattery * pcBatt;
+		std::vector<robotapi::IDistanceSensor*> * fss;
 		robotapi::IDifferentialWheels * wheels;
-
-
 
 	};
 

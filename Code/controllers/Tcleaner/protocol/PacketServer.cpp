@@ -4,13 +4,16 @@
 #include <protocol/handlers/DefaultBoardPacketHandler.h>
 #include <stdio.h>
 #include <string.h>
-#include <termios.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <signal.h>
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+
+#ifdef __linux__
+	#include <termios.h>
+	#include <unistd.h>
+	#include <fcntl.h>
+	#include <signal.h>
+	#include <errno.h>
+	#include <sys/types.h>
+	#include <sys/stat.h>
+#endif
 
 namespace protocol {
 
@@ -49,11 +52,14 @@ void PacketServer::sendAPacket(Packet * p){
 	p->calculateCRC();
 	char * packet = p->getPacket();
 	p->print();
+	#ifdef __linux__
 	printf("escribi : %d bytes en el pipe\n",write(pipes[PIPE_OUT],packet,p->getActualLength()));
+	#endif
 	this->waitingForResponse.push_back(p);
 }
 
 void PacketServer::run(void){
+    #ifdef __linux__
     int maxfd = 0, select_resp = 0;
     struct timeval timeout;
     fd_set readfd, writefd;
@@ -121,6 +127,7 @@ void PacketServer::run(void){
         readfd = readfd_b;
         writefd = writefd_b;
 	}
+	#endif
 }
 
 void PacketServer::registerHandler(BoardPacketHandler * bph,int groupid,int boardid){
@@ -138,6 +145,7 @@ BoardPacketHandler * PacketServer::getHandler(unsigned char groupid , unsigned c
 
 bool PacketServer::init()
 {
+    #ifdef __linux__
     this->serfd = open(SERIAL_PORT, O_RDWR | O_NOCTTY | O_NDELAY);
     
     if (this->serfd < 0)
@@ -158,7 +166,7 @@ bool PacketServer::init()
     cfsetospeed(&tc, B115200);
 
     tcsetattr(this->serfd, TCSANOW, &tc);
-    
+    #endif
     return true;
 }
 

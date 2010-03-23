@@ -2,7 +2,8 @@
 #define behaviours_FindLine_h
 
 #include "AbstractBehaviour.h"
-
+#include "WorldInfo.h"
+#include <vector>
 
 namespace behaviours {
 
@@ -10,16 +11,16 @@ class FindLine : public AbstractBehaviour {
 
 	public:
 
-		FindLine(robotapi::IBattery * robotBatt, robotapi::IBattery * pcBatt, robotapi::IDifferentialWheels * wheels);
+		FindLine(WorldInfo * wi, robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & fss);
 		
 		void sense();
 
 	    void action();
 
 	private:
-		robotapi::IBattery * robotBatt;
-		robotapi::IBattery * pcBatt;
+		std::vector<robotapi::IDistanceSensor*> * fss;
 		robotapi::IDifferentialWheels * wheels;
+		WorldInfo * wi;
 	};
 
 } /* End of namespace behaviours */
