@@ -7,7 +7,7 @@
 #include "robotapi/IRobot.h"
 
 #define DISTANCE_SENSORS 8
-#define FLOOR_SENSORS 4
+#define FLOOR_SENSORS 3
 #define TIME_STEP 32
 
 class GarbageCleaner {

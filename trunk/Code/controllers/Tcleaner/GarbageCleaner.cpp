@@ -1,9 +1,8 @@
 #include "GarbageCleaner.h"
 #include <behaviours/AvoidObstacle.h>
 #include <behaviours/CollectGarbage.h>
-#include <behaviours/FindLine.h>
 #include <behaviours/FocusGarbage.h>
-#include <behaviours/GoToBase.h>
+#include <behaviours/GoToBaseGroup.h>
 #include <behaviours/GoToDisposal.h>
 #include <behaviours/Recharge.h>
 #include <behaviours/UnloadGarbage.h>
@@ -51,6 +50,14 @@ void GarbageCleaner::initializeSensors(){
 		dss.push_back(ids);
 	}
 
+	for( int i=0 ; i < FLOOR_SENSORS ; i++ ){
+		std::stringstream sstr;
+		sstr << "fs" << i;
+		robotapi::IDistanceSensor * fds = &myIRobot.getDistanceSensor(sstr.str());
+		fds->enable(TIME_STEP);
+		fss.push_back(fds);
+	}
+
 	wheels = &myIRobot.getDifferentialWheels("df");
 	wheels->enableEncoders(TIME_STEP);
 
@@ -71,7 +78,7 @@ void GarbageCleaner::initializeSensors(){
 	pcBattery->enable(TIME_STEP);
 	
 	camera = &myIRobot.getCamera("camera0");
-	//camera->enable(TIME_STEP);
+//	camera->enable(TIME_STEP);
 /*	for( int i=0 ; i < FLOOR_SENSORS ; i++ ){
 		std::stringstream sstr;
 		sstr << "fs" << i;
@@ -100,10 +107,7 @@ void GarbageCleaner::initializeBehaviours(){
 	ab = new behaviours::UnloadGarbage( trashBin , servoRear );
 	myAbstractBehaviours.push_back(ab);
 	
-	ab = new behaviours::FindLine( robotBattery , pcBattery , wheels );
-	myAbstractBehaviours.push_back(ab);
-	
-	ab = new behaviours::GoToBase( robotBattery , pcBattery , wheels );
+	ab = new behaviours::GoToBaseGroup( new WorldInfo(), robotBattery , pcBattery , wheels, fss );
 	myAbstractBehaviours.push_back(ab);
 	
 	ab = new behaviours::AvoidObstacle(wheels,dss);
@@ -131,6 +135,7 @@ void GarbageCleaner::cleanGarbage()
 		}
 		std::cout << "Robot Battery : " << robotBattery->getValue() << "\n";
 		std::cout << "PC Battery : " << pcBattery->getValue() << "\n";
+
 		this->myIRobot.step(TIME_STEP);
 
 

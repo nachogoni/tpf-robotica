@@ -5,14 +5,14 @@ CPP  = g++.exe -D__DEBUG__
 CC   = gcc.exe -D__DEBUG__
 WINDRES = windres.exe
 RES  = 
-OBJ  = GarbageCleaner.o behaviours/AbstractBehaviour.o behaviours/AvoidObstacle.o behaviours/CollectGarbage.o behaviours/FindLine.o behaviours/FocusGarbage.o behaviours/GoToBase.o behaviours/GoToDisposal.o behaviours/Recharge.o behaviours/UnloadGarbage.o behaviours/Wander.o robotapi/real/RealBattery.o robotapi/real/RealCamera.o robotapi/real/RealDevice.o robotapi/real/RealDeviceTag.o robotapi/real/RealDifferentialWheels.o robotapi/real/RealDistanceSensor.o robotapi/real/RealImage.o robotapi/real/RealRobot.o robotapi/real/RealServo.o utils/GarbageRecognition.o utils/Rectangle.o robotapi/webts/WebotsBattery.o robotapi/webts/WebotsCamera.o robotapi/webts/WebotsDevice.o robotapi/webts/WebotsDeviceTag.o robotapi/webts/WebotsDifferentialWheels.o robotapi/webts/WebotsDistanceSensor.o robotapi/webts/WebotsImage.o robotapi/webts/WebotsRobot.o robotapi/webts/WebotsServo.o robotapi/real/RealTrashBin.o robotapi/webts/WebotsTrashBin.o protocol/BoardPacketHandler.o protocol/packet.o protocol/PacketServer.o protocol/packets/batterypacket.o protocol/packets/BoardPacket.o protocol/packets/DCMotorPacket.o protocol/packets/DistanceSensorPacket.o protocol/packets/floorsensorpacket.o protocol/packets/GroupPacket.o protocol/packets/ServoMotorPacket.o protocol/packets/trashbinpacket.o protocol/packets/ultrasonicsensorpacket.o protocol/handlers/BatteryBoardPacketHandler.o protocol/handlers/DCMotorBoardPacketHandler.o protocol/handlers/DistanceSensorBoardPacketHandler.o protocol/handlers/ServoBoardPacketHandler.o protocol/handlers/TrashBinBoardPacketHandler.o robotapi/real/RealPCBattery.o tcleaner.o robotapi/webts/WebotsPCBattery.o protocol/handlers/DefaultBoardPacketHandler.o $(RES)
-LINKOBJ  = GarbageCleaner.o behaviours/AbstractBehaviour.o behaviours/AvoidObstacle.o behaviours/CollectGarbage.o behaviours/FindLine.o behaviours/FocusGarbage.o behaviours/GoToBase.o behaviours/GoToDisposal.o behaviours/Recharge.o behaviours/UnloadGarbage.o behaviours/Wander.o robotapi/real/RealBattery.o robotapi/real/RealCamera.o robotapi/real/RealDevice.o robotapi/real/RealDeviceTag.o robotapi/real/RealDifferentialWheels.o robotapi/real/RealDistanceSensor.o robotapi/real/RealImage.o robotapi/real/RealRobot.o robotapi/real/RealServo.o utils/GarbageRecognition.o utils/Rectangle.o robotapi/webts/WebotsBattery.o robotapi/webts/WebotsCamera.o robotapi/webts/WebotsDevice.o robotapi/webts/WebotsDeviceTag.o robotapi/webts/WebotsDifferentialWheels.o robotapi/webts/WebotsDistanceSensor.o robotapi/webts/WebotsImage.o robotapi/webts/WebotsRobot.o robotapi/webts/WebotsServo.o robotapi/real/RealTrashBin.o robotapi/webts/WebotsTrashBin.o protocol/BoardPacketHandler.o protocol/packet.o protocol/PacketServer.o protocol/packets/batterypacket.o protocol/packets/BoardPacket.o protocol/packets/DCMotorPacket.o protocol/packets/DistanceSensorPacket.o protocol/packets/floorsensorpacket.o protocol/packets/GroupPacket.o protocol/packets/ServoMotorPacket.o protocol/packets/trashbinpacket.o protocol/packets/ultrasonicsensorpacket.o protocol/handlers/BatteryBoardPacketHandler.o protocol/handlers/DCMotorBoardPacketHandler.o protocol/handlers/DistanceSensorBoardPacketHandler.o protocol/handlers/ServoBoardPacketHandler.o protocol/handlers/TrashBinBoardPacketHandler.o robotapi/real/RealPCBattery.o tcleaner.o robotapi/webts/WebotsPCBattery.o protocol/handlers/DefaultBoardPacketHandler.o $(RES)
-LIBS =  -L"C:/Dev-Cpp/lib" -L"C:/Archivos de programa/OpenCV/lib" -L"C:/Archivos de programa/OpenCV/otherlibs/highgui" -L"C:/Archivos de programa/Webots/lib" -Wl,--enable-runtime-pseudo-reloc --enable-auto-import  "C:/Archivos de programa/Webots/lib/libCppController.a"  -g3 
-INCS =  -I"C:/Dev-Cpp/include"  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Archivos de programa/OpenCV/cv/include"  -I"C:/Archivos de programa/OpenCV/cvaux/include"  -I"C:/Archivos de programa/OpenCV/ml/include"  -I"C:/Archivos de programa/OpenCV/otherlibs/highgui"  -I"C:/Archivos de programa/OpenCV/otherlibs/_graphics/include"  -I"C:/Archivos de programa/OpenCV/cxcore/include"  -I"C:/Archivos de programa/OpenCV/otherlibs/ffopencv"  -I"C:/projects/tpf-robotica/Code/controllers/Tcleaner"  -I"C:/Archivos de programa/Webots/include/controller/cpp"  -I"C:/Archivos de programa/Webots/include/controller/cpp/webots" 
-CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include"  -I"C:/projects/tpf-robotica/Code/controllers/Tcleaner"  -I"C:/Archivos de programa/Webots/include/controller/cpp"  -I"C:/Archivos de programa/Webots/include/controller/cpp/webots" 
+OBJ  = GarbageCleaner.o behaviours/AbstractBehaviour.o behaviours/AvoidObstacle.o behaviours/CollectGarbage.o behaviours/FindLine.o behaviours/FocusGarbage.o behaviours/GoToBase.o behaviours/GoToDisposal.o behaviours/Recharge.o behaviours/UnloadGarbage.o behaviours/Wander.o robotapi/real/RealBattery.o robotapi/real/RealCamera.o robotapi/real/RealDevice.o robotapi/real/RealDeviceTag.o robotapi/real/RealDifferentialWheels.o robotapi/real/RealDistanceSensor.o robotapi/real/RealImage.o robotapi/real/RealRobot.o robotapi/real/RealServo.o utils/GarbageRecognition.o robotapi/webts/WebotsBattery.o robotapi/webts/WebotsCamera.o robotapi/webts/WebotsDevice.o robotapi/webts/WebotsDeviceTag.o robotapi/webts/WebotsDifferentialWheels.o robotapi/webts/WebotsDistanceSensor.o robotapi/webts/WebotsImage.o robotapi/webts/WebotsRobot.o robotapi/webts/WebotsServo.o robotapi/real/RealTrashBin.o robotapi/webts/WebotsTrashBin.o protocol/BoardPacketHandler.o protocol/packet.o protocol/PacketServer.o protocol/packets/batterypacket.o protocol/packets/BoardPacket.o protocol/packets/DCMotorPacket.o protocol/packets/DistanceSensorPacket.o protocol/packets/floorsensorpacket.o protocol/packets/GroupPacket.o protocol/packets/ServoMotorPacket.o protocol/packets/trashbinpacket.o protocol/packets/ultrasonicsensorpacket.o protocol/handlers/BatteryBoardPacketHandler.o protocol/handlers/DCMotorBoardPacketHandler.o protocol/handlers/DistanceSensorBoardPacketHandler.o protocol/handlers/ServoBoardPacketHandler.o protocol/handlers/TrashBinBoardPacketHandler.o robotapi/real/RealPCBattery.o tcleaner.o robotapi/webts/WebotsPCBattery.o protocol/handlers/DefaultBoardPacketHandler.o utils/contours.o utils/Garbage.o utils/histogram.o utils/MinimalBoundingRectangle.o WorldInfo.o behaviours/GoToBaseGroup.o behaviours/PositionInLine.o utils/OdometryInfo.o utils/Line.o $(RES)
+LINKOBJ  = GarbageCleaner.o behaviours/AbstractBehaviour.o behaviours/AvoidObstacle.o behaviours/CollectGarbage.o behaviours/FindLine.o behaviours/FocusGarbage.o behaviours/GoToBase.o behaviours/GoToDisposal.o behaviours/Recharge.o behaviours/UnloadGarbage.o behaviours/Wander.o robotapi/real/RealBattery.o robotapi/real/RealCamera.o robotapi/real/RealDevice.o robotapi/real/RealDeviceTag.o robotapi/real/RealDifferentialWheels.o robotapi/real/RealDistanceSensor.o robotapi/real/RealImage.o robotapi/real/RealRobot.o robotapi/real/RealServo.o utils/GarbageRecognition.o robotapi/webts/WebotsBattery.o robotapi/webts/WebotsCamera.o robotapi/webts/WebotsDevice.o robotapi/webts/WebotsDeviceTag.o robotapi/webts/WebotsDifferentialWheels.o robotapi/webts/WebotsDistanceSensor.o robotapi/webts/WebotsImage.o robotapi/webts/WebotsRobot.o robotapi/webts/WebotsServo.o robotapi/real/RealTrashBin.o robotapi/webts/WebotsTrashBin.o protocol/BoardPacketHandler.o protocol/packet.o protocol/PacketServer.o protocol/packets/batterypacket.o protocol/packets/BoardPacket.o protocol/packets/DCMotorPacket.o protocol/packets/DistanceSensorPacket.o protocol/packets/floorsensorpacket.o protocol/packets/GroupPacket.o protocol/packets/ServoMotorPacket.o protocol/packets/trashbinpacket.o protocol/packets/ultrasonicsensorpacket.o protocol/handlers/BatteryBoardPacketHandler.o protocol/handlers/DCMotorBoardPacketHandler.o protocol/handlers/DistanceSensorBoardPacketHandler.o protocol/handlers/ServoBoardPacketHandler.o protocol/handlers/TrashBinBoardPacketHandler.o robotapi/real/RealPCBattery.o tcleaner.o robotapi/webts/WebotsPCBattery.o protocol/handlers/DefaultBoardPacketHandler.o utils/contours.o utils/Garbage.o utils/histogram.o utils/MinimalBoundingRectangle.o WorldInfo.o behaviours/GoToBaseGroup.o behaviours/PositionInLine.o utils/OdometryInfo.o utils/Line.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib" -L"C:/Archivos de programa/OpenCV/lib" -L"C:/Archivos de programa/Webots/lib" -Wl,--enable-runtime-pseudo-reloc --enable-auto-import  "../../../../Archivos de programa/Webots/lib/libCppController.a"  -g3 
+INCS =  -I"C:/Dev-Cpp/include"  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Archivos de programa/OpenCV/include/opencv"  -I"C:/projects/tpf-robotica/Code/controllers/Tcleaner"  -I"C:/Archivos de programa/Webots/include/controller/cpp"  -I"C:/Archivos de programa/Webots/include/controller/cpp/webots" 
+CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include"  -I"C:/Archivos de programa/OpenCV/include/opencv"  -I"C:/projects/tpf-robotica/Code/controllers/Tcleaner"  -I"C:/Archivos de programa/Webots/include/controller/cpp"  -I"C:/Archivos de programa/Webots/include/controller/cpp/webots" 
 BIN  = Tcleaner.exe
-CXXFLAGS = $(CXXINCS)    -L"C:\Archivos de Programa\OpenCV\lib" -lcxcore -lcv -lcvaux -lhighgui -lml -g3
-CFLAGS = $(INCS)   -L"C:\Archivos de Programa\OpenCV\lib" -lcxcore -lcv -lcvaux -lhighgui -lml -g3
+CXXFLAGS = $(CXXINCS)    -L"C:\Archivos de Programa\OpenCV\lib" -lcxcore -lcv -lcvaux -lhighgui -lml -lstdc++ -g3
+CFLAGS = $(INCS)   -L"C:\Archivos de Programa\OpenCV\lib" -lcxcore -lcv -lcvaux -lhighgui -lml -lstdc++ -g3
 RM = rm -f
 
 .PHONY: all all-before all-after clean clean-custom
@@ -88,9 +88,6 @@ robotapi/real/RealServo.o: robotapi/real/RealServo.cpp
 
 utils/GarbageRecognition.o: utils/GarbageRecognition.cpp
 	$(CPP) -c utils/GarbageRecognition.cpp -o utils/GarbageRecognition.o $(CXXFLAGS)
-
-utils/Rectangle.o: utils/Rectangle.cpp
-	$(CPP) -c utils/Rectangle.cpp -o utils/Rectangle.o $(CXXFLAGS)
 
 robotapi/webts/WebotsBattery.o: robotapi/webts/WebotsBattery.cpp
 	$(CPP) -c robotapi/webts/WebotsBattery.cpp -o robotapi/webts/WebotsBattery.o $(CXXFLAGS)
@@ -187,3 +184,30 @@ robotapi/webts/WebotsPCBattery.o: robotapi/webts/WebotsPCBattery.cpp
 
 protocol/handlers/DefaultBoardPacketHandler.o: protocol/handlers/DefaultBoardPacketHandler.cpp
 	$(CPP) -c protocol/handlers/DefaultBoardPacketHandler.cpp -o protocol/handlers/DefaultBoardPacketHandler.o $(CXXFLAGS)
+
+utils/contours.o: utils/contours.cpp
+	$(CPP) -c utils/contours.cpp -o utils/contours.o $(CXXFLAGS)
+
+utils/Garbage.o: utils/Garbage.cpp
+	$(CPP) -c utils/Garbage.cpp -o utils/Garbage.o $(CXXFLAGS)
+
+utils/histogram.o: utils/histogram.cpp
+	$(CPP) -c utils/histogram.cpp -o utils/histogram.o $(CXXFLAGS)
+
+utils/MinimalBoundingRectangle.o: utils/MinimalBoundingRectangle.cpp
+	$(CPP) -c utils/MinimalBoundingRectangle.cpp -o utils/MinimalBoundingRectangle.o $(CXXFLAGS)
+
+WorldInfo.o: WorldInfo.cpp
+	$(CPP) -c WorldInfo.cpp -o WorldInfo.o $(CXXFLAGS)
+
+behaviours/GoToBaseGroup.o: behaviours/GoToBaseGroup.cpp
+	$(CPP) -c behaviours/GoToBaseGroup.cpp -o behaviours/GoToBaseGroup.o $(CXXFLAGS)
+
+behaviours/PositionInLine.o: behaviours/PositionInLine.cpp
+	$(CPP) -c behaviours/PositionInLine.cpp -o behaviours/PositionInLine.o $(CXXFLAGS)
+
+utils/OdometryInfo.o: utils/OdometryInfo.cpp
+	$(CPP) -c utils/OdometryInfo.cpp -o utils/OdometryInfo.o $(CXXFLAGS)
+
+utils/Line.o: utils/Line.cpp
+	$(CPP) -c utils/Line.cpp -o utils/Line.o $(CXXFLAGS)

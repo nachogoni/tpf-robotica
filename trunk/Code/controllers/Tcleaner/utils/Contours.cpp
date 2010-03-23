@@ -91,7 +91,7 @@ int Contours::perimeterFilter(double min_per,double max_per){
 	
 	double per;
 	printf("PF %x",this->c);
-	per=cvContourPerimeter(this->c);
+	per = cvArcLength(this->c, CV_WHOLE_SEQ, 1);
 	printf("PA");
 	return per> min_per && per<max_per;	
 	
