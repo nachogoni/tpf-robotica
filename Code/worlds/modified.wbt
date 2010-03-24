@@ -30,8 +30,12 @@ DEF GROUND Solid {
     DEF LINE_SHAPE Shape {
       appearance Appearance {
         material Material {
-          diffuseColor 0 0 0
-          emissiveColor 0.870588 0.254902 0.219608
+          diffuseColor 1 1 1
+        }
+        texture ImageTexture {
+          url [
+            "textures/arenawithlines.png"
+          ]
         }
       }
       geometry IndexedFaceSet {
@@ -43,7 +47,18 @@ DEF GROUND Solid {
             1 0 -1
           ]
         }
+        texCoord TextureCoordinate {
+          point [
+            0 1
+            0 0
+            1 0
+            1 1
+          ]
+        }
         coordIndex [
+          0, 1, 2, 3, -1
+        ]
+        texCoordIndex [
           0, 1, 2, 3, -1
         ]
       }
@@ -1207,77 +1222,6 @@ DEF E_PUCK DifferentialWheels {
         0.03 82 0
       ]
     }
-    DEF EPUCK_LS0 LightSensor {
-      translation 0.01 0.0329 -0.03
-      rotation 0 1 0 1.27
-      name "ls0"
-      lookupTable [
-        0 4095 0.01
-        0.2 0 0.01
-      ]
-    }
-    DEF EPUCK_LS1 LightSensor {
-      translation 0.025 0.0329 -0.022
-      rotation 0 1 0 0.77
-      name "ls1"
-      lookupTable [
-        0 4095 0.01
-        0.2 0 0.01
-      ]
-    }
-    DEF EPUCK_LS2 LightSensor {
-      translation 0.031 0.0329 0
-      name "ls2"
-      lookupTable [
-        0 4095 0.01
-        0.2 0 0.01
-      ]
-    }
-    DEF EPUCK_LS3 LightSensor {
-      translation 0.015 0.0329 0.03
-      rotation 0 1 0 5.21
-      name "ls3"
-      lookupTable [
-        0 4095 0.01
-        0.2 0 0.01
-      ]
-    }
-    DEF EPUCK_LS4 LightSensor {
-      translation -0.015 0.0329 0.03
-      rotation 0 1 0 4.31
-      name "ls4"
-      lookupTable [
-        0 4095 0.01
-        0.2 0 0.01
-      ]
-    }
-    DEF EPUCK_LS5 LightSensor {
-      translation -0.031 0.0329 0
-      rotation 0 1 0 3.14159
-      name "ls5"
-      lookupTable [
-        0 4095 0.01
-        0.2 0 0.01
-      ]
-    }
-    DEF EPUCK_LS6 LightSensor {
-      translation -0.025 0.0329 -0.022
-      rotation 0 1 0 2.37
-      name "ls6"
-      lookupTable [
-        0 4095 0.01
-        0.2 0 0.01
-      ]
-    }
-    DEF EPUCK_LS7 LightSensor {
-      translation -0.01 0.0329 -0.03
-      rotation 0 1 0 1.87
-      name "ls7"
-      lookupTable [
-        0 4095 0.01
-        0.2 0 0.01
-      ]
-    }
     DEF EPUCK_FS0 DistanceSensor {
       translation -0.01 0.003 -0.03
       rotation 0 0 1 -1.57
@@ -2308,174 +2252,174 @@ DEF n_Wall Solid {
   boundingObject USE n_WALL_SHAPE
 }
 DEF a_Line Solid {
-	translation -0.01 0 -0.18375
+	translation -0.01 0 -0.23375
 	rotation 0 1 0 4.71239
 	children [
-		Shape {
+		DEF a_LINE_SHAPE Shape {
 			appearance DEF LINE_APPEARANCE Appearance {
 				material Material {
 					diffuseColor 1 1 1
 				}
 			}
 			geometry Box {
-				size 0.0075 0.001 0.1725
+				size 0.0075 0.001 0.0725
 			}
 		}
 	]
-}
+	boundingObject USE a_LINE_SHAPE}
 DEF b_Line Solid {
-	translation 0.10625 0 -0.54
+	translation 0.05625 0 -0.54
 	rotation 0 1 0 0
 	children [
-		Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 0.6525
-			}
-		}
-	]
-}
-DEF c_Line Solid {
-	translation -0.2 0 -0.89625
-	rotation 0 1 0 1.5708
-	children [
-		Shape {
+		DEF b_LINE_SHAPE Shape {
 			appearance USE LINE_APPEARANCE
 			geometry Box {
 				size 0.0075 0.001 0.5525
 			}
 		}
 	]
-}
+	boundingObject USE b_LINE_SHAPE}
+DEF c_Line Solid {
+	translation -0.2 0 -0.84625
+	rotation 0 1 0 1.5708
+	children [
+		DEF c_LINE_SHAPE Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 0.4525
+			}
+		}
+	]
+	boundingObject USE c_LINE_SHAPE}
 DEF d_Line Solid {
-	translation -0.50625 0 -0.46
+	translation -0.45625 0 -0.46
 	rotation 0 1 0 3.14159
 	children [
-		Shape {
+		DEF d_LINE_SHAPE Shape {
 			appearance USE LINE_APPEARANCE
 			geometry Box {
-				size 0.0075 0.001 0.8025
+				size 0.0075 0.001 0.7025
 			}
 		}
 	]
-}
+	boundingObject USE d_LINE_SHAPE}
 DEF e_Line Solid {
-	translation -0.73 0 0.04375
+	translation -0.73 0 0.09375
 	rotation 0 1 0 1.5708
 	children [
-		Shape {
+		DEF e_LINE_SHAPE Shape {
 			appearance USE LINE_APPEARANCE
 			geometry Box {
-				size 0.0075 0.001 0.2525
+				size 0.0075 0.001 0.1525
 			}
 		}
 	]
-}
+	boundingObject USE e_LINE_SHAPE}
 DEF f_Line Solid {
-	translation -0.88625 0 0.1
+	translation -0.83625 0 0.1
 	rotation 0 1 0 3.14159
 	children [
-		Shape {
+		DEF f_LINE_SHAPE Shape {
 			appearance USE LINE_APPEARANCE
 			geometry Box {
-				size 0.0075 0.001 0.0525
+				size 0.0075 0.001 -0.0475
 			}
 		}
 	]
-}
+	boundingObject USE f_LINE_SHAPE}
 DEF g_Line Solid {
-	translation -0.73 0 0.16114
+	translation -0.73 0 0.11114
 	rotation 0 1 0 4.71239
 	children [
-		Shape {
+		DEF g_LINE_SHAPE Shape {
 			appearance USE LINE_APPEARANCE
 			geometry Box {
-				size 0.0075 0.001 0.2525
+				size 0.0075 0.001 0.1525
 			}
 		}
 	]
-}
+	boundingObject USE g_LINE_SHAPE}
 DEF h_Line Solid {
-	translation -0.50625 0 0.56
+	translation -0.45625 0 0.56
 	rotation 0 1 0 3.14159
 	children [
-		Shape {
+		DEF h_LINE_SHAPE Shape {
 			appearance USE LINE_APPEARANCE
 			geometry Box {
-				size 0.0075 0.001 0.6025
+				size 0.0075 0.001 0.5025
 			}
 		}
 	]
-}
+	boundingObject USE h_LINE_SHAPE}
 DEF i_Line Solid {
-	translation -0.35 0 0.89125
+	translation -0.35 0 0.84125
 	rotation 0 1 0 4.71239
 	children [
-		Shape {
+		DEF i_LINE_SHAPE Shape {
 			appearance USE LINE_APPEARANCE
 			geometry Box {
-				size 0.0075 0.001 0.2525
+				size 0.0075 0.001 0.1525
 			}
 		}
 	]
-}
+	boundingObject USE i_LINE_SHAPE}
 DEF j_Line Solid {
-	translation -0.19375 0 0.66
+	translation -0.24375 0 0.66
 	rotation 0 1 0 0
 	children [
-		Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 0.4025
-			}
-		}
-	]
-}
-DEF k_Line Solid {
-	translation -0.184 0 0.42875
-	rotation 0 1 0 1.5708
-	children [
-		Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 -0.0775
-			}
-		}
-	]
-}
-DEF l_Line Solid {
-	translation -0.24375 0 0.34
-	rotation 0 1 0 0
-	children [
-		Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 -0.0175
-			}
-		}
-	]
-}
-DEF m_Line Solid {
-	translation -0.185 0 0.24625
-	rotation 0 1 0 4.71239
-	children [
-		Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 -0.0775
-			}
-		}
-	]
-}
-DEF n_Line Solid {
-	translation -0.19375 0 0.065
-	rotation 0 1 0 0
-	children [
-		Shape {
+		DEF j_LINE_SHAPE Shape {
 			appearance USE LINE_APPEARANCE
 			geometry Box {
 				size 0.0075 0.001 0.3025
 			}
 		}
 	]
-}
+	boundingObject USE j_LINE_SHAPE}
+DEF k_Line Solid {
+	translation -0.184 0 0.47875
+	rotation 0 1 0 1.5708
+	children [
+		DEF k_LINE_SHAPE Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 -0.1775
+			}
+		}
+	]
+	boundingObject USE k_LINE_SHAPE}
+DEF l_Line Solid {
+	translation -0.29375 0 0.34
+	rotation 0 1 0 0
+	children [
+		DEF l_LINE_SHAPE Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 -0.1175
+			}
+		}
+	]
+	boundingObject USE l_LINE_SHAPE}
+DEF m_Line Solid {
+	translation -0.185 0 0.19625
+	rotation 0 1 0 4.71239
+	children [
+		DEF m_LINE_SHAPE Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 -0.1775
+			}
+		}
+	]
+	boundingObject USE m_LINE_SHAPE}
+DEF n_Line Solid {
+	translation -0.24375 0 0.065
+	rotation 0 1 0 0
+	children [
+		DEF n_LINE_SHAPE Shape {
+			appearance USE LINE_APPEARANCE
+			geometry Box {
+				size 0.0075 0.001 0.2025
+			}
+		}
+	]
+	boundingObject USE n_LINE_SHAPE}

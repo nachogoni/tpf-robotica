@@ -24,10 +24,10 @@ class TrashBinPacket : public protocol::packets::BoardPacket
 		~TrashBinPacket();
 
 		void senseTrashBin();
-		bool isTrashBinFull();
 		void setTrashBinFullThreshold(short value);
 		
 		short getTrashBinValue();
+		bool isTrashBinFull();
 };
 
 }
