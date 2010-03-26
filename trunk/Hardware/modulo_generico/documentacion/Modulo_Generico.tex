@@ -116,26 +116,58 @@ Cuenta con un m\'odulo de generaci\'on de un PWM por hardware de 10 bits de reso
 \subsubsection{AUSART}
 \label{ausart}
 
-Asynchronous Receiver Transmitter
-(AUSART/SCI) with 9-bit address detection:
-
-- RS-232 operation using internal oscillator
-(no external crystal required)
+Cuenta con un m\'odulo de UART para comunicaci\'ion sincr\'onica o asincr\'onica utilizado para la implementaci\'on del daisy chain por RS-232.
 
 \subsubsection{Otros}
 \label{otros}
 
-Ver el pdf de referencia...
+Para mayor informaci\'on respecto a los perif\'ericos o configuraci\'on del microcontrolador, se recomienda revisar las hojas de datos directo del fabricante.
 
 \section{Comunicaci\'on}
 \label{comunicacion}
+ 
+El protocolo de comuncaci\'on consta de paquetes que son enviados con un destinatario espec\'ifico
+y representa un pedido de informaci\'on o comando que debe ser ejecutado en destino.
 
-daisy chain, rs232, conexionado, switch, logica de LAST y LINK, PINOUT!
+Ver la documentaci\'on del protocolo para mayor informaci\'on.
+
+La comunicaci\'on est\'a basada en el m\'etodo \emph{Daisy chain} (patente US20090316836A1).
+La cadena se construye con las placas controladoras, las cuales se comunican entre ellas retransmitiendo cada paquete hacia adenlante.
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.75]{daisychain_diagram.png}
+\caption{Diagrama general del m\'etodo daisy chain}
+\label{daisychain_diagram}
+\end{figure}
+
+La mayoria de los paquetes o mensajes enviados se originan en el controlador principal que luego recibe una respuesta de confirmaci\'on de recepci\'on.
+
+Como parte de la configuraci\'on de la placa, existe un switch que determina el tipo de ***eslavon*** de la placa, si es un nodo intermedio
+o la punta de la cadena.
+
+En la figura \ref{daisychain_pinout} se especifica el pinout del puerto de entrada y de salida.
+Tambi\'en se especifica el conexionado contra el controlador principal.
+
+\begin{figure}
+\centering
+\includegraphics[scale=1]{daisychain_pinout.png}
+\caption{Pinout de los puertos de comuncaci\'ion de entrada y salida}
+\label{daisychain_pinout}
+\end{figure}
 
 \section{Alimentaci\'on}
 \label{alimentacion}
 
-PINOUT, voltajes
+La alimentaci\'on principal de la placa es 7 a 20 voltios, con la posibilidad de alimentarla directamente 
+con 5 voltios por uno de los pines del conector, ver figura \ref{alimentacion_pinout}.
+
+\begin{figure}
+\centering
+\includegraphics[scale=1]{alimentacion_pinout.png}
+\caption{Pinout de la alimentaci\'on de la placa}
+\label{alimentacion_pinout}
+\end{figure}
 
 \section{Configuraci\'on}
 \label{configuracion}
