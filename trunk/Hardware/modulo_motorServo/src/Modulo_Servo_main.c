@@ -401,7 +401,7 @@ void doCommand(struct command_t * cmd)
 			-
 			*/
 			i = ((cmd->data)[0] & 0x07); // Servo destinatario
-			if (i < 5)
+			if ((i < 5) && (i >= 0))
 			{
 				servo[i] = 0;
 			}
