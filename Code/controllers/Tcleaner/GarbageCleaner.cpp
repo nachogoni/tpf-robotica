@@ -60,26 +60,26 @@ void GarbageCleaner::initializeSensors(){
 
 	wheels = &myIRobot.getDifferentialWheels("df");
 	wheels->enableEncoders(TIME_STEP);
-
+/*
 	servoBottom = &myIRobot.getServo("servo0");
 	servoBottom->enablePosition(TIME_STEP);
 	servoFront = &myIRobot.getServo("servo2");
 	servoFront->enablePosition(TIME_STEP);
 	servoRear = &myIRobot.getServo("servo1");
 	servoRear->enablePosition(TIME_STEP);
-	
+
 	trashBin = &myIRobot.getTrashBin("ts0");
 	trashBin->enable(TIME_STEP);
-	
+*/
 	robotBattery = &myIRobot.getBattery("b0");
 	robotBattery->enable(TIME_STEP);
 	
 	pcBattery = &myIRobot.getBattery("b1");
 	pcBattery->enable(TIME_STEP);
-	
+/*
 	camera = &myIRobot.getCamera("camera0");
-//	camera->enable(TIME_STEP);
-/*	for( int i=0 ; i < FLOOR_SENSORS ; i++ ){
+	camera->enable(TIME_STEP);
+	for( int i=0 ; i < FLOOR_SENSORS ; i++ ){
 		std::stringstream sstr;
 		sstr << "fs" << i;
 		robotapi::IDistanceSensor * ifs = &myIRobot.getDistanceSensor(sstr.str());
@@ -97,7 +97,7 @@ void GarbageCleaner::initializeSensors(){
 void GarbageCleaner::initializeBehaviours(){
 	behaviours::AbstractBehaviour * ab = new behaviours::Wander(wheels);
 	myAbstractBehaviours.push_back(ab);
-
+/*
 	ab = new behaviours::FocusGarbage( camera, wheels );
 	myAbstractBehaviours.push_back(ab);
 
@@ -106,7 +106,7 @@ void GarbageCleaner::initializeBehaviours(){
 
 	ab = new behaviours::UnloadGarbage( trashBin , servoRear );
 	myAbstractBehaviours.push_back(ab);
-	
+*/
 	ab = new behaviours::GoToBaseGroup( new WorldInfo(), robotBattery , pcBattery , wheels, fss );
 	myAbstractBehaviours.push_back(ab);
 	

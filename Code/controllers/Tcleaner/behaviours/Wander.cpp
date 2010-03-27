@@ -11,7 +11,7 @@ namespace behaviours {
     void Wander::sense(){}
 
     void Wander::action(){
-		this->wheels->setSpeed(100,50);
+//		this->wheels->setSpeed(100,100);
 	}
 
 } /* End of namespace behaviours */

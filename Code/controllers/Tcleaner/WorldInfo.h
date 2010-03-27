@@ -2,17 +2,23 @@
 #define WorldInfo_h
 
 #include <utils/OdometryInfo.h>
-#include <utils/Line.h>
+#include <utils/MyLine.h>
+#include <stdio.h>
+#define CONFIG_FILE "worldInfo.cfg"
 
 class WorldInfo {
 
- public:
+	public:
 
-    WorldInfo();
+    	WorldInfo();
 
-	utils::OdometryInfo * getOdometryInfo();
+		utils::OdometryInfo * getOdometryInfo();
 
-	utils::Line * getCurrentLine();
+		utils::MyLine * getCurrentLine();
+
+	private:
+		void readWalls(FILE * f);
+		void readLines(FILE * f);
 };
 
 #endif // WorldInfo_h

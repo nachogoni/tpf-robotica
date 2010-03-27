@@ -14,10 +14,6 @@ namespace behaviours {
 
 	void GoToBase::sense(){
 
-        for (int j = 0; j < FLOOR_SENSORS; j++){
-			printf("Floor sensor %d: %d\n", j, (*this->fss).at(j)->getValue() );
-		}
-
 	}
 
     void GoToBase::action(){

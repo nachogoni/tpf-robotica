@@ -9,7 +9,8 @@ CPP_SOURCES = tcleaner.cpp GarbageCleaner.cpp WorldInfo.cpp \
 							behaviours/GoToBaseGroup.cpp behaviours/PositionInLine.cpp \
 							behaviours/UnloadGarbage.cpp behaviours/Wander.cpp \
 							utils/MinimalBoundingRectangle.cpp utils/Garbage.cpp utils/GarbageRecognition.cpp \
-							utils/Line.cpp utils/OdometryInfo.cpp utils/Contours.cpp utils/Histogram.cpp \
+							utils/OdometryInfo.cpp utils/Contours.cpp utils/Histogram.cpp \
+							utils/MyLine.cpp utils/MyPoint.cpp utils/MyAngle.cpp \
 							robotapi/real/RealBattery.cpp robotapi/real/RealTrashBin.cpp robotapi/real/RealPCBattery.cpp \
 							robotapi/real/RealCamera.cpp robotapi/real/RealDevice.cpp robotapi/real/RealDeviceTag.cpp \
 							robotapi/real/RealDifferentialWheels.cpp robotapi/real/RealDistanceSensor.cpp \
