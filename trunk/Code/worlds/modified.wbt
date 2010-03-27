@@ -10,8 +10,8 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 1.6454
-  orientation -0.576647 0.582369 0.572996 2.08136
-  position -0.173992 0.272804 0.328116
+  orientation -0.0184538 0.949922 0.311943 3.0282
+  position -0.304229 1.09304 -0.943769
 }
 PointLight {
   intensity 0.5
@@ -31,10 +31,12 @@ DEF GROUND Solid {
       appearance Appearance {
         material Material {
           diffuseColor 1 1 1
+          emissiveColor 1 1 1
+          specularColor 1 1 1
         }
         texture ImageTexture {
           url [
-            "textures/arenawithlines.png"
+            "textures/arenawithlines2.png"
           ]
         }
       }
@@ -69,7 +71,7 @@ DEF GROUND Solid {
   locked TRUE
 }
 DEF short_rock_1 Solid {
-  translation -0.184514 0.05 -0.30902
+  translation 0.318291 0.05 -0.239514
   rotation 0 1 0 0.5
   children [
     Shape {
@@ -92,7 +94,7 @@ DEF short_rock_1 Solid {
   boundingObject USE short_brick_1_geometry
 }
 DEF garbage_geom Solid {
-  translation -0.0831584 0.00199947 -0.429087
+  translation 0.263419 0.00199947 -0.375354
   rotation 1.3216e-006 1 8.48912e-006 1
   children [
     Shape {
@@ -113,7 +115,7 @@ DEF garbage_geom Solid {
   }
 }
 DEF short_rock_3 Solid {
-  translation -0.389062 0.0491985 0.185039
+  translation 0.142776 0.0491985 0.119999
   rotation 0.00130211 0.999999 -0.000553811 -0.868798
   children [
     Shape {
@@ -138,7 +140,7 @@ DEF short_rock_3 Solid {
   }
 }
 DEF short_rock_4 Solid {
-  translation -0.0776743 0.05 -0.585195
+  translation 0.355071 0.05 -0.481641
   rotation 0 1 0 5.36782
   children [
     Shape {
@@ -161,7 +163,7 @@ DEF short_rock_4 Solid {
   boundingObject USE short_brick_1_geometry
 }
 DEF short_rock_5 Solid {
-  translation -0.339951 0.05 -0.109445
+  translation 0.34135 0.05 0.0423107
   rotation 0 1 0 5.36782
   children [
     Shape {
@@ -183,112 +185,13 @@ DEF short_rock_5 Solid {
   name "short brick"
   boundingObject USE short_brick_1_geometry
 }
-DEF E_PUCK DifferentialWheels {
-  translation -0.452746 -5.30034e-005 0.572007
-  rotation -0.00122037 0.999998 -0.00130359 0.223077
+DEF EPUCK DifferentialWheels {
+  translation 0.0563166 0 0.0713012
+  rotation 0 1 0 1.5
   children [
-    Servo {
-      translation 0 0.0125 0
-      rotation 1 0 0 0
-      children [
-        Solid {
-          translation 0 0 0.01
-          children [
-            Shape {
-              appearance Appearance {
-              }
-              geometry DEF SBOX Box {
-                size 0.002 0.005 0.04
-              }
-            }
-          ]
-          boundingObject USE SBOX
-        }
-      ]
-      name "servo0"
-      boundingObject USE SBOX
-      physics Physics {
-        density -1
-        mass 0.005
-        orientation 0 1 0 0
-      }
-    }
-    Servo {
-      translation 0 0.0425 0.033
-      rotation 1 0 0 0
-      children [
-        Solid {
-          translation 0 -0.02 0
-          children [
-            Shape {
-              appearance Appearance {
-              }
-              geometry DEF TBOX Box {
-                size 0.025 0.035 0.0005
-              }
-            }
-          ]
-          boundingObject USE TBOX
-        }
-      ]
-      name "servo1"
-      boundingObject USE TBOX
-      physics Physics {
-        density -1
-        mass 0.005
-        orientation 0 1 0 0
-      }
-    }
-    Servo {
-      translation 0 0.0425 -0.033
-      rotation 1 0 0 0
-      children [
-        Solid {
-          translation 0 -0.02 0
-          children [
-            Shape {
-              appearance Appearance {
-              }
-              geometry DEF PBOX Box {
-                size 0.025 0.025 0.0005
-              }
-            }
-          ]
-          boundingObject USE PBOX
-        }
-      ]
-      name "servo2"
-      boundingObject USE PBOX
-      physics Physics {
-        density -1
-        mass 0.005
-        orientation 0 1 0 0
-      }
-    }
-    DEF EPUCK_TS0 TouchSensor {
-      translation 0 0.08 0.0125
-      rotation 1 0 0 4.71238
-      children [
-        Shape {
-          appearance Appearance {
-            material Material {
-              emissiveColor 0 0.501961 0.25098
-            }
-          }
-          geometry DEF TS0_BOX Box {
-            size 0.025 0.012 0.002
-          }
-        }
-      ]
-      name "ts0"
-      boundingObject USE TS0_BOX
-      physics Physics {
-      }
-      type "force"
-    }
     DEF EPUCK_LEFT_WHEEL Solid {
-      translation -0.0260901 0.0200014 1.5094e-005
-      rotation 0.99999 0.0043787 -0.000701682 2.52735
+      translation -0.026 0.02 0
+      rotation 1 0 0 0
       children [
         DEF EPUCK_WHEEL Transform {
           rotation 0 0 1 1.57
@@ -301,44 +204,6 @@ DEF E_PUCK DifferentialWheels {
               geometry Cylinder {
                 height 0.003
                 radius 0.02
-                subdivision 24
-              }
-            }
-            Shape {
-              appearance Appearance {
-                material Material {
-                  diffuseColor 1 1 1
-                  specularColor 0.501961 0.501961 0.501961
-                }
-                texture ImageTexture {
-                  url [
-                    "textures/e-puck/logo.png"
-                  ]
-                }
-              }
-              geometry IndexedFaceSet {
-                coord Coordinate {
-                  point [
-                    -0.014 0.002 -0.014
-                    -0.014 0.002 0.014
-                    0.014 0.002 0.014
-                    0.014 0.002 -0.014
-                  ]
-                }
-                texCoord TextureCoordinate {
-                  point [
-                    0 0
-                    1 0
-                    1 1
-                    0 1
-                  ]
-                }
-                coordIndex [
-                  0, 1, 2, 3
-                ]
-                texCoordIndex [
-                  0, 1, 2, 3
-                ]
               }
             }
             Shape {
@@ -352,7 +217,6 @@ DEF E_PUCK DifferentialWheels {
               geometry Cylinder {
                 height 0.0015
                 radius 0.021
-                subdivision 24
               }
             }
             Shape {
@@ -420,15 +284,10 @@ DEF E_PUCK DifferentialWheels {
       }
     }
     DEF EPUCK_RIGHT_WHEEL Solid {
-      translation 0.0256884 0.020001 -1.4862e-005
-      rotation 1 0.000170071 -0.000931867 -0.401913
+      translation 0.0256 0.02 0
+      rotation 1 0 0 0
       children [
-        Transform {
-          rotation 0 1 0 3.14159
-          children [
-            USE EPUCK_WHEEL
-          ]
-        }
+        USE EPUCK_WHEEL
       ]
       name "right wheel"
       boundingObject USE EPUCK_WHEEL_BOUNDING_OBJECT
@@ -655,6 +514,20 @@ DEF E_PUCK DifferentialWheels {
               53, -1, 54, 55, 56, -1, 57, 58, 59, -1
             ]
             creaseAngle 0.785398
+          }
+        }
+      ]
+    }
+    DEF EPUCK_BATTERY Transform {
+      translation 0 0.008 0
+      children [
+        Shape {
+          appearance Appearance {
+            material Material {
+            }
+          }
+          geometry Box {
+            size 0.034 0.01 0.047
           }
         }
       ]
@@ -1088,13 +961,8 @@ DEF E_PUCK DifferentialWheels {
       ]
       name "ps0"
       lookupTable [
-        0 1024 0
-        0.004 532 0.037
-        0.006 409 0
-        0.008 327 0
-        0.01 266 0
-        0.02 143 0
-        0.03 82 0
+        0 3800 0.03
+        0.05 300 0.03
       ]
     }
     DEF EPUCK_PS1 DistanceSensor {
@@ -1106,13 +974,8 @@ DEF E_PUCK DifferentialWheels {
       ]
       name "ps1"
       lookupTable [
-        0 1024 0
-        0.004 532 0.037
-        0.006 409 0
-        0.008 327 0
-        0.01 266 0
-        0.02 143 0
-        0.03 82 0
+        0 3800 0.03
+        0.05 300 0.03
       ]
     }
     DEF EPUCK_PS2 DistanceSensor {
@@ -1123,13 +986,8 @@ DEF E_PUCK DifferentialWheels {
       ]
       name "ps2"
       lookupTable [
-        0 1024 0
-        0.004 532 0.037
-        0.006 409 0
-        0.008 327 0
-        0.01 266 0
-        0.02 143 0
-        0.03 82 0
+        0 3800 0.03
+        0.05 300 0.03
       ]
     }
     DEF EPUCK_PS3 DistanceSensor {
@@ -1141,13 +999,8 @@ DEF E_PUCK DifferentialWheels {
       ]
       name "ps3"
       lookupTable [
-        0 1024 0
-        0.004 532 0.037
-        0.006 409 0
-        0.008 327 0
-        0.01 266 0
-        0.02 143 0
-        0.03 82 0
+        0 3800 0.03
+        0.05 300 0.03
       ]
     }
     DEF EPUCK_PS4 DistanceSensor {
@@ -1159,31 +1012,21 @@ DEF E_PUCK DifferentialWheels {
       ]
       name "ps4"
       lookupTable [
-        0 1024 0
-        0.004 532 0.037
-        0.006 409 0
-        0.008 327 0
-        0.01 266 0
-        0.02 143 0
-        0.03 82 0
+        0 3800 0.03
+        0.05 300 0.03
       ]
     }
     DEF EPUCK_PS5 DistanceSensor {
       translation -0.031 0.033 0
-      rotation 0 1 0 3.14159
+      rotation 0 1 0 3.14
       children [
         USE EPUCK_IR_PINS
         USE EPUCK_IR_SENSOR
       ]
       name "ps5"
       lookupTable [
-        0 1024 0
-        0.004 532 0.037
-        0.006 409 0
-        0.008 327 0
-        0.01 266 0
-        0.02 143 0
-        0.03 82 0
+        0 3800 0.03
+        0.05 300 0.03
       ]
     }
     DEF EPUCK_PS6 DistanceSensor {
@@ -1195,13 +1038,8 @@ DEF E_PUCK DifferentialWheels {
       ]
       name "ps6"
       lookupTable [
-        0 1024 0
-        0.004 532 0.037
-        0.006 409 0
-        0.008 327 0
-        0.01 266 0
-        0.02 143 0
-        0.03 82 0
+        0 3800 0.03
+        0.05 300 0.03
       ]
     }
     DEF EPUCK_PS7 DistanceSensor {
@@ -1213,13 +1051,79 @@ DEF E_PUCK DifferentialWheels {
       ]
       name "ps7"
       lookupTable [
-        0 1024 0
-        0.004 532 0.037
-        0.006 409 0
-        0.008 327 0
-        0.01 266 0
-        0.02 143 0
-        0.03 82 0
+        0 3800 0.03
+        0.05 300 0.03
+      ]
+    }
+    DEF EPUCK_LS0 LightSensor {
+      translation 0.01 0.0329 -0.03
+      rotation 0 1 0 1.27
+      name "ls0"
+      lookupTable [
+        0 4095 0.01
+        0.2 0 0.01
+      ]
+    }
+    DEF EPUCK_LS1 LightSensor {
+      translation 0.025 0.0329 -0.022
+      rotation 0 1 0 0.77
+      name "ls1"
+      lookupTable [
+        0 4095 0.01
+        0.2 0 0.01
+      ]
+    }
+    DEF EPUCK_LS2 LightSensor {
+      translation 0.031 0.0329 0
+      name "ls2"
+      lookupTable [
+        0 4095 0.01
+        0.2 0 0.01
+      ]
+    }
+    DEF EPUCK_LS3 LightSensor {
+      translation 0.015 0.0329 0.03
+      rotation 0 1 0 5.21
+      name "ls3"
+      lookupTable [
+        0 4095 0.01
+        0.2 0 0.01
+      ]
+    }
+    DEF EPUCK_LS4 LightSensor {
+      translation -0.015 0.0329 0.03
+      rotation 0 1 0 4.31
+      name "ls4"
+      lookupTable [
+        0 4095 0.01
+        0.2 0 0.01
+      ]
+    }
+    DEF EPUCK_LS5 LightSensor {
+      translation -0.031 0.0329 0
+      rotation 0 1 0 3.14
+      name "ls5"
+      lookupTable [
+        0 4095 0.01
+        0.2 0 0.01
+      ]
+    }
+    DEF EPUCK_LS6 LightSensor {
+      translation -0.025 0.0329 -0.022
+      rotation 0 1 0 2.37
+      name "ls6"
+      lookupTable [
+        0 4095 0.01
+        0.2 0 0.01
+      ]
+    }
+    DEF EPUCK_LS7 LightSensor {
+      translation -0.01 0.0329 -0.03
+      rotation 0 1 0 1.87
+      name "ls7"
+      lookupTable [
+        0 4095 0.01
+        0.2 0 0.01
       ]
     }
     DEF EPUCK_FS0 DistanceSensor {
@@ -1235,7 +1139,7 @@ DEF E_PUCK DifferentialWheels {
                 }
               }
               geometry Box {
-                size 0.0006 0.0007 0.0007
+                size 0.002 0.004 0.002
               }
             }
           ]
@@ -1243,10 +1147,8 @@ DEF E_PUCK DifferentialWheels {
       ]
       name "fs0"
       lookupTable [
-        0 1 0
-        0.003 200 0
-        0.0035 300 0
-        0.004 400 0
+        0 1000 0.1
+        0.016 300 0.1
       ]
     }
     DEF EPUCK_FS1 DistanceSensor {
@@ -1257,10 +1159,11 @@ DEF E_PUCK DifferentialWheels {
       ]
       name "fs1"
       lookupTable [
-        0 1 0
-        0.003 200 0
-        0.0035 300 0
-        0.004 400 0
+        0 100000 0
+        0.0001 10000 0
+        0.001 1000 0
+        0.005 100 0
+        0.01 10 0
       ]
     }
     DEF EPUCK_FS2 DistanceSensor {
@@ -1271,198 +1174,9 @@ DEF E_PUCK DifferentialWheels {
       ]
       name "fs2"
       lookupTable [
-        0 1 0
-        0.003 200 0
-        0.0035 300 0
-        0.004 400 0
+        0 1000 0.1
+        0.016 300 0.1
       ]
-    }
-    DEF EPUCK_CAMERA Camera {
-      translation 0 0.028 -0.035
-      children [
-        Transform {
-          translation 0 0.008 0.003
-          rotation 0 0.707107 0.707107 3.14159
-          children [
-            Shape {
-              appearance Appearance {
-                material Material {
-                  diffuseColor 0 0 0
-                  shininess 1
-                  specularColor 0.301961 0.301961 0.301961
-                }
-              }
-              geometry IndexedFaceSet {
-                coord Coordinate {
-                  point [
-                    -0.003 0 -0.005
-                    -0.003 -0.00229999 -0.011
-                    -0.003 -0.00229999 -0.008
-                    -0.003 -0.00229999 -0.005
-                    -0.003 0.00015 -0.0045
-                    -0.003 0.00015 -0.011
-                    -0.003 0.00060282 -0.00225021
-                    -0.003 0 -0.0045
-                    -0.003 0.00073272 -0.0023252
-                    -0.003 0.00225021 -0.00060282
-                    -0.003 0.0023252 -0.00073272
-                    -0.003 0.0045 0
-                    -0.003 0.0045 -0.00015
-                    -0.003 0.00775 0
-                    -0.003 0.00775 0.0015
-                    -0.003 0.01175 0.0015
-                    -0.003 0.01175 0
-                    -0.003 0.013 0
-                    -0.003 0.013 -0.00015
-                    0.003 0.00015 -0.011
-                    0.003 0 -0.0045
-                    0.003 0 -0.005
-                    0.003 -0.00229999 -0.005
-                    0.003 -0.00229999 -0.008
-                    0.003 -0.00229999 -0.011
-                    0.003 0.00015 -0.0045
-                    0.003 0.00060282 -0.00225021
-                    0.003 0.00073272 -0.0023252
-                    0.003 0.00225021 -0.00060282
-                    0.003 0.0023252 -0.00073272
-                    0.003 0.0045 -0.00015
-                    0.003 0.0045 0
-                    0.003 0.01175 0.0015
-                    0.003 0.00775 0.0015
-                    0.003 0.01175 0
-                    0.003 0.00775 0
-                    0.003 0.013 -0.00015
-                    0.003 0.013 0
-                    0 -0.00229999 -0.011
-                    -0.00149971 -0.00229999 -0.0105982
-                    0.00149971 -0.00229999 -0.0105982
-                    0.00259801 -0.00229999 -0.00950004
-                    -0.00259801 -0.00229999 -0.00950004
-                    0.00149971 -0.00229999 -0.00540179
-                    0.00259801 -0.00229999 -0.00649995
-                    0 -0.00229999 -0.005
-                    -0.00149971 -0.00229999 -0.00540179
-                    -0.00259801 -0.00229999 -0.00649995
-                    0.00212127 -0.00359999 -0.00587872
-                    0 -0.00359999 -0.005
-                    -0.00212127 -0.00359999 -0.00587872
-                    -0.0015 -0.00359999 -0.006
-                    -0.002 -0.00359999 -0.0065
-                    -0.003 -0.00359999 -0.008
-                    0.0015 -0.00359999 -0.006
-                    0.002 -0.00359999 -0.0065
-                    0.003 -0.00359999 -0.008
-                    -0.002 -0.00359999 -0.0095
-                    0.002 -0.00359999 -0.0095
-                    -0.00212127 -0.00359999 -0.0101213
-                    0.0015 -0.00359999 -0.01
-                    -0.0015 -0.00359999 -0.01
-                    0.00212127 -0.00359999 -0.0101213
-                    0 -0.00359999 -0.011
-                    -0.00256063 -0.00359999 -0.00693936
-                    -0.00106063 -0.00359999 -0.00543936
-                    0.00106063 -0.00359999 -0.00543936
-                    0.00256063 -0.00359999 -0.00693936
-                    0.00256063 -0.00359999 -0.00906063
-                    0.00106063 -0.00359999 -0.0105606
-                    -0.00106063 -0.00359999 -0.0105606
-                    -0.00256063 -0.00359999 -0.00906063
-                    0.0015 -0.004 -0.01
-                    0.002 -0.004 -0.0095
-                    -0.0015 -0.004 -0.01
-                    -0.002 -0.004 -0.0095
-                    0.002 -0.004 -0.0065
-                    0 -0.004 -0.00775487
-                    0.00021198 -0.004 -0.00787728
-                    0.00021198 -0.004 -0.00812271
-                    0 -0.004 -0.00824512
-                    -0.00021198 -0.004 -0.00812271
-                    -0.00021198 -0.004 -0.00787728
-                    -0.002 -0.004 -0.0065
-                    0.0015 -0.004 -0.006
-                    -0.0015 -0.004 -0.006
-                  ]
-                }
-                coordIndex [
-                  33, 14, 35, -1, 13, 35, 14, -1, 15, 32,
-                  16, -1, 34, 16, 32, -1, 14, 33, 15, -1,
-                  32, 15, 33, -1, 72, 74, 60, -1, 61, 60,
-                  74, -1, 74, 75, 61, -1, 57, 61, 75, -1,
-                  75, 83, 57, -1, 52, 57, 83, -1, 83, 85,
-                  52, -1, 51, 52, 85, -1, 85, 84, 51, -1,
-                  54, 51, 84, -1, 84, 76, 54, -1, 55, 54,
-                  76, -1, 76, 73, 55, -1, 58, 55, 73, -1,
-                  73, 72, 58, -1, 60, 58, 72, -1, 72, 73,
-                  74, -1, 75, 74, 73, -1, 76, 77, 78, -1,
-                  76, 78, 79, -1, 79, 80, 75, -1, 79, 75,
-                  73, -1, 73, 76, 79, -1, 75, 80, 81, -1,
-                  75, 81, 82, -1, 82, 77, 76, -1, 82, 76,
-                  83, -1, 83, 75, 82, -1, 76, 84, 83, -1,
-                  85, 83, 84, -1, 56, 68, 23, -1, 41, 23,
-                  68, -1, 68, 62, 41, -1, 40, 41, 62, -1,
-                  62, 69, 40, -1, 40, 69, 63, -1, 38, 40,
-                  63, -1, 63, 70, 38, -1, 39, 38, 70, -1,
-                  70, 59, 39, -1, 42, 39, 59, -1, 59, 71,
-                  42, -1, 42, 71, 53, -1, 2, 42, 53, -1,
-                  53, 64, 2, -1, 47, 2, 64, -1, 64, 50,
-                  47, -1, 46, 47, 50, -1, 50, 65, 46, -1,
-                  46, 65, 49, -1, 45, 46, 49, -1, 49, 66,
-                  45, -1, 43, 45, 66, -1, 66, 48, 43, -1,
-                  44, 43, 48, -1, 48, 67, 44, -1, 44, 67,
-                  56, -1, 23, 44, 56, -1, 48, 49, 50, -1,
-                  51, 48, 50, -1, 52, 51, 50, -1, 50, 53,
-                  52, -1, 48, 51, 54, -1, 48, 54, 55, -1,
-                  56, 48, 55, -1, 57, 52, 53, -1, 55, 58,
-                  56, -1, 59, 60, 61, -1, 59, 61, 57, -1,
-                  53, 59, 57, -1, 60, 59, 62, -1, 58, 60,
-                  62, -1, 62, 56, 58, -1, 59, 63, 62, -1,
-                  0, 45, 22, -1, 21, 0, 22, -1, 3, 45,
-                  0, -1, 38, 39, 1, -1, 40, 38, 24, -1,
-                  41, 40, 24, -1, 24, 23, 41, -1, 1, 39,
-                  42, -1, 2, 1, 42, -1, 22, 43, 44, -1,
-                  23, 22, 44, -1, 45, 43, 22, -1, 46, 45,
-                  3, -1, 47, 46, 3, -1, 3, 2, 47, -1,
-                  20, 26, 7, -1, 6, 7, 26, -1, 26, 28,
-                  6, -1, 9, 6, 28, -1, 28, 31, 9, -1,
-                  11, 9, 31, -1, 31, 35, 11, -1, 13, 11,
-                  35, -1, 34, 37, 16, -1, 17, 16, 37, -1,
-                  36, 18, 37, -1, 17, 37, 18, -1, 36, 30,
-                  18, -1, 12, 18, 30, -1, 4, 8, 25, -1,
-                  27, 25, 8, -1, 8, 10, 27, -1, 29, 27,
-                  10, -1, 10, 12, 29, -1, 30, 29, 12, -1,
-                  25, 19, 4, -1, 5, 4, 19, -1, 24, 38,
-                  19, -1, 19, 38, 1, -1, 5, 19, 1, -1,
-                  20, 7, 21, -1, 0, 21, 7, -1, 19, 20,
-                  21, -1, 19, 21, 22, -1, 19, 22, 23, -1,
-                  24, 19, 23, -1, 20, 19, 25, -1, 26, 20,
-                  25, -1, 25, 27, 26, -1, 28, 26, 27, -1,
-                  27, 29, 28, -1, 28, 29, 30, -1, 31, 28,
-                  30, -1, 32, 33, 34, -1, 34, 33, 35, -1,
-                  36, 34, 35, -1, 36, 35, 31, -1, 30, 36,
-                  31, -1, 37, 34, 36, -1, 0, 1, 2, -1,
-                  3, 0, 2, -1, 0, 4, 5, -1, 5, 1,
-                  0, -1, 6, 4, 0, -1, 7, 6, 0, -1,
-                  8, 4, 6, -1, 6, 9, 8, -1, 10, 8,
-                  9, -1, 9, 11, 10, -1, 12, 10, 11, -1,
-                  11, 13, 12, -1, 14, 15, 13, -1, 13, 15,
-                  16, -1, 12, 13, 16, -1, 12, 16, 17, -1,
-                  18, 12, 17, -1
-                ]
-                creaseAngle 0.785398
-              }
-            }
-          ]
-        }
-      ]
-      name "camera0"
-      fieldOfView 1.1
-      width 320
-      height 240
-      display FALSE
-      near 0.004
-      far 20
-      windowPosition 0.75 0.75
-      pixelSize 4
     }
     DEF EPUCK_LED0 LED {
       translation 0 0.041 -0.0335
@@ -1546,6 +1260,7 @@ DEF E_PUCK DifferentialWheels {
           appearance Appearance {
             material Material {
               diffuseColor 1 1 1
+              emissiveColor 1 0 0
               shininess 0.078125
             }
           }
@@ -1639,8 +1354,9 @@ DEF E_PUCK DifferentialWheels {
       ]
       name "led7"
     }
-    DEF EPUCK_BODY_LED LED {
+    DEF EPUCK_BODY Transform {
       rotation 0 1 0 3.14159
+      scale 0.01 0.01 0.01
       children [
         Shape {
           appearance Appearance {
@@ -1654,91 +1370,91 @@ DEF E_PUCK DifferentialWheels {
           geometry IndexedFaceSet {
             coord Coordinate {
               point [
-                0.015186 0.025 -0.0315339
-                0.015186 0.009 -0.0315339
-                0.022 0.00775 -0.021
-                0.00964044 0.006 -0.0334798
-                0.0189183 0.0098253 -0.0292669
-                0.022 0.001 0.0270001
-                0.022 0.0010097 -0.0170083
-                0.0220003 0.0369999 0.022001
-                0.0219999 0.025 0.022
-                0.00778827 0.025 -0.0271225
-                0.00778827 0.037 -0.0271225
-                0.00354509 0.0310002 0.0346536
-                0.0220004 0.025 -0.0269989
-                0.022 0.01 -0.027
-                0.022 0.001 0.027
-                1.19925e-006 0.01 7.96716e-009
-                0.015186 0.009 -0.0315339
-                0.015186 0.025 -0.0315339
-                1.19925e-006 0.025 -0.035
-                0.0220024 0.037 0.0270004
-                0.00599924 0.031 0.0343071
-                0.00304571 0.0263298 0.0346745
-                1.19925e-006 0.037 -0.035
-                0.0220001 0.001 0.0270001
-                0.0151859 0.001 0.0315339
-                0.0220023 0.037 0.0270004
-                0.0220016 0.025 0.0270003
-                0.022 0.025 0.022
-                0.0220004 0.037 0.0220011
-                0.00599924 0.025 0.0343071
-                0.00599924 0.001 0.0343071
-                1.19925e-006 0.001 0.035
-                1.19925e-006 0.025 0.035
-                0.00599924 0.025 0.0313071
-                0.00599924 0.031 0.0313071
-                0.00354509 0.0310002 0.0316536
-                0.00302537 0.0263298 0.032
-                1.19925e-006 0.025 0.032
-                0.0151859 0.037 0.0315339
-                0.0151859 0.025 0.0315339
-                0.015 0.025 0.022
-                0.015 0.037 0.022
-                0.00778827 0.001 -0.0341225
-                0.00778827 0.037 -0.0341225
-                0.00778827 0.025 -0.0341225
-                1.19925e-006 0.001 -0.035
-                -0.00778587 0.025 -0.0341225
-                -0.00778587 0.037 -0.0341225
-                -0.00778587 0.001 -0.0341225
-                -0.0149976 0.037 0.022
-                -0.0149976 0.025 0.022
-                -0.0151835 0.025 0.0315339
-                -0.0151835 0.037 0.0315339
-                -0.00302297 0.0263298 0.032
-                -0.00354269 0.0310002 0.0316536
-                -0.00599684 0.031 0.0313071
-                -0.00599684 0.025 0.0313071
-                -0.00599684 0.001 0.0343071
-                -0.00599684 0.025 0.0343071
-                -0.021998 0.037 0.0220011
-                -0.0219976 0.025 0.022
-                -0.0219992 0.025 0.0270003
-                -0.0219999 0.037 0.0270004
-                -0.0151835 0.001 0.0315339
-                -0.0219977 0.001 0.0270001
-                -0.00304331 0.0263298 0.0346745
-                -0.00599684 0.031 0.0343071
-                -0.022 0.037 0.0270004
-                -0.0151836 0.025 -0.0315339
-                -0.0151836 0.009 -0.0315339
-                -0.0219976 0.001 0.027
-                -0.0219976 0.01 -0.027
-                -0.021998 0.025 -0.0269989
-                -0.00354269 0.0310002 0.0346536
-                -0.00778587 0.037 -0.0271225
-                -0.00778587 0.025 -0.0271225
-                -0.0219975 0.025 0.022
-                -0.0219979 0.0369999 0.022001
-                -0.0219976 0.0010097 -0.0170083
-                -0.0219976 0.001 0.0270001
-                -0.0189159 0.0098253 -0.0292669
-                -0.00963804 0.006 -0.0334798
-                -0.0219976 0.00775 -0.021
-                -0.0151836 0.009 -0.0315339
-                -0.0151836 0.025 -0.0315339
+                1.5186 2.5 -3.15339
+                1.5186 0.9 -3.15339
+                2.2 0.775 -2.1
+                0.964044 0.6 -3.34798
+                1.89183 0.98253 -2.92669
+                2.2 0.1 2.70001
+                2.2 0.10097 -1.70083
+                2.20003 3.69999 2.2001
+                2.19999 2.5 2.2
+                0.778827 2.5 -2.71225
+                0.778827 3.7 -2.71225
+                0.354509 3.10002 3.46536
+                2.20004 2.5 -2.69989
+                2.2 1 -2.7
+                2.2 0.1 2.7
+                0.000119925 1 7.96716e-007
+                1.5186 0.9 -3.15339
+                1.5186 2.5 -3.15339
+                0.000119925 2.5 -3.5
+                2.20024 3.7 2.70004
+                0.599924 3.1 3.43071
+                0.304571 2.63298 3.46745
+                0.000119925 3.7 -3.5
+                2.20001 0.1 2.70001
+                1.51859 0.1 3.15339
+                2.20023 3.7 2.70004
+                2.20016 2.5 2.70003
+                2.2 2.5 2.2
+                2.20004 3.7 2.20011
+                0.599924 2.5 3.43071
+                0.599924 0.1 3.43071
+                0.000119925 0.1 3.5
+                0.000119925 2.5 3.5
+                0.599924 2.5 3.13071
+                0.599924 3.1 3.13071
+                0.354509 3.10002 3.16536
+                0.302537 2.63298 3.2
+                0.000119925 2.5 3.2
+                1.51859 3.7 3.15339
+                1.51859 2.5 3.15339
+                1.5 2.5 2.2
+                1.5 3.7 2.2
+                0.778827 0.1 -3.41225
+                0.778827 3.7 -3.41225
+                0.778827 2.5 -3.41225
+                0.000119925 0.1 -3.5
+                -0.778587 2.5 -3.41225
+                -0.778587 3.7 -3.41225
+                -0.778587 0.1 -3.41225
+                -1.49976 3.7 2.2
+                -1.49976 2.5 2.2
+                -1.51835 2.5 3.15339
+                -1.51835 3.7 3.15339
+                -0.302297 2.63298 3.2
+                -0.354269 3.10002 3.16536
+                -0.599684 3.1 3.13071
+                -0.599684 2.5 3.13071
+                -0.599684 0.1 3.43071
+                -0.599684 2.5 3.43071
+                -2.1998 3.7 2.20011
+                -2.19976 2.5 2.2
+                -2.19992 2.5 2.70003
+                -2.19999 3.7 2.70004
+                -1.51835 0.1 3.15339
+                -2.19977 0.1 2.70001
+                -0.304331 2.63298 3.46745
+                -0.599684 3.1 3.43071
+                -2.2 3.7 2.70004
+                -1.51836 2.5 -3.15339
+                -1.51836 0.9 -3.15339
+                -2.19976 0.1 2.7
+                -2.19976 1 -2.7
+                -2.1998 2.5 -2.69989
+                -0.354269 3.10002 3.46536
+                -0.778587 3.7 -2.71225
+                -0.778587 2.5 -2.71225
+                -2.19975 2.5 2.2
+                -2.19979 3.69999 2.2001
+                -2.19976 0.10097 -1.70083
+                -2.19976 0.1 2.70001
+                -1.89159 0.98253 -2.92669
+                -0.963804 0.6 -3.34798
+                -2.19976 0.775 -2.1
+                -1.51836 0.9 -3.15339
+                -1.51836 2.5 -3.15339
               ]
             }
             coordIndex [
@@ -1787,35 +1503,6 @@ DEF E_PUCK DifferentialWheels {
           }
         }
       ]
-      name "led8"
-      color [
-        0 1 0
-      ]
-    }
-    DEF EPUCK_FRONT_LED LED {
-      translation 0.0125 0.0285 -0.031
-      children [
-        Shape {
-          appearance Appearance {
-            material Material {
-              diffuseColor 1 1 1
-              shininess 0.078125
-              transparency 0.3
-            }
-          }
-          geometry Sphere {
-            radius 0.0025
-          }
-        }
-      ]
-      name "led9"
-      color [
-        1 0.3 0
-      ]
-    }
-    DEF EPUCK_ACCELEROMETER Accelerometer {
-      rotation 1 0 0 -1.57
-      name "accelerometer"
     }
     DEF EPUCK_SMALL_LOGO Transform {
       translation 0 0.031 0.035
@@ -2003,21 +1690,17 @@ DEF E_PUCK DifferentialWheels {
       ]
     }
   ]
-  name "e-puck camera"
+  name "e-puck"
   model "e-puck"
   author "Olivier Michel"
   constructor "EPFL"
   description "Educational robot"
-  boundingObject Group {
+  boundingObject Transform {
+    translation 0 0.025 0
     children [
-      Transform {
-        translation 0 0.025 0
-        children [
-          Cylinder {
-            height 0.045
-            radius 0.035
-          }
-        ]
+      Cylinder {
+        height 0.045
+        radius 0.035
       }
     ]
   }
@@ -2026,18 +1709,10 @@ DEF E_PUCK DifferentialWheels {
     mass 0.15
   }
   controller "Tcleaner"
-  battery [
-    1000, 18000, 600
-  ]
-  cpuConsumption 10
-  motorConsumption 20
   axleLength 0.052
   wheelRadius 0.0205
-  maxSpeed 6.28022
+  maxSpeed 6.28
   speedUnit 0.00628
-  slipNoise 0
-  encoderNoise 0
-  encoderResolution 159.23
 }
 Charger {
   translation -0.815 0 0.1
@@ -2251,175 +1926,3 @@ DEF n_Wall Solid {
   ]
   boundingObject USE n_WALL_SHAPE
 }
-DEF a_Line Solid {
-	translation -0.01 0 -0.23375
-	rotation 0 1 0 4.71239
-	children [
-		DEF a_LINE_SHAPE Shape {
-			appearance DEF LINE_APPEARANCE Appearance {
-				material Material {
-					diffuseColor 1 1 1
-				}
-			}
-			geometry Box {
-				size 0.0075 0.001 0.0725
-			}
-		}
-	]
-	boundingObject USE a_LINE_SHAPE}
-DEF b_Line Solid {
-	translation 0.05625 0 -0.54
-	rotation 0 1 0 0
-	children [
-		DEF b_LINE_SHAPE Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 0.5525
-			}
-		}
-	]
-	boundingObject USE b_LINE_SHAPE}
-DEF c_Line Solid {
-	translation -0.2 0 -0.84625
-	rotation 0 1 0 1.5708
-	children [
-		DEF c_LINE_SHAPE Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 0.4525
-			}
-		}
-	]
-	boundingObject USE c_LINE_SHAPE}
-DEF d_Line Solid {
-	translation -0.45625 0 -0.46
-	rotation 0 1 0 3.14159
-	children [
-		DEF d_LINE_SHAPE Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 0.7025
-			}
-		}
-	]
-	boundingObject USE d_LINE_SHAPE}
-DEF e_Line Solid {
-	translation -0.73 0 0.09375
-	rotation 0 1 0 1.5708
-	children [
-		DEF e_LINE_SHAPE Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 0.1525
-			}
-		}
-	]
-	boundingObject USE e_LINE_SHAPE}
-DEF f_Line Solid {
-	translation -0.83625 0 0.1
-	rotation 0 1 0 3.14159
-	children [
-		DEF f_LINE_SHAPE Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 -0.0475
-			}
-		}
-	]
-	boundingObject USE f_LINE_SHAPE}
-DEF g_Line Solid {
-	translation -0.73 0 0.11114
-	rotation 0 1 0 4.71239
-	children [
-		DEF g_LINE_SHAPE Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 0.1525
-			}
-		}
-	]
-	boundingObject USE g_LINE_SHAPE}
-DEF h_Line Solid {
-	translation -0.45625 0 0.56
-	rotation 0 1 0 3.14159
-	children [
-		DEF h_LINE_SHAPE Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 0.5025
-			}
-		}
-	]
-	boundingObject USE h_LINE_SHAPE}
-DEF i_Line Solid {
-	translation -0.35 0 0.84125
-	rotation 0 1 0 4.71239
-	children [
-		DEF i_LINE_SHAPE Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 0.1525
-			}
-		}
-	]
-	boundingObject USE i_LINE_SHAPE}
-DEF j_Line Solid {
-	translation -0.24375 0 0.66
-	rotation 0 1 0 0
-	children [
-		DEF j_LINE_SHAPE Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 0.3025
-			}
-		}
-	]
-	boundingObject USE j_LINE_SHAPE}
-DEF k_Line Solid {
-	translation -0.184 0 0.47875
-	rotation 0 1 0 1.5708
-	children [
-		DEF k_LINE_SHAPE Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 -0.1775
-			}
-		}
-	]
-	boundingObject USE k_LINE_SHAPE}
-DEF l_Line Solid {
-	translation -0.29375 0 0.34
-	rotation 0 1 0 0
-	children [
-		DEF l_LINE_SHAPE Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 -0.1175
-			}
-		}
-	]
-	boundingObject USE l_LINE_SHAPE}
-DEF m_Line Solid {
-	translation -0.185 0 0.19625
-	rotation 0 1 0 4.71239
-	children [
-		DEF m_LINE_SHAPE Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 -0.1775
-			}
-		}
-	]
-	boundingObject USE m_LINE_SHAPE}
-DEF n_Line Solid {
-	translation -0.24375 0 0.065
-	rotation 0 1 0 0
-	children [
-		DEF n_LINE_SHAPE Shape {
-			appearance USE LINE_APPEARANCE
-			geometry Box {
-				size 0.0075 0.001 0.2025
-			}
-		}
-	]
-	boundingObject USE n_LINE_SHAPE}
