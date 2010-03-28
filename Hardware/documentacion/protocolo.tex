@@ -104,9 +104,9 @@ Tanto los paquetes de env\'io de datos como los de respuesta tienen el mismo for
 \label{tipo_destinatario}
 
 	Identifica al destinatario del paquete, consta de 1 byte.
-	Los 4 bits m\'as significativos indican el grupo y los 4 bits menos significativos, el n\'umero de id de la placa de destino.
+	Los 4 bits m\'as significativos indican el grupo y los 4 bits menos significativos, el n\'umero de $ID$ de la placa de destino.
 	Los grupos predefinidos se tratan en el apartado \ref{grupos_listado}.
-	Si el id de placa es F, entonces el paquete es broadcast a todos los ids del grupo indicado.
+	Si el $ID$ de placa es F, entonces el paquete es broadcast a todos los $ID$s del grupo indicado.
 	El valor 0xFF indica que el paquete es broadcast a todas las placas de todos los grupos.
 
 \subsection{ORIGEN}
@@ -114,7 +114,7 @@ Tanto los paquetes de env\'io de datos como los de respuesta tienen el mismo for
 
 	Similar al \emph{DESTINO}, consta de 1 byte.
 	Determina el emisor del paquete para la respuesta.
-	Los 4 bits m\'as significativos indican el grupo y los 4 bits menos significativos, el n\'umero de id de la placa de origen.
+	Los 4 bits m\'as significativos indican el grupo y los 4 bits menos significativos, el n\'umero de $ID$ de la placa de origen.
 	Los grupos predefinidos se tratan en el apartado \ref{grupos_listado}.
 	Los valores permitidos son del 0 al E, ya que F indica broadcast y no es v\'alida una respuesta broadcast.
 
@@ -263,8 +263,6 @@ Los comandos espec\'ificos para cada grupo deben ser desde 0x40 hasta el valor 0
 	\item \emph{DC MOTOR} - secci\'on \ref{grupo_dc_motor}
 	\item \emph{SERVO MOTOR} - secci\'on \ref{grupo_servo_motor}
 	\item \emph{DISTANCE SENSOR} - secci\'on \ref{grupo_distance_sensor}
-	\item \emph{FLOOR SENSOR} - secci\'on \ref{grupo_floor_sensor}
-	\item \emph{ULTRASONIC SENSOR} - secci\'on \ref{grupo_ultrasonic_sensor}
 	\item \emph{BATTERY CONTROLLER} - secci\'on \ref{grupo_battery_controller}
 	\item \emph{TRASH BIN} - secci\'on \ref{grupo_trash_bin}
 \label{grupos_listado}
@@ -540,7 +538,7 @@ Determina la posici\'on en la que debe colocarse el servo motor indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x40
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del servo al que se le aplicar\'a la posici\'on.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el $ID$ del servo al que se le aplicar\'a la posici\'on.
 	Valor entre 0x00 y 0xB4 que representa el rango de $0^{\circ}$ a $180^{\circ}$ con $1^{\circ}$ de presici\'on.
 \end{itemize}
 
@@ -580,14 +578,14 @@ Obtiene la \'ultima posici\'on del servomotor indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x42
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del servo del que se requiere la posici\'on.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el $ID$ del servo del que se requiere la posici\'on.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
 	\item{COMANDO:} 0xC2
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del servo del que se requiri\'o la posici\'on.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el $ID$ del servo del que se requiri\'o la posici\'on.
 	Valor entre 0x00 y 0xB4 que representa el rango de $0^{\circ}$ a $180^{\circ}$ con $1^{\circ}$ de presici\'on.
 \end{itemize}
 
@@ -620,7 +618,7 @@ Determina la velocidad a la que el servomotor indicado llegar\'a a la posici\'on
 
 \begin{itemize}
 	\item{COMANDO:} 0x44
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del servo al que se le aplicar\'a la velocidad.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el $ID$ del servo al que se le aplicar\'a la velocidad.
 	Valor entre 0x00 y 0xB4, velocidad en grados por segundo.
 \end{itemize}
 
@@ -660,14 +658,14 @@ Obtiene la velocidad asignada al servomotor indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x46
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del servo del que se requiere la velocidad.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el $ID$ del servo del que se requiere la velocidad.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
 	\item{COMANDO:} 0xC6
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del servo del que se requiri\'o la velocidad.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el $ID$ del servo del que se requiri\'o la velocidad.
 	Valor entre 0x00 y 0xB4, velocidad en grados por segundo.
 \end{itemize}
 
@@ -700,7 +698,7 @@ Deja de aplicar fuerza sobre el servo indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x48
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del servo a liberar.
+	\item{DATO:} Valor de 0x00 a 0x04 que determina el $ID$ del servo a liberar.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -729,10 +727,58 @@ Deja de aplicar fuerza sobre cada uno de los servomotor conectados al controlado
 	\item{DATO:} vac\'io
 \end{itemize}
 
+\subsection{GET STATUS}
+\label{get_status_servos}
+
+Obtiene el estado de cada uno de los switches conectados al controlador.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x4A
+	\item{DATO:} vac\'io
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0xCA
+	\item{DATO:} Valor de 0x00 a 0x7F donde cada bit representa el estado del switch con ese $ID$.
+	Si $2^{ID} = 1$ entonces el switch con $ID$ est\'a en un estado l\'ogico alto.
+	Si $2^{ID} = 0$ entonces el switch con $ID$ est\'a en un estado l\'ogico bajo.
+\end{itemize}
+
+\subsection{ALARM ON STATE}
+\label{alarm_on_state_servos}
+
+Establece si se desea o no recibir una alarma ante cierto cambio de estado en el switch indicado.
+Puede ser ante cualquier cambio o sobre un flanco ascendente o descendente.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x4B
+	\item{DATO:} Valor de 0x00 a 0x05 con el $ID$ del switch que se est\'a configurando.
+	Valor entre 0x00 y 0x03 con el tipo de cambio ante el cual generar la alarma.
+	Con un 0x00 ignora cualquier cambio en el switch.
+	Se utiliza 0x01 para que cualquier cambio en el switch genere el mensaje, 
+	0x02 para que sea s\'olo ante un flanco ascendente y 0x03 para que sea s\'olo ante un flanco descendente.
+
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0xCB
+	\item{DATO:} vac\'io
+\end{itemize}
+
 \section{DISTANCE SENSOR}
 \label{grupo_distance_sensor}
 
-Comandos espec\'ificos del controlador de sensores de distancia, generalmente tel\'emetros.
+Comandos espec\'ificos del controlador de sensores de distancia, tel\'emetros o sensores de piso.
+Tambi\'en puede estar presente un sensor de ultrasonido o un switch.
+
 El identificador de grupo es 0x3X.
 
 \subsection{ENABLE DISTANCE SENSOR}
@@ -744,7 +790,8 @@ Enciende el sensor de distancia indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x40
-	\item{DATO:} Valor de 0x00 a 0x04 que representa el id del sensor a encender.
+	\item{DATO:} Valor de 0x00 a 0x05 que representa el $ID$ del sensor a encender.
+	El $ID$ 0x05 hace referencia al sensor de ultrasonido o switch de la placa.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -763,7 +810,8 @@ Apaga el sensor de distancia indicado.
 
 \begin{itemize}
 	\item{COMANDO:} 0x41
-	\item{DATO:} Valor de 0x00 a 0x04 que representa el id del sensor a apagar.
+	\item{DATO:} Valor de 0x00 a 0x05 que representa el $ID$ del sensor a apagar.
+	El $ID$ 0x05 hace referencia al sensor de ultrasonido o switch de la placa.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -773,18 +821,19 @@ Apaga el sensor de distancia indicado.
 	\item{DATO:} vac\'io
 \end{itemize}
 
-\subsection{SET ALL DISTANCE SENSORS}
-\label{set_all_distance_sensors}
+\subsection{ENABLE DISTANCE SENSORS}
+\label{enable_distance_sensors}
 
-Enciende o apaga cada uno de los sensores de distancia conectados al controlador.
+Habilita o deshabilita cada uno de los sensores de distancia conectados al controlador.
+Permite hacer identificar los sensores a los que se deber\'a tener en cuenta para futuras lecturas.
 
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x42
-	\item{DATO:} Valor de 0x00 a 0x1F donde cada bit representa el id del sensor a encender o apagar.
-	Si $2^{ID} = 1$ entonces el sensor $ID$ est\'a encendido.
-	Si $2^{ID} = 0$ entonces el sensor $ID$ est\'a apagado.
+	\item{DATO:} Valor de 0x00 a 0x3F donde cada bit representa el $ID$ del sensor a habilitar o deshabilitar.
+	Si $2^{ID} = 1$ entonces el sensor $ID$ est\'a habilitado.
+	Si $2^{ID} = 0$ entonces el sensor $ID$ est\'a deshabilitado.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
@@ -794,400 +843,111 @@ Enciende o apaga cada uno de los sensores de distancia conectados al controlador
 	\item{DATO:} vac\'io
 \end{itemize}
 
+\subsection{GET DISTANCE SENSORS STATUS}
+\label{get_status_distance_sensors}
 
-\subsection{GET VALUE}
-\label{get_value_ds}
-
-Obtiene el valor promedio de la entrada del sensor indicado.
+Obtiene el estado de habilitaci\'on de cada uno de los sensores de distancia conectados al controlador.
 
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x43
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que se quiere la lectura.
-\end{itemize}
-
-\subsubsection*{Respuesta al comando}
-
-\begin{itemize}
-	\item{COMANDO:} 0xC3
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que proviene el la lectura de distancia.
-		N\'umero entero positivo de 16 bits en el rango desde 0x0000 hasta 0x03FF, con el valor de la lectura que representa la distancia al objeto.
-		Ver apartado \ref{codificacion} para mayor informaci\'on.
-
-\end{itemize}
-
-\subsection{GET ALL VALUES}
-\label{get_all_values_ds}
-
-Obtiene las distancias de cada uno de los sensores conectados al controlador.
-
-\subsubsection*{Comando enviado}
-
-\begin{itemize}
-	\item{COMANDO:} 0x44
 	\item{DATO:} vac\'io
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
+	\item{COMANDO:} 0xC3
+	\item{DATO:} Valor de 0x00 a 0x3F donde cada bit representa el $ID$ del sensor a habilitar o deshabilitar.
+	Si $2^{ID} = 1$ entonces el sensor $ID$ est\'a habilitado.
+	Si $2^{ID} = 0$ entonces el sensor $ID$ est\'a deshabilitado.
+\end{itemize}
+
+\subsection{GET VALUE}
+\label{get_value_ds}
+
+Obtiene el valor promedio de la entrada de los sensores indicados.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x44
+	\item{DATO:} Valor de 0x00 a 0x3F donde cada bit representa el $ID$ del sensor del cual obtener la lectura.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
 	\item{COMANDO:} 0xC4
-	\item{DATO:} Consta de 5 n\'umero entero positivos de 16 bits concatenados, en el rango desde 0x0000 hasta 0x03FF,
-		uno para cada uno de los sensores conectados al controlador.
-		Ver apartado \ref{codificacion} para mayor informaci\'on.
+	\item{DATO:} Valor de 0x00 a 0x3F donde cada bit representa el $ID$ del sensor del cual proviene el la lectura de distancia.
+	Secuencia de n\'umeros enteros positivos de 16 bits en el rango desde 0x0000 hasta 0x03FF, con el valor de la lectura que representa la distancia al objeto.
+	En la secuencia de n\'umeros el orden est\'a dado de izquierda a derecha comenzando por el bit menos significativo.
+
+	En el caso del sensor de ultrasonido el rango es desde 0x0000 hasta 0x7594 que representa la m\'inima y m\'axima lectura del sensor.
+
+	En el caso del switch, un estado l\'ogico bajo se lee como 0x0000 y un estado l\'ogico alto se lee como 0xFFFF.
+
+	Ver apartado \ref{codificacion} para mayor informaci\'on sobre la codificaci\'on de n\'umeros.
 \end{itemize}
 
 \subsection{GET ONE VALUE}
 \label{get_one_value_ds}
 
 Obtiene el valor de la entrada del sensor indicado.
-Igual al comando \ref{get_value_ds} pero si es necesario enciende el sensor, toma la lectura y luego lo apaga para un mayor ahorro de energ\'ia.
+Igual al comando \ref{get_value_ds} pero sin realizar un promedio de lecturas.
 
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x45
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que se quiere la lectura.
+	\item{DATO:} Valor de 0x00 a 0x3F donde cada bit representa el $ID$ del sensor del cual obtener la lectura.
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
 	\item{COMANDO:} 0xC5
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que proviene el la lectura de distancia.
-		N\'umero entero positivo de 16 bits en el rango desde 0x0000 hasta 0x03FF, con el valor de la lectura que representa la distancia al objeto.
-		Ver apartado \ref{codificacion} para mayor informaci\'on.
+	\item{DATO:} Valor de 0x00 a 0x3F donde cada bit representa el $ID$ del sensor del cual proviene el la lectura de distancia.
+	Secuencia de n\'umeros enteros positivos de 16 bits en el rango desde 0x0000 hasta 0x03FF, con el valor de la lectura que representa la distancia al objeto.
+	En la secuencia de n\'umeros el orden est\'a dado de izquierda a derecha comenzando por el bit menos significativo.
+
+	En el caso del sensor de ultrasonido el rango es desde 0x0000 hasta 0x7594 que representa la m\'inima y m\'axima lectura del sensor.
+
+	En el caso del switch, un estado l\'ogico bajo se lee como 0x0000 y un estado l\'ogico alto se lee como 0xFFFF.
+
+	Ver apartado \ref{codificacion} para mayor informaci\'on sobre la codificaci\'on de n\'umeros.
 \end{itemize}
 
-\subsection{GET ONE VALUE FOR ALL}
-\label{get_one_value_for_all_ds}
+\subsection{ALARM ON STATE}
+\label{alarm_on_state_ds}
 
-Obtiene las distancias de cada uno de los sensores conectados al controlador.
-Igual al comando \ref{get_all_values_ds} pero si es necesario enciende los sensores, toma las lecturas y luego los apaga para un mayor ahorro de energ\'ia.
+Cuando un switch est\'a presente en el ID: 0x05, establece si se desea o no recibir una alarma ante cierto cambio de estado en el mismo.
+Puede ser ante cualquier cambio o sobre un flanco ascendente o descendente.
 
 \subsubsection*{Comando enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x46
-	\item{DATO:} vac\'io
+	\item{DATO:} Valor entre 0x00 y 0x03 con el tipo de cambio ante el cual generar la alarma.
+	Con un 0x00 ignora cualquier cambio en el switch.
+	Se utiliza 0x01 para que cualquier cambio en el switch genere el mensaje, 
+	0x02 para que sea s\'olo ante un flanco ascendente y 0x03 para que sea s\'olo ante un flanco descendente.
+
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
 	\item{COMANDO:} 0xC6
-	\item{DATO:} Consta de 5 n\'umero entero positivos de 16 bits concatenados, en el rango desde 0x0000 hasta 0x03FF,
-		uno para cada uno de los sensores conectados al controlador.
-		Ver apartado \ref{codificacion} para mayor informaci\'on.
-\end{itemize}
-
-\section{FLOOR SENSOR} 
-\label{grupo_floor_sensor}
-
-Comandos espec\'ificos del controlador de sensores de piso.
-El identificador de grupo es 0x4X.
-
-\subsection{ENABLE FLOOR SENSOR}
-\label{enable_fs}
-
-Enciende el sensor de piso indicado.
-
-\subsubsection*{Comando enviado}
-
-\begin{itemize}
-	\item{COMANDO:} 0x40
-	\item{DATO:} Valor de 0x00 a 0x04 que representa el id del sensor a encender.
-\end{itemize}
-
-\subsubsection*{Respuesta al comando}
-
-\begin{itemize}
-	\item{COMANDO:} 0xC0
 	\item{DATO:} vac\'io
-\end{itemize}
-
-\subsection{DISABLE FLOOR SENSOR}
-\label{disable_fs}
-
-Apaga el sensor de piso indicado.
-
-\subsubsection*{Comando enviado}
-
-\begin{itemize}
-	\item{COMANDO:} 0x41
-	\item{DATO:} Valor de 0x00 a 0x04 que representa el id del sensor a apagar.
-\end{itemize}
-
-\subsubsection*{Respuesta al comando}
-
-\begin{itemize}
-	\item{COMANDO:} 0xC1
-	\item{DATO:} vac\'io
-\end{itemize}
-
-\subsection{SET ALL FLOOR SENSORS}
-\label{set_all_fs}
-
-Enciende o apaga cada uno de los sensores de piso conectados al controlador.
-
-\subsubsection*{Comando enviado}
-
-\begin{itemize}
-	\item{COMANDO:} 0x42
-	\item{DATO:} Valor de 0x00 a 0x1F donde cada bit representa el id del sensor a encender o apagar.
-	Si $2^{ID} = 1$ entonces el sensor $ID$ est\'a encendido.
-	Si $2^{ID} = 0$ entonces el sensor $ID$ est\'a apagado.
-\end{itemize}
-
-\subsubsection*{Respuesta al comando}
-
-\begin{itemize}
-	\item{COMANDO:} 0xC2
-	\item{DATO:} vac\'io
-\end{itemize}
-
-\subsection{GET VALUE}
-\label{get_value_fs}
-
-Obtiene el valor promedio de la entrada del sensor indicado.
-
-\subsubsection*{Comando enviado}
-
-\begin{itemize}
-	\item{COMANDO:} 0x43
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que se quiere la lectura.
-\end{itemize}
-
-\subsubsection*{Respuesta al comando}
-
-\begin{itemize}
-	\item{COMANDO:} 0xC3
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que proviene el la lectura de distancia.
-		N\'umero entero positivo de 16 bits en el rango desde 0x0000 hasta 0x03FF, con el valor de la lectura que representa la distancia al objeto.
-		Ver apartado \ref{codificacion} para mayor informaci\'on.
-\end{itemize}
-
-\subsection{GET ALL VALUES}
-\label{get_all_values_fs}
-
-Obtiene las distancias de cada uno de los sensores conectados al controlador.
-
-\subsubsection*{Comando enviado}
-
-\begin{itemize}
-	\item{COMANDO:} 0x44
-	\item{DATO:} vac\'io
-\end{itemize}
-
-\subsubsection*{Respuesta al comando}
-
-\begin{itemize}
-	\item{COMANDO:} 0xC4
-	\item{DATO:} Consta de 5 n\'umero entero positivos de 16 bits concatenados, en el rango desde 0x0000 hasta 0x03FF,
-		uno para cada uno de los sensores conectados al controlador.
-		Ver apartado \ref{codificacion} para mayor informaci\'on.
-\end{itemize}
-
-\subsection{GET ONE VALUE}
-\label{get_one_value_fs}
-
-Obtiene el valor de la entrada del sensor indicado.
-Igual al comando \ref{get_value_fs} pero si es necesario enciende el sensor, toma la lectura y luego lo apaga para un mayor ahorro de energ\'ia.
-
-\subsubsection*{Comando enviado}
-
-\begin{itemize}
-	\item{COMANDO:} 0x45
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que se quiere la lectura.
-\end{itemize}
-
-\subsubsection*{Respuesta al comando}
-
-\begin{itemize}
-	\item{COMANDO:} 0xC5
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que proviene el la lectura de distancia.
-		N\'umero entero positivo de 16 bits en el rango desde 0x0000 hasta 0x03FF, con el valor de la lectura que representa la distancia al objeto.
-		Ver apartado \ref{codificacion} para mayor informaci\'on.
-\end{itemize}
-
-\subsection{GET ONE VALUE FOR ALL}
-\label{get_one_value_for_all_fs}
-
-Obtiene las distancias de cada uno de los sensores conectados al controlador.
-Igual al comando \ref{get_all_values_fs} pero si es necesario enciende los sensores, toma las lecturas y luego los apaga para un mayor ahorro de energ\'ia.
-
-\subsubsection*{Comando enviado}
-
-\begin{itemize}
-	\item{COMANDO:} 0x46
-	\item{DATO:} vac\'io
-\end{itemize}
-
-\subsubsection*{Respuesta al comando}
-
-\begin{itemize}
-	\item{COMANDO:} 0xC6
-	\item{DATO:} Consta de 5 n\'umero entero positivos de 16 bits concatenados, en el rango desde 0x0000 hasta 0x03FF,
-		uno para cada uno de los sensores conectados al controlador.
-		Ver apartado \ref{codificacion} para mayor informaci\'on.
-\end{itemize}
-
-\section{ULTRASONIC SENSOR} 
-\label{grupo_ultrasonic_sensor}
-
-Comandos espec\'ificos del controlador de sensores de ultrasonido.
-El identificador de grupo es 0x5X.
-
-\subsection{ENABLE ULTRASONIC SENSOR}
-\label{enable_ultrasonic_sensor}
-
-Enciende el sensor de ultrasonido indicado.
-
-\subsubsection*{Comando enviado}
-
-\begin{itemize}
-	\item{COMANDO:} 0x40
-	\item{DATO:} Valor de 0x00 a 0x04 que representa el id del sensor a encender.
-\end{itemize}
-
-\subsubsection*{Respuesta al comando}
-
-\begin{itemize}
-	\item{COMANDO:} 0xC0
-	\item{DATO:} vac\'io
-\end{itemize}
-
-\subsection{DISABLE ULTRASONIC SENSOR}
-\label{disable_ultrasonic_sensor}
-
-Apaga el sensor de ultrasonido indicado.
-
-\subsubsection*{Comando enviado}
-
-\begin{itemize}
-	\item{COMANDO:} 0x41
-	\item{DATO:} Valor de 0x00 a 0x04 que representa el id del sensor a apagar.
-\end{itemize}
-
-\subsubsection*{Respuesta al comando}
-
-\begin{itemize}
-	\item{COMANDO:} 0xC1
-	\item{DATO:} vac\'io
-\end{itemize}
-
-\subsection{SET ALL ULTRASONIC SENSOR}
-\label{set_all_ultrasonic_sensor}
-
-Enciende o apaga cada uno de los sensores de ultrasonido conectados al controlador.
-
-\subsubsection*{Comando enviado}
-
-\begin{itemize}
-	\item{COMANDO:} 0x42
-	\item{DATO:} Valor de 0x00 a 0x1F donde cada bit representa el id del sensor a encender o apagar.
-	Si $2^{ID} = 1$ entonces el sensor $ID$ est\'a encendido.
-	Si $2^{ID} = 0$ entonces el sensor $ID$ est\'a apagado.
-\end{itemize}
-
-\subsubsection*{Respuesta al comando}
-
-\begin{itemize}
-	\item{COMANDO:} 0xC2
-	\item{DATO:} vac\'io
-\end{itemize}
-
-\subsection{GET VALUE}
-\label{get_value_us}
-
-Obtiene el valor promedio de la entrada del sensor indicado.
-
-\subsubsection*{Comando enviado}
-
-\begin{itemize}
-	\item{COMANDO:} 0x43
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que se quiere la lectura.
-\end{itemize}
-
-\subsubsection*{Respuesta al comando}
-
-\begin{itemize}
-	\item{COMANDO:} 0xC3
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que proviene el la lectura de distancia.
-		N\'umero entero positivo de 16 bits en el rango desde 0x0000 hasta 0x03FF, con el valor de la lectura que representa la distancia al objeto.
-		Ver apartado \ref{codificacion} para mayor informaci\'on.
-\end{itemize}
-
-\subsection{GET ALL VALUES}
-\label{get_all_values_us}
-
-Obtiene las distancias de cada uno de los sensores conectados al controlador.
-
-\subsubsection*{Comando enviado}
-
-\begin{itemize}
-	\item{COMANDO:} 0x44
-	\item{DATO:} vac\'io
-\end{itemize}
-
-\subsubsection*{Respuesta al comando}
-
-\begin{itemize}
-	\item{COMANDO:} 0xC4
-	\item{DATO:} Consta de 5 n\'umero entero positivos de 16 bits concatenados, en el rango desde 0x0000 hasta 0x03FF,
-		uno para cada uno de los sensores conectados al controlador.
-		Ver apartado \ref{codificacion} para mayor informaci\'on.
-\end{itemize}
-
-\subsection{GET ONE VALUE}
-\label{get_one_value_us}
-
-Obtiene el valor de la entrada del sensor indicado.
-Igual al comando \ref{get_value_us} pero si es necesario enciende el sensor, toma la lectura y luego lo apaga para un mayor ahorro de energ\'ia.
-
-\subsubsection*{Comando enviado}
-
-\begin{itemize}
-	\item{COMANDO:} 0x45
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que se quiere la lectura.
-\end{itemize}
-
-\subsubsection*{Respuesta al comando}
-
-\begin{itemize}
-	\item{COMANDO:} 0xC5
-	\item{DATO:} Valor de 0x00 a 0x04 que determina el id del sensor del que proviene el la lectura de distancia.
-	Valor de 0x0000 a 0x03FF con el valor de la lectura que representa la distancia al objeto.
-\end{itemize}
-
-\subsection{GET ONE VALUE FOR ALL}
-\label{get_one_values_for_all_us}
-
-Obtiene las distancias de cada uno de los sensores conectados al controlador.
-Igual al comando \ref{get_all_values_fs} pero si es necesario enciende los sensores, toma las lecturas y luego los apaga para un mayor ahorro de energ\'ia.
-
-\subsubsection*{Comando enviado}
-
-\begin{itemize}
-	\item{COMANDO:} 0x46
-	\item{DATO:} vac\'io
-\end{itemize}
-
-\subsubsection*{Respuesta al comando}
-
-\begin{itemize}
-	\item{COMANDO:} 0xC6
-	\item{DATO:} Consta de 5 n\'umero entero positivos de 16 bits concatenados, en el rango desde 0x0000 hasta 0x03FF,
-		uno para cada uno de los sensores conectados al controlador.
-		Ver apartado \ref{codificacion} para mayor informaci\'on.
 \end{itemize}
 
 \section{BATTERY CONTROLLER} 
 \label{grupo_battery_controller}
 
 Comandos espec\'ificos del controlador de carga y consumo de la bater\'ia.
-El identificador de grupo es 0x6X.
+El identificador de grupo es 0x4X.
 
 \subsection{ENABLE}
 \label{get_battery_value}
@@ -1334,7 +1094,7 @@ Establece el valor de la bater\'ia para ser tomado como carga completa.
 \label{grupo_trash_bin}
 
 Comandos espec\'ificos del controlador de carga en el cesto de basura.
-El identificador de grupo es 0x7X.
+El identificador de grupo es 0x5X.
 
 \subsection{GET TRASH BIN VALUE}
 \label{get_trash_bin_value}
