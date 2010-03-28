@@ -70,7 +70,21 @@ para ser transmitido a trav\'es de \emph{RS-232} utilizando la configuraci\'on d
 \section{Introducci\'on}
 \label{introduccion}
 
-TODO
+La comunicaci\'on entre los distintos componentes del robot es imprescindible para su correcto funcionamiento y por lo tanto, un protocolo acorde
+es la base fundamental sobre la cual se construye dicha comunicaci\'on.
+Toda interacci\'on con el entorno es transportada por los mensajes enviados desde el controlador principal hacia los perif\'ericos y se debe asegurar
+que su correctitud.
+
+Para dicha tarea el protocolo est\'a dise\~nado para ser transmitido por \emph{RS-232} utilizando la configuraci\'on de \emph{Daisy-Chain} entre 
+las distintas placas controladoras creando un anillo que conecta a cada nodo con su vecino.
+
+Las placas controladoras se dividen en grupos seg\'un su funci\'on y perif\'ericos que tenga conectados.
+
+En la secci\'on \ref{formato_paquete} el formato que deben respetar todos los paquetes enviados bajo el protocolo.
+En la secci\'on \ref{comandos} se definen los comandos comunes y en la secci\'on \ref{comandos_especificos}, los comandos espec\'ificos para cada
+familia de placas controladoras.
+En la secci\'on \ref{codificacion} se define el estandar bajo el cual se env'ian n\'umeros de 16 y 32 bits por el protocolo.
+Finalmente, en la secci\'on \ref{ejemplos} se muestran ejemplos de paquetes para mejor entendimiento.
 
 \section{Formato del paquete}
 \label{formato_paquete}
@@ -1185,9 +1199,9 @@ todos los bytes del paquete.
 
 \begin{table}[h]
 \begin{center}
-\begin{tabular}{|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|}
 \hline
-04 & 11 & 00 & 40 & 55 \\
+05 & 11 & 00 & 40 & 01 & 55 \\
 \hline
 \end{tabular}
 \caption{Paquete de datos del ejemplo 1}
