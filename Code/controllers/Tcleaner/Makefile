@@ -10,7 +10,8 @@ CPP_SOURCES = tcleaner.cpp GarbageCleaner.cpp WorldInfo.cpp \
 							behaviours/UnloadGarbage.cpp behaviours/Wander.cpp \
 							utils/MinimalBoundingRectangle.cpp utils/Garbage.cpp utils/GarbageRecognition.cpp \
 							utils/OdometryInfo.cpp utils/Contours.cpp utils/Histogram.cpp \
-							utils/MyLine.cpp utils/MyPoint.cpp utils/MyAngle.cpp \
+							utils/MyLine.cpp utils/MyPoint.cpp utils/MyAngle.cpp utils/MyWall.cpp \
+							robotapi/DifferentialWheelsWOdometry.cpp \
 							robotapi/real/RealBattery.cpp robotapi/real/RealTrashBin.cpp robotapi/real/RealPCBattery.cpp \
 							robotapi/real/RealCamera.cpp robotapi/real/RealDevice.cpp robotapi/real/RealDeviceTag.cpp \
 							robotapi/real/RealDifferentialWheels.cpp robotapi/real/RealDistanceSensor.cpp \
@@ -38,7 +39,7 @@ LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/Archivos de pr
 #
 # if some special CFLAGS need to be passed, for example to find include
 # files, or set optimization level:
-CFLAGS= -I"C:/projects/tpf-robotica/Code/controllers/TCleaner" -I"C:\Archivos de programa\OpenCV\include\opencv"
+CFLAGS= -g -Wall -I"C:/projects/tpf-robotica/Code/controllers/TCleaner" -I"C:\Archivos de programa\OpenCV\include\opencv"
 #-L"C:/Archivos de Programa/OpenCV/lib" -lcxcore -lcv -lcvaux -lhighgui -lml -g3
 #-L"C:/Archivos de programa/OpenCV/lib" 
 # you may want, for example, to use the C API in your C++ program by adding:

@@ -8,6 +8,7 @@
 #include <protocol/handlers/ServoBoardPacketHandler.h>
 #include <protocol/handlers/TrashBinBoardPacketHandler.h>
 #include <protocol/PacketServer.h>
+#include <WorldInfo.h>
 
 #include <string>
 #include <map>
@@ -18,7 +19,7 @@ namespace real {
 class RealRobot : virtual public robotapi::IRobot {
 
 	public:
-		RealRobot();
+		RealRobot(WorldInfo * wi);
 
 		std::string getName();
 
@@ -64,6 +65,7 @@ class RealRobot : virtual public robotapi::IRobot {
 		std::map<std::string, IDistanceSensor *> distanceSensors;
 		std::map<std::string, ICamera *> cameras;
 		std::map<std::string, ITrashBin *> trashBins;
+		WorldInfo * wi;
 	};
 
 } /* End of namespace robotapi::real */

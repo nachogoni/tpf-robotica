@@ -35,6 +35,7 @@ class GoToBaseGroup : public AbstractBehaviour {
 		bool inPosition();
 
 	    behaviours::AbstractBehaviour * myBehaviours [3];
+		robotapi::IDifferentialWheels * wheels;
 	    robotapi::IBattery * robotBattery;
 		robotapi::IBattery * pcBattery;
 		std::vector<robotapi::IDistanceSensor*> * fss;

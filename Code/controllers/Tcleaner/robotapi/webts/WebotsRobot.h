@@ -3,7 +3,7 @@
 
 #include <robotapi/IRobot.h>
 #include <webots/DifferentialWheels.hpp>
-
+#include <WorldInfo.h>
 
 namespace robotapi {
 namespace webts {
@@ -12,7 +12,7 @@ class WebotsRobot : virtual public robotapi::IRobot {
 
 public:
 
-	WebotsRobot(webots::DifferentialWheels & dw);
+	WebotsRobot(WorldInfo * wi, webots::DifferentialWheels & dw);
 
     std::string getName();
 
@@ -43,7 +43,8 @@ public:
     // destructor for interface
     ~WebotsRobot() { }
     
-    
+	private:
+        WorldInfo * wi;
     
     };
 } /* End of namespace robotapi::webts */

@@ -36,17 +36,17 @@ utils::MyPoint * MyLine::getInitialPoint(){
 }
 
 double MyLine::getInitialX(){
-	if ( this->orientation->differenceTo(MyAngle::zeroAngle()) < ANGLE_TOLE )
+	if ( this->orientation->differenceTo(utils::MyAngle::zeroAngle()) < ANGLE_TOLE )
 	    return x - length/2;
-	if ( this->orientation->differenceTo(MyAngle::piAngle()) < ANGLE_TOLE )
+	if ( this->orientation->differenceTo(utils::MyAngle::piAngle()) < ANGLE_TOLE )
 	    return x + length/2;
 	return x;
 }
 
 double MyLine::getInitialY(){
-	if ( this->orientation->differenceTo(MyAngle::halfPiAngle()) < ANGLE_TOLE )
+	if ( this->orientation->differenceTo(utils::MyAngle::halfPiAngle()) < ANGLE_TOLE )
 	    return y - length/2;
-	if ( this->orientation->differenceTo(MyAngle::threeHalvesPiAngle()) < ANGLE_TOLE )
+	if ( this->orientation->differenceTo(utils::MyAngle::threeHalvesPiAngle()) < ANGLE_TOLE )
 	    return y + length/2;
 	return y;
 }
@@ -62,17 +62,17 @@ utils::MyPoint * MyLine::getFinalPoint(){
 }
 
 double MyLine::getFinalX(){
-	if ( this->orientation->differenceTo(MyAngle::zeroAngle()) < ANGLE_TOLE )
+	if ( this->orientation->differenceTo(utils::MyAngle::zeroAngle()) < ANGLE_TOLE )
 	    return x + length/2;
-	if ( this->orientation->differenceTo(MyAngle::piAngle()) < ANGLE_TOLE )
+	if ( this->orientation->differenceTo(utils::MyAngle::piAngle()) < ANGLE_TOLE )
 	    return x - length/2;
 	return x;
 }
 
 double MyLine::getFinalY(){
-	if ( this->orientation->differenceTo(MyAngle::halfPiAngle()) < ANGLE_TOLE )
+	if ( this->orientation->differenceTo(utils::MyAngle::halfPiAngle()) < ANGLE_TOLE )
 	    return y + length/2;
-	if ( this->orientation->differenceTo(MyAngle::threeHalvesPiAngle()) < ANGLE_TOLE )
+	if ( this->orientation->differenceTo(utils::MyAngle::threeHalvesPiAngle()) < ANGLE_TOLE )
 	    return y - length/2;
 	return y;
 }

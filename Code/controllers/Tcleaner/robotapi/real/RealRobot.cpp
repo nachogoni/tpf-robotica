@@ -37,7 +37,7 @@
 namespace robotapi {
 namespace real {
 
-RealRobot::RealRobot(){
+RealRobot::RealRobot(WorldInfo * wi){
 
 	protocol::PacketServer * ps = new protocol::PacketServer();
 	this->initBatteries(ps);
@@ -46,13 +46,17 @@ RealRobot::RealRobot(){
 	this->initTrashBins(ps);
 	this->initDistanceSensors(ps);
 	this->initCameras();
-
+	this->wi = wi;
 }
 
 void RealRobot::initWheels(protocol::PacketServer * ps){
 	protocol::handlers::DCMotorBoardPacketHandler * dcmbphleft = new protocol::handlers::DCMotorBoardPacketHandler(ps,DC_GROUP,DC_LEFT_ID);
 	protocol::handlers::DCMotorBoardPacketHandler * dcmbphright = new protocol::handlers::DCMotorBoardPacketHandler(ps,DC_GROUP,DC_RIGHT_ID);
-   	RealDifferentialWheels * rdw = new RealDifferentialWheels(dcmbphleft,dcmbphright,"dw0");
+   	RealDifferentialWheels * rdw = new RealDifferentialWheels(this->wi->getDistanceBetweenWheels(),
+										this->wi->getLeftWheelRadius(), this->wi->getEncoderResolution(),
+										this->wi->getInitialPosition()->getX(), this->wi->getInitialPosition()->getY(),
+										this->wi->getInitialOrientation()->getNormalizedValue(),
+										dcmbphleft,dcmbphright,"dw0");
 	this->wheels.insert( std::pair<std::string, IDifferentialWheels *>(rdw->getName(),rdw) );
 	ps->registerHandler(dcmbphleft,DC_GROUP,DC_LEFT_ID);
 	ps->registerHandler(dcmbphright,DC_GROUP,DC_RIGHT_ID);
@@ -60,7 +64,7 @@ void RealRobot::initWheels(protocol::PacketServer * ps){
 
 void RealRobot::initBatteries(protocol::PacketServer * ps){
 	protocol::handlers::BatteryBoardPacketHandler * bbph = new protocol::handlers::BatteryBoardPacketHandler(ps,BATTERY_GROUP,BATTERY_BOARD);
-   	RealBattery * rb = new RealBattery(bbph,"battery0");
+   	RealBattery * rb = new RealBattery(bbph,"b0");
 	this->batteries.insert( std::pair<std::string, IBattery *>(rb->getName(),rb) );
 	ps->registerHandler(bbph,BATTERY_GROUP,BATTERY_BOARD);
 	
