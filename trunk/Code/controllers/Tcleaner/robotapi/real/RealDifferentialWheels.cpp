@@ -3,9 +3,13 @@
 namespace robotapi {
 namespace real {
 
-RealDifferentialWheels::RealDifferentialWheels(protocol::handlers::DCMotorBoardPacketHandler * dcmbphl,
+RealDifferentialWheels::RealDifferentialWheels(double distanceBetweenWheels, double wheelRadius,
+												double encoderResolution, double initialX, double initialY,
+												double initialTheta, protocol::handlers::DCMotorBoardPacketHandler * dcmbphl,
 												protocol::handlers::DCMotorBoardPacketHandler * dcmbphr,
-												std::string name ) : RealDevice( &name ) {
+												std::string name ) : DifferentialWheelsWOdometry( distanceBetweenWheels,
+												 wheelRadius, encoderResolution, initialX, initialY, initialTheta)
+												 , RealDevice( &name ) {
 		this->leftBoard = dcmbphl;
 		this->rightBoard = dcmbphr;
 }

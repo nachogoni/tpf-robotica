@@ -141,6 +141,7 @@ void BatteryBoardPacketHandler::setEmptyBias(double bias){
 bool BatteryBoardPacketHandler::isEmpty(){
 	// Lock mutex
 	#ifdef LINUX
+	// TODO Change "LINUX" Appareances in all documents for __linux__
 	this->emptyMutex->enterMutex();
 	#endif
 

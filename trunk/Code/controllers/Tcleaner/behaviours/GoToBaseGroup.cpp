@@ -13,6 +13,7 @@ GoToBaseGroup::GoToBaseGroup(WorldInfo * wi, robotapi::IBattery * robotBatt, rob
 	this->pcBattery = pcBatt;
 	this->wi = wi;
 	this->fss = &fss;
+	this->wheels = wheels;
 	
 	behaviours::AbstractBehaviour * ab = new behaviours::FindLine( wi, wheels, fss );
 	myBehaviours[0] = ab;
@@ -62,7 +63,7 @@ bool GoToBaseGroup::inLine(){
 }
 
 bool GoToBaseGroup::inPosition(){
-	return fabs( this->wi->getOdometryInfo()->getOrientation() - this->wi->getCurrentLine()->getOrientation() ) < ORIENTATION_TOLE;
+	return fabs( this->wheels->getOrientation() - this->wi->getCurrentLine()->getOrientation() ) < ORIENTATION_TOLE;
 }
 
 } /* End of namespace behaviours */

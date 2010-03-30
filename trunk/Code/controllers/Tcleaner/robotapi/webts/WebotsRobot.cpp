@@ -15,8 +15,9 @@ namespace webts {
 
 	webots::Robot * robot;
 
-    WebotsRobot::WebotsRobot( webots::DifferentialWheels & dw){
+    WebotsRobot::WebotsRobot( WorldInfo * wi, webots::DifferentialWheels & dw){
 		robot = &dw;
+		this->wi = wi;
 	}
 
     std::string WebotsRobot::getName(){
@@ -62,7 +63,12 @@ namespace webts {
     }
 
     IDifferentialWheels & WebotsRobot::getDifferentialWheels(std::string name){
-        WebotsDifferentialWheels * df = new WebotsDifferentialWheels((webots::DifferentialWheels&)*robot);
+        WebotsDifferentialWheels * df = new WebotsDifferentialWheels(this->wi->getDistanceBetweenWheels(),
+										this->wi->getLeftWheelRadius(), this->wi->getEncoderResolution(),
+										this->wi->getInitialPosition()->getX(), this->wi->getInitialPosition()->getY(),
+										this->wi->getInitialOrientation()->getNormalizedValue(),
+										(webots::DifferentialWheels&)*robot);
+        // TODO Save 'em in order to reuse it and don't create another instance
         return * df;
     }
 

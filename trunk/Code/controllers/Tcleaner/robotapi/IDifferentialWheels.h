@@ -2,6 +2,7 @@
 #define robotapi_IDifferentialWheels_h
 
 #include "IDevice.h"
+#include <utils/MyPoint.h>
 
 namespace robotapi {
 
@@ -44,6 +45,13 @@ class IDifferentialWheels : virtual public IDevice {
     virtual bool motorIsOff()  = 0;
 
     virtual bool motorIsOff(bool left)  = 0;
+
+	virtual void computeOdometry()  = 0;
+
+	virtual double getOrientation()  = 0;
+
+	virtual utils::MyPoint * getPosition()  = 0;
+
     // virtual destructor for interface
     virtual ~IDifferentialWheels() { }
 };

@@ -3,8 +3,9 @@
 
 #include <list>
 
-#include "behaviours/AbstractBehaviour.h"
-#include "robotapi/IRobot.h"
+#include <behaviours/AbstractBehaviour.h>
+#include <robotapi/IRobot.h>
+#include <WorldInfo.h>
 
 #define DISTANCE_SENSORS 8
 #define FLOOR_SENSORS 3
@@ -14,7 +15,7 @@ class GarbageCleaner {
 
  public:
 
-    GarbageCleaner(robotapi::IRobot &robot);
+    GarbageCleaner(WorldInfo * wi, robotapi::IRobot &robot);
 
     void cleanGarbage();
 
@@ -26,7 +27,7 @@ class GarbageCleaner {
     std::list< behaviours::AbstractBehaviour* > myAbstractBehaviours;
     
  private:
-	void initializeBehaviours();
+	void initializeBehaviours(WorldInfo * wi);
 	void initializeSensors();
 
 };

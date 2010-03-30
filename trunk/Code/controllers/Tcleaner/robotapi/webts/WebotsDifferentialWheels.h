@@ -1,15 +1,14 @@
 #ifndef robotapi_webts_WebotsDifferentialWheels_h
 #define robotapi_webts_WebotsDifferentialWheels_h
 
-#include <robotapi/IDifferentialWheels.h>
+#include <robotapi/DifferentialWheelsWOdometry.h>
 #include <robotapi/Webts/WebotsDevice.h>
 #include <webots/DifferentialWheels.hpp>
 
 namespace robotapi {
 namespace webts {
 
-//class WebotsDifferentialWheels : public robotapi::IDifferentialWheels , robotapi::webts::WebotsDevice  {
-class WebotsDifferentialWheels : public robotapi::IDifferentialWheels {
+class WebotsDifferentialWheels : public robotapi::DifferentialWheelsWOdometry {
 
 public:
 
@@ -54,7 +53,9 @@ public:
     IWbDeviceTag & getTag();
 
     // Change parameter to Webots API Differential Wheels
-    WebotsDifferentialWheels(webots::DifferentialWheels & wdw);
+    WebotsDifferentialWheels(double distanceBetweenWheels, double wheelRadius,
+							double encoderResolution, double initialX, double initialY,
+							double initialTheta, webots::DifferentialWheels & wdw);
 
 	private:
 		double leftSpeed;

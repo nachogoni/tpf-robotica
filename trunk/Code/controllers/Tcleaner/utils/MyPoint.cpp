@@ -17,9 +17,23 @@ MyPoint::~MyPoint()
 	// insert your code here
 }
 
+void MyPoint::add(double x, double y){
+	this->x = this->x + x;
+	this->y = this->y + y;
+}
+
+void MyPoint::setX(double x){
+	this->x = x;
+}
+
+void MyPoint::setY(double y){
+	this->y = y;
+}
+
 double MyPoint::getX(){
 	return this->x;
 }
+
 double MyPoint::getY(){
 	return this->y;
 }

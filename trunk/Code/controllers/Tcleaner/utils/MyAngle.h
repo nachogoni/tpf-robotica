@@ -3,6 +3,8 @@
 #ifndef utils_MyAngle_h
 #define utils_MyAngle_h
 
+#include <stdlib.h>
+
 #define PI 3.1415926535897932384626433832795
 #define HALF_PI (PI/2)
 #define THREE_HALF_PI (3*HALF_PI)
@@ -10,11 +12,21 @@
 
 namespace utils {
 
+
 /**
  * No description
  */
 class MyAngle
 {
+	private:
+		double getNormalizedValue(double angle);
+		double value;
+/*
+		static MyAngle * zero;
+		static MyAngle * halfPi;
+		static MyAngle * pi;
+		static MyAngle * threeHalvesPi;
+*/
 	public:
 		// class constructor
 		MyAngle(double value);
@@ -23,14 +35,17 @@ class MyAngle
 		
 		double getNormalizedValue();
 		double differenceTo(MyAngle * ma);
+		void add(MyAngle * ma);
 		double getValue();
-		static MyAngle * zeroAngle();
-		static MyAngle * halfPiAngle();
-		static MyAngle * piAngle();
-		static MyAngle * threeHalvesPiAngle();
-	private:
-		double getNormalizedValue(double angle);
-		double value;
+
+		// TODO Make singleton variables
+		static MyAngle * zeroAngle(){ return new MyAngle(0);  }
+
+		static MyAngle * halfPiAngle(){ return new MyAngle(HALF_PI); }
+
+		static MyAngle * piAngle(){ return new MyAngle(PI); }
+
+		static MyAngle * threeHalvesPiAngle(){ return new MyAngle(THREE_HALF_PI); }
 
 };
 

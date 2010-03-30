@@ -5,31 +5,10 @@
 
 namespace utils {
 
-static MyAngle * zero = new MyAngle(0);
-static MyAngle * halfPi = new MyAngle(HALF_PI);
-static MyAngle * pi = new MyAngle(PI);
-static MyAngle * threeHalvesPi = new MyAngle(THREE_HALF_PI);
-
-static MyAngle * zeroAngle(){
-	return zero;
-}
-
-static MyAngle * halfPiAngle(){
-	return halfPi;
-}
-
-static MyAngle * piAngle(){
-	return pi;
-}
-
-static MyAngle * threeHalvesPiAngle(){
-	return threeHalvesPi;
-}
-
 // class constructor
 MyAngle::MyAngle(double value)
 {
-	this->value;
+	this->value = value;
 }
 
 // class destructor
@@ -57,6 +36,12 @@ double MyAngle::differenceTo(MyAngle * ma){
 	if ( diff > PI )
 	    return TWO_PI - diff;
 	return diff;
+}
+
+void MyAngle::add(MyAngle * ma){
+	double nv = this->getNormalizedValue();
+	double manv = ma->getNormalizedValue();
+	this->value = this->getNormalizedValue(nv + manv);
 }
 
 double MyAngle::getValue(){
