@@ -10,6 +10,11 @@ WorldInfo::WorldInfo()
 	if ( pFile == NULL )
 		throw new exception();
 */
+	this->readInitialPosition(pFile);
+	this->readInitialAngle(pFile);
+	this->readDistanceBetweenWheels(pFile);
+	this->readWheelsRadius(pFile);
+	this->readEncoderResolution(pFile);
 	this->readWalls(pFile);
 	this->readLines(pFile);
 	fclose(pFile);
@@ -44,37 +49,57 @@ void WorldInfo::readLines(FILE * f){
 	}
 }
 
-utils::MyPoint * WorldInfo::getInitialPosition(){
-	//TODO Get it from config file
-	return new utils::MyPoint(1,2);
+void WorldInfo::readDistanceBetweenWheels(FILE * f){
+	fscanf (f, "%lf\n", &this->distanceBetweenWheels);
 }
 
-utils::MyAngle * WorldInfo::getInitialOrientation(){
-	//TODO Get it from config file
-	return new utils::MyAngle(2);
+void WorldInfo::readWheelsRadius(FILE * f){
+	fscanf (f, "%lf:%lf\n", &this->leftWheelRadius,&this->rightWheelRadius);
 }
+
+void WorldInfo::readInitialPosition(FILE * f){
+	double x,y;
+	fscanf (f, "%lf:%lf\n", &x, &y);
+	this->ip = new utils::MyPoint(x,y);
+}
+
+void WorldInfo::readInitialAngle(FILE * f){
+	double angle;
+	fscanf (f, "%lf\n", &angle);
+	this->ia = new utils::MyAngle(angle);
+}
+
+void WorldInfo::readEncoderResolution(FILE * f){
+	fscanf (f, "%lf\n", &this->encoderResolution);
+}
+
 
 utils::MyLine * WorldInfo::getCurrentLine(){
 	// TODO Make calculations acording to the actual position
 	return new utils::MyLine(1,1,1,1,1);
 }
 
+utils::MyPoint * WorldInfo::getInitialPosition(){
+	return this->ip;
+}
+
+utils::MyAngle * WorldInfo::getInitialOrientation(){
+	return this->ia;
+}
+
 double WorldInfo::getDistanceBetweenWheels(){
-   	//TODO Get it from config file
-   	return 0.052;
+	return this->distanceBetweenWheels;
 }
 
 double WorldInfo::getLeftWheelRadius(){
-	//TODO Get it from config file
-	return 0.0205;
+	return this->leftWheelRadius;
 }
 
 double WorldInfo::getRightWheelRadius(){
-	//TODO Get it from config file
-	return 0.0205;
+	return this->rightWheelRadius;
 }
 
 double WorldInfo::getEncoderResolution(){
-	//TODO Get it from config file
-	return 159.23;
+	return this->encoderResolution;
 }
+

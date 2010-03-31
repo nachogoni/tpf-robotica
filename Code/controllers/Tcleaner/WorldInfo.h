@@ -25,8 +25,26 @@ class WorldInfo {
 	private:
 		std::list< utils::MyWall * > walls;
 		std::list< utils::MyLine * > lines;
+		utils::MyPoint * ip;
+		utils::MyAngle * ia;
+		double distanceBetweenWheels;
+		double leftWheelRadius;
+		double rightWheelRadius;
+		double encoderResolution;
+
+
+
+
 		void readWalls(FILE * f);
 		void readLines(FILE * f);
+		void readDistanceBetweenWheels(FILE * f);
+		void readWheelsRadius(FILE * f);
+		void readInitialPosition(FILE * f);
+		void readInitialAngle(FILE * f);
+		void readEncoderResolution(FILE * f);
+
+
+
 };
 
 #endif // WorldInfo_h
