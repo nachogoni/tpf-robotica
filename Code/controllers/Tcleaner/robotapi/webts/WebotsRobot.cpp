@@ -41,7 +41,6 @@ namespace webts {
     }
     
     ICamera & WebotsRobot::getCamera(std::string name){
-//        const_cast<webots::Camera>(
         WebotsCamera * cam = new WebotsCamera(*robot->getCamera(name));
         return * cam;
     }

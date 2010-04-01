@@ -95,9 +95,10 @@ void GarbageCleaner::initializeSensors(){
 }
 
 void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
+/*
 	behaviours::AbstractBehaviour * ab = new behaviours::Wander(wheels);
 	myAbstractBehaviours.push_back(ab);
-/*
+
 	ab = new behaviours::FocusGarbage( camera, wheels );
 	myAbstractBehaviours.push_back(ab);
 
@@ -107,12 +108,12 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 	ab = new behaviours::UnloadGarbage( trashBin , servoRear );
 	myAbstractBehaviours.push_back(ab);
 */
-	ab = new behaviours::GoToBaseGroup( wi, robotBattery , pcBattery , wheels, fss );
+	behaviours::AbstractBehaviour * ab = new behaviours::GoToBaseGroup( wi, robotBattery , pcBattery , wheels, fss );
 	myAbstractBehaviours.push_back(ab);
-	
+/*
 	ab = new behaviours::AvoidObstacle(wheels,dss);
 	myAbstractBehaviours.push_back(ab);
-
+*/
 }
 
 void GarbageCleaner::cleanGarbage()
@@ -128,7 +129,7 @@ void GarbageCleaner::cleanGarbage()
 			//std::cout << "\n" << (*it)->toString() << "\n";
 			(*it)->sense();
 		}
-		
+		wheels->computeOdometry();
 		for ( it=myAbstractBehaviours.begin() ; it != myAbstractBehaviours.end(); it++ ){
 			//std::cout << "\n" << (*it)->toString() << "\n";
 			(*it)->act();
