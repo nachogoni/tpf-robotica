@@ -33,6 +33,7 @@ GoToBaseGroup::~GoToBaseGroup()
 }
 
 void GoToBaseGroup::sense(){
+	this->setStimulusPresent();
 	if ( this->robotBattery->isEmpty() || this->pcBattery->isEmpty() )
 		this->setStimulusPresent();
 
@@ -42,6 +43,9 @@ void GoToBaseGroup::sense(){
 }
 
 void GoToBaseGroup::action(){
+	printf("Current Orientation : %g\n", this->wheels->getOrientation() );
+	this->wheels->setSpeed(25,-25);
+	return;
 	if ( !this->inLine() ){
 	    this->myBehaviours[0]->action();
 	    return;

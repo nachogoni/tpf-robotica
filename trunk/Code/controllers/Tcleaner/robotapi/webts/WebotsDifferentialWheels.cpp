@@ -42,11 +42,11 @@ namespace webts {
 	}
 
     double WebotsDifferentialWheels::getLeftEncoder(){
-		return 1.2;
+		return dw->getLeftEncoder();
 	}
 
     double WebotsDifferentialWheels::getRightEncoder(){
-		return 1.2;
+		return dw->getRightEncoder();
 	}
 
     void WebotsDifferentialWheels::moveWheels(double left, double right){

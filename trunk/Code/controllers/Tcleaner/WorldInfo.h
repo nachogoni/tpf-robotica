@@ -21,6 +21,8 @@ class WorldInfo {
 		double getLeftWheelRadius();
 		double getRightWheelRadius();
 		double getEncoderResolution();
+		double getCameraFOV();
+		double getCameraY();
 
 	private:
 		std::list< utils::MyWall * > walls;
@@ -31,6 +33,8 @@ class WorldInfo {
 		double leftWheelRadius;
 		double rightWheelRadius;
 		double encoderResolution;
+		double cameraFOV;
+		double cameraY;
 
 
 
@@ -42,8 +46,8 @@ class WorldInfo {
 		void readInitialPosition(FILE * f);
 		void readInitialAngle(FILE * f);
 		void readEncoderResolution(FILE * f);
-
-
+		void readCameraFOV(FILE * f);
+		void readCameraY(FILE * f);
 
 };
 
