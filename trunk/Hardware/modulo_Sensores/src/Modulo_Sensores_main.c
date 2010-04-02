@@ -6,6 +6,15 @@
 // Descripcion de la placa
 #define DESC		"PLACA SENSORES 1.0" // Maximo DATA_SIZE bytes
 
+// Posibles conexiones del pin TRIGGER
+#define NONE			  (0x00)
+#define ULTRASONIC_SENSOR (NONE + 1)
+#define SWITCH_SENSOR     (ULTRASONIC_SENSOR + 1)
+#define LED				  (SWITCH_SENSOR + 1)
+
+// Determina contra que esta conectado el pin TRIGGER - CAMBIARLO SEGUN CORRESPONDA
+#define TRIGGER_CONECTION	ULTRASONIC_SENSOR
+
 /* Modulo Generico - main.c
  * PIC16F88 - MAX232 - SENSORES
  *
@@ -16,7 +25,7 @@
  *       SENSE_5 -|RA4/AN4/T0CKI/C2OUT    RA7/OSC1/CLKI|- XT CLOCK pin1, 27pF to GND
  * RST/ICD2:MCLR -|RA5/MCLR/VPP           RA6/OSC2/CLKO|- XT CLOCK pin2, 27pF to GND
  *           GND -|VSS                              VDD|- +5v
- * ON/OFF SWITCH -|RB0/INT/CCP1       RB7/AN6/PGD/T1OSI|- ICD2:PGD/SENSOR_5
+ *       TRIGGER -|RB0/INT/CCP1       RB7/AN6/PGD/T1OSI|- ICD2:PGD/SENSOR_5
  *      SENSOR_1 -|RB1/SDI/SDA  RB6/AN5/PGC/T1OSO/T1CKI|- ICD2:PGC/SENSOR_4
  *  MAX232:R1OUT -|RB2/SDO/RX/DT           RB5/SS/TX/CK|- MAX232:T1IN
  *     	SENSOR_2 -|RB3/PGM/CCP1             RB4/SCK/SCL|- SENSOR_3
@@ -44,24 +53,42 @@
 #bit tx=portb.5
 #bit rx=portb.2
 
-// Led - Comparte el pin con el switch On/Off
+// Pin para el control del sensore de ultrasonido, switch on/off o led
+#bit trigger=portb.0
+// Led
 #bit led1=portb.0
 // Pin para switch On/Off
 #bit inOnOff=portb.0
+// Pin de control del sensor de ultrasonido
+#bit ultrasonido=portb.0
 
-// Telemetros - Base de los transistores
+// Sensores - Base de los transistores
 #bit sensor1=portb.1
 #bit sensor2=portb.3
 #bit sensor3=portb.4
 #bit sensor4=portb.6
 #bit sensor5=portb.7
 
-// Telemetros - Salida de los telemetros (SENSE)
+// Sensores - Salida de los sensores (SENSE)
 #bit sense1=porta.0
 #bit sense2=porta.1
 #bit sense3=porta.2
 #bit sense4=porta.3
 #bit sense5=porta.4
+
+// Define el estado logico para prender o apagar los sensores
+#define SENSOR_ON	0
+#define SENSOR_OFF	1
+
+// Tiempo para el cual ya es estable la lectura de los telemetros
+#define GET_TELEMETER_VALUE	60000
+// Tiempo entre el cambio de canal del ADC y una muestra estable (minimo 10us)
+#define ADC_DELAY	20
+// Tiempo de duracion del pulso de inicializacion para el sensor de ultrasonido
+#define STOP_USONIC_PULSE	20
+// Tiempo maximo de duracion para la toma de muestras de los sensores
+#define MAX_GET_VALUES_TIME 65000
+
 
 #include <../../protocolo/src/protocol.c>
 /*
@@ -85,14 +112,80 @@ void doCommand(struct command_t * cmd); // Examina y ejecula el comando
 
 ***/
 
+// IO como entrada o salida
+int trisB_value = 0b00100101;
+
+// Vector donde se almacenan los valores de los sensores
+long values[6];
+// Mascara que ignora ciertos sensores
+int sensorMask;
+
+// Estado para el sensor de ultrasonido
+short usonic_state;
+// Tiempo para el comienzo del pulso del sensor de ultrasonido
+long pulseStart;
+
+/* Realiza la lectura sobre los telemetros y ultrasonido */
+void getTelemeters(int sensors);
+
+/* Realiza la lectura sobre los sensores de piso y ultrasonido */
+void getFloorSensors(int sensors);
+
+#INT_EXT
+void triggerINT(void)
+{
+	if (usonic_state == 0)
+	{
+		// Tomo el tiempo en que comienza el pulso
+		pulseStart = get_timer1();
+		// Cambio el tipo de flanco
+		ext_int_edge(0, H_TO_L);
+	} else {
+		// Tomo el tiempo y guardo el valor
+		values[5] = get_timer1() - pulseStart;
+		// Deshabilita la interupcion
+		disable_interrupts(INT_EXT);
+	}
+	return;
+}	
+
 void init()
 {
 	// Inicializa puertos
 	set_tris_a(0b11111111);
-	set_tris_b(0b00100101);
+	set_tris_b(trisB_value);
 
+	// ***ADC***
+	setup_port_a(sAN0);
+	setup_adc(ADC_CLOCK_INTERNAL);
+	set_adc_channel(0);
+	setup_adc_ports(sAN0);
+	setup_vref(VREF_HIGH | 8);
+	
+	// Seteo el Timer1 como fuente interna
+	setup_timer_1(T1_INTERNAL | T1_DIV_BY_8);
+	set_timer1(0);
+	
 	// Variable para hacer el reset
 	reset = false;
+
+	// Apaga todos los sensores
+	sensor1 = SENSOR_OFF;
+	sensor2 = SENSOR_OFF;
+	sensor3 = SENSOR_OFF;
+	sensor4 = SENSOR_OFF;
+	sensor5 = SENSOR_OFF;
+
+	// Inicializa los valores
+	values[0] = 0x0000;
+	values[1] = 0x0000;
+	values[2] = 0x0000;
+	values[3] = 0x0000;
+	values[4] = 0x0000;
+	values[5] = 0x0000;
+
+	// Inicializa la mascara -> todos habilitados (0x3F)
+	sensorMask = 0x01;//0x3F;
 
 	return;	
 }	
@@ -108,14 +201,184 @@ void main()
 	// FOREVER
 	while(true)
 	{
-		// Hace sus funciones...
+
+		// Tomo valores
+		getTelemeters(0xFF);
+
+		printf("V0: %ld V1: %ld V2: %ld V3: %ld V4: %ld U: %ld\n\r", values[0], values[1], values[2], values[3], values[4], values[5]);
+
+delay_ms(100);
+
+		// Envio respuestas
 
 		// Protocolo
-		runProtocol(&command);
+	//	runProtocol(&command);
 	}
 
 	return;
 }
+
+/* Realiza la lectura sobre los telemetros y ultrasonido */
+void getTelemeters(int sensors)
+{
+	long tmr1;
+	short done = 0;
+	short usonic = 0;
+	short usonic_pulse = 0;
+	short gotSensors = 0;
+	
+	sensors &= sensorMask;
+	
+	// Habilita los sensores segun corresponda
+	
+	// Sensor1
+	if (bit_test(sensors, 0) == 1)
+		sensor1 = SENSOR_ON;
+
+	// Sensor2
+	if (bit_test(sensors, 1) == 1)
+		sensor2 = SENSOR_ON;
+
+	// Sensor3
+	if (bit_test(sensors, 2) == 1)
+		sensor3 = SENSOR_ON;
+
+	// Sensor4
+	if (bit_test(sensors, 3) == 1)
+		sensor4 = SENSOR_ON;
+
+	// Sensor5
+	if (bit_test(sensors, 4) == 1)
+		sensor5 = SENSOR_ON;
+
+	// Sensor6 -> ULTRASONIC_SENSOR
+	if ((bit_test(sensors, 5) == 1) && (TRIGGER_CONECTION == ULTRASONIC_SENSOR))
+	{
+		usonic = 1;
+		// Comienza el pulso de habilitacion -> TRIGGER como escritura
+		bit_clear(trisB_value, 0);
+		set_tris_b(trisB_value);
+		// Pin en estado habilitado
+		trigger = 1;
+		usonic_pulse = 1;
+	} else 
+	// Sensor6 -> SWITCH_SENSOR
+	if ((bit_test(sensors, 5) == 1) && (TRIGGER_CONECTION == SWITCH_SENSOR))
+	{
+		if (trigger == 1)
+			values[5] = 0xFFFF;
+		else
+			values[5] = 0;		
+	} 
+
+	// Inicializa el timer
+	set_timer1(0);
+
+	// Toma las muestras cuando corresponda	
+	while (done == 0)
+	{
+		delay_ms(1);
+		
+		// Tomo el tiempo
+		tmr1 = get_timer1();
+
+		if (tmr1 >= MAX_GET_VALUES_TIME)
+		{
+			done = 1;
+		}	
+		
+		if ((usonic_pulse == 1) && (usonic == 1) && (tmr1 >= STOP_USONIC_PULSE))
+		{
+			usonic_pulse = 0;
+			// Termina el pulso de habilitacion -> TRIGGER como lectura
+			bit_set(trisB_value, 0);
+			set_tris_b(trisB_value);
+			// Setea la interrupcion sobre RB0 en flanco ascendente
+			ext_int_edge(0, L_TO_H);
+			// Seteo el estado actual del pulso del sensor de ultrasonido
+			usonic_state = 0;
+			// Habilita la interrupcion
+			enable_interrupts(INT_EXT);
+		}	
+		
+		if ((gotSensors == 0) && (tmr1 >= GET_TELEMETER_VALUE))
+		{
+			// No reentrar			
+			gotSensors = 1;
+			
+			// Sensor1
+			if (bit_test(sensors, 0) == 1)
+			{
+				// ADC en el pin correcto
+				set_adc_channel(0);
+				// Espera el tiempo necesario
+				delay_us(ADC_DELAY);
+				// Toma la muestra
+				values[0] = read_adc();
+				sensor1 = SENSOR_OFF;
+			}
+		
+			// Sensor2
+			if (bit_test(sensors, 1) == 1)
+			{
+				// ADC en el pin correcto
+				set_adc_channel(1);
+				// Espera el tiempo necesario
+				delay_us(ADC_DELAY);
+				// Toma la muestra
+				values[1] = read_adc();
+				sensor2 = SENSOR_OFF;
+			}
+		
+			// Sensor3
+			if (bit_test(sensors, 2) == 1)
+			{
+				// ADC en el pin correcto
+				set_adc_channel(2);
+				// Espera el tiempo necesario
+				delay_us(ADC_DELAY);
+				// Toma la muestra
+				values[2] = read_adc();
+				sensor3 = SENSOR_OFF;
+			}
+		
+			// Sensor4
+			if (bit_test(sensors, 3) == 1)
+			{
+				// ADC en el pin correcto
+				set_adc_channel(3);
+				// Espera el tiempo necesario
+				delay_us(ADC_DELAY);
+				// Toma la muestra
+				values[3] = read_adc();
+				sensor4 = SENSOR_OFF;
+			}
+		
+			// Sensor5
+			if (bit_test(sensors, 4) == 1)
+			{
+				// ADC en el pin correcto
+				set_adc_channel(4);
+				// Espera el tiempo necesario
+				delay_us(ADC_DELAY);
+				// Toma la muestra
+				values[4] = read_adc();
+				sensor5 = SENSOR_OFF;
+			}
+		}
+	
+	}
+
+	return;
+}	
+
+/* Realiza la lectura sobre los sensores de piso y ultrasonido */
+void getFloorSensors(int sensors)
+{
+	// TODO
+	
+	return;	
+}	
 
 /* Verifica que el comando sea valido y lo ejecuta */
 void doCommand(struct command_t * cmd)
@@ -187,72 +450,96 @@ void doCommand(struct command_t * cmd)
 		
 		/* Comandos especificos */
 
- 		case DISTANCE_SENSOR_ENABLE_DISTANCE_SENSOR:
+ 		case DISTANCE_SENSOR_ON_DISTANCE_SENSOR:
 			/* Enciende el sensor de distancia indicado.
 			:DATO:
-			Valor de 0x00 a 0x04 que representa el id del sensor a encender.
+			Valor de 0x00 a 0x05 que representa el ID del sensor a encender.
+			El ID 0x05 hace referencia al sensor de ultrasonido o switch de la placa.
 			:RESP:
 			-
 			*/
 		break;
- 		case DISTANCE_SENSOR_DISABLE_DISTANCE_SENSOR:
+ 		case DISTANCE_SENSOR_OFF_DISTANCE_SENSOR:
 			/* Apaga el sensor de distancia indicado.
 			:DATO:
-			Valor de 0x00 a 0x04 que representa el id del sensor a apagar.
+			Valor de 0x00 a 0x05 que representa el ID del sensor a apagar. El
+			ID 0x05 hace referencia al sensor de ultrasonido o switch de la placa.
 			:RESP:
 			-
 			*/
 		break;
- 		case DISTANCE_SENSOR_SET_ALL_DISTANCE_SENSORS:
-			/* Enciende o apaga cada uno de los sensores de distancia conectados al controlador.
+ 		case DISTANCE_SENSOR_ENABLE_DISTANCE_SENSORS:
+			/* Habilita o deshabilita cada uno de los sensores de distancia conectados al
+			controlador. Permite identificar los sensores a los que se debera tener en
+			cuenta para futuras lecturas.
 			:DATO:
-			Valor de 0x00 a 0x1F donde cada bit representa el id del sensor a encender o apagar.
-			Si 2^ID = 1 entonces el sensor ID esta encendido.
-			Si 2^ID = 0 entonces el sensor ID esta apagado.
+			Valor de 0x00 a 0x3F donde cada bit representa el ID del sensor a
+			habilitar o deshabilitar. Si 2^ID = 1 entonces el sensor ID esta habilitado.
+			Si 2^ID = 0 entonces el sensor ID esta deshabilitado.
 			:RESP:
 			-
+			*/
+		break;
+ 		case DISTANCE_SENSOR_GET_STATUS:
+			/* Obtiene el estado de habilitacion de cada uno de los sensores de distancia
+			conectados al controlador.
+			:DATO:
+			-
+			:RESP:
+			Valor de 0x00 a 0x3F donde cada bit representa el ID del sensor a
+			habilitar o deshabilitar. Si 2^ID = 1 entonces el sensor ID esta habilitado.
+			Si 2^ID = 0 entonces el sensor ID esta deshabilitado.
 			*/
 		break;
  		case DISTANCE_SENSOR_GET_VALUE:
-			/* Obtiene el valor promedio de la entrada del sensor indicado.
+			/* Obtiene el valor promedio de la entrada de los sensores indicados.
 			:DATO:
-			Valor de 0x00 a 0x04 que determina el id del sensor del que se quiere la lectura.
+			Valor de 0x00 a 0x3F donde cada bit representa el ID del sensor
+			del cual obtener la lectura.
 			:RESP:
-			Valor de 0x00 a 0x04 que determina el id del sensor del que proviene el la lectura de distancia.
-			Numero entero positivo de 16 bits en el rango desde 0x0000 hasta 0x03FF, con el valor de la lectura
-			que representa la distancia al objeto.
-			*/
-		break;
- 		case DISTANCE_SENSOR_GET_ALL_VALUES:
-			/* Obtiene las distancias de cada uno de los sensores conectados al controlador.
-			:DATO:
-			-
-			:RESP:
-			Consta de 5 numero entero positivos de 16 bits concatenados, en el rango desde 0x0000 hasta 0x03FF,
-			uno para cada uno de los sensores conectados al controlador.
+			Valor de 0x00 a 0x3F donde cada bit representa el ID del sensor
+			del cual proviene el la lectura de distancia. Secuencia de numeros enteros
+			positivos de 16 bits en el rango desde 0x0000 hasta 0x03FF, con el valor de
+			la lectura que representa la distancia al objeto. En la secuencia de numeros
+			el orden esta dado de izquierda a derecha comenzando por el bit menos
+			significativo.
+			En el caso del sensor de ultrasonido el rango es desde 0x0000 hasta 0x7594
+			que representa la minima y maxima lectura del sensor.
+			En el caso del switch, un estado logico bajo se lee como 0x0000 y un estado
+			logico alto se lee como 0xFFFF.
 			*/
 		break;
  		case DISTANCE_SENSOR_GET_ONE_VALUE:
-			/* Obtiene el valor de la entrada del sensor indicado.
-			Igual al comando DISTANCE_SENSOR_GET_VALUE pero si es necesario enciende el sensor, toma la lectura y luego
-			lo apaga para un mayor ahorro de energia.
+			/* Obtiene el valor de la entrada del sensor indicado. Igual al comando 8.5 pero
+			sin realizar un promedio de lecturas.
 			:DATO:
-			Valor de 0x00 a 0x04 que determina el id del sensor del que se quiere la lectura.
+			Valor de 0x00 a 0x3F donde cada bit representa el ID del sensor
+			del cual obtener la lectura.
 			:RESP:
-			Valor de 0x00 a 0x04 que determina el id del sensor del que proviene el la lectura de distancia.
-			Numero entero positivo de 16 bits en el rango desde 0x0000 hasta 0x03FF, con el valor de la lectura
-			que representa la distancia al objeto.
+			Valor de 0x00 a 0x3F donde cada bit representa el ID del sensor
+			del cual proviene el la lectura de distancia. Secuencia de numeros enteros
+			positivos de 16 bits en el rango desde 0x0000 hasta 0x03FF, con el valor de
+			la lectura que representa la distancia al objeto. En la secuencia de numeros
+			el orden esta dado de izquierda a derecha comenzando por el bit menos
+			significativo.
+			En el caso del sensor de ultrasonido el rango es desde 0x0000 hasta 0x7594
+			que representa la minima y maxima lectura del sensor.
+			En el caso del switch, un estado logico bajo se lee como 0x0000 y un estado
+			logico alto se lee como 0xFFFF.
 			*/
 		break;
-		case DISTANCE_SENSOR_GET_ONE_VALUE_FOR_ALL:
-			/* Obtiene las distancias de cada uno de los sensores conectados al controlador.
-			Igual al comando DISTANCE_SENSOR_GET_ALL_VALUES pero si es necesario enciende los sensores, toma las lecturas
-			y luego los apaga para un mayor ahorro de energia.
+		case DISTANCE_SENSOR_ALARM_ON_STATE:
+			/* Cuando un switch esta presente en el ID: 0x05, establece si se desea o no
+			recibir una alarma ante cierto cambio de estado en el mismo. Puede ser ante
+			cualquier cambio o sobre un anco ascendente o descendente.
 			:DATO:
-			-
+			Valor entre 0x00 y 0x03 con el tipo de cambio ante el cual generar
+			la alarma. Con un 0x00 ignora cualquier cambio en el switch. Se utiliza
+			0x01 para que cualquier cambio en el switch genere el mensaje, 0x02 para
+			que sea solo ante un flanco ascendente y 0x03 para que sea solo ante un
+			flanco descendente.
 			:RESP:
-			Consta de 5 numero entero positivos de 16 bits concatenados, en el rango desde 0x0000 hasta 0x03FF,
-			uno para cada uno de los sensores conectados al controlador.
+			-
 			*/
 		break;
 		default:
