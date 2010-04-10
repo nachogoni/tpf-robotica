@@ -45,7 +45,7 @@ public:
     
 	private:
         WorldInfo * wi;
-    
+		IDifferentialWheels * df;
     };
 } /* End of namespace robotapi::webts */
 } /* End of namespace robotapi */

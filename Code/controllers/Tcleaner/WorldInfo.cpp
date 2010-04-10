@@ -19,6 +19,8 @@ WorldInfo::WorldInfo()
 	this->readLines(pFile);
 	this->readCameraY(pFile);
 	this->readCameraFOV(pFile);
+	this->readDistanceBetweenWheelsFactor(pFile);
+	this->readWheelsFactors(pFile);
 	fclose(pFile);
 
 }
@@ -52,6 +54,11 @@ void WorldInfo::readLines(FILE * f){
 }
 
 void WorldInfo::readDistanceBetweenWheels(FILE * f){
+	fscanf (f, "%lf\n", &this->distanceBetweenWheelsFactor);
+	printf("%g\n",this->distanceBetweenWheelsFactor);
+}
+
+void WorldInfo::readDistanceBetweenWheelsFactor(FILE * f){
 	fscanf (f, "%lf\n", &this->distanceBetweenWheels);
 	printf("%g\n",this->distanceBetweenWheels);
 }
@@ -59,6 +66,11 @@ void WorldInfo::readDistanceBetweenWheels(FILE * f){
 void WorldInfo::readWheelsRadius(FILE * f){
 	fscanf (f, "%lf:%lf\n", &this->leftWheelRadius,&this->rightWheelRadius);
 	printf("%g:%g\n",this->leftWheelRadius,this->rightWheelRadius);
+}
+
+void WorldInfo::readWheelsFactors(FILE * f){
+	fscanf (f, "%lf:%lf\n", &this->leftWheelFactor,&this->rightWheelFactor);
+	printf("%g:%g\n",this->leftWheelFactor,this->rightWheelFactor);
 }
 
 void WorldInfo::readInitialPosition(FILE * f){
@@ -107,12 +119,24 @@ double WorldInfo::getDistanceBetweenWheels(){
 	return this->distanceBetweenWheels;
 }
 
+double WorldInfo::getDistanceBetweenWheelsFactor(){
+	return this->distanceBetweenWheelsFactor;
+}
+
 double WorldInfo::getLeftWheelRadius(){
 	return this->leftWheelRadius;
 }
 
+double WorldInfo::getLeftWheelFactor(){
+	return this->leftWheelFactor;
+}
+
 double WorldInfo::getRightWheelRadius(){
 	return this->rightWheelRadius;
+}
+
+double WorldInfo::getRightWheelFactor(){
+	return this->rightWheelFactor;
 }
 
 double WorldInfo::getEncoderResolution(){

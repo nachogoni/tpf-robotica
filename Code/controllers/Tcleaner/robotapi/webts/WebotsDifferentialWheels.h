@@ -4,6 +4,7 @@
 #include <robotapi/DifferentialWheelsWOdometry.h>
 #include <robotapi/Webts/WebotsDevice.h>
 #include <webots/DifferentialWheels.hpp>
+#include <WorldInfo.h>
 
 namespace robotapi {
 namespace webts {
@@ -53,9 +54,7 @@ public:
     IWbDeviceTag & getTag();
 
     // Change parameter to Webots API Differential Wheels
-    WebotsDifferentialWheels(double distanceBetweenWheels, double wheelRadius,
-							double encoderResolution, double initialX, double initialY,
-							double initialTheta, webots::DifferentialWheels & wdw);
+    WebotsDifferentialWheels(WorldInfo * wi, webots::DifferentialWheels & wdw);
 
 	private:
 		double leftSpeed;

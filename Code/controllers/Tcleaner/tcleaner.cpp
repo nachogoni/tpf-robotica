@@ -26,6 +26,9 @@ int main(int argc, char *argv[])
 //    robotapi::real::RealRobot * robot = new robotapi::real::RealRobot(wi);
 	GarbageCleaner::GarbageCleaner * gc = new GarbageCleaner::GarbageCleaner(wi, *robot);
 	gc->cleanGarbage();
-  
+/*
+  printf("HOLA\n");
+  system("PAUSE");
+  */
     return EXIT_SUCCESS;
 }

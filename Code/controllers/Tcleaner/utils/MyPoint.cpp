@@ -38,4 +38,10 @@ double MyPoint::getY(){
 	return this->y;
 }
 
+std::ostream& MyPoint::operator<<(std::ostream& out) {
+  out << "(" << this->x << "," << this->y << ")";
+  return out;
+}
+
+
 }

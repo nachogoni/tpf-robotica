@@ -5,7 +5,7 @@
 #include <robotapi/DifferentialWheelsWOdometry.h>
 #include <protocol/handlers/DCMotorBoardPacketHandler.h>
 #include <robotapi/real/RealDevice.h>
-
+#include <WorldInfo.h>
 
 namespace robotapi {
 namespace real {
@@ -13,10 +13,7 @@ namespace real {
 class RealDifferentialWheels : public robotapi::DifferentialWheelsWOdometry , public robotapi::real::RealDevice {
 
 	public:
-		RealDifferentialWheels(double distanceBetweenWheels, double wheelRadius,
-								double encoderResolution, double initialX,
-								double initialY, double initialTheta,
-								protocol::handlers::DCMotorBoardPacketHandler * dcmbphl,
+		RealDifferentialWheels(WorldInfo * wi, protocol::handlers::DCMotorBoardPacketHandler * dcmbphl,
 								protocol::handlers::DCMotorBoardPacketHandler * dcmbphr,
 								std::string name);
 

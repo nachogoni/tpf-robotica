@@ -3,14 +3,13 @@
 
 namespace robotapi {
 
-DifferentialWheelsWOdometry::DifferentialWheelsWOdometry(double distanceBetweenWheels, double wheelRadius,
-							double encoderResolution, double initialX,
-							double initialY, double initialTheta){
- 		this->distanceBetweenWheels = distanceBetweenWheels;
-		this->wheelRadius = wheelRadius;
-		this->encoderResolution = encoderResolution;
-		this->lastPosition = new utils::MyPoint(initialX,initialY);
-		this->lastAngle = new utils::MyAngle(initialTheta);
+DifferentialWheelsWOdometry::DifferentialWheelsWOdometry(WorldInfo * wi){
+ 		this->distanceBetweenWheels = wi->getDistanceBetweenWheels() * wi->getDistanceBetweenWheelsFactor();
+		this->leftWheelRadius = wi->getLeftWheelRadius() * wi->getLeftWheelFactor();
+		this->rightWheelRadius = wi->getRightWheelRadius() * wi->getRightWheelFactor();
+		this->encoderResolution = wi->getEncoderResolution();
+		this->lastPosition = wi->getInitialPosition();
+		this->lastAngle = wi->getInitialOrientation();
 		this->lastLeftEncoder = this->getLeftEncoder();
 		this->lastRightEncoder = this->getRightEncoder();
 }
@@ -21,9 +20,15 @@ double DifferentialWheelsWOdometry::getRightEncoder(){return 0.0;}
 void DifferentialWheelsWOdometry::computeOdometry() {
 	double l = this->getLeftEncoder();
 	double r = this->getRightEncoder();
-	double dl = (l - this->lastLeftEncoder ) * this->wheelRadius / this->encoderResolution ; // distance covered by left wheel in meter
-	double dr = (r - this->lastRightEncoder ) * this->wheelRadius / this->encoderResolution ; // distance covered by right wheel in meter
-
+	/*
+	printf("COMPUTE START\n");
+	printf("%g - %g\n",this->lastLeftEncoder,this->lastLeftEncoder);
+	printf("%g - %g\n",l,r);
+	printf("%g - %g - %g\n",this->leftWheelRadius, this->leftWheelFactor, this->encoderResolution);
+	*/
+	double dl = (l - this->lastLeftEncoder ) * this->leftWheelRadius / this->encoderResolution ; // distance covered by left wheel in meter
+	double dr = (r - this->lastRightEncoder ) * this->rightWheelRadius / this->encoderResolution ; // distance covered by right wheel in meter
+	//printf("%g - %g\n",dl,dr);
 	this->computePosition(dl, dr);
 
 	this->lastLeftEncoder = l;
@@ -32,6 +37,7 @@ void DifferentialWheelsWOdometry::computeOdometry() {
 	//printf("estimated distance covered by left wheel: %g m.\n",dl);
 	//printf("estimated distance covered by right wheel: %g m.\n",dr);
 	//printf("estimated change of orientation: %g rad.\n",da);
+//	printf("COMPUTE END\n");
 }
 
 void DifferentialWheelsWOdometry::computePosition(double ldist, double rdist){

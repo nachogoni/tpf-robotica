@@ -4,6 +4,7 @@
 #include <robotapi/IDifferentialWheels.h>
 #include <utils/MyPoint.h>
 #include <utils/MyAngle.h>
+#include <WorldInfo.h>
 
 namespace robotapi {
 
@@ -11,9 +12,7 @@ class DifferentialWheelsWOdometry : public robotapi::IDifferentialWheels {
 
 		public:
 
-    		DifferentialWheelsWOdometry(double distanceBetweenWheels, double wheelRadius,
-										double encoderResolution, double initialX,
-										double initialY, double initialTheta);
+    		DifferentialWheelsWOdometry(WorldInfo * wi);
 
 			// class destructor
 			virtual ~DifferentialWheelsWOdometry(){};
@@ -29,7 +28,8 @@ class DifferentialWheelsWOdometry : public robotapi::IDifferentialWheels {
 		private:
         	void computePosition(double ldist, double rdist);
 	        double distanceBetweenWheels;
-			double wheelRadius;
+			double leftWheelRadius;
+			double rightWheelRadius;
 			double encoderResolution;
 			double lastLeftEncoder;
 			double lastRightEncoder;

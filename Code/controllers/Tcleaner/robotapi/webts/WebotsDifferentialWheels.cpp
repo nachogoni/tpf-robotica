@@ -7,13 +7,8 @@ namespace webts {
    	IWbDeviceTag dwtag;
 
 //    WebotsDifferentialWheels::WebotsDifferentialWheels(webots::DifferentialWheels & wdw) : WebotsDevice ( wdw ){
-    WebotsDifferentialWheels::WebotsDifferentialWheels(double distanceBetweenWheels, double wheelRadius,
-														double encoderResolution, double initialX,
-														double initialY, double initialTheta,
-														webots::DifferentialWheels & wdw)
-														: DifferentialWheelsWOdometry(distanceBetweenWheels,
-														wheelRadius, encoderResolution, initialX,
-														initialY, initialTheta){
+    WebotsDifferentialWheels::WebotsDifferentialWheels(WorldInfo * wi, webots::DifferentialWheels & wdw)
+														: DifferentialWheelsWOdometry(wi){
 		dw = &wdw;
 		dwname = "dw1";
 		dwtag = *new WebotsDeviceTag(3);
