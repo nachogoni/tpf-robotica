@@ -20,6 +20,9 @@ class WorldInfo {
 		double getDistanceBetweenWheels();
 		double getLeftWheelRadius();
 		double getRightWheelRadius();
+		double getDistanceBetweenWheelsFactor();
+		double getLeftWheelFactor();
+		double getRightWheelFactor();
 		double getEncoderResolution();
 		double getCameraFOV();
 		double getCameraY();
@@ -30,8 +33,11 @@ class WorldInfo {
 		utils::MyPoint * ip;
 		utils::MyAngle * ia;
 		double distanceBetweenWheels;
+		double distanceBetweenWheelsFactor;
 		double leftWheelRadius;
+		double leftWheelFactor;
 		double rightWheelRadius;
+		double rightWheelFactor;
 		double encoderResolution;
 		double cameraFOV;
 		double cameraY;
@@ -42,7 +48,9 @@ class WorldInfo {
 		void readWalls(FILE * f);
 		void readLines(FILE * f);
 		void readDistanceBetweenWheels(FILE * f);
+		void readDistanceBetweenWheelsFactor(FILE * f);
 		void readWheelsRadius(FILE * f);
+		void readWheelsFactors(FILE * f);
 		void readInitialPosition(FILE * f);
 		void readInitialAngle(FILE * f);
 		void readEncoderResolution(FILE * f);

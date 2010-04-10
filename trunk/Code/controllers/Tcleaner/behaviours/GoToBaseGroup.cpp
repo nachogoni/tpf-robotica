@@ -44,6 +44,7 @@ void GoToBaseGroup::sense(){
 
 void GoToBaseGroup::action(){
 	printf("Current Orientation : %g\n", this->wheels->getOrientation() );
+	printf("Current Position : ( %g ; %g )\n", this->wheels->getPosition()->getX(), this->wheels->getPosition()->getY() );
 	this->wheels->setSpeed(25,-25);
 	return;
 	if ( !this->inLine() ){

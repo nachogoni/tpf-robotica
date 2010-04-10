@@ -2,6 +2,7 @@
 
 #ifndef utils_MyPoint_h
 #define utils_MyPoint_h
+#include <iostream>
 
 namespace utils {
 
@@ -21,7 +22,7 @@ class MyPoint
 		void add(double x, double y);
 		void setX(double x);
 		void setY(double y);
-		
+		std::ostream& operator<<(std::ostream& out);
 	private:
 		double x;
 		double y;

@@ -52,11 +52,8 @@ RealRobot::RealRobot(WorldInfo * wi){
 void RealRobot::initWheels(protocol::PacketServer * ps){
 	protocol::handlers::DCMotorBoardPacketHandler * dcmbphleft = new protocol::handlers::DCMotorBoardPacketHandler(ps,DC_GROUP,DC_LEFT_ID);
 	protocol::handlers::DCMotorBoardPacketHandler * dcmbphright = new protocol::handlers::DCMotorBoardPacketHandler(ps,DC_GROUP,DC_RIGHT_ID);
-   	RealDifferentialWheels * rdw = new RealDifferentialWheels(this->wi->getDistanceBetweenWheels(),
-										this->wi->getLeftWheelRadius(), this->wi->getEncoderResolution(),
-										this->wi->getInitialPosition()->getX(), this->wi->getInitialPosition()->getY(),
-										this->wi->getInitialOrientation()->getNormalizedValue(),
-										dcmbphleft,dcmbphright,"dw0");
+   	RealDifferentialWheels * rdw = new RealDifferentialWheels(this->wi,dcmbphleft,dcmbphright,"dw0");
+
 	this->wheels.insert( std::pair<std::string, IDifferentialWheels *>(rdw->getName(),rdw) );
 	ps->registerHandler(dcmbphleft,DC_GROUP,DC_LEFT_ID);
 	ps->registerHandler(dcmbphright,DC_GROUP,DC_RIGHT_ID);
