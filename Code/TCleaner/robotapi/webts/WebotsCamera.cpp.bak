@@ -1,7 +1,0 @@
-#include "WebotsCamera.h"
-
-namespace robotapi {
-namespace webts {
-
-} /* End of namespace robotapi::webots */
-} /* End of namespace robotapi */
