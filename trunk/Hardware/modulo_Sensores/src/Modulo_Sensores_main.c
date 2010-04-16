@@ -131,6 +131,20 @@ void getTelemeters(int sensors);
 /* Realiza la lectura sobre los sensores de piso y ultrasonido */
 void getFloorSensors(int sensors);
 
+long count = 0;
+
+#INT_TIMER1
+void counter(void)
+{
+	//set_timer1(64918); // Cada 1ms
+	//set_timer1(28042); // Cada 60ms
+	set_timer1(26792); // Cada 62ms
+	disable_interrupts(INT_TIMER1);
+	//count++;
+	/*if (count == 60)
+		count = 0;*/
+}
+
 #INT_EXT
 void triggerINT(void)
 {
@@ -139,7 +153,9 @@ void triggerINT(void)
 		// Tomo el tiempo en que comienza el pulso
 		pulseStart = get_timer1();
 		// Cambio el tipo de flanco
-		ext_int_edge(0, H_TO_L);
+		ext_int_edge(H_TO_L);
+		// Cambio el estado
+		usonic_state = 1;
 	} else {
 		// Tomo el tiempo y guardo el valor
 		values[5] = get_timer1() - pulseStart;
@@ -164,7 +180,17 @@ void init()
 	
 	// Seteo el Timer1 como fuente interna
 	setup_timer_1(T1_INTERNAL | T1_DIV_BY_8);
-	set_timer1(0);
+	set_timer1(26786);
+	
+	// Interrupcion sobre el Timer1
+	enable_interrupts(INT_TIMER1);
+
+	// Seteo el pin RB0 - Sensor de ultrasonido :)
+	ext_int_edge(L_TO_H);
+	enable_interrupts(INT_EXT);
+
+	// Habilito las interrupciones
+	enable_interrupts(GLOBAL);
 	
 	// Variable para hacer el reset
 	reset = false;
@@ -182,7 +208,9 @@ void init()
 	values[2] = 0x0000;
 	values[3] = 0x0000;
 	values[4] = 0x0000;
-	values[5] = 0x0000;
+	values[5] = 0xABCD;
+	
+	usonic_state = 0;
 
 	// Inicializa la mascara -> todos habilitados (0x3F)
 	sensorMask = 0x01;//0x3F;
@@ -201,13 +229,14 @@ void main()
 	// FOREVER
 	while(true)
 	{
+			
 
 		// Tomo valores
-		getTelemeters(0xFF);
+//		getTelemeters(0xFF);
 
-		printf("V0: %ld V1: %ld V2: %ld V3: %ld V4: %ld U: %ld\n\r", values[0], values[1], values[2], values[3], values[4], values[5]);
+//		printf("V0: %ld V1: %ld V2: %ld V3: %ld V4: %ld U: %ld\n\r", values[0], values[1], values[2], values[3], values[4], values[5]);
 
-delay_ms(100);
+//delay_ms(100);
 
 		// Envio respuestas
 
