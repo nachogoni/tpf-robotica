@@ -21,7 +21,7 @@
  * Given a binary image returns a sequence of contours found in 
  * the image.
  */
-CvSeq ** 
+CvSeq * 
 findContours(IplImage * image){
 	
 	CvMemStorage* storage = cvCreateMemStorage(0);
@@ -38,29 +38,29 @@ findContours(IplImage * image){
 			sizeof(CvContour),CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, 
 			cvPoint(0,0) );
 			
-	if( (polygonArray=(void**)malloc(sizeof(CvSeq*)*(numberOfContours+1)))==NULL){
-		perror("Out of memory");
-		return NULL;
-	} 
-		
-	while(contours!=NULL){
-			contourPerimeter=cvContourPerimeter(contours);
-			aContour=cvApproxPoly (contours, sizeof(CvContour),
-				storage,CV_POLY_APPROX_DP, contourPerimeter/PER_TOLERANCE
-				, 0);
-			
-			//add polygon to return array
-			polygonArray[polyIndex]=aContour;
-			// take the next contour
-			contours = contours->h_next;
-			polyIndex++;
+	return contours;
+
 	}
 	
-    		
-	polygonArray[polyIndex]=NULL;
-	cvReleaseMemStorage( &storage );
-	return polygonArray;
-}
+   
+CvSeq * 
+getPolygon(CvSeq * aContour)
+	{
+		CvMemStorage* storage = cvCreateMemStorage(0);
+		double contourPerimeter;
+		CvSeq* aPolyContour;
+		
+		contourPerimeter=cvContourPerimeter(aContour);
+		aPolyContour=cvApproxPoly (aContour, sizeof(CvContour),
+				storage,CV_POLY_APPROX_DP, contourPerimeter/PER_TOLERANCE
+				, 0);
+		
+		
+		
+		return aPolyContour;
+	
+	
+	}
 
 /* 
  * Prints a contour on a dst Image.
