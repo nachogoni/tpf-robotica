@@ -101,7 +101,9 @@ int main(int argc,char * argv[]){
 	CvRect boundingRect;
 	
 	//contours
-	CvSeq ** contours;
+	CvSeq * contours;
+	CvSeq * aContour;
+	CvSeq * polygonContour;
 	
 	//Main loop
 	while(src=cvQueryFrame(capture)){
@@ -136,24 +138,29 @@ int main(int argc,char * argv[]){
 		
 		cont_index=0;
 		cvCopy(src,contourImage,0);
-		while(contours[cont_index]!=NULL){
-			CvSeq * aContour=contours[cont_index];
+		aContour=contours;
+		
+		while(contours!=NULL){
+			aContour=contours;
+			polygonContour=getPolygon(aContour);
+			
 			//apply filters
-			if(perimeterFilter(aContour,MINCONTOUR_PERIMETER,
+			if(perimeterFilter(polygonContour,MINCONTOUR_PERIMETER,
 				MAXCONTOUR_PERIMETER) &&
 				//areaFilter(aContour,MINCONTOUR_AREA,MAXCONTOUR_AREA) &&
-				rectangularAspectFilter(aContour,CONTOUR_RECTANGULAR_MIN_RATIO,
+				rectangularAspectFilter(polygonContour,CONTOUR_RECTANGULAR_MIN_RATIO,
 					CONTOUR_RECTANGULAR_MAX_RATIO) &&
 				boxAreaFilter(aContour,BOXFILTER_TOLERANCE) &&
-				histogramMatchingFilter(src,aContour,testImageHistogram,
+				histogramMatchingFilter(src,polygonContour,testImageHistogram,
 					HIST_H_BINS,HIST_S_BINS,HIST_MIN)){
 
 					//if passed filters
-					printContour(aContour,3,cvScalar(127,127,0,0),
+				
+					printContour(polygonContour,3,cvScalar(127,127,0,0),
 						contourImage);
 				
 					//get contour bounding box
-					boundingRect=cvBoundingRect(aContour,0);
+					boundingRect=cvBoundingRect(polygonContour,0);
 					cvRectangle(contourImage,cvPoint(boundingRect.x,boundingRect.y),
 							cvPoint(boundingRect.x+boundingRect.width,
 							boundingRect.y+boundingRect.height),
@@ -161,6 +168,8 @@ int main(int argc,char * argv[]){
 				}
 				
 			cont_index++;
+			cvReleaseMemStorage( &polygonContour->storage );
+			contours=contours->h_next;
 		}
 		
 		cvShowImage("output",contourImage);
