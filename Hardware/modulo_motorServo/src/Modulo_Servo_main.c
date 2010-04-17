@@ -61,6 +61,7 @@
 
 short reset; // Variable para hacer el reset
 short crcOK; // Informa si el CRC del paquete parseado fue correcto
+short sendResponse; // Informa que no debe mandarse la respuesta automatica
 
 char buffer[MAX_BUFFER_SIZE];	// Buffer de recepcion de comandos
 int buffer_write;				// Indice de escritura

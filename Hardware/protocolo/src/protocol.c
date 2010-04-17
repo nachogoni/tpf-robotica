@@ -2,6 +2,7 @@
 
 short reset;
 short crcOK;
+short sendResponse;
 
 char buffer[MAX_BUFFER_SIZE];
 int buffer_write;
@@ -112,6 +113,8 @@ void runProtocol(struct command_t * cmd)
 		if (buffer_read == MAX_BUFFER_SIZE)
 			buffer_read = 0;
 
+		sendResponse = true;
+
 		// Soy el destinatario?
 		if (cmd->to == THIS_CARD)
 		{
@@ -149,8 +152,12 @@ void runProtocol(struct command_t * cmd)
 			response = *cmd;
 		}
 	
-		// Envia la respuesta...
-		send(&response);
+		// Envia la respuesta?
+		if (sendResponse == true)
+		{
+			send(&response);
+		}	
+
 	}
 	
 	// Reset del micro
