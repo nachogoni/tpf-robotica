@@ -6,14 +6,27 @@
 // Descripcion de la placa
 #define DESC		"PLACA SENSORES 1.0" // Maximo DATA_SIZE bytes
 
-// Posibles conexiones del pin TRIGGER
-#define NONE			  (0x00)
-#define ULTRASONIC_SENSOR (NONE + 1)
-#define SWITCH_SENSOR     (ULTRASONIC_SENSOR + 1)
-#define LED				  (SWITCH_SENSOR + 1)
+// Determina el tipo de sensores principales en la placa - CAMBIARLO SEGUN CORRESPONDA
+// Posibles valores: FLOOR_SENSORS o TELEMETERS_SENSORS o NONE
+#define SENSORS_TYPE	TELEMETERS_SENSORS
 
 // Determina contra que esta conectado el pin TRIGGER - CAMBIARLO SEGUN CORRESPONDA
-#define TRIGGER_CONECTION	ULTRASONIC_SENSOR
+// Posibles valores: NONE o ULTRASONIC_SENSOR o SWITCH_SENSOR o LED
+#define TRIGGER_TYPE	SWITCH_SENSOR
+
+// Define el estado logico para prender o apagar los sensores - CAMBIARLO SEGUN CORRESPONDA
+#define SENSOR_ON	0
+#define SENSOR_OFF	1
+
+// Ancho del pulso que se debe enviar al sensor de ultrasonido como INIT - CAMBIARLO SEGUN CORRESPONDA
+#define ULTRASONIC_INIT_PULSE_WIDTH_US	15
+
+// Tiempo necesario para realizar la lectura en los telemetros - CAMBIARLO SEGUN CORRESPONDA
+#define TELEMETERS_WAITING_TIME_CYCLES	26792 //62ms
+// Tiempo necesario para realizar la lectura en los sensores de piso - CAMBIARLO SEGUN CORRESPONDA
+#define FLOOR_WAITING_TIME_CYCLES		62411 //32ms
+// Tiempo necesario para realizar la lectura del sensor de ultrasonido - CAMBIARLO SEGUN CORRESPONDA
+#define ULTRASONIC_WAITING_TIME_CYCLES	45536 //5ms
 
 /* Modulo Generico - main.c
  * PIC16F88 - MAX232 - SENSORES
@@ -76,19 +89,53 @@
 #bit sense4=porta.3
 #bit sense5=porta.4
 
-// Define el estado logico para prender o apagar los sensores
-#define SENSOR_ON	0
-#define SENSOR_OFF	1
+// Estados para la maquina de estados que controla las funciones de la placa
+#define STATE_FREE			0
+#define STATE_START_READING	1 
+#define STATE_WAIT_TO_READ	2
+#define STATE_READ_VALUES	3
+#define STATE_WAITING		4
 
-// Tiempo para el cual ya es estable la lectura de los telemetros
-#define GET_TELEMETER_VALUE	60000
-// Tiempo entre el cambio de canal del ADC y una muestra estable (minimo 10us)
-#define ADC_DELAY	20
-// Tiempo de duracion del pulso de inicializacion para el sensor de ultrasonido
-#define STOP_USONIC_PULSE	20
-// Tiempo maximo de duracion para la toma de muestras de los sensores
-#define MAX_GET_VALUES_TIME 65000
+// Estados para la lectura del sensor de ultrasonido
+#define USONIC_STATE_START	0
+#define USONIC_STATE_STOP	1 
 
+// Posibles conexiones del pin TRIGGER
+#define NONE			  (0x00)
+#define ULTRASONIC_SENSOR (NONE + 1)
+#define SWITCH_SENSOR     (ULTRASONIC_SENSOR + 1)
+#define LED				  (SWITCH_SENSOR + 1)
+
+// Posibles sensores principales
+#define TELEMETERS_SENSORS (NONE + 1)
+#define FLOOR_SENSORS      (TELEMETERS_SENSORS + 1)
+
+// Tiempo maximo para NONE
+#define NONE_TIME	65536 //0ms
+#define SWITCH_TIME 65536 //0ms
+#define LED_TIME 	65536 //0ms
+
+#if SENSORS_TYPE == FLOOR_SENSORS
+	#define SENSORS_WAITING_TIME FLOOR_WAITING_TIME_CYCLES
+#elif SENSORS_TYPE == TELEMETERS_SENSORS
+	#define SENSORS_WAITING_TIME TELEMETERS_WAITING_TIME_CYCLES
+#elif SENSORS_TYPE == NONE
+	#define SENSORS_WAITING_TIME NONE_TIME
+#endif
+
+#if TRIGGER_TYPE == ULTRASONIC_SENSOR
+	#if SENSORS_WAITING_TIME > ULTRASONIC_WAITING_TIME_CYCLES
+		#define SENSORS_WAITING_TIME ULTRASONIC_WAITING_TIME_CYCLES
+	#endif
+#elif TRIGGER_TYPE == SWITCH_SENSOR
+	#if SENSORS_WAITING_TIME > SWITCH_TIME
+		#define SENSORS_WAITING_TIME SWITCH_TIME
+	#endif
+#elif TRIGGER_TYPE == LED
+	#if SENSORS_WAITING_TIME > LED_TIME
+		#define SENSORS_WAITING_TIME LED_TIME
+	#endif
+#endif
 
 #include <../../protocolo/src/protocol.c>
 /*
@@ -115,55 +162,51 @@ void doCommand(struct command_t * cmd); // Examina y ejecula el comando
 // IO como entrada o salida
 int trisB_value = 0b00100101;
 
+// Determina el estado actual
+int state;
+
 // Vector donde se almacenan los valores de los sensores
 long values[6];
+
 // Mascara que ignora ciertos sensores
 int sensorMask;
 
+// Determina cuales sensores estan siendo leidos en este instante
+int actualReadSensor;
+
+// Determina cuales son los sensores de los que se pide la lectura
+int readSensor;
+
+// Bufferea el pedido de sensores de los que se pide la lectura
+int bufferReadSensor;
+
 // Estado para el sensor de ultrasonido
 short usonic_state;
-// Tiempo para el comienzo del pulso del sensor de ultrasonido
-long pulseStart;
 
-/* Realiza la lectura sobre los telemetros y ultrasonido */
-void getTelemeters(int sensors);
+/* Habilita los sensores segun corresponda para comenzar la lectura*/
+void startReading(int sensors);
 
-/* Realiza la lectura sobre los sensores de piso y ultrasonido */
-void getFloorSensors(int sensors);
+/* Interrupcion del TIMER1 */
+void int_timer(void);
 
-long count = 0;
+/* Interrupcion de RB0 */
+void int_trigger(void);
 
+/* Interrupcion del TIMER1 */
 #INT_TIMER1
-void counter(void)
+void int_timer(void)
 {
-	//set_timer1(64918); // Cada 1ms
-	//set_timer1(28042); // Cada 60ms
-	set_timer1(26792); // Cada 62ms
+	/*TODO*/
 	disable_interrupts(INT_TIMER1);
-	//count++;
-	/*if (count == 60)
-		count = 0;*/
 }
 
+/* Interrupcion de RB0 */
 #INT_EXT
-void triggerINT(void)
+void int_trigger(void)
 {
-	if (usonic_state == 0)
-	{
-		// Tomo el tiempo en que comienza el pulso
-		pulseStart = get_timer1();
-		// Cambio el tipo de flanco
-		ext_int_edge(H_TO_L);
-		// Cambio el estado
-		usonic_state = 1;
-	} else {
-		// Tomo el tiempo y guardo el valor
-		values[5] = get_timer1() - pulseStart;
-		// Deshabilita la interupcion
-		disable_interrupts(INT_EXT);
-	}
-	return;
-}	
+	/*TODO*/
+	disable_interrupts(INT_EXT);
+}
 
 void init()
 {
@@ -210,10 +253,20 @@ void init()
 	values[4] = 0x0000;
 	values[5] = 0xABCD;
 	
-	usonic_state = 0;
-
 	// Inicializa la mascara -> todos habilitados (0x3F)
 	sensorMask = 0x01;//0x3F;
+	
+	//Determina el estado actual
+	state = STATE_FREE;
+	
+	// Sin lectura temprana
+	readSensor = 0x00;
+
+#elif TRIGGER_TYPE == LED
+	// TRIGGER como escritura
+	bit_clear(trisB_value, 0);
+	set_tris_b(trisB_value);
+#endif
 
 	return;	
 }	
@@ -229,37 +282,110 @@ void main()
 	// FOREVER
 	while(true)
 	{
-			
+		
+		// Ejecucion de la maquina de estados
+		switch (state)
+		{
+			case STATE_FREE:
+				/*
+				* Analiza los paquetes y retransmite o lanza el pedido de lectura
+				*/
+				// Protocolo
+				runProtocol(&command);
+				
+				if (readSensor != 0x00)
+				{
+					// Almacena el pedido sobre los sensores
+					actualReadSensor = readSensor;
+					readSensor = 0x00;
+					// Cambio de estado
+					state = STATE_START_READING;
+				}	
+				break;
+			case STATE_START_READING:
+				/*
+				* Genera un pedido de lectura a los sensores que lo necesiten
+				* y setea los TIMERs para contabilizar los tiempos
+				*/
 
-		// Tomo valores
-//		getTelemeters(0xFF);
+				// Inhabilita los sensores enmascarados
+				actualReadSensor &= sensorMask;
+				
+				// Pedido de -START-
+				startReading(actualReadSensor);
+				
+				// Seteo de TIMERs
+				set_timer1(SENSORS_WAITING_TIME);
+				enable_interrupts(INT_TIMER1);
+				
+				// Cambio de estado
+				state = STATE_WAIT_TO_READ;
+				
+				break;
+			case STATE_WAIT_TO_READ:
+				/*
+				* Espera el tiempo necesario para tomar las muestras en los sensores
+				* Recibe nuevos pedidos y los encola para una proxima lectura o 
+				* envia un mensaje de error de lectura en progreso 
+				* TODO: VER ESTO
+				*/
+				// Protocolo
+				runProtocol(&command);
+				
+				if (readSensor != 0x00)
+				{
+					// Almacena el pedido sobre los sensores
+					bufferReadSensor |= readSensor;
+					readSensor = 0x00;
+				}
+				
+				// Cambio de estado?
+				//TODO:
+				
+				break;
+			case STATE_READ_VALUES:
+				/*
+				* Toma las muestras en los sensores y envia el paquete de respuesta
+				*/
+				break;
+			case STATE_WAITING:
+				/*
+				* Espera a que pase el tiempo de espera entre lecturas para evitar rebotes
+				* Recibe nuevos pedidos y los encola para una proxima lectura o 
+				* envia un mensaje de error de lectura en progreso 
+				* TODO: VER ESTO
+				*/
+				runProtocol(&command);
+				
+				if (readSensor != 0x00)
+				{
+					// Almacena el pedido sobre los sensores
+					bufferReadSensor |= readSensor;
+					readSensor = 0x00;
+				}
+				
+				// Cambio de estado?
+				//TODO:
+				
+				break;
+			default:
+				init();
+				break;
+		}	
 
-//		printf("V0: %ld V1: %ld V2: %ld V3: %ld V4: %ld U: %ld\n\r", values[0], values[1], values[2], values[3], values[4], values[5]);
-
-//delay_ms(100);
-
-		// Envio respuestas
-
-		// Protocolo
-	//	runProtocol(&command);
 	}
 
 	return;
 }
 
-/* Realiza la lectura sobre los telemetros y ultrasonido */
-void getTelemeters(int sensors)
+
+/* TODO */
+
+
+
+/* Habilita los sensores segun corresponda para comenzar la lectura*/
+void startReading(int sensors)
 {
-	long tmr1;
-	short done = 0;
-	short usonic = 0;
-	short usonic_pulse = 0;
-	short gotSensors = 0;
-	
-	sensors &= sensorMask;
-	
-	// Habilita los sensores segun corresponda
-	
 	// Sensor1
 	if (bit_test(sensors, 0) == 1)
 		sensor1 = SENSOR_ON;
@@ -280,134 +406,42 @@ void getTelemeters(int sensors)
 	if (bit_test(sensors, 4) == 1)
 		sensor5 = SENSOR_ON;
 
+	// Sensor6
+#if TRIGGER_TYPE == ULTRASONIC_SENSOR
 	// Sensor6 -> ULTRASONIC_SENSOR
-	if ((bit_test(sensors, 5) == 1) && (TRIGGER_CONECTION == ULTRASONIC_SENSOR))
+	if (bit_test(sensors, 5) == 1)
 	{
-		usonic = 1;
 		// Comienza el pulso de habilitacion -> TRIGGER como escritura
 		bit_clear(trisB_value, 0);
 		set_tris_b(trisB_value);
-		// Pin en estado habilitado
+		// Pin en estado habilitado -> envio del pulso INIT
 		trigger = 1;
-		usonic_pulse = 1;
-	} else 
+		delay_us(ULTRASONIC_INIT_PULSE_WIDTH_US);
+		trigger = 0;
+		// Termina el pulso de habilitacion -> TRIGGER como lectura
+		bit_set(trisB_value, 0);
+		set_tris_b(trisB_value);
+		// Setea la interrupcion sobre RB0 en flanco ascendente
+		ext_int_edge(L_TO_H);
+		// Seteo el estado actual del pulso del sensor de ultrasonido
+		usonic_state = USONIC_STATE_START;
+		// Habilita la interrupcion
+		enable_interrupts(INT_EXT);
+	}
+#elif TRIGGER_TYPE == SWITCH_SENSOR
 	// Sensor6 -> SWITCH_SENSOR
-	if ((bit_test(sensors, 5) == 1) && (TRIGGER_CONECTION == SWITCH_SENSOR))
+	if (bit_test(sensors, 5) == 1)
 	{
 		if (trigger == 1)
 			values[5] = 0xFFFF;
 		else
 			values[5] = 0;		
 	} 
-
-	// Inicializa el timer
-	set_timer1(0);
-
-	// Toma las muestras cuando corresponda	
-	while (done == 0)
-	{
-		delay_ms(1);
-		
-		// Tomo el tiempo
-		tmr1 = get_timer1();
-
-		if (tmr1 >= MAX_GET_VALUES_TIME)
-		{
-			done = 1;
-		}	
-		
-		if ((usonic_pulse == 1) && (usonic == 1) && (tmr1 >= STOP_USONIC_PULSE))
-		{
-			usonic_pulse = 0;
-			// Termina el pulso de habilitacion -> TRIGGER como lectura
-			bit_set(trisB_value, 0);
-			set_tris_b(trisB_value);
-			// Setea la interrupcion sobre RB0 en flanco ascendente
-			ext_int_edge(0, L_TO_H);
-			// Seteo el estado actual del pulso del sensor de ultrasonido
-			usonic_state = 0;
-			// Habilita la interrupcion
-			enable_interrupts(INT_EXT);
-		}	
-		
-		if ((gotSensors == 0) && (tmr1 >= GET_TELEMETER_VALUE))
-		{
-			// No reentrar			
-			gotSensors = 1;
-			
-			// Sensor1
-			if (bit_test(sensors, 0) == 1)
-			{
-				// ADC en el pin correcto
-				set_adc_channel(0);
-				// Espera el tiempo necesario
-				delay_us(ADC_DELAY);
-				// Toma la muestra
-				values[0] = read_adc();
-				sensor1 = SENSOR_OFF;
-			}
-		
-			// Sensor2
-			if (bit_test(sensors, 1) == 1)
-			{
-				// ADC en el pin correcto
-				set_adc_channel(1);
-				// Espera el tiempo necesario
-				delay_us(ADC_DELAY);
-				// Toma la muestra
-				values[1] = read_adc();
-				sensor2 = SENSOR_OFF;
-			}
-		
-			// Sensor3
-			if (bit_test(sensors, 2) == 1)
-			{
-				// ADC en el pin correcto
-				set_adc_channel(2);
-				// Espera el tiempo necesario
-				delay_us(ADC_DELAY);
-				// Toma la muestra
-				values[2] = read_adc();
-				sensor3 = SENSOR_OFF;
-			}
-		
-			// Sensor4
-			if (bit_test(sensors, 3) == 1)
-			{
-				// ADC en el pin correcto
-				set_adc_channel(3);
-				// Espera el tiempo necesario
-				delay_us(ADC_DELAY);
-				// Toma la muestra
-				values[3] = read_adc();
-				sensor4 = SENSOR_OFF;
-			}
-		
-			// Sensor5
-			if (bit_test(sensors, 4) == 1)
-			{
-				// ADC en el pin correcto
-				set_adc_channel(4);
-				// Espera el tiempo necesario
-				delay_us(ADC_DELAY);
-				// Toma la muestra
-				values[4] = read_adc();
-				sensor5 = SENSOR_OFF;
-			}
-		}
-	
-	}
+#endif
 
 	return;
 }	
 
-/* Realiza la lectura sobre los sensores de piso y ultrasonido */
-void getFloorSensors(int sensors)
-{
-	// TODO
-	
-	return;	
-}	
 
 /* Verifica que el comando sea valido y lo ejecuta */
 void doCommand(struct command_t * cmd)
