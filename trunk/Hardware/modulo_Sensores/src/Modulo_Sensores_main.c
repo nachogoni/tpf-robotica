@@ -12,7 +12,7 @@
 
 // Determina contra que esta conectado el pin TRIGGER - CAMBIARLO SEGUN CORRESPONDA
 // Posibles valores: NONE o ULTRASONIC_SENSOR o SWITCH_SENSOR o LED
-#define TRIGGER_TYPE	SWITCH_SENSOR
+#define TRIGGER_TYPE	ULTRASONIC_SENSOR
 
 // Define el estado logico para prender o apagar los sensores - CAMBIARLO SEGUN CORRESPONDA
 #define SENSOR_ON	0
@@ -21,12 +21,20 @@
 // Ancho del pulso que se debe enviar al sensor de ultrasonido como INIT - CAMBIARLO SEGUN CORRESPONDA
 #define ULTRASONIC_INIT_PULSE_WIDTH_US	15
 
+// Frame de muestreo. Cada este tiempo se realiza una nueva lectura ver CalculoTMR.xls
+#define COMPLEMENT_TIME					12411 // 85ms
 // Tiempo necesario para realizar la lectura en los telemetros - CAMBIARLO SEGUN CORRESPONDA
 #define TELEMETERS_WAITING_TIME_CYCLES	26792 //62ms
+#define TELEMETERS_COMPLEMENT_TIME		51161 //23ms complemento a COMPLEMENT_TIME
 // Tiempo necesario para realizar la lectura en los sensores de piso - CAMBIARLO SEGUN CORRESPONDA
-#define FLOOR_WAITING_TIME_CYCLES		62411 //32ms
+#define FLOOR_WAITING_TIME_CYCLES		62411 //5ms
+#define FLOOR_COMPLEMENT_TIME			15536 //80ms complemento a COMPLEMENT_TIME
 // Tiempo necesario para realizar la lectura del sensor de ultrasonido - CAMBIARLO SEGUN CORRESPONDA
-#define ULTRASONIC_WAITING_TIME_CYCLES	45536 //5ms
+#define ULTRASONIC_WAITING_TIME_CYCLES	45536 //32ms
+#define ULTRASONIC_COMPLEMENT_TIME		32411 //53ms complemento a COMPLEMENT_TIME
+
+// Tiempo entre el cambio de canal del ADC y una muestra estable (minimo 10us) - CAMBIARLO SEGUN CORRESPONDA
+#define ADC_DELAY	20
 
 /* Modulo Generico - main.c
  * PIC16F88 - MAX232 - SENSORES
@@ -111,29 +119,28 @@
 #define FLOOR_SENSORS      (TELEMETERS_SENSORS + 1)
 
 // Tiempo maximo para NONE
-#define NONE_TIME	65536 //0ms
-#define SWITCH_TIME 65536 //0ms
-#define LED_TIME 	65536 //0ms
+#define NONE_TIME	65530 //0ms
+#define SWITCH_TIME 65530 //0ms
+#define LED_TIME 	65530 //0ms
 
 #if SENSORS_TYPE == FLOOR_SENSORS
-	#define SENSORS_WAITING_TIME FLOOR_WAITING_TIME_CYCLES
+	#if TRIGGER_TYPE == ULTRASONIC_SENSOR
+		#define SENSORS_WAITING_TIME ULTRASONIC_WAITING_TIME_CYCLES
+		#define WAITING_TIME ULTRASONIC_COMPLEMENT_TIME //Complemento 85ms -> 53ms
+	#else
+		#define SENSORS_WAITING_TIME FLOOR_WAITING_TIME_CYCLES
+		#define WAITING_TIME FLOOR_COMPLEMENT_TIME //Complemento 85ms -> 80ms
+	#endif
 #elif SENSORS_TYPE == TELEMETERS_SENSORS
 	#define SENSORS_WAITING_TIME TELEMETERS_WAITING_TIME_CYCLES
+	#define WAITING_TIME TELEMETERS_COMPLEMENT_TIME //Complemento 85ms -> 23ms
 #elif SENSORS_TYPE == NONE
-	#define SENSORS_WAITING_TIME NONE_TIME
-#endif
-
-#if TRIGGER_TYPE == ULTRASONIC_SENSOR
-	#if SENSORS_WAITING_TIME > ULTRASONIC_WAITING_TIME_CYCLES
+	#if TRIGGER_TYPE == ULTRASONIC_SENSOR
 		#define SENSORS_WAITING_TIME ULTRASONIC_WAITING_TIME_CYCLES
-	#endif
-#elif TRIGGER_TYPE == SWITCH_SENSOR
-	#if SENSORS_WAITING_TIME > SWITCH_TIME
-		#define SENSORS_WAITING_TIME SWITCH_TIME
-	#endif
-#elif TRIGGER_TYPE == LED
-	#if SENSORS_WAITING_TIME > LED_TIME
-		#define SENSORS_WAITING_TIME LED_TIME
+		#define WAITING_TIME ULTRASONIC_COMPLEMENT_TIME //Complemento 85ms -> 53ms
+	#else
+		#define SENSORS_WAITING_TIME NONE_TIME
+		#define WAITING_TIME COMPLEMENT_TIME //85ms
 	#endif
 #endif
 
@@ -143,6 +150,7 @@
 
 short reset; // Variable para hacer el reset
 short crcOK; // Informa si el CRC del paquete parseado fue correcto
+short sendResponse; // Informa que no debe mandarse la respuesta automatica
 
 char buffer[MAX_BUFFER_SIZE];	// Buffer de recepcion de comandos
 int buffer_write;				// Indice de escritura
@@ -178,13 +186,46 @@ int actualReadSensor;
 int readSensor;
 
 // Bufferea el pedido de sensores de los que se pide la lectura
-int bufferReadSensor;
+int bufferedReadSensor;
+
+// Determina el destinatario actual
+int actalTO;
+
+// Informa quien hizo el pedido
+int requestFrom;
+
+// Informa de quien vino el ultimo pedido (mientras habia una lectura en curso)
+int bufferedFrom;
+
+// Determina el comando actual
+int actalCmd;
+
+// Informa cual fue el comando del pedido
+int requestCmd;
+
+// Informa cual fue el comando del ultimo pedido (mientras habia una lectura en curso)
+int bufferedCmd;
 
 // Estado para el sensor de ultrasonido
 short usonic_state;
 
-/* Habilita los sensores segun corresponda para comenzar la lectura*/
+// Tiempo para el comienzo del pulso del sensor de ultrasonido
+long pulseStart;
+
+// Flag de aviso sobre la interrupcion en TIMER1
+short intTMR;
+
+// Tipo de alarma en trigger
+int alarmType;
+
+// Flag de alarma en trigger
+short triggerAlarm;
+
+/* Habilita los sensores segun corresponda para comenzar la lectura */
 void startReading(int sensors);
+
+/* Realiza la lectura sobre los sensores segun corresponda */
+void readSensors(int sensors);
 
 /* Interrupcion del TIMER1 */
 void int_timer(void);
@@ -192,11 +233,15 @@ void int_timer(void);
 /* Interrupcion de RB0 */
 void int_trigger(void);
 
+/* Crea la respuesta sobre la lectura de los sensores */
+void sendValues(int to, int cmd, long * values, int sensors);
+
 /* Interrupcion del TIMER1 */
 #INT_TIMER1
 void int_timer(void)
 {
-	/*TODO*/
+	// Habilita el flag de aviso que sucedio la interrupcion
+	intTMR = 1;
 	disable_interrupts(INT_TIMER1);
 }
 
@@ -204,8 +249,26 @@ void int_timer(void)
 #INT_EXT
 void int_trigger(void)
 {
-	/*TODO*/
-	disable_interrupts(INT_EXT);
+#if TRIGGER_TYPE == ULTRASONIC_SENSOR
+	if (usonic_state == USONIC_STATE_START)
+	{
+		// Tomo el tiempo en que comienza el pulso
+		pulseStart = get_timer1();
+		// Cambio el tipo de flanco
+		ext_int_edge(H_TO_L);
+		// Cambio el estado
+		usonic_state = USONIC_STATE_STOP;
+	} else {
+		// Tomo el tiempo y guardo el valor
+		values[5] = get_timer1() - pulseStart;
+		// Deshabilita la interupcion
+		disable_interrupts(INT_EXT);
+	}
+#elif TRIGGER_TYPE == SWITCH_SENSOR
+	triggerAlarm = 1;
+#endif
+
+
 }
 
 void init()
@@ -251,24 +314,44 @@ void init()
 	values[2] = 0x0000;
 	values[3] = 0x0000;
 	values[4] = 0x0000;
-	values[5] = 0xABCD;
+	values[5] = 0x0000;
 	
 	// Inicializa la mascara -> todos habilitados (0x3F)
-	sensorMask = 0x01;//0x3F;
+	sensorMask = 0x3F;
 	
 	//Determina el estado actual
 	state = STATE_FREE;
 	
 	// Sin lectura temprana
 	readSensor = 0x00;
+	bufferedReadSensor = 0x00;
+	actalTO = 0x00;
+	requestFrom = 0x00;
+	bufferedFrom = 0x00;
+	actalCmd = 0x00;
+	requestCmd = 0x00;
+	bufferedCmd = 0x00;
 
-#elif TRIGGER_TYPE == LED
+	alarmType = 0x00;
+	triggerAlarm = 0;
+#if TRIGGER_TYPE == SWITCH_SENSOR
+	disable_interrupts(INT_EXT);
+#endif
+
+#if TRIGGER_TYPE == LED
 	// TRIGGER como escritura
 	bit_clear(trisB_value, 0);
 	set_tris_b(trisB_value);
 #endif
 
 	return;	
+}	
+
+void sendAlarm()
+{
+	/*TODO: revisar protocolo*/	
+	triggerAlarm = 0;
+	return;
 }	
 
 void main()
@@ -278,6 +361,8 @@ void main()
 
 	// Init del protocol
 	initProtocol();
+
+readSensor = 0xFF;
 
 	// FOREVER
 	while(true)
@@ -290,6 +375,13 @@ void main()
 				/*
 				* Analiza los paquetes y retransmite o lanza el pedido de lectura
 				*/
+				
+#if TRIGGER_TYPE == SWITCH_SENSOR
+				// Enviar alarma de trigger
+				if (triggerAlarm == 1)
+					sendAlarm();
+#endif
+
 				// Protocolo
 				runProtocol(&command);
 				
@@ -298,6 +390,8 @@ void main()
 					// Almacena el pedido sobre los sensores
 					actualReadSensor = readSensor;
 					readSensor = 0x00;
+					actalTO = requestFrom;
+					actalCmd = requestCmd;
 					// Cambio de estado
 					state = STATE_START_READING;
 				}	
@@ -307,12 +401,18 @@ void main()
 				* Genera un pedido de lectura a los sensores que lo necesiten
 				* y setea los TIMERs para contabilizar los tiempos
 				*/
+				
+				// Limpio la variable
+				bufferedReadSensor = 0x00;
 
 				// Inhabilita los sensores enmascarados
 				actualReadSensor &= sensorMask;
 				
 				// Pedido de -START-
 				startReading(actualReadSensor);
+				
+				// Flag de interrupcion
+				intTMR = 0;
 				
 				// Seteo de TIMERs
 				set_timer1(SENSORS_WAITING_TIME);
@@ -325,63 +425,107 @@ void main()
 			case STATE_WAIT_TO_READ:
 				/*
 				* Espera el tiempo necesario para tomar las muestras en los sensores
-				* Recibe nuevos pedidos y los encola para una proxima lectura o 
-				* envia un mensaje de error de lectura en progreso 
-				* TODO: VER ESTO
+				* Recibe nuevos pedidos y los agraga para una proxima lectura
 				*/
+
+#if TRIGGER_TYPE == SWITCH_SENSOR
+				// Enviar alarma de trigger
+				if (triggerAlarm == 1)
+					sendAlarm();
+#endif
+
 				// Protocolo
 				runProtocol(&command);
 				
 				if (readSensor != 0x00)
 				{
 					// Almacena el pedido sobre los sensores
-					bufferReadSensor |= readSensor;
+					bufferedReadSensor |= readSensor;
+					bufferedFrom = requestFrom;
+					bufferedCmd = requestCmd;
 					readSensor = 0x00;
 				}
 				
 				// Cambio de estado?
-				//TODO:
+				if (intTMR == 1)
+				{
+					// El TIMER1 hizo timeout -> leer sensores
+					state = STATE_READ_VALUES;
+				}	
 				
 				break;
 			case STATE_READ_VALUES:
 				/*
 				* Toma las muestras en los sensores y envia el paquete de respuesta
 				*/
+				
+				// Toma las muestras de los sensores
+				readSensors(actualReadSensor);
+				
+				// Mandar paquete de respuesta
+				sendValues(actalTO, actalCMD, values, actualReadSensor);
+				
+				// Flag de interrupcion
+				intTMR = 0;
+				
+				// Setea el tiempo de espera y pasa al estado de espera
+				set_timer1(WAITING_TIME);
+				enable_interrupts(INT_TIMER1);
+				
+				state = STATE_WAITING;
+				
 				break;
 			case STATE_WAITING:
 				/*
 				* Espera a que pase el tiempo de espera entre lecturas para evitar rebotes
-				* Recibe nuevos pedidos y los encola para una proxima lectura o 
-				* envia un mensaje de error de lectura en progreso 
-				* TODO: VER ESTO
+				* Recibe nuevos pedidos y los agraga para una proxima lectura
 				*/
+				
+#if TRIGGER_TYPE == SWITCH_SENSOR
+				// Enviar alarma de trigger
+				if (triggerAlarm == 1)
+					sendAlarm();
+#endif
+
+				// Protocolo
 				runProtocol(&command);
 				
 				if (readSensor != 0x00)
 				{
 					// Almacena el pedido sobre los sensores
-					bufferReadSensor |= readSensor;
+					bufferedReadSensor |= readSensor;
+					bufferedFrom = requestFrom;
+					bufferedCmd = requestCmd;
 					readSensor = 0x00;
 				}
 				
 				// Cambio de estado?
-				//TODO:
-				
+				if (intTMR == 1)
+				{
+					// El TIMER1 hizo timeout
+					if (bufferedReadSensor != 0x00)
+					{
+						// Hay un pedido pendiente y lo carga
+						actualReadSensor = bufferedReadSensor;
+						bufferedReadSensor = 0x00;
+						actalTO = bufferedFrom;
+						actalCmd = bufferedCmd;
+						// Cambio de estado 
+						state = STATE_START_READING;
+					} else {
+						state = STATE_FREE;
+					}	
+				}
+
 				break;
 			default:
 				init();
 				break;
-		}	
-
+		}
 	}
 
 	return;
 }
-
-
-/* TODO */
-
-
 
 /* Habilita los sensores segun corresponda para comenzar la lectura*/
 void startReading(int sensors)
@@ -442,6 +586,104 @@ void startReading(int sensors)
 	return;
 }	
 
+/* Realiza la lectura sobre los sensores segun corresponda */
+void readSensors(int sensors)
+{
+	// Sensor1
+	if (bit_test(sensors, 0) == 1)
+	{
+		// ADC en el pin correcto
+		set_adc_channel(0);
+		// Espera el tiempo necesario
+		delay_us(ADC_DELAY);
+		// Toma la muestra
+		values[0] = read_adc();
+		sensor1 = SENSOR_OFF;
+	}
+	
+	// Sensor2
+	if (bit_test(sensors, 1) == 1)
+	{
+		// ADC en el pin correcto
+		set_adc_channel(1);
+		// Espera el tiempo necesario
+		delay_us(ADC_DELAY);
+		// Toma la muestra
+		values[1] = read_adc();
+		sensor2 = SENSOR_OFF;
+	}
+	
+	// Sensor3
+	if (bit_test(sensors, 2) == 1)
+	{
+		// ADC en el pin correcto
+		set_adc_channel(2);
+		// Espera el tiempo necesario
+		delay_us(ADC_DELAY);
+		// Toma la muestra
+		values[2] = read_adc();
+		sensor3 = SENSOR_OFF;
+	}
+	
+	// Sensor4
+	if (bit_test(sensors, 3) == 1)
+	{
+		// ADC en el pin correcto
+		set_adc_channel(3);
+		// Espera el tiempo necesario
+		delay_us(ADC_DELAY);
+		// Toma la muestra
+		values[3] = read_adc();
+		sensor4 = SENSOR_OFF;
+	}
+	
+	// Sensor5
+	if (bit_test(sensors, 4) == 1)
+	{
+		// ADC en el pin correcto
+		set_adc_channel(4);
+		// Espera el tiempo necesario
+		delay_us(ADC_DELAY);
+		// Toma la muestra
+		values[4] = read_adc();
+		sensor5 = SENSOR_OFF;
+	}
+	
+	return;
+}	
+
+/* Crea la respuesta sobre la lectura de los sensores */
+void sendValues(int to, int cmd, long * values, int sensors)
+{
+	int idx = 1, i;
+	signed long * tmp16;
+	
+	command.len = MIN_LENGTH + 1;
+	command.to = to;
+	command.from = THIS_CARD;
+	command.cmd = cmd;
+	command.data[0] = sensors;
+	
+	// Valores de los sensores en command.data segun corresponda
+	for (i = 0; i < 6; i++)
+	{
+		if (bit_test(sensors, i) == 1)
+		{
+			// A la posicion 0 dentro de command.data la tomo como signed long *
+			tmp16 = (command.data + idx);
+			// Le asigno el valor del sensor
+			(*tmp16) = values[i];
+			idx+=2;
+			command.len += 2;
+		}
+	}
+
+	command.crc = generate_8bit_crc((char *)(&command), command.len, CRC_PATTERN);
+	// Envio del comando
+	send(&command);
+	
+	return;
+}
 
 /* Verifica que el comando sea valido y lo ejecuta */
 void doCommand(struct command_t * cmd)
@@ -517,10 +759,32 @@ void doCommand(struct command_t * cmd)
 			/* Enciende el sensor de distancia indicado.
 			:DATO:
 			Valor de 0x00 a 0x05 que representa el ID del sensor a encender.
-			El ID 0x05 hace referencia al sensor de ultrasonido o switch de la placa.
+			El ID 0x05 hace referencia al led de la placa si esta presente, 
+			en caso contrario se ignora.
 			:RESP:
 			-
 			*/
+			// Enciende los sensores segun corresponda
+			if ((cmd->data)[0] == 0)
+				// Sensor1
+				sensor1 = SENSOR_ON;
+			else if ((cmd->data)[0] == 1)
+				// Sensor2
+				sensor2 = SENSOR_ON;
+			else if ((cmd->data)[0] == 2)
+				// Sensor3
+				sensor3 = SENSOR_ON;
+			else if ((cmd->data)[0] == 3)
+				// Sensor4
+				sensor4 = SENSOR_ON;
+			else if ((cmd->data)[0] == 4)
+				// Sensor5
+				sensor5 = SENSOR_ON;
+#if TRIGGER_TYPE == LED
+			else if ((cmd->data)[0] == 5)
+				// Led
+				led1 = 1;
+#endif
 		break;
  		case DISTANCE_SENSOR_OFF_DISTANCE_SENSOR:
 			/* Apaga el sensor de distancia indicado.
@@ -530,6 +794,27 @@ void doCommand(struct command_t * cmd)
 			:RESP:
 			-
 			*/
+			// Apaga los sensores segun corresponda
+			if ((cmd->data)[0] == 0)
+				// Sensor1
+				sensor1 = SENSOR_OFF;
+			else if ((cmd->data)[0] == 1)
+				// Sensor2
+				sensor2 = SENSOR_OFF;
+			else if ((cmd->data)[0] == 2)
+				// Sensor3
+				sensor3 = SENSOR_OFF;
+			else if ((cmd->data)[0] == 3)
+				// Sensor4
+				sensor4 = SENSOR_OFF;
+			else if ((cmd->data)[0] == 4)
+				// Sensor5
+				sensor5 = SENSOR_OFF;
+#if TRIGGER_TYPE == LED
+			else if ((cmd->data)[0] == 5)
+				// Led
+				led1 = 0;
+#endif
 		break;
  		case DISTANCE_SENSOR_ENABLE_DISTANCE_SENSORS:
 			/* Habilita o deshabilita cada uno de los sensores de distancia conectados al
@@ -542,6 +827,7 @@ void doCommand(struct command_t * cmd)
 			:RESP:
 			-
 			*/
+			sensorMask = (cmd->data)[0];
 		break;
  		case DISTANCE_SENSOR_GET_STATUS:
 			/* Obtiene el estado de habilitacion de cada uno de los sensores de distancia
@@ -553,6 +839,10 @@ void doCommand(struct command_t * cmd)
 			habilitar o deshabilitar. Si 2^ID = 1 entonces el sensor ID esta habilitado.
 			Si 2^ID = 0 entonces el sensor ID esta deshabilitado.
 			*/
+			// Envio la mascara de sensores
+			response.data[0] = sensorMask;
+			// Corrijo el largo del paquete
+			response.len++;
 		break;
  		case DISTANCE_SENSOR_GET_VALUE:
 			/* Obtiene el valor promedio de la entrada de los sensores indicados.
@@ -571,6 +861,10 @@ void doCommand(struct command_t * cmd)
 			En el caso del switch, un estado logico bajo se lee como 0x0000 y un estado
 			logico alto se lee como 0xFFFF.
 			*/
+			readSensor = (cmd->data)[0];
+			requestFrom = 	response.to;
+			requestCmd = response.cmd;
+			sendResponse = false;
 		break;
  		case DISTANCE_SENSOR_GET_ONE_VALUE:
 			/* Obtiene el valor de la entrada del sensor indicado. Igual al comando 8.5 pero
@@ -590,6 +884,10 @@ void doCommand(struct command_t * cmd)
 			En el caso del switch, un estado logico bajo se lee como 0x0000 y un estado
 			logico alto se lee como 0xFFFF.
 			*/
+			readSensor = (cmd->data)[0];
+			requestFrom = 	response.to;
+			requestCmd = response.cmd;
+			sendResponse = false;
 		break;
 		case DISTANCE_SENSOR_ALARM_ON_STATE:
 			/* Cuando un switch esta presente en el ID: 0x05, establece si se desea o no
@@ -604,6 +902,33 @@ void doCommand(struct command_t * cmd)
 			:RESP:
 			-
 			*/
+#if TRIGGER_TYPE == SWITCH_SENSOR
+			switch ((cmd->data)[0])
+			{
+				case 0x00:
+					// Ignorar
+					disable_interrupts(INT_EXT);
+					break;
+				case 0x01:
+					// Cualquier cambio
+					enable_interrupts(INT_EXT);
+					break;
+				case 0x02:
+					// flanco ascendente
+					ext_int_edge(H_TO_L);
+					enable_interrupts(INT_EXT);
+					break;
+				case 0x03:
+					// flanco descendente
+					ext_int_edge(L_TO_H);
+					enable_interrupts(INT_EXT);
+					break;
+				default:
+					(cmd->data)[0] = 0x00;
+					break;
+			}
+			alarmType = (cmd->data)[0];
+#endif
 		break;
 		default:
 			response.len++;

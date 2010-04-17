@@ -8,6 +8,8 @@
 cyc
 No Repeat
 --
+0
+--
 &
 ## ADVPINREGACTIONS
 --
@@ -32,6 +34,15 @@ Low
 150000
 3500
 Simula la lectura del sensor(3500 son los 700us del principio, 150000 son los 30ms de fuera de rango)
+--
+Sense4
+AN3
+PC = readSensors
+Never
+High
+
+
+
 --
 &
 ## STIMULUSFILE

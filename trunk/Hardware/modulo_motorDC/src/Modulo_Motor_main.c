@@ -65,6 +65,7 @@
 
 short reset; // Variable para hacer el reset
 short crcOK; // Informa si el CRC del paquete parseado fue correcto
+short sendResponse; // Informa que no debe mandarse la respuesta automatica
 
 char buffer[MAX_BUFFER_SIZE];	// Buffer de recepcion de comandos
 int buffer_write;				// Indice de escritura
@@ -349,7 +350,7 @@ counts_expected = 30;
 			command.to = MAIN_CONTROLLER;
 			command.from = THIS_CARD;
 			command.cmd = DC_MOTOR_MOTOR_STRESS_ALARM;
-			// A la posicion 0 dentro de response->data la tomo como signed long *
+			// A la posicion 0 dentro de command.data la tomo como signed long *
 			tmp16 = (command.data);
 			// Le asigno el valor del ultimo consumo del motor
 			(*tmp16) = last_consumption;
