@@ -27,7 +27,7 @@ Any
 Ultrasonido
 RB0
 PC = MAIN
-PC = counter
+Never
 Low
 150000
 3500
