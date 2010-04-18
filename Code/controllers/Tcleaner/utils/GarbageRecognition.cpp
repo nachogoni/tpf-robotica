@@ -51,14 +51,16 @@ bool GarbageRecognition::thereIsGarbage()
 
 std::list<Garbage*> GarbageRecognition::getGarbageList()
 {
+    printf("HOLA\n");
     time_t request = time(NULL);
     
     if ( request - lastRequest > TIME_THRESHOLD ){
 		lastRequest = request;
 		std::string fn ("./ss.jpg");
-		cam->saveImage(fn, 85);
-	    IplImage * src = cvLoadImage("./ss.jpg",1);
-	    IplImage * model = cvLoadImage("./ss.jpg",1);
+		//cam->saveImage(fn, 85);
+	    IplImage * src = cvLoadImage("./colilla-scene.png",1);
+	    IplImage * model = cvLoadImage("./colilla-sinBlanco.png",1);
+	    printf("antes\n");
 		garbages = this->garbageList(src,model);
 	}
 	return garbages;
@@ -66,7 +68,10 @@ std::list<Garbage*> GarbageRecognition::getGarbageList()
 
 std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 
+                    
+    
 	std::list<Garbage*> garbageList;
+
 	//cvNamedWindow("output",CV_WINDOW_AUTOSIZE);
 	//object model
 
@@ -117,7 +122,7 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 	CvRect boundingRect;
 
 	//contours
-	CvSeq ** contours;
+	CvSeq * contours;
 
 	//Main loop
 
@@ -152,27 +157,34 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 
 	cont_index=0;
 	cvCopy(src,contourImage,0);
+	
 
-	while(contours[cont_index]!=NULL){
-		//CvSeq * aContour=contours[cont_index];
-		utils::Contours * ct = new Contours(contours[cont_index]);
-	printf("F");
-		int	pf = ct->perimeterFilter(MINCONTOUR_PERIMETER,MAXCONTOUR_PERIMETER);
-			printf("H");
+
+	while(contours!=NULL){
+
+		CvSeq * aContour=getPolygon(contours);
+		utils::Contours * ct = new Contours(aContour);
+
+	
+	    int	pf = ct->perimeterFilter(MINCONTOUR_PERIMETER,MAXCONTOUR_PERIMETER);
+
 		int raf = ct->rectangularAspectFilter(CONTOUR_RECTANGULAR_MIN_RATIO, CONTOUR_RECTANGULAR_MAX_RATIO);
-			printf("J");
+
 		// int af = ct->areaFilter(MINCONTOUR_AREA,MAXCONTOUR_AREA);
 		int baf = ct->boxAreaFilter(BOXFILTER_TOLERANCE);
-			printf("K");
-		int hmf = ct->histogramMatchingFilter(src,testImageHistogram, HIST_H_BINS,HIST_S_BINS,HIST_MIN);
-			printf("L");
+
+        int hmf = ct->histogramMatchingFilter(src,testImageHistogram, HIST_H_BINS,HIST_S_BINS,HIST_MIN);
+
+
 		//apply filters
+
+    
 		if( pf && raf && baf && hmf	){
-				printf("G");
+				
 				//if passed filters
 				ct->printContour(3,cvScalar(127,127,0,0),
 					contourImage);
-				printf("G");
+				
 				//get contour bounding box
 				boundingRect=cvBoundingRect(ct->getContour(),0);
 				cvRectangle(contourImage,cvPoint(boundingRect.x,boundingRect.y),
@@ -180,8 +192,8 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 						boundingRect.y+boundingRect.height),
 						_GREEN,1,8,0);
 				//build garbage List
-				printf("G");
-				printf(" c %d,%d\n",boundingRect.x,boundingRect.y);
+			
+				//printf(" c %d,%d\n",boundingRect.x,boundingRect.y);
 
 				utils::MinimalBoundingRectangle * r = new utils::MinimalBoundingRectangle(boundingRect.x,
 					boundingRect.y,boundingRect.width,boundingRect.height);
@@ -194,13 +206,15 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 
 
 			}
-	printf("G");
+
 		delete ct;
+		cvReleaseMemStorage( &aContour->storage );
+		contours=contours->h_next;
 		cont_index++;
 	}
-	printf("H");
-//	cvShowImage("output",contourImage);
-//	cvWaitKey(0);
+
+   // cvShowImage("output",contourImage);
+   // cvWaitKey(0);
 	delete h;
 
 	return garbageList;
