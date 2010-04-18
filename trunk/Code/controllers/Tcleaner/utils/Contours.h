@@ -4,7 +4,8 @@
 #include <cv.h>
 #include <highgui.h>
 
-CvSeq ** myFindContours(IplImage * image);
+CvSeq * myFindContours(IplImage * image);
+CvSeq * getPolygon(CvSeq * aContour);
 
 namespace utils {
 
