@@ -84,7 +84,8 @@ namespace webts {
 	void WebotsRobot::step(int ms){
 		robot->step(ms);
 		df->computeOdometry();
-//		printf("Current Position : %g %g %g\n",df->getPosition()->getX(),df->getPosition()->getY(),df->getOrientation());
+		printf("Current Position : %g %g %g\n",df->getPosition()->getX(),df->getPosition()->getY(),df->getOrientation());
+
 		return ;
 	}
     

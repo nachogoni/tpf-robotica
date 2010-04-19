@@ -2,7 +2,8 @@
 #include "GarbageCleaner.h"
 #include <sstream>
 
-#define RANGE (1023/4)
+//#define RANGE (1023/4)
+#define RANGE (1024/8)
 
 namespace behaviours {
 

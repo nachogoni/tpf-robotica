@@ -2,8 +2,8 @@
 #include "GoToBaseGroup.h"
 #include "GarbageCleaner.h"
 
-#define BASE_SPD 200.0
-#define SPD_FACTOR 0.3
+#define BASE_SPD 50.0
+#define SPD_FACTOR 0.7
 
 namespace behaviours {
 

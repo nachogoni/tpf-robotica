@@ -104,7 +104,9 @@ void WorldInfo::readCameraY(FILE * f){
 
 utils::MyLine * WorldInfo::getCurrentLine(){
 	// TODO Make calculations acording to the actual position
-	return new utils::MyLine(1,1,1,1,1);
+	std::list<utils::MyLine * >::iterator i = this->lines.begin();
+
+	return *i;
 }
 
 utils::MyPoint * WorldInfo::getInitialPosition(){

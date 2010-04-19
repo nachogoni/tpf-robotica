@@ -1,5 +1,10 @@
 #include "FindLine.h"
 #include "GarbageCleaner.h"
+#include <utils/MyVector.h>
+#include <math.h>
+
+#define ANGLE_TOLE 0.07
+#define BASE_SPD 50
 
 namespace behaviours {
 
@@ -15,6 +20,27 @@ namespace behaviours {
 		}
 	}
 
-    void FindLine::action(){}
+    void FindLine::action(){
+//		utils::MyLine * l = wi->getCurrentLine();
+		double currentOrientation = wheels->getOrientation();
+		double destinyAngle = PI/2;
+		
+		if ( fabs(destinyAngle - currentOrientation) < ANGLE_TOLE )
+		    wheels->setSpeed(BASE_SPD,BASE_SPD);
+		else{
+			if ( currentOrientation > 90 && currentOrientation < 270 )
+			    wheels->setSpeed(BASE_SPD,-BASE_SPD);
+			else
+			    wheels->setSpeed(-BASE_SPD,BASE_SPD);
+		}
+		/*
+		utils::MyPoint * linepos = new utils::MyPoint(l->getX(),l->getY());
+
+		utils::MyVector * direction = new utils::MyVector(wheels->getOrientation());
+		utils::MyVector * vectorToLine = new utils::MyVector(wheels->getPosition(),linepos);
+		printf("line position: ( %g ; %g )\n",l->getX(),l->getY());
+		printf("angle to line: %g\n",wheels->getOrientation()+direction->angleTo(vectorToLine));
+		*/
+	}
 
 } /* End of namespace behaviours */
