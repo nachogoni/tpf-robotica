@@ -1,0 +1,24 @@
+---------------------------------------------------------------------------
+NCDrill File Report For: Modulo_Servos.PcbDoc   19/04/2010  01:00:18 a.m.
+---------------------------------------------------------------------------
+
+Layer Pair : Top Layer to Bottom Layer
+ASCII RoundHoles File : Modulo_Servos.TXT
+EIA File   : Modulo_Servos.DRL
+
+Tool         Hole Size           Hole Type     Hole Count Plated       Tool Travel
+---------------------------------------------------------------------------
+T1        30mil (0.762mm)          Round          26               6.51 Inch (165.45 mm)
+T2        33mil (0.8382mm)         Round          8                3.62 Inch (92.07 mm)
+T3        35mil (0.889mm)          Round          79               16.97 Inch (431.07 mm)
+T4        39mil (0.9906mm)         Round          10               5.29 Inch (134.45 mm)
+T5        40mil (1.016mm)          Round          12               2.75 Inch (69.80 mm)
+T6        43mil (1.0922mm)         Round          9                2.08 Inch (52.83 mm)
+T7        50mil (1.27mm)           Round          6                2.54 Inch (64.55 mm)
+T8        80mil (2.032mm)          Round          3                0.40 Inch (10.16 mm)
+T9        150mil (3.81mm)          Round          4                9.62 Inch (244.32 mm)
+T10       150mil (3.81mm)          Round          4         NPTH   1.08 Inch (27.31 mm)
+---------------------------------------------------------------------------
+Totals                                            161              50.87 Inch (1292.01 mm)
+
+Total Processing Time (hh:mm:ss) : 00:00:00
