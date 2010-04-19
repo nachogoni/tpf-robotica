@@ -170,7 +170,7 @@ void runProtocol(struct command_t * cmd)
 
 int generate_8bit_crc(char* data, int length, int pattern)
 {
-	// TODO: reemplazar por el crc de verdad :P
+	// TODO: reemplazar por el crc?
 	
 	int crc_byte, i;
 
