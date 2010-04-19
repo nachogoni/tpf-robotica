@@ -1,0 +1,13 @@
+Output: NC Drill Files
+Type  : NC Drill
+From  : Project [Modulo_Sensores.PrjPCB]
+   Generated File[Modulo_Sensores.TXT]
+   Generated File[Modulo_Sensores.DRL]
+   Generated File[Modulo_Sensores.LDP]
+   Generated File[Modulo_Sensores.DRR]
+
+
+Files Generated   : 4
+Documents Printed : 0
+
+Finished Output Generation At 10:59:35 p.m. On 18/04/2010

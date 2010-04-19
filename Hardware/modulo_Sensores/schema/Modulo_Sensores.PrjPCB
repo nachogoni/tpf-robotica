@@ -56,6 +56,36 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 
+[Document3]
+DocumentPath=Project Outputs for Modulo_Sensores\Gerber.Cam
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=1
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+
+[Document4]
+DocumentPath=Project Outputs for Modulo_Sensores\DCDrill.Cam
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=1
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+
 [GeneratedDocument1]
 DocumentPath=..\..\modulo_generico\schema\Project Outputs for Modulo_Generico\Modulo_Generico.DRL
 DItemRevisionGUID=
@@ -126,6 +156,78 @@ DItemRevisionGUID=
 
 [GeneratedDocument18]
 DocumentPath=..\..\modulo_generico\schema\Project Outputs for Modulo_Generico\Modulo_Generico.TXT
+DItemRevisionGUID=
+
+[GeneratedDocument19]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.DRL
+DItemRevisionGUID=
+
+[GeneratedDocument20]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.DRR
+DItemRevisionGUID=
+
+[GeneratedDocument21]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.EXTREP
+DItemRevisionGUID=
+
+[GeneratedDocument22]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.GBL
+DItemRevisionGUID=
+
+[GeneratedDocument23]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.GBS
+DItemRevisionGUID=
+
+[GeneratedDocument24]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.GKO
+DItemRevisionGUID=
+
+[GeneratedDocument25]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.GM1
+DItemRevisionGUID=
+
+[GeneratedDocument26]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.GM13
+DItemRevisionGUID=
+
+[GeneratedDocument27]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.GM15
+DItemRevisionGUID=
+
+[GeneratedDocument28]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.GPB
+DItemRevisionGUID=
+
+[GeneratedDocument29]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.GPT
+DItemRevisionGUID=
+
+[GeneratedDocument30]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.GTL
+DItemRevisionGUID=
+
+[GeneratedDocument31]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.GTO
+DItemRevisionGUID=
+
+[GeneratedDocument32]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.GTS
+DItemRevisionGUID=
+
+[GeneratedDocument33]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.LDP
+DItemRevisionGUID=
+
+[GeneratedDocument34]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.REP
+DItemRevisionGUID=
+
+[GeneratedDocument35]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.RUL
+DItemRevisionGUID=
+
+[GeneratedDocument36]
+DocumentPath=Project Outputs for Modulo_Sensores\Modulo_Sensores.TXT
 DItemRevisionGUID=
 
 [OutputGroup1]
