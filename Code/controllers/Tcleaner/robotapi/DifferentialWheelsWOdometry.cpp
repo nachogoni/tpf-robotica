@@ -41,6 +41,7 @@ void DifferentialWheelsWOdometry::computeOdometry() {
 }
 
 void DifferentialWheelsWOdometry::computePosition(double ldist, double rdist){
+	/*
 	double lc = 0;
 	lc = (ldist+rdist)/2.0;
 
@@ -49,6 +50,16 @@ void DifferentialWheelsWOdometry::computePosition(double ldist, double rdist){
 	delete dtita;
 
 	this->lastPosition->add(lc * cos(this->lastAngle->getNormalizedValue()), lc * sin(this->lastAngle->getNormalizedValue()));
+	return;
+	*/
+	double lc = 0;
+	lc = (ldist+rdist)/2.0;
+
+	utils::MyAngle * dtita = new utils::MyAngle((rdist-ldist)/this->distanceBetweenWheels); // delta orientation
+	this->lastAngle->add(dtita);
+	delete dtita;
+
+	this->lastPosition->add(-lc * sin(this->lastAngle->getNormalizedValue()), -lc * cos(this->lastAngle->getNormalizedValue()));
 	return;
 }
 

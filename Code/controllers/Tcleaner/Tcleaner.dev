@@ -1,7 +1,7 @@
 [Project]
 FileName=Tcleaner.dev
 Name=Tcleaner
-UnitCount=139
+UnitCount=141
 Type=1
 Ver=1
 ObjFiles=
@@ -1429,6 +1429,26 @@ BuildCmd=
 
 [Unit131]
 FileName=utils\MyLine.cpp
+CompileCpp=1
+Folder=utils
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit141]
+FileName=utils\MyVector.cpp
+CompileCpp=1
+Folder=utils
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit140]
+FileName=utils\MyVector.h
 CompileCpp=1
 Folder=utils
 Compile=1

@@ -10,7 +10,8 @@
 #include <behaviours/FindLine.h>
 #include <behaviours/PositionInLine.h>
 
-#define LINE_THRESHOLD 420
+//#define LINE_THRESHOLD 420
+#define LINE_THRESHOLD 350
 #define ORIENTATION_TOLE 0.3
 
 namespace behaviours {

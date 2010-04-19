@@ -3,6 +3,7 @@
 
 #include "AbstractBehaviour.h"
 
+#define WANDER_SPD 75.0
 
 namespace behaviours {
 

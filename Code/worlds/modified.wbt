@@ -9,8 +9,8 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 1.6454
-  orientation -0.00112575 0.99888 0.0472964 3.14
-  position -0.205091 0.141706 -0.568331
+  orientation -0.363993 0.862693 0.351097 1.68664
+  position 0.105041 0.717931 0.0765562
 }
 PointLight {
   intensity 0.5
@@ -185,8 +185,7 @@ DEF short_rock_5 Solid {
   boundingObject USE short_brick_1_geometry
 }
 DEF E_PUCK DifferentialWheels {
-  translation -0.20735 -5.30034e-005 -0.354171
-  rotation 0 0 1 0
+  translation -0.300338 0 0.565753
   children [
     Servo {
       translation 0 0.0125 0
@@ -1092,7 +1091,7 @@ DEF E_PUCK DifferentialWheels {
       name "ps0"
       lookupTable [
         0 1024 0
-        0.004 532 0.037
+        0.004 532 0
         0.006 409 0
         0.008 327 0
         0.01 266 0

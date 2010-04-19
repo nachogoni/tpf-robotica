@@ -119,7 +119,8 @@ Transform {
   ]
 }
 DEF E_PUCK DifferentialWheels {
-  rotation 0 1 0 -1.5708
+  translation 4.1473e-006 8.79158e-005 -5.96375e-008
+  rotation -0.000212299 1 -0.000144451 0
   children [
     Servo {
       translation 0 0.0125 0
@@ -200,8 +201,8 @@ DEF E_PUCK DifferentialWheels {
       }
     }
     DEF EPUCK_TS0 TouchSensor {
-      translation 0 0.08 0.0125
-      rotation 1 0 0 4.71238
+      translation 1.12772e-006 0.08 0.0125156
+      rotation 1 -1.50782e-009 -1.51404e-009 -1.57081
       children [
         Shape {
           appearance Appearance {
@@ -221,8 +222,8 @@ DEF E_PUCK DifferentialWheels {
       type "force"
     }
     DEF EPUCK_LEFT_WHEEL Solid {
-      translation -0.026 0.02 0
-      rotation 0.99999 0.00437866 -0.000701675 2.52735
+      translation -0.0260329 0.02 7.61196e-007
+      rotation 0.999986 0.00526217 -0.000420104 2.4578
       children [
         DEF EPUCK_WHEEL Transform {
           rotation 0 0 1 1.57
@@ -356,8 +357,8 @@ DEF E_PUCK DifferentialWheels {
       }
     }
     DEF EPUCK_RIGHT_WHEEL Solid {
-      translation 0.026 0.02 0
-      rotation 1 0.000170071 -0.000931867 -0.401913
+      translation 0.0260333 0.0200005 -8.40622e-007
+      rotation 0.999991 -0.000891212 0.00424156 -0.332365
       children [
         Transform {
           rotation 0 1 0 3.14159

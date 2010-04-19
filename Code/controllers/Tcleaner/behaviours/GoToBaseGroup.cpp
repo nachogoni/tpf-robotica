@@ -15,6 +15,7 @@ GoToBaseGroup::GoToBaseGroup(WorldInfo * wi, robotapi::IBattery * robotBatt, rob
 	this->fss = &fss;
 	this->wheels = wheels;
 	
+	this->robotBattery->setEmptyBias(3000);
 	behaviours::AbstractBehaviour * ab = new behaviours::FindLine( wi, wheels, fss );
 	myBehaviours[0] = ab;
 
@@ -33,7 +34,7 @@ GoToBaseGroup::~GoToBaseGroup()
 }
 
 void GoToBaseGroup::sense(){
-	this->setStimulusPresent();
+//	this->setStimulusPresent();
 	if ( this->robotBattery->isEmpty() || this->pcBattery->isEmpty() )
 		this->setStimulusPresent();
 
@@ -42,22 +43,26 @@ void GoToBaseGroup::sense(){
 		}
 }
 
-void GoToBaseGroup::action(){
-	printf("Current Orientation : %g\n", this->wheels->getOrientation() );
-	printf("Current Position : ( %g ; %g )\n", this->wheels->getPosition()->getX(), this->wheels->getPosition()->getY() );
-	this->wheels->setSpeed(25,-25);
-	return;
-	if ( !this->inLine() ){
-	    this->myBehaviours[0]->action();
-	    return;
-	}
+int following = 0;
 
-	if ( this->inLine() && !this->inPosition() ){
-	    this->myBehaviours[1]->action();
-	    return;
+void GoToBaseGroup::action(){
+	if ( ! following ){
+		if ( !this->inLine() ){
+		    this->myBehaviours[0]->action();
+	    	printf("Going to line\n");
+		    return;
+		}
+
+		if ( this->inLine() && !this->inPosition() ){
+		    this->myBehaviours[1]->action();
+	    	printf("On Line, Positioning...\n");
+		    return;
+		}
+
 	}
-	
+	following = 1;
     this->myBehaviours[2]->action();
+    printf("Following Line\n");
     return;
 }
 
@@ -68,7 +73,11 @@ bool GoToBaseGroup::inLine(){
 }
 
 bool GoToBaseGroup::inPosition(){
-	return fabs( this->wheels->getOrientation() - this->wi->getCurrentLine()->getOrientation() ) < ORIENTATION_TOLE;
+//	return fabs( this->wheels->getOrientation() - this->wi->getCurrentLine()->getOrientation() ) < ORIENTATION_TOLE;
+	double targetAngle = 0;
+	if ( this->wheels->getPosition()->getY() < 0.1 )
+	    targetAngle = PI;
+	return fabs( this->wheels->getOrientation() - targetAngle ) < ORIENTATION_TOLE;
 }
 
 } /* End of namespace behaviours */
