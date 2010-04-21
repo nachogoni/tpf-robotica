@@ -49,7 +49,7 @@ garbageList(IplImage * src);
 
 int main(int argc,char * argv[]){
 	IplImage * img;
-	img=cvLoadImage("../images/colilla-scene.png",1);
+	img=cvLoadImage(argv[1],1);
 	
 	printf("%p\n",img);
 	
@@ -57,7 +57,8 @@ int main(int argc,char * argv[]){
 	garbage=garbageList(img);
 	
 	Garbage aGarbage = garbage.front();
-	
+
+		
 	MinimalBoundingRectangle * aMinimalBoundingRectangle=aGarbage.boundingBox();
 	
 	printf("%d %d\n",aMinimalBoundingRectangle->x,aMinimalBoundingRectangle->y);
