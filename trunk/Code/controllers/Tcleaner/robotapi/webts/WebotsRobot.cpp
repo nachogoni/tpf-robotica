@@ -17,8 +17,13 @@ namespace webts {
 
     WebotsRobot::WebotsRobot( WorldInfo * wi, webots::DifferentialWheels & dw){
 		robot = &dw;
+
 		this->wi = wi;
 		this->df = new WebotsDifferentialWheels(this->wi, (webots::DifferentialWheels&)*robot);
+		IWbDeviceTag * wdt = new WebotsDeviceTag(3);
+		std::string s = "HOLA";
+		this->pcBattery = new WebotsPCBattery(s,*wdt);
+		this->robotBattery = new WebotsBattery(*robot,s,*wdt);
 	}
 
     std::string WebotsRobot::getName(){
@@ -67,13 +72,10 @@ namespace webts {
     }
 
     IBattery & WebotsRobot::getBattery(std::string name){
-		IWbDeviceTag * wdt = new WebotsDeviceTag(3);
-		IBattery * b;
 		if ( name.compare("b1") == 0 )
-	        b = new WebotsPCBattery(name,*wdt);
-		else
-	        b = new WebotsBattery(*robot,name,*wdt);
-        return * b;
+			return *this->pcBattery;
+
+		return *this->robotBattery;
     }
 
 	ITrashBin & WebotsRobot::getTrashBin(std::string name){
@@ -84,7 +86,9 @@ namespace webts {
 	void WebotsRobot::step(int ms){
 		robot->step(ms);
 		df->computeOdometry();
+
 		printf("Current Position : %g %g %g\n",df->getPosition()->getX(),df->getPosition()->getY(),df->getOrientation());
+		printf("Robot Battery : %g - PC Battery : %g\n",robotBattery->getValue(),pcBattery->getValue());
 
 		return ;
 	}

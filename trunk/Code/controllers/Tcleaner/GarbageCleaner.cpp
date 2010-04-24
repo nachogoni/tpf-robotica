@@ -109,7 +109,7 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 	ab = new behaviours::UnloadGarbage( trashBin , servoRear );
 	myAbstractBehaviours.push_back(ab);
 */
-	ab = new behaviours::GoToBaseGroup( wi, robotBattery , pcBattery , wheels, fss );
+	ab = new behaviours::GoToBaseGroup( wi, &myIRobot, robotBattery , pcBattery , wheels, fss );
 	myAbstractBehaviours.push_back(ab);
 
 	ab = new behaviours::AvoidObstacle(wheels,dss);
@@ -143,9 +143,10 @@ void GarbageCleaner::cleanGarbage()
 			//std::cout << "\n" << (*it)->toString() << "\n";
 			(*it)->act();
 		}
+		/*
 		std::cout << "Robot Battery : " << robotBattery->getValue() << "\n";
 		std::cout << "PC Battery : " << pcBattery->getValue() << "\n";
-
+		*/
 		this->myIRobot.step(TIME_STEP);
 
 

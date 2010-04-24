@@ -7,7 +7,7 @@
 namespace behaviours {
 
 // class constructor
-GoToBaseGroup::GoToBaseGroup(WorldInfo * wi, robotapi::IBattery * robotBatt, robotapi::IBattery * pcBatt, robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & fss) : AbstractBehaviour("Go To Base Group")
+GoToBaseGroup::GoToBaseGroup(WorldInfo * wi,robotapi::IRobot * robot, robotapi::IBattery * robotBatt, robotapi::IBattery * pcBatt, robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & fss) : AbstractBehaviour("Go To Base Group")
 {
 	this->robotBattery = robotBatt;
 	this->pcBattery = pcBatt;
@@ -15,7 +15,8 @@ GoToBaseGroup::GoToBaseGroup(WorldInfo * wi, robotapi::IBattery * robotBatt, rob
 	this->fss = &fss;
 	this->wheels = wheels;
 	
-	this->robotBattery->setEmptyBias(3000);
+	this->robotBattery->setEmptyBias(3500);
+	this->robotBattery->setFullBias(15000);
 	behaviours::AbstractBehaviour * ab = new behaviours::FindLine( wi, wheels, fss );
 	myBehaviours[0] = ab;
 
@@ -25,6 +26,8 @@ GoToBaseGroup::GoToBaseGroup(WorldInfo * wi, robotapi::IBattery * robotBatt, rob
 	ab = new behaviours::GoToBase( wheels, fss );
 	myBehaviours[2] = ab;
 	
+	ab = new behaviours::Recharge( robot, wheels, wi, robotBatt, pcBatt, fss);
+	myBehaviours[3] = ab;
 }
 
 // class destructor
@@ -61,8 +64,15 @@ void GoToBaseGroup::action(){
 
 	}
 	following = 1;
-    this->myBehaviours[2]->action();
-    printf("Following Line\n");
+	if ( !this->inLine() && fabs( this->wheels->getOrientation() - PI/2 ) < ORIENTATION_TOLE ){
+	    printf("Recharging\n");
+		this->myBehaviours[3]->action();
+		following = 0;
+	}
+	else{
+	    this->myBehaviours[2]->action();
+	    printf("Following Line\n");
+	}
     return;
 }
 

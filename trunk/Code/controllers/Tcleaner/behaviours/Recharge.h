@@ -3,6 +3,7 @@
 
 #include "AbstractBehaviour.h"
 #include "WorldInfo.h"
+#include <vector>
 
 namespace behaviours {
 
@@ -10,7 +11,7 @@ class Recharge : public AbstractBehaviour {
 
 	public:
 
-        Recharge(WorldInfo * wi, robotapi::IBattery * robotBatt, robotapi::IBattery * pcBatt);
+        Recharge(robotapi::IRobot * robot, robotapi::IDifferentialWheels * wheels, WorldInfo * wi, robotapi::IBattery * robotBatt, robotapi::IBattery * pcBatt, std::vector<robotapi::IDistanceSensor*> & fss);
 
 		void sense();
 		
@@ -19,6 +20,9 @@ class Recharge : public AbstractBehaviour {
 	private:
 	    robotapi::IBattery * robotBattery;
 		robotapi::IBattery * pcBattery;
+		robotapi::IRobot * robot;
+		robotapi::IDifferentialWheels * wheels;
+		std::vector<robotapi::IDistanceSensor*> * fss;
 		WorldInfo * wi;
 	};
 

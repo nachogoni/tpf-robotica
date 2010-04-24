@@ -30,7 +30,8 @@ class WebotsBattery : public robotapi::IBattery, robotapi::webts::WebotsDevice {
 
 	private:
 		webots::Robot * robot;
-		double bias;
+		double emptyBias;
+		double fullBias;
     };
 
 } /* End of namespace robotapi::webts */

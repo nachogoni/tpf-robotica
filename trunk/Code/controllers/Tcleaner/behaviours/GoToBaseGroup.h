@@ -9,6 +9,7 @@
 #include <behaviours/GoToBase.h>
 #include <behaviours/FindLine.h>
 #include <behaviours/PositionInLine.h>
+#include <behaviours/Recharge.h>
 
 //#define LINE_THRESHOLD 420
 #define LINE_THRESHOLD 350
@@ -22,7 +23,7 @@ namespace behaviours {
 class GoToBaseGroup : public AbstractBehaviour {
 
 	public:
-		GoToBaseGroup(WorldInfo * wi, robotapi::IBattery * robotBatt, robotapi::IBattery * pcBatt, robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & fss);
+		GoToBaseGroup(WorldInfo * wi, robotapi::IRobot * robot, robotapi::IBattery * robotBatt, robotapi::IBattery * pcBatt, robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & fss);
 
 		~GoToBaseGroup();
 
@@ -35,7 +36,7 @@ class GoToBaseGroup : public AbstractBehaviour {
 
 		bool inPosition();
 
-	    behaviours::AbstractBehaviour * myBehaviours [3];
+	    behaviours::AbstractBehaviour * myBehaviours [4];
 		robotapi::IDifferentialWheels * wheels;
 	    robotapi::IBattery * robotBattery;
 		robotapi::IBattery * pcBattery;

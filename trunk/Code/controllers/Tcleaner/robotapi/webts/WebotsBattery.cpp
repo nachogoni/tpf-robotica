@@ -5,7 +5,8 @@ namespace webts {
 
     WebotsBattery::WebotsBattery(webots::Robot & robot, std::string & name, IWbDeviceTag tag) : WebotsDevice ( name, tag ){
 		this->robot = &robot;
-		this->bias = 0;
+		this->emptyBias = 0;
+		this->fullBias = 0;
 	}
 
     void WebotsBattery::enable(int ms){
@@ -21,18 +22,19 @@ namespace webts {
 	}
 
     bool WebotsBattery::isFull(){
-		return false;
+		return this->getValue() > this->fullBias;
 	}
 
     void WebotsBattery::setEmptyBias(double bias){
-		this->bias = bias;
+		this->emptyBias = bias;
 	}
 
     bool WebotsBattery::isEmpty(){
-		return this->getValue() < this->bias;
+		return this->getValue() < this->emptyBias;
 	}
 
     void WebotsBattery::setFullBias(double bias){
+		this->fullBias = bias;
 	}
 
 } /* End of namespace robotapi::webts */

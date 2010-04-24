@@ -9,15 +9,15 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 1.6454
-  orientation 0.40529 0.809665 0.424479 4.46058
-  position -0.875337 0.0881695 0.117324
+  orientation -0.58827 0.669947 0.452889 1.71921
+  position -0.137153 0.319947 -0.474354
 }
 PointLight {
   intensity 0.5
   location 0.14 0.6 -0.55
 }
 PointLight {
-  location -0.43 0.6 0.5
+  location -0.28 0.6 -0.4
 }
 Background {
   skyColor [
@@ -185,7 +185,8 @@ DEF short_rock_5 Solid {
   boundingObject USE short_brick_1_geometry
 }
 DEF E_PUCK DifferentialWheels {
-  translation -0.300338 0 0.565753
+  translation -0.228505 -5.30034e-005 -0.240691
+  rotation 0 0 1 0
   children [
     Servo {
       translation 0 0.0125 0
@@ -286,17 +287,6 @@ DEF E_PUCK DifferentialWheels {
       }
       type "force"
     }
-    DEF FRONT_TS TouchSensor {
-      translation 0 0.05 -0.035
-      children [
-        Shape {
-          geometry DEF FRONT_TS_BOX Box {
-            size 0.02 0.01 0.01
-          }
-        }
-      ]
-      boundingObject USE FRONT_TS_BOX
-    }
     DEF EPUCK_LEFT_WHEEL Solid {
       translation -0.026 0.02 0
       rotation 0.99999 0.00437866 -0.000701675 2.52735
@@ -356,7 +346,6 @@ DEF E_PUCK DifferentialWheels {
               appearance Appearance {
                 material Material {
                   diffuseColor 0.117647 0.815686 0.65098
-                  shininess 10
                   specularColor 0 0.788235 0.545098
                 }
               }
@@ -377,7 +366,6 @@ DEF E_PUCK DifferentialWheels {
               appearance Appearance {
                 material Material {
                   diffuseColor 1 0.647059 0
-                  shininess 10
                   specularColor 1 1 0
                 }
               }
@@ -390,7 +378,6 @@ DEF E_PUCK DifferentialWheels {
               appearance Appearance {
                 material Material {
                   diffuseColor 1 0.647059 0
-                  shininess 10
                   specularColor 1 1 0
                 }
               }
@@ -403,7 +390,6 @@ DEF E_PUCK DifferentialWheels {
               appearance Appearance {
                 material Material {
                   diffuseColor 0.74902 0.74902 0.74902
-                  shininess 10
                   specularColor 1 1 1
                 }
               }
@@ -471,7 +457,6 @@ DEF E_PUCK DifferentialWheels {
           appearance DEF EPUCK_SIDE_PRINT_APPEARANCE Appearance {
             material Material {
               diffuseColor 0.184314 0.635294 0.184314
-              shininess 10
               specularColor 0.509804 0.733333 0.517647
             }
           }
@@ -984,7 +969,6 @@ DEF E_PUCK DifferentialWheels {
           appearance Appearance {
             material Material {
               diffuseColor 1 1 1
-              shininess 10
               specularColor 0.898039 0.898039 0.898039
             }
           }
@@ -1002,7 +986,6 @@ DEF E_PUCK DifferentialWheels {
           appearance Appearance {
             material Material {
               diffuseColor 1 1 1
-              shininess 10
               specularColor 0.898039 0.898039 0.898039
             }
           }
@@ -1027,7 +1010,6 @@ DEF E_PUCK DifferentialWheels {
             material Material {
               ambientIntensity 0.1
               diffuseColor 0 0 0
-              shininess 5
               specularColor 0.301961 0.301961 0.301961
             }
           }
@@ -1045,7 +1027,6 @@ DEF E_PUCK DifferentialWheels {
             material Material {
               ambientIntensity 0.1
               diffuseColor 0 0 0
-              shininess 5
               specularColor 0.301961 0.301961 0.301961
             }
           }
@@ -1063,7 +1044,6 @@ DEF E_PUCK DifferentialWheels {
           appearance Appearance {
             material Material {
               diffuseColor 0 0 0
-              shininess 10
               specularColor 0.301961 0.301961 0.301961
             }
           }
@@ -1102,7 +1082,7 @@ DEF E_PUCK DifferentialWheels {
       name "ps0"
       lookupTable [
         0 1024 0
-        0.004 532 0
+        0.004 532 0.037
         0.006 409 0
         0.008 327 0
         0.01 266 0
@@ -1292,6 +1272,7 @@ DEF E_PUCK DifferentialWheels {
     }
     DEF EPUCK_CAMERA Camera {
       translation 0 0.028 -0.035
+      rotation 1 0 0 -0.5
       children [
         Transform {
           translation 0 0.008 0.003
@@ -1469,11 +1450,9 @@ DEF E_PUCK DifferentialWheels {
       ]
       name "camera0"
       fieldOfView 1.1
-      width 320
-      height 240
-      display FALSE
+      width 640
+      height 480
       near 0.004
-      far 20
       windowPosition 0.75 0.75
       pixelSize 4
     }
@@ -1659,7 +1638,6 @@ DEF E_PUCK DifferentialWheels {
           appearance Appearance {
             material Material {
               diffuseColor 1 1 1
-              shininess 5
               specularColor 1 1 1
               transparency 0.3
             }
@@ -1828,7 +1806,6 @@ DEF E_PUCK DifferentialWheels {
     }
     DEF EPUCK_ACCELEROMETER Accelerometer {
       rotation 1 0 0 -1.57
-      name "accelerometer"
     }
     DEF EPUCK_SMALL_LOGO Transform {
       translation 0 0.031 0.035
@@ -2018,8 +1995,6 @@ DEF E_PUCK DifferentialWheels {
   ]
   name "e-puck camera"
   model "e-puck"
-  author "Olivier Michel"
-  constructor "EPFL"
   description "Educational robot"
   boundingObject Group {
     children [
@@ -2053,7 +2028,7 @@ DEF E_PUCK DifferentialWheels {
   encoderResolution 159.23
 }
 Charger {
-  translation -0.874047 0 0.105756
+  translation -0.815 0 0.1
   children [
     DEF CHARGER Solid {
       translation 0 0.05 0
@@ -2151,20 +2126,9 @@ DEF e_Wall Solid {
   boundingObject USE e_WALL_SHAPE
 }
 DEF f_Wall Solid {
-  translation -0.940864 0.05 0.10426
+  translation -0.92 0.05 0.1
   rotation 0 1 0 3.14159
   children [
-    Solid {
-      translation 0.04 0 0
-      children [
-        DEF Base_Connector Shape {
-          geometry Box {
-            size 0.09 0.02 0.02
-          }
-        }
-      ]
-      boundingObject USE Base_Connector
-    }
     DEF f_WALL_SHAPE Shape {
       appearance USE WALL_APPEARANCE
       geometry Box {
@@ -2224,6 +2188,55 @@ DEF j_Wall Solid {
     }
   ]
   boundingObject USE j_WALL_SHAPE
+}
+DEF garbage Solid {
+  translation -0.20286 0.03 -0.554897
+  rotation 0.819232 0 0.573462 1.57
+  children [
+    DEF garbage_shape Shape {
+      appearance Appearance {
+        material Material {
+          ambientIntensity 1
+          diffuseColor 1 1 1
+          emissiveColor 1 1 1
+          shininess 1
+          specularColor 1 1 1
+        }
+        texture ImageTexture {
+          url [
+            "colilla-sinBlanco.png"
+          ]
+        }
+      }
+      geometry Cylinder {
+        height 0.01
+        radius 0.00125
+      }
+    }
+  ]
+  boundingObject USE garbage_shape
+  physics Physics {
+  }
+}
+DEF garbage_uno Solid {
+  translation -0.16286 0.03 -0.474897
+  rotation 0.819232 0 0.573462 1.57
+  children [
+    USE garbage_shape
+  ]
+  boundingObject USE garbage_shape
+  physics Physics {
+  }
+}
+DEF garbage_dos Solid {
+  translation -0.26286 0.03 -0.474897
+  rotation 0.819232 0 0.573462 1.57
+  children [
+    USE garbage_shape
+  ]
+  boundingObject USE garbage_shape
+  physics Physics {
+  }
 }
 DEF k_Wall Solid {
   translation -0.184 0.05 0.395
