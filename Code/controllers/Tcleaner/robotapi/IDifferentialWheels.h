@@ -52,6 +52,10 @@ class IDifferentialWheels : virtual public IDevice {
 
 	virtual utils::MyPoint * getPosition()  = 0;
 
+	virtual void setOrientation(double angle)  = 0;
+
+	virtual void setPosition(utils::MyPoint * p)  = 0;
+
     // virtual destructor for interface
     virtual ~IDifferentialWheels() { }
 };

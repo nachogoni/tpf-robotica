@@ -24,6 +24,8 @@ class DifferentialWheelsWOdometry : public robotapi::IDifferentialWheels {
 			void computeOdometry();
 			double getOrientation();
 			utils::MyPoint * getPosition();
+			void setOrientation(double angle);
+			void setPosition(utils::MyPoint * p);
 	
 		private:
         	void computePosition(double ldist, double rdist);

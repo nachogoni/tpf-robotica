@@ -46,6 +46,8 @@ public:
 	private:
         WorldInfo * wi;
 		IDifferentialWheels * df;
+		IBattery * robotBattery;
+		IBattery * pcBattery;
     };
 } /* End of namespace robotapi::webts */
 } /* End of namespace robotapi */

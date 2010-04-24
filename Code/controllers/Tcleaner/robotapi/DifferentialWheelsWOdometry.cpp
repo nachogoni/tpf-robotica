@@ -71,4 +71,22 @@ utils::MyPoint * DifferentialWheelsWOdometry::getPosition(){
 	return this->lastPosition;
 }
 
+void DifferentialWheelsWOdometry::setOrientation(double angle){
+	delete(this->lastAngle);
+	this->lastAngle = new utils::MyAngle(angle);
+}
+
+void DifferentialWheelsWOdometry::setPosition(utils::MyPoint * p){
+    this->lastPosition->setX(p->getX());
+	this->lastPosition->setY(p->getY());
+
+/*
+	printf("DELETING\n");
+	delete(this->lastPosition);
+	printf("DELETED\n");
+	this->lastPosition = p;
+	printf("SET\n");
+*/
+}
+
 } /* End of namespace robotapi */
