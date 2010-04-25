@@ -84,9 +84,9 @@ int Contours::areaFilter(double min_area,double max_area){
 int Contours::perimeterFilter(double min_per,double max_per){
 	
 	double per;
-	printf("PF %x",this->c);
+	
 	per = cvArcLength(this->c, CV_WHOLE_SEQ, 1);
-	printf("PA");
+	
 	return per> min_per && per<max_per;	
 	
 }
@@ -156,7 +156,6 @@ int Contours::histogramMatchingFilter(IplImage * src, CvHistogram * testImageHis
 	//gets subimage bounded by box
     cvGetSubArr( src,(CvMat*)src_bbox, box );
 
-	printf("armo la subImagen \n");
 	//gets subimage histogram
 	utils::Histogram * h = new Histogram(h_bins,s_bins);
 	CvHistogram* hist = h->getHShistogramFromRGB(src_bbox);
@@ -166,7 +165,6 @@ int Contours::histogramMatchingFilter(IplImage * src, CvHistogram * testImageHis
 	cvReleaseHist(&hist);
 	cvReleaseImage(&src_bbox);
 	delete h;
-	printf("%g\n",val);
 	
 	return (val<min);
 }
