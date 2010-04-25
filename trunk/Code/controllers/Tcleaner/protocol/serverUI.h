@@ -1,6 +1,9 @@
 #ifndef _SERVERUI_H
 #define _SERVERUI_H
 
+void
+registerHandlers(protocol::PacketServer * ps);
+
 // Commands for Main Controller (mc)
 void cmd_init(char * data);
 void cmd_reset(char * data);

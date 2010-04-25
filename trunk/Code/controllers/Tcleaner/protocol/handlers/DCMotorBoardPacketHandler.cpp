@@ -38,6 +38,28 @@ void DCMotorBoardPacketHandler::handlePacket(Packet * p){
 	packets::DCMotorPacket * dcmp = new packets::DCMotorPacket(groupid,boardid);
 	dcmp->analysePacket(p);
 	
+	//ACK commands
+	if ( dcmp->getCommand() == CMD_SET_DIRECTION){
+		printf("Set direction ACK received\n");
+	}
+	if ( dcmp->getCommand() == CMD_SET_DC_SPEED){
+		printf("Set Speed ACK received\n");
+	}	
+	if ( dcmp->getCommand() == CMD_SET_ENCODER){
+		printf("Set encoder ACK received\n");
+	}
+	if ( dcmp->getCommand() == CMD_RESET_ENCODER){
+		printf("Reset encoder ACK received\n");
+	}
+	
+	if ( dcmp->getCommand() == CMD_SET_ENCODER_T_S){
+		printf("Set encoder to stop ACK received\n");
+	}
+	if ( dcmp->getCommand() == CMD_DONT_STOP){
+		printf("Dont stop ACK received\n");
+	}
+	
+	
 	if ( dcmp->getCommand() == CMD_GET_ENCODER ){
 		int value = dcmp->getEncoderValue();
 		// TODO convert from int(4 bytes) to double
@@ -80,6 +102,25 @@ void DCMotorBoardPacketHandler::handlePacket(Packet * p){
 		#endif
 
 	}
+	//TODO: No esta implementada esta en el handler?
+	// no se guarda en el handler?
+	if ( dcmp->getCommand() == CMD_GET_ENCODER_T_S ){
+		int value = dcmp->getEncoderValueToStop();
+		printf("Number of counts for encoder to stop %d \n",value);
+		// TODO convert from int(4 bytes) to double
+		// Lock Mutex
+		/*
+		#ifdef LINUX
+		this->consumptionMutex->enterMutex();
+		#endif
+		this->consumptionValue = value;
+		// Release Mutex
+		#ifdef LINUX
+		this->consumptionMutex->leaveMutex();
+		#endif
+		*/
+	}
+	
  	if ( dcmp->isMotorAlarm() ){
 		// Lock Mutex
 		#ifdef LINUX

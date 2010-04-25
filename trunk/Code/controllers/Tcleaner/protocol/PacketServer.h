@@ -9,6 +9,7 @@
 #include <protocol/Packet.h>
 #include <protocol/BoardPacketHandler.h>
 
+
 #define SERIAL_PORT "/dev/ttyUSB0"
 #define MAX(a,b) (a>b?a:b)
 #define PIPE_IN 0

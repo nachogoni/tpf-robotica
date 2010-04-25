@@ -15,7 +15,13 @@
 	#include <sys/stat.h>
 #endif
 
+
 namespace protocol {
+	
+
+
+
+
 
 // class constructor
 PacketServer::PacketServer()
@@ -166,6 +172,12 @@ bool PacketServer::init()
     cfsetospeed(&tc, B115200);
 
     tcsetattr(this->serfd, TCSANOW, &tc);
+    
+    
+    
+    
+
+    
     #endif
     return true;
 }
