@@ -11,6 +11,10 @@
 #include <protocol/packets/ServoMotorPacket.h>
 #include <protocol/packets/DCMotorPacket.h>
 #include <protocol/handlers/DCMotorBoardPacketHandler.h> // class's header file
+#include <protocol/handlers/BatteryBoardPacketHandler.h>
+#include <protocol/handlers/DistanceSensorBoardPacketHandler.h>
+#include <protocol/handlers/ServoBoardPacketHandler.h>
+#include <protocol/handlers/TrashBinBoardPacketHandler.h>
 #include <protocol/Packet.h>
 #include <protocol/PacketServer.h>
 #include "serverUI.h"
@@ -18,6 +22,19 @@
 #define MAX(a,b) (a>b?a:b)
 #define PIPE_IN 0
 #define PIPE_OUT 1
+
+//define group and board ids
+#define DCMOTOR_GID 0x10
+#define SERVO_GID 0x20
+#define DISTANCESENSOR_GID 0x30
+#define BATTERY_GID 0x40
+#define TRASH_GID 0x50
+
+#define DCMOTOR_BOARD_ID 0
+#define SERVO_BOARD_ID 0
+#define DISTANCESENSOR_BOARD_ID 0
+#define BATTERY_BOARD_ID 0
+#define TRASH_BOARD_ID 0
 
 typedef struct {
     const char * group;
@@ -31,6 +48,7 @@ bool quit = false, groupBC = false, fullBC = false;
 int fd = 5;
 int dest_group = 0x01, dest_card = 0x01;
 protocol::packets::DCMotorPacket * packetToSend = NULL;
+
 protocol::PacketServer * ps;
 int pipes[2];
 int lastCMD = -1;
@@ -60,17 +78,17 @@ cmd_type commands[] = {
     {"mc", "ping", cmd_ping, "Send ping command", ""},
     {"mc", "error", cmd_error, "Send error command", "\%d for error"},
     // Commands for MotorDC (dc)                                                                      
-    {"dc", "dcSetDirection", cmd_dcSetDirection, "Set motor turn", "\%d for Clockwise:0 or Unclockwise:1"},
-    {"dc", "dcSetSpeed", cmd_dcSetSpeed, "Set motor speed", "\%d \%d for Clockwise:0 or Unclockwise:1 and counts per second"},
-    {"dc", "dcSetEncoder", cmd_dcSetEncoder, "", ""},
-    {"dc", "dcGetEncoder", cmd_dcGetEncoder, "", ""},
-    {"dc", "dcResetEncoder", cmd_dcResetEncoder, "", ""},
-    {"dc", "dcSetEncoderToStop", cmd_dcSetEncoderToStop, "", ""},
-    {"dc", "dcGetEncoderToStop", cmd_dcGetEncoderToStop, "", ""},
-    {"dc", "dcDontStop", cmd_dcDontStop, "", ""},
-    {"dc", "dcConsumption", cmd_dcConsumption, "", ""},
-    {"dc", "dcStressAlarm", cmd_dcStressAlarm, "", ""},
-    {"dc", "dcShutDownAlarm", cmd_dcShutDownAlarm, "", ""},   
+    {"dc", "dcSetDirection", cmd_dcSetDirection, "Set motor turn", "\%d for Clockwise:0 or counter-clockwise:1"},
+    {"dc", "dcSetSpeed", cmd_dcSetSpeed, "Set motor speed", "\%d \%d for Clockwise:0 or counter-clockwise:1 and counts per second"},
+    {"dc", "dcSetEncoder", cmd_dcSetEncoder, "Set historical counts of encoder", "\%d number of counts"},
+    {"dc", "dcGetEncoder", cmd_dcGetEncoder, "Get historical counts of encoder", ""},
+    {"dc", "dcResetEncoder", cmd_dcResetEncoder, "Reset historical counts of encoder", ""},
+    {"dc", "dcSetEncoderToStop", cmd_dcSetEncoderToStop, "Set remaining counts of encoder to stop", "\%hd number of counts"},
+    {"dc", "dcGetEncoderToStop", cmd_dcGetEncoderToStop, "Obtain remaining counts of encoder to stop", ""},
+    {"dc", "dcDontStop", cmd_dcDontStop, "Undo commands for stopping encoder, disables encoder counting", ""},
+    {"dc", "dcConsumption", cmd_dcConsumption, "Gets current motor consumption", ""},
+    {"dc", "dcStressAlarm", cmd_dcStressAlarm, "Indicates main controller of extreme consumption on the motor", "\%hd consumption that raise alarm"},
+    {"dc", "dcShutDownAlarm", cmd_dcShutDownAlarm, "Shutdowns dcMotor stress alarm", "\%hd consumption that raise alarm"},   
     {"dc", "dcGetSpeed", cmd_dcGetSpeed, "Get motor speed in counts per second", ""},
     // Commands for ServoMotor (sm)
     {"sm", "smSetPos", cmd_smSetPos, "Set servo position", ""},
@@ -191,6 +209,7 @@ int main( int argc, const char **argv)
     fd_set readfd_b, writefd_b;
     
 	ps = new protocol::PacketServer();
+	registerHandlers(ps);
 	ps->start();
 
     // Set file descriptors
@@ -238,6 +257,30 @@ int main( int argc, const char **argv)
     }
     
     return 0;
+}
+void
+registerHandlers(protocol::PacketServer * ps){
+	//register handlers
+    protocol::handlers::DCMotorBoardPacketHandler * dcMotorHandler=
+		new protocol::handlers::DCMotorBoardPacketHandler(ps,DCMOTOR_GID,DCMOTOR_BOARD_ID);
+		
+	protocol::handlers::ServoBoardPacketHandler * servoHandler= new
+		protocol::handlers::ServoBoardPacketHandler(ps,SERVO_GID,SERVO_BOARD_ID);
+		
+	protocol::handlers::DistanceSensorBoardPacketHandler * distanceSensorHandler= new
+		protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCESENSOR_GID,DISTANCESENSOR_BOARD_ID);
+	
+	protocol::handlers::BatteryBoardPacketHandler * batteryHandler= new
+		protocol::handlers::BatteryBoardPacketHandler(ps,BATTERY_GID,BATTERY_BOARD_ID);
+		
+	protocol::handlers::TrashBinBoardPacketHandler * trashHandler= new
+		protocol::handlers::TrashBinBoardPacketHandler(ps,TRASH_GID,TRASH_BOARD_ID);
+    
+    ps->registerHandler(dcMotorHandler,DCMOTOR_GID,DCMOTOR_BOARD_ID);
+    ps->registerHandler(servoHandler,SERVO_GID,SERVO_BOARD_ID);
+    ps->registerHandler(distanceSensorHandler,DISTANCESENSOR_GID,DISTANCESENSOR_BOARD_ID);
+    ps->registerHandler(batteryHandler,BATTERY_GID,BATTERY_BOARD_ID);
+    ps->registerHandler(trashHandler,TRASH_GID,TRASH_BOARD_ID);
 }
 
 
@@ -442,49 +485,108 @@ void cmd_dcGetEncoder(char * data)
 // DC_MOTOR_RESET_ENCODER      0X44
 void cmd_dcResetEncoder(char * data)
 {
-    // TODO
+	protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
+	p->resetEncoder();
+	p->prepareToSend();
+	for (int i=0;i<1;i++)
+       ps->sendPacket(p);
+
     return;
 }
 
 // DC_MOTOR_SET_ENCODER_TO_STOP    0X45
 void cmd_dcSetEncoderToStop(char * data)
 {
-    // TODO
+	 short counts;
+    
+    if (data == NULL || sscanf(data, "%hd", &counts) != 1)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+
+    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
+    p->setEncoderToStop(counts);
+    p->prepareToSend();
+    for (int i=0;i<1;i++)
+        ps->sendPacket(p);
+
     return;
 }
 
 // DC_MOTOR_GET_ENCODER_TO_STOP    0X46
 void cmd_dcGetEncoderToStop(char * data)
 {
-    // TODO
+    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
+	p->getEncoderToStop();
+    p->prepareToSend();
+    for (int i=0;i<1;i++)
+        ps->sendPacket(p);
+
     return;
 }
 
 // DC_MOTOR_DONT_STOP      0X47
 void cmd_dcDontStop(char * data)
 {
-    // TODO
+    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
+	p->setNonStop();
+    p->prepareToSend();
+    for (int i=0;i<1;i++)
+        ps->sendPacket(p);
+
     return;
 }
 
 // DC_MOTOR_MOTOR_CONSUMPTION  0X48
 void cmd_dcConsumption(char * data)
 {
-    // TODO
+    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
+	p->getMotorConsumption();
+    p->prepareToSend();
+    for (int i=0;i<1;i++)
+        ps->sendPacket(p);
+
     return;
 }
 
 // DC_MOTOR_MOTOR_STRESS_ALARM 0X49
 void cmd_dcStressAlarm(char * data)
 {
-    // TODO
+	 short consumption;
+    
+    if (data == NULL || sscanf(data, "%hd", &consumption) != 1)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+    
+    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
+	p->isMotorAlarm();
+    p->prepareToSend();
+    for (int i=0;i<1;i++)
+        ps->sendPacket(p);
+
     return;
 }
 
 // DC_MOTOR_MOTOR_SHUT_DOWN_ALARM  0X4A
 void cmd_dcShutDownAlarm(char * data)
 {
-    // TODO
+	 short consumption;
+	
+	if (data == NULL || sscanf(data, "%hd", &consumption) != 1)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+	
+    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
+	p->isMotorShutDown();
+    p->prepareToSend();
+    for (int i=0;i<1;i++)
+        ps->sendPacket(p);
+
     return;
 }
 
