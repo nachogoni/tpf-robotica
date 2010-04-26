@@ -5,12 +5,13 @@
 namespace benchmark { 
 	
 
-class FrameResult{
+class Result{
 	
 	public:
 		FrameResult();
 		~FrameResult();
-		int 
+		int falsePositives;
+		int falseNegatives;
 	
 
 }

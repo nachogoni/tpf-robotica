@@ -15,6 +15,7 @@ class Frame
 	public:
 		Frame(int frameNumber);
 		~Frame();
+		std::list<Cobject*> getObjects();
 		void addObject(Cobject *obj);
 		int getNumberOfObjects();
 		std::list<Cobject*> objectList;
