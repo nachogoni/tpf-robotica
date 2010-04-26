@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <vector>
 
 #ifndef COBJECTADT_H_
 #define COBJECTADT_H_
@@ -15,6 +16,7 @@ class Cobject
 			bool contains(int x,int y);
 			bool overlap(Cobject* other);
 			bool isSimilar(Cobject * other);
+			std::vector<int> centroid();
 			~Cobject();
 			void print();
 			
