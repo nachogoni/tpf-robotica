@@ -2,7 +2,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <libxml/parser.h>
 #include "Cobject.h"
 #include "Frame.h"
 #include "rapidxml/rapidxml.hpp"

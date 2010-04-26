@@ -29,6 +29,10 @@ Frame::getNumberOfObjects()
 {
 	return this->objectList.size();
 }
+std::list<Cobject*> Frame::getObjects(){
+	return this->objectList;
+}
+
 
 }
 

@@ -64,6 +64,7 @@ parseFrame(rapidxml::xml_node<> * frame)
 	
 	for (object=objects,nObjs=0; object; object=object->next_sibling(),nObjs++){
 		Cobject* obj=parseObject(object);
+		obj->index=nObjs;
 		f->addObject(obj);
 	}
 
