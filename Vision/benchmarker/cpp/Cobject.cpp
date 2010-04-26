@@ -2,7 +2,9 @@
 #include "Cobject.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <vector>
+#include <cmath>
+#define EPSILON 30
 
 
 namespace benchmark{
@@ -42,9 +44,25 @@ Cobject::print(){
  
 }
 
+std::vector<int> Cobject::centroid(){
+	std::vector<int> centroid(2);
+	centroid[0]=this->x + this->w/2;
+	centroid[1]=this->x + this->h/2;
+	return centroid;
+}
 bool Cobject::isSimilar(Cobject * other){
-	if(this->overlap(other))
+	std::vector<int> centroid1=this->centroid();
+	std::vector<int> centroid2=other->centroid();
+	
+	if((fabs(centroid1[0]- centroid2[0]) +  fabs(centroid1[1]- centroid2[1]))< EPSILON){
 		return true;
+	}
+	
+	return false;
+
+/*	if(this->overlap(other))
+		return true;
+		*/
 }
 
 bool Cobject::overlap(Cobject* other){
