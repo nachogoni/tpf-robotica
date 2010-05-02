@@ -44,6 +44,7 @@ class PacketServer {
 		BoardPacketHandler * getHandler(unsigned char groupid,unsigned char boardid);
 		bool init();
 		void sendAPacket(Packet * p);
+		void readNBytes(int fd, char * buff, int nBytes);
 		std::queue<Packet *> toSend;
 		std::list<Packet *> waitingForResponse;
 		std::map<char, std::map<char, BoardPacketHandler *> > handlers;
