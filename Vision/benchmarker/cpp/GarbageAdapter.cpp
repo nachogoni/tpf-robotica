@@ -25,8 +25,12 @@ using namespace utils;
 				MinimalBoundingRectangle * aMbr=(*it)->boundingBox();
 				obj=new benchmark::Cobject( index ,aMbr->x,aMbr->y,aMbr->height,aMbr->width);
 				resp.push_back(obj);
+				delete aMbr;
+				delete (*it);
 				index++;
 		}
+		
+		delete gr;
 		return resp;
 	}
 	

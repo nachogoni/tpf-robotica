@@ -12,10 +12,20 @@ using namespace benchmark;
 Result *
 compareFrameXmlWithFrame(IplImage* frame,Frame* frameXml);
 
+void
+makeGlobalResults(list<Result*>  resultList);
+
 Result*
 getFrameResults(IplImage * frame);
 
+GarbageAdapter * ga;
 
+typedef struct {
+	int hit;
+	int falseDetections;
+	int nObjects;
+} stats;
+	
 
 int main(int argc, char** argv)
 {	    
@@ -34,9 +44,11 @@ int main(int argc, char** argv)
 		return 1;
 	}
     
-    std::list<Frame*> framesList=parseXmlObjects(argv[1]);
-    printf("frames %d",framesList.size());
-    
+    GarbageAdapter * ga= new GarbageAdapter();
+    //std::list<Frame*> framesList=parseXmlObjects(argv[1]);
+    videoInfo vinfo=parseXmlObjects(argv[1]);
+    std::list<Frame*> framesList=vinfo.framesList;
+    int maxFrameNumber=vinfo.numberOfFrames;
     int nextTestframe=1;
     int videoFrameNumber=1;
     bool continueVideo=true;
@@ -45,15 +57,16 @@ int main(int argc, char** argv)
     std::list<Result*> resultList;
     
     
-    while(videoFrameImg=cvQueryFrame(capture))
+    while((videoFrameImg=cvQueryFrame(capture))!=NULL && videoFrameNumber<maxFrameNumber)
     {
-		Result* result;
+		Result* result=NULL;
 		
 		
 		if(videoFrameNumber==nextTestframe){
 			printf("Comparando frame %d\n", videoFrameNumber);
-			result=compareFrameXmlWithFrame(videoFrameImg,*frameXml);
 			//compare FrameXml with FrameImg
+			result=compareFrameXmlWithFrame(videoFrameImg,*frameXml);
+			
 			
 			++frameXml;
 			if(frameXml != framesList.end()) 
@@ -63,11 +76,18 @@ int main(int argc, char** argv)
 			printf("no test info for frame %d\n",videoFrameNumber);
 			result=getFrameResults(videoFrameImg);
 		}
-		
-		resultList.push_back(result);
+	
+		if(result!=NULL)
+			resultList.push_back(result);
 		videoFrameNumber++;
 		
+
+		
 	}
+	
+	//cvReleaseImage( &videoFrameImg );
+	cvReleaseCapture( &capture ); 
+	makeGlobalResults(resultList);
     
     
 }
@@ -75,18 +95,23 @@ int main(int argc, char** argv)
 Result*
 getFrameResults(IplImage * frame)
 {
-	GarbageAdapter * ga= new GarbageAdapter();
+	Result * res= new Result();
 	std::list<Cobject*> objects=ga->recognizeObjects(frame);
 	
-	return new Result();		
+	for (std::list<Cobject*>::iterator it = objects.begin(); it != objects.end(); it++){
+		res->addMiss((*it));
+	}
+	
+	return res;
+		
 }
 Result*
 compareFrameXmlWithFrame(IplImage* frame,Frame* frameXml)
 {
 	bool found=false;
-	GarbageAdapter * ga= new GarbageAdapter();
 	std::list<Cobject*> objects=ga->recognizeObjects(frame);
 	std::list<Cobject*> objectsXml=frameXml->getObjects();
+	std::list<int> missContours;
 	Result *aResult=new Result(frameXml);
 	
 	for (std::list<Cobject*>::iterator itXml = objectsXml.begin(); itXml != objectsXml.end(); itXml++){
@@ -96,14 +121,41 @@ compareFrameXmlWithFrame(IplImage* frame,Frame* frameXml)
 					printf("found object %d index\n",(*itXml)->index);
 					aResult->addFound((*itXml)->index);
 					found=true;
+					
 					//could check if other detections also are similar to the one in the xml
 					//then it would be proper to keep the one which is more similar
 				}
+			}else{
+				missContours.push_back((*itVid)->index);
 			}
 		}
 	}
 	
 	
 	
-	return new Result(frameXml);
+	return aResult;
+}
+
+void
+makeGlobalResults(list<Result*>  resultList){
+	stats allFramesStats;
+	stats testedFrames;
+	
+	allFramesStats.nObjects=0;
+	allFramesStats.falseDetections=0;
+	allFramesStats.hit=0;
+	
+	for (std::list<Result*>::iterator itRes = resultList.begin(); itRes != resultList.end(); itRes++){
+		allFramesStats.hit+=(*itRes)->detectedObjects();
+		allFramesStats.falseDetections+=(*itRes)->falsePositives;
+		allFramesStats.nObjects+=(*itRes)->nObjects;
+	}
+	
+	printf(" Total number of objects to be recognized %d\n",allFramesStats.nObjects);
+	printf(" number of hits %d\n",allFramesStats.hit);
+	printf(" number of detected objects that didn't exist %d\n",allFramesStats.falseDetections);
+	printf(" False positive detection  %g\n",(allFramesStats.hit + allFramesStats.falseDetections)/(double) allFramesStats.nObjects);
+	double falseNegativeDetectionProb=allFramesStats.hit==0?(allFramesStats.falseDetections>0?1:0):
+		allFramesStats.falseDetections/( (double)allFramesStats.hit+allFramesStats.falseDetections);
+	printf(" False negative detection  %g\n",falseNegativeDetectionProb);
 }

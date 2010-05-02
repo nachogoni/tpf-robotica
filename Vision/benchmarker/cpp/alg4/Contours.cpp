@@ -164,6 +164,7 @@ int Contours::histogramMatchingFilter(IplImage * src, CvHistogram * testImageHis
 	
 	cvReleaseHist(&hist);
 	cvReleaseImage(&src_bbox);
+	cvReleaseMemStorage(&mem);
 	delete h;
 	
 	return (val<min);

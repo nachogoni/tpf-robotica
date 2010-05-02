@@ -20,19 +20,37 @@ using namespace benchmark;
 using namespace std;
 
 
-std::list<Frame*>
+videoInfo
 parseXmlObjects(char * filename)
 {
-	
-	
-	
     rapidxml::xml_document<>         document;
     rapidxml::xml_node<>         	*root, *frames, *objects,*vals,*val,*object,*frame;
     std::list<Frame*> framesList;
+    rapidxml::xml_attribute<> *atr;
+    
+    
+
 
     document.parse<0>(readFile(filename));
     root = document.first_node();
     fprintf(stdout, "Root is <%s> (%i)\n", root->name(), root->type());
+    
+    atr=root->first_attribute();
+    
+    //parse video attributes
+    
+    
+    int maxFrames=atoi(atr->value());
+    printf("Number of frames edited %d\n",maxFrames);
+    atr->next_attribute();
+    printf("Video fps %d\n",atoi(atr->value()));
+    atr->next_attribute();
+    printf("Video name %s\n",atr->value());
+    atr->next_attribute();
+    printf("Video Height %d\n",atoi(atr->value()));
+    atr->next_attribute();
+    printf("Video Height %d\n",atoi(atr->value()));
+
     frames = root->first_node();
     
     
@@ -41,8 +59,12 @@ parseXmlObjects(char * filename)
 		framesList.push_back(parseFrame(frame));
     }
    
-   
-    return framesList;
+	videoInfo a;
+	a.framesList=framesList;
+	a.numberOfFrames=maxFrames;
+    
+    return a;
+    //return framesList;
     
     
 }

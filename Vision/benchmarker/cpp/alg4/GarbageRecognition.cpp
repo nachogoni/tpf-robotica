@@ -29,17 +29,16 @@
 #define HIST_H_BINS 8
 #define HIST_MIN 0.7
 #define TIME_THRESHOLD 15 //seconds
-
 /*
 int main(void)
 {
 	utils::GarbageRecognition * gr= new utils::GarbageRecognition();
 	
-	gr->getGarbageList();
+	IplImage * src = cvLoadImage("./colilla-scene.png",1);
+	gr->getGarbageList(src);
 	
 }
 */
-
 namespace utils {
 
 
@@ -52,6 +51,7 @@ GarbageRecognition::getGarbageList(IplImage * src)
 	    IplImage * model = cvLoadImage("./colilla-sinBlanco.png",1);
 		garbages = this->garbageList(src,model);
 	
+		cvReleaseImage(&model);
 	return garbages;
 }
 
@@ -156,7 +156,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 		utils::Contours * ct = new Contours(aContour);
 
 	
-	    int	pf = ct->perimeterFilter(MINCONTOUR_PERIMETER,MAXCONTOUR_PERIMETER);
+	    /*int	pf = ct->perimeterFilter(MINCONTOUR_PERIMETER,MAXCONTOUR_PERIMETER);
 
 		int raf = ct->rectangularAspectFilter(CONTOUR_RECTANGULAR_MIN_RATIO, CONTOUR_RECTANGULAR_MAX_RATIO);
 
@@ -164,12 +164,16 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 		int baf = ct->boxAreaFilter(BOXFILTER_TOLERANCE);
 
         int hmf = ct->histogramMatchingFilter(src,testImageHistogram, HIST_H_BINS,HIST_S_BINS,HIST_MIN);
+        */
 
 
 		//apply filters
 
     
-		if( pf && raf && baf && hmf	){
+		if( ct->perimeterFilter(MINCONTOUR_PERIMETER,MAXCONTOUR_PERIMETER) && 
+			ct->rectangularAspectFilter(CONTOUR_RECTANGULAR_MIN_RATIO, CONTOUR_RECTANGULAR_MAX_RATIO) && 
+			ct->boxAreaFilter(BOXFILTER_TOLERANCE) && 	
+			ct->histogramMatchingFilter(src,testImageHistogram, HIST_H_BINS,HIST_S_BINS,HIST_MIN)){
 				
 				//if passed filters
 				ct->printContour(3,cvScalar(127,127,0,0),
@@ -206,6 +210,21 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
    // cvShowImage("output",contourImage);
    // cvWaitKey(0);
 	delete h;
+	
+	
+	cvReleaseHist(&testImageHistogram);
+	//Image for thresholding
+	//cvReleaseMemStorage( &contours->storage );
+	cvReleaseImage(&threshImage);
+	cvReleaseImage(&equalizedImage);
+	cvReleaseImage(&morphImage);
+	cvReleaseImage(&smoothImage);
+	cvReleaseImage(&contourImage);
+	
+	cvReleaseImage(&hsv);
+	cvReleaseImage(&h_plane);
+	cvReleaseImage(&s_plane);
+	cvReleaseImage(&v_plane);
 
 	return garbageList;
 }
