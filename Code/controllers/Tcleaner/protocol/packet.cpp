@@ -213,8 +213,9 @@ int Packet::getIntData(){
 
 void Packet::print(){
     	for(int i = 0; i <this->getActualLength(); i++ )
-    		printf("%X:",( (char) this->packet[i]) & 0x000000FF);
+    		printf("%02X:",( (char) this->packet[i]) & 0x000000FF);
 	putchar('\n');
+	fflush(stdout);
 }
 
 }

@@ -46,7 +46,7 @@ typedef struct {
 
 bool quit = false, groupBC = false, fullBC = false;
 int fd = 5;
-int dest_group = 0x01, dest_card = 0x01;
+int dest_group = 0x01, dest_card = 0x00;
 protocol::packets::DCMotorPacket * packetToSend = NULL;
 
 protocol::PacketServer * ps;
@@ -65,9 +65,40 @@ void cmd_setDest(char * data);
 void cmd_groupBC(char * data);
 void cmd_fullBC(char * data);
 
+
+void cmd_a(char * data);
+
+
+void cmd_a(char * data)
+{    
+    for (int i=0;i<5;i++)
+	{
+		protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
+	
+		if ( (i % 2) == 0 )
+			p->setDirection(false);
+		else
+			p->setDirection(true);
+		p->prepareToSend();
+
+		ps->sendPacket(p);
+	}
+
+    return;
+}
+
+
+
+
+
 // Command list
 cmd_type commands[] = {
-    // Common commands
+
+
+	{"dc", "a", cmd_a, "", ""},
+
+	
+	// Common commands
     {"common", "setDest", cmd_setDest, "Set group and card id for destination", "\%d \%d for group and card (0 to 15)"},
     {"common", "getDest", cmd_getDest, "Get group and card id for destination", ""},
     {"common", "groupBC", cmd_groupBC, "Change group broadcast state", ""},
@@ -417,8 +448,8 @@ void cmd_dcSetDirection(char * data)
     else
         p->setDirection(true);
     p->prepareToSend();
-    for (int i=0;i<1;i++)
-        ps->sendPacket(p);
+
+	ps->sendPacket(p);
 
 
     return;

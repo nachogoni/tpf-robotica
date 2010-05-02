@@ -82,6 +82,9 @@ void PacketServer::run(void){
     readfd_b = readfd;
     writefd_b = writefd;
     
+	
+	char a = 0xFF;
+	
     while ( 1 ){
 
         if ((select_resp = select(maxfd, &readfd, &writefd, NULL, NULL)) == 0)
@@ -104,36 +107,57 @@ void PacketServer::run(void){
             unsigned char s;
             char ser_buf[256];
             read(serfd, ser_buf, 1);
-            read(serfd, &(ser_buf[1]), ser_buf[0]);
+            this->readNBytes(serfd, &(ser_buf[1]), ser_buf[0]);
+            //read(serfd, &(ser_buf[1]), ser_buf[0]);
             Packet * p = new Packet(ser_buf, ser_buf[0]+1);
 			BoardPacketHandler * bph = this->getHandler(p->getOriginGroup(),p->getOriginId());
 			bph->handlePacket(p);
-            /*
+/*            if (((a + 1) & 0x000000FF) != (c & 0x000000FF))
 			char c;
             // Have things in buffer! :P
             read(serfd, &c, 1);
-            printf("caracter : %X", c & 0x000000FF);
+			printf(" ERROR! %02X %02X ", a & 0x000000FF, c & 0x000000FF);
+			a = c & 0x000000FF;
 			fflush(stdout);
-            */
+			printf(":%02X", c & 0x000000FF);
+*/        
         }
 
         // PIPE
         if ( FD_ISSET(this->pipes[PIPE_IN], &readfd) )
         {
 			unsigned char c;
-			int pipe_buf[256];
+/*			int pipe_buf[256];
             // Have things in buffer! :P
             read(pipes[PIPE_IN], &c, 1);
 			write(serfd,&c,1);
             read(pipes[PIPE_IN], pipe_buf, c);
 			printf("escribi : %d bytes en el serial\n",write(serfd,pipe_buf,c)+1);
-        }
+*/
+			read(pipes[PIPE_IN], &c, 1);
+			write(serfd,&c,1);
+		
+		}
 
         // Restore structures from backup
         readfd = readfd_b;
         writefd = writefd_b;
 	}
 	#endif
+}
+
+void PacketServer::readNBytes(int fd, char * buff, int nBytes){
+	int bytesRead = 0;
+	int bytesLeft = nBytes - bytesRead;
+
+	while ( bytesLeft ){
+		int thisread = read( fd, buff+(char)bytesRead , bytesLeft );
+		if ( thisread <= 0 )
+			continue;
+		bytesRead = bytesRead + thisread;
+		bytesLeft = nBytes - bytesRead;
+	}
+	return;
 }
 
 void PacketServer::registerHandler(BoardPacketHandler * bph,int groupid,int boardid){
