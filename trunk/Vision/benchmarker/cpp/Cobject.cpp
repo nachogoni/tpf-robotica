@@ -54,7 +54,10 @@ bool Cobject::isSimilar(Cobject * other){
 	std::vector<int> centroid1=this->centroid();
 	std::vector<int> centroid2=other->centroid();
 	
-	if((fabs(centroid1[0]- centroid2[0]) +  fabs(centroid1[1]- centroid2[1]))< EPSILON){
+	if( pow(
+		( 	pow(fabs(centroid1[0]- centroid2[0]),2) +  
+			pow(fabs(centroid1[1]- centroid2[1]),2)
+		),0.5)< EPSILON){
 		return true;
 	}
 	

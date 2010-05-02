@@ -14,7 +14,13 @@
 
 char * readFile(char * filename);
 
-std::list<benchmark::Frame*>  parseXmlObjects(char * filename);
+typedef struct{
+	int numberOfFrames;
+	std::list<benchmark::Frame*> framesList;
+} videoInfo;
+	
+
+videoInfo  parseXmlObjects(char * filename);
 
 benchmark::Cobject* parseObject(rapidxml::xml_node<> * object);
 
