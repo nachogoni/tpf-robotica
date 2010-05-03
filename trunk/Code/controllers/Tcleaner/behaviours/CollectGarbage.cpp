@@ -1,47 +1,97 @@
 #include "CollectGarbage.h"
+#include <list>
+
+#define BOTTOM_SERVO_ANGLE 0.73
+#define TIME_STEP 32
+#define BASE_SPD 20.0
+
+#define WAIT_STEPS 100
+
+#define ANGLE_TOLE 0.1
+#define DISTANCE_TOLE 0.1
 
 namespace behaviours {
 
-	CollectGarbage::CollectGarbage(robotapi::IServo * lifter, robotapi::IServo * shovel) : AbstractBehaviour("Collect Garbage"){
-		this->lifter = lifter;
+	int getStepsToGarbage(double distanceInMeters,double speed);
+
+	CollectGarbage::CollectGarbage(utils::GarbageRecognition * gr, robotapi::IRobot * robot, robotapi::ITrashBin * tb, robotapi::IDifferentialWheels * wheels, WorldInfo * wi,  robotapi::IServo * shovel) : AbstractBehaviour("Collect Garbage"){
 		this->shovel = shovel;
+		this->gr = gr;
+		this->wi = wi;
+		this->robot = robot;
+		this->wheels = wheels;
+		this->trashBin = tb;
 	}
 	
 	CollectGarbage::~CollectGarbage(){}
 	
 	void CollectGarbage::sense(){
+		bool garbagePresent = this->gr->thereIsGarbage();
+		if ( ! garbagePresent )
+			return;
+
+        std::list<utils::Garbage*> gs = this->gr->getGarbageList();
+
+		// Calculate nearest garbage and angle to it
+        this->currentGarbage = this->gr->getClosestGarbage(gs);
+		double angleToGarbage = this->gr->angleTo(currentGarbage);
+        double distanceToGarbage = this->gr->distanceTo(currentGarbage);
+
+		// If there is garbage and the distance to the garbage is less than the
+		// bias, then the behaviour is present
+        if ( fabs(angleToGarbage) < ANGLE_TOLE && distanceToGarbage < DISTANCE_TOLE )
+	        setStimulusPresent();
+
 	}
 
     void CollectGarbage::action(){
+		this->wheels->setSpeed(0,0);
+		this->robot->step(TIME_STEP);
+
+		// Get distance to the garbage
+
+		// Lift up the Shovel
+		this->shovel->setPosition(1.57);
+		for ( int i = 0 ; i < WAIT_STEPS ; i ++ ){
+			this->robot->step(TIME_STEP);
+		}
+
+		// Go forward according to the distance
+		this->wheels->setSpeed(BASE_SPD,BASE_SPD);
+		int numberOfStepsToGarbage = getStepsToGarbage(0,BASE_SPD);
+
+		for ( int i = 0 ; i < numberOfStepsToGarbage ; i ++ ){
+			this->robot->step(TIME_STEP);
+		}
+		
+		// Turn the shovel in order to put the garbage into the trash bin
+		this->shovel->setPosition(-1.57);
+		this->wheels->setSpeed(0,0);
+
+		for ( int i = 0 ; i < WAIT_STEPS ; i ++ ){
+			this->robot->step(TIME_STEP);
+		}
+
+		// Wait till the trashBin changes it's value
+		int tbVal = this->trashBin->getValue();
+		int oldVal = tbVal;
+		while ( tbVal <= oldVal ){
+			this->robot->step(TIME_STEP);
+			tbVal = this->trashBin->getValue();
+		}
+		
+		// Put the Shovel in its initial state
+		this->shovel->setPosition(0);
+
+		for ( int i = 0 ; i < WAIT_STEPS ; i ++ ){
+			this->robot->step(TIME_STEP);
+		}
+
 	}
 
-	/*
-TODO FOR COLLECTING BEHAVIOUR
-		for( int i = 0; i < 80 ; i++ )
-			this->myIRobot.step(TIME_STEP);
-		servoFront->setPosition(1.57);
+	int getStepsToGarbage(double distanceInMeters,double speed){
+		// TODO
+		return 100;
+	}
 
-		for( int i = 0; i < 80 ; i++ )
-			this->myIRobot.step(TIME_STEP);
-
-		servoBottom->setPosition(1.57/2);
-		for( int i = 0; i < 80 ; i++ )
-			this->myIRobot.step(TIME_STEP);
-
-		for( int i = 0; i < 80 ; i++ )
-			this->myIRobot.step(TIME_STEP);
-		servoFront->setPosition(-1.57);
-
-		for( int i = 0; i < 80 ; i++ )
-			this->myIRobot.step(TIME_STEP);
-
-		servoFront->setPosition(0);
-		for( int i = 0; i < 80 ; i++ )
-			this->myIRobot.step(TIME_STEP);
-
-		servoBottom->setPosition(0);
-		for( int i = 0; i < 80 ; i++ )
-			this->myIRobot.step(TIME_STEP);
-
-*/
 } /* End of namespace behaviours */

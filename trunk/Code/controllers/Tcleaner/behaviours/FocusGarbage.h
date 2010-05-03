@@ -10,7 +10,7 @@ class FocusGarbage : public AbstractBehaviour {
 
 	public:
 
-		FocusGarbage( robotapi::ICamera * camera, robotapi::IDifferentialWheels * wheels );
+		FocusGarbage(utils::GarbageRecognition * gr, robotapi::IDifferentialWheels * wheels );
 		~FocusGarbage();
 
 		void sense();
@@ -20,6 +20,7 @@ class FocusGarbage : public AbstractBehaviour {
 	private:
         utils::GarbageRecognition * gr;
 		robotapi::IDifferentialWheels * wheels;
+		utils::Garbage * currentGarbage;
 	};
 
 } /* End of namespace behaviours */

@@ -9,8 +9,8 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 1.6454
-  orientation -0.370921 0.767394 0.522996 2.14478
-  position -0.164893 0.128377 -0.574121
+  orientation -0.0204814 0.970604 0.239808 2.98444
+  position -0.244702 0.0356054 -0.460273
 }
 PointLight {
   intensity 0.5
@@ -185,10 +185,83 @@ DEF short_rock_5 Solid {
   boundingObject USE short_brick_1_geometry
 }
 DEF E_PUCK DifferentialWheels {
-  translation -0.224991 0 0.100886
+  translation -0.203084 0 -0.341248
   children [
+    Solid {
+      translation -0.06 0.01 0
+      children [
+        Shape {
+          geometry DEF RAMP_BOX Box {
+            size 0.025 0.0001 0.066
+          }
+        }
+      ]
+      name "RAMP"
+      boundingObject USE RAMP_BOX
+      physics Physics {
+      }
+    }
+    Solid {
+      translation -0.0475 0.0225 0
+      children [
+        Shape {
+          appearance DEF INSIDE_WALL_APP Appearance {
+            material Material {
+              diffuseColor 0 1 0
+              emissiveColor 0 1 0
+            }
+          }
+          geometry DEF INSIDE_WALL_BOX Box {
+            size 0.0001 0.025 0.066
+          }
+        }
+      ]
+      name "LEFT_INSIDE_WALL"
+      boundingObject USE INSIDE_WALL_BOX
+      physics Physics {
+      }
+    }
+    Solid {
+      translation -0.0725 0.0225 0
+      children [
+        Shape {
+          appearance USE INSIDE_WALL_APP
+          geometry USE INSIDE_WALL_BOX
+        }
+      ]
+      name "RIGHT_INSIDE_WALL"
+      boundingObject USE INSIDE_WALL_BOX
+      physics Physics {
+      }
+    }
     Servo {
-      translation 0 0.0425 0.03
+      translation -0.06 0.0075 0.01
+      rotation 1 0 0 0
+      children [
+        Solid {
+          translation 0 0 0.01
+          children [
+            Shape {
+              appearance Appearance {
+              }
+              geometry DEF SBOX Box {
+                size 0.002 0.001 0.02
+              }
+            }
+          ]
+          boundingObject USE SBOX
+        }
+      ]
+      name "servo0"
+      boundingObject USE SBOX
+      physics Physics {
+        density -1
+        mass 0.005
+        orientation 0 1 0 0
+      }
+    }
+    Servo {
+      translation 0 0.0425 0.033
       rotation 1 0 0 0
       children [
         Solid {
@@ -198,36 +271,11 @@ DEF E_PUCK DifferentialWheels {
               appearance Appearance {
               }
               geometry DEF TBOX Box {
-                size 0.029 0.035 0.0005
+                size 0.025 0.035 0.0005
               }
             }
           ]
           boundingObject USE TBOX
-        }
-        DEF EPUCK_TS0 TouchSensor {
-          translation 0 -0.035 0
-          rotation 1 0 0 3.1416
-          children [
-            Shape {
-              appearance Appearance {
-                material Material {
-                  emissiveColor 0 0.501961 0.25098
-                }
-              }
-              geometry DEF TS0_BOX Box {
-                size 0.025 0.012 1e-005
-              }
-            }
-          ]
-          name "ts0"
-          boundingObject USE TS0_BOX
-          physics Physics {
-          }
-          type "force"
-          lookupTable [
-            0 0 0
-            0.0001 50000 0
-          ]
         }
       ]
       name "servo1"
@@ -239,7 +287,7 @@ DEF E_PUCK DifferentialWheels {
       }
     }
     Servo {
-      translation 0 0.035 -0.04
+      translation 0 0.036 -0.033
       rotation 1 0 0 0
       children [
         Solid {
@@ -249,7 +297,7 @@ DEF E_PUCK DifferentialWheels {
               appearance Appearance {
               }
               geometry DEF PBOX Box {
-                size 0.029 0.033 0.0005
+                size 0.025 0.033 0.0005
               }
             }
           ]
@@ -263,8 +311,27 @@ DEF E_PUCK DifferentialWheels {
         mass 0.005
         orientation 0 1 0 0
       }
-      maxVelocity 5
-      maxForce 100
+    }
+    DEF EPUCK_TS0 TouchSensor {
+      translation 0 0.08 0.0125
+      rotation 1 0 0 4.71238
+      children [
+        Shape {
+          appearance Appearance {
+            material Material {
+              emissiveColor 0 0.501961 0.25098
+            }
+          }
+          geometry DEF TS0_BOX Box {
+            size 0.025 0.012 0.002
+          }
+        }
+      ]
+      name "ts0"
+      boundingObject USE TS0_BOX
+      physics Physics {
+      }
+      type "force"
     }
     DEF EPUCK_LEFT_WHEEL Solid {
       translation -0.026 0.02 0
@@ -415,6 +482,21 @@ DEF E_PUCK DifferentialWheels {
       name "right wheel"
       boundingObject USE EPUCK_WHEEL_BOUNDING_OBJECT
       physics USE EPUCK_WHEEL_PHYSICS
+    }
+    DEF EPUCK_INSIDE Transform {
+      translation 0 0.025 0
+      children [
+        Shape {
+          appearance Appearance {
+            material Material {
+              diffuseColor 0 0 0
+            }
+          }
+          geometry Box {
+            size 0.04 0.02 0.02
+          }
+        }
+      ]
     }
     DEF EPUCK_PLATE Transform {
       translation 0.0002 0.037 0
@@ -1189,9 +1271,63 @@ DEF E_PUCK DifferentialWheels {
         0.03 82 0
       ]
     }
+    DEF EPUCK_FS0 DistanceSensor {
+      translation -0.01 0.003 -0.03
+      rotation 0 0 1 -1.57
+      children [
+        DEF SFH_FLOOR Group {
+          children [
+            Shape {
+              appearance Appearance {
+                material Material {
+                  diffuseColor 0.3 0.2 0.2
+                }
+              }
+              geometry Box {
+                size 0.0006 0.0007 0.0007
+              }
+            }
+          ]
+        }
+      ]
+      name "fs0"
+      lookupTable [
+        0 1 0
+        0.003 200 0
+        0.0035 300 0
+        0.004 400 0
+      ]
+    }
+    DEF EPUCK_FS1 DistanceSensor {
+      translation 0 0.003 -0.03
+      rotation 0 0 1 -1.57
+      children [
+        USE SFH_FLOOR
+      ]
+      name "fs1"
+      lookupTable [
+        0 1 0
+        0.003 200 0
+        0.0035 300 0
+        0.004 400 0
+      ]
+    }
+    DEF EPUCK_FS2 DistanceSensor {
+      translation 0.01 0.003 -0.03
+      rotation 0 0 1 -1.57
+      children [
+        USE SFH_FLOOR
+      ]
+      name "fs2"
+      lookupTable [
+        0 1 0
+        0.003 200 0
+        0.0035 300 0
+        0.004 400 0
+      ]
+    }
     DEF EPUCK_CAMERA Camera {
-      translation 0 0.038 -0.035
-      rotation 1 0 0 -0.5
+      translation 0 0.028 -0.035
       children [
         Transform {
           translation 0 0.008 0.003
@@ -1369,9 +1505,11 @@ DEF E_PUCK DifferentialWheels {
       ]
       name "camera0"
       fieldOfView 1.1
-      width 640
-      height 480
+      width 320
+      height 240
+      display FALSE
       near 0.004
+      far 20
       windowPosition 0.75 0.75
       pixelSize 4
     }
@@ -1919,40 +2057,6 @@ DEF E_PUCK DifferentialWheels {
   author "Olivier Michel"
   constructor "EPFL"
   description "Educational robot"
-  boundingObject Group {
-    children [
-      DEF ParedIzq Transform {
-        translation 0.0125 0.0175 -0.005
-        children [
-          Shape {
-            appearance Appearance {
-              material Material {
-                diffuseColor 0 1 0
-                emissiveColor 0 1 0
-              }
-            }
-            geometry DEF INSIDE_WALL_BOX Box {
-              size 0.0001 0.025 0.07
-            }
-          }
-        ]
-      }
-      DEF ParedDer Transform {
-        translation -0.0125 0.0175 -0.005
-        children [
-          Shape {
-            appearance Appearance {
-              material Material {
-                diffuseColor 0 1 0
-                emissiveColor 0 1 0
-              }
-            }
-            geometry USE INSIDE_WALL_BOX
-          }
-        ]
-      }
-    ]
-  }
   physics Physics {
     density -1
     mass 0.15
@@ -2195,8 +2299,8 @@ DEF n_Wall Solid {
   boundingObject USE n_WALL_SHAPE
 }
 DEF garbage Solid {
-  translation -0.20286 0.03 -0.554897
-  rotation 0.819232 0 0.573462 1.57
+  translation -0.20286 0.01 -0.385
+  rotation 0 0 1 1.57
   children [
     DEF garbage_shape Shape {
       appearance Appearance {
@@ -2218,26 +2322,6 @@ DEF garbage Solid {
         radius 0.00125
       }
     }
-  ]
-  boundingObject USE garbage_shape
-  physics Physics {
-  }
-}
-DEF garbage_uno Solid {
-  translation -0.16286 0.03 -0.474897
-  rotation 0.819232 0 0.573462 1.57
-  children [
-    USE garbage_shape
-  ]
-  boundingObject USE garbage_shape
-  physics Physics {
-  }
-}
-DEF garbage_dos Solid {
-  translation -0.26286 0.03 -0.474897
-  rotation 0.819232 0 0.573462 1.57
-  children [
-    USE garbage_shape
   ]
   boundingObject USE garbage_shape
   physics Physics {

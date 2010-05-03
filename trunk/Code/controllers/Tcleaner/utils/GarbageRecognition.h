@@ -18,10 +18,16 @@ class GarbageRecognition {
 
     std::list<utils::Garbage*> getGarbageList();
 
+	utils::Garbage * getClosestGarbage(std::list<utils::Garbage*> gs);
+
+	double angleTo(utils::Garbage * g);
+
+	double GarbageRecognition::distanceTo(utils::Garbage * g);
 
  private:
     std::list<Garbage*> garbageList(IplImage * src, IplImage * model);
-
+	int imgWidth;
+	int imgHeight;
 };
 
 } /* End of namespace utils */

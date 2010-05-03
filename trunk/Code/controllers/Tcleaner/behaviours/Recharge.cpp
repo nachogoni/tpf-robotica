@@ -30,7 +30,6 @@ namespace behaviours {
 	}
 
 	void Recharge::sense(){
-		// If low batt and front touch sensor is activated
 	}
 
 	void Recharge::action(){
@@ -86,6 +85,7 @@ namespace behaviours {
 			this->robot->step(TIME_STEP);
 		}
 
+		// Go back a little bit in order to get to the base
    		this->wheels->setSpeed(-BACKWARD_SPD,-BACKWARD_SPD);
 		for( int i = 0 ; i < BACKWARD_STEPS ; i ++ ){
 
