@@ -10,6 +10,7 @@
 #include <robotapi/real/RealRobot.h>
 #include <GarbageCleaner.h>
 #include <WorldInfo.h>
+#include <time.h>
 #include <cv.h>
 #include <highgui.h>
 

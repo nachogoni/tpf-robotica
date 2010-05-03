@@ -11,9 +11,9 @@ namespace behaviours {
 class AvoidObstacle : public AbstractBehaviour {
 
 public:
-	AvoidObstacle::AvoidObstacle(robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & dss);
+	AvoidObstacle(robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & dss);
 
-	AvoidObstacle::~AvoidObstacle();
+	~AvoidObstacle();
 	
     void sense();
 

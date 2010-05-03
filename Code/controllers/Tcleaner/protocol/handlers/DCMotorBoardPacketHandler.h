@@ -6,6 +6,8 @@
 #include <protocol/BoardPacketHandler.h> // inheriting class's header file
 #include <protocol/Packet.h>
 #include <protocol/PacketServer.h>
+#include <stdio.h>
+
 
 namespace protocol {
 namespace handlers {

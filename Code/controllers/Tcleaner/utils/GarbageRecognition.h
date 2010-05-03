@@ -22,7 +22,7 @@ class GarbageRecognition {
 
 	double angleTo(utils::Garbage * g);
 
-	double GarbageRecognition::distanceTo(utils::Garbage * g);
+	double distanceTo(utils::Garbage * g);
 
  private:
     std::list<Garbage*> garbageList(IplImage * src, IplImage * model);

@@ -147,6 +147,8 @@ void PacketServer::run(void){
 }
 
 void PacketServer::readNBytes(int fd, char * buff, int nBytes){
+    #ifdef __linux__
+
 	int bytesRead = 0;
 	int bytesLeft = nBytes - bytesRead;
 
@@ -158,6 +160,8 @@ void PacketServer::readNBytes(int fd, char * buff, int nBytes){
 		bytesLeft = nBytes - bytesRead;
 	}
 	return;
+	#endif
+
 }
 
 void PacketServer::registerHandler(BoardPacketHandler * bph,int groupid,int boardid){

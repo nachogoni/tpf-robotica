@@ -10,9 +10,9 @@ namespace behaviours {
 class Wander : public AbstractBehaviour {
 
 public:
-	Wander::Wander(robotapi::IDifferentialWheels * wheels);
+	Wander(robotapi::IDifferentialWheels * wheels);
 
-	Wander::~Wander();
+	~Wander();
 
     void sense();
 
