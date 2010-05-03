@@ -1,6 +1,5 @@
 #include "FindLine.h"
 #include "GarbageCleaner.h"
-#include <utils/MyVector.h>
 #include <math.h>
 
 #define ANGLE_TOLE 0.07

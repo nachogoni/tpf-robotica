@@ -3,6 +3,7 @@
 #include <highgui.h>
 #include <stdio.h>
 #include <string>
+#include <time.h>
 #include <utils/contours.h>
 #include <utils/histogram.h>
 #include <utils/Garbage.h>
@@ -12,8 +13,8 @@
 // image preprocessing values
 #define THRESHOLD_VALUE 240
 #define MORPH_KERNEL_SIZE 2
-#define MORPH_DILATE_ITER 2
-#define MORPH_ERODE_ITER 2
+#define MORPH_DILATE_ITER 0
+#define MORPH_ERODE_ITER 0
 
 #define _RED  cvScalar (0, 0, 255, 0)
 #define _GREEN cvScalar (0, 255, 0, 0)
@@ -23,7 +24,7 @@
 #define MAXCONTOUR_AREA 10000
 #define BOXFILTER_TOLERANCE 0.55
 #define MINCONTOUR_PERIMETER 80
-#define MAXCONTOUR_PERIMETER 1000
+#define MAXCONTOUR_PERIMETER 200
 #define CONTOUR_RECTANGULAR_MIN_RATIO 1.2
 #define CONTOUR_RECTANGULAR_MAX_RATIO 3.0
 #define HIST_S_BINS 8
@@ -186,11 +187,8 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 
 		//apply filters
 
-        printf("ANTES DE FILTROS\n");
-        		system("pause");
 		if( pf && raf && baf && hmf	){
         printf("DESPUES DE FILTROS\n");
-        		system("pause");
 				//if passed filters
 				ct->printContour(3,cvScalar(127,127,0,0),
 					contourImage);

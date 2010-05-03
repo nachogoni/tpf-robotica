@@ -2,6 +2,7 @@
 #include <math.h>
 #include <list>
 #include <utils/MyAngle.h>
+#include <stdio.h>
 
 #define BASE_SPD 100
 #define MIN_SPD 1

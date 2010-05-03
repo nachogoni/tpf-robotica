@@ -3,6 +3,7 @@
 #include <robotapi/IDistanceSensor.h>
 #include <vector>
 #include <sstream>
+#include<stdio.h>
 
 namespace behaviours {
 

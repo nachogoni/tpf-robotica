@@ -19,9 +19,9 @@ class AbstractBehaviour {
 
     std::string toString();
 
-	AbstractBehaviour::AbstractBehaviour(char * name);
+	AbstractBehaviour(char * name);
 	
-	virtual AbstractBehaviour::~AbstractBehaviour()  = 0;
+	virtual ~AbstractBehaviour()  = 0;
 
     virtual void action()  = 0;
 
@@ -29,7 +29,7 @@ class AbstractBehaviour {
 
 	void setStimulusPresent();
 
-	static void AbstractBehaviour::resetStimulusPresent();
+	static void resetStimulusPresent();
  public:
     int behaviour_id;
    	std::string s;
