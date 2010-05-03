@@ -2,7 +2,8 @@
 #define behaviours_CollectGarbage_h
 
 #include "AbstractBehaviour.h"
-
+#include "WorldInfo.h"
+#include <utils/GarbageRecognition.h>
 
 namespace behaviours {
 
@@ -10,7 +11,7 @@ class CollectGarbage : public AbstractBehaviour {
 
 	public:
 
-		CollectGarbage(robotapi::IServo * lifter, robotapi::IServo * shovel);
+		CollectGarbage(utils::GarbageRecognition * gr, robotapi::IRobot * robot, robotapi::ITrashBin * tb, robotapi::IDifferentialWheels * wheels, WorldInfo * wi, robotapi::IServo * shovel);
 		~CollectGarbage();
 
 		void sense();
@@ -18,8 +19,13 @@ class CollectGarbage : public AbstractBehaviour {
 	    void action();
 
 	private:
-		robotapi::IServo * lifter;
 		robotapi::IServo * shovel;
+		robotapi::IRobot * robot;
+		robotapi::IDifferentialWheels * wheels;
+		WorldInfo * wi;
+		robotapi::ITrashBin * trashBin;
+		utils::GarbageRecognition * gr;
+   		utils::Garbage * currentGarbage;
 	};
 
 } /* End of namespace behaviours */

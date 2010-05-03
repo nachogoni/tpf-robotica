@@ -1,4 +1,5 @@
 #include "WebotsTrashBin.h"
+#include <math.h>
 
 namespace robotapi {
 namespace webts {
@@ -8,23 +9,28 @@ namespace webts {
 	}
 
 	int WebotsTrashBin::enable(int ms){
+		this->myts->enable(ms);
 		return 0;
 	}
 
 	int WebotsTrashBin::disable(){
+		this->myts->disable();
 		return 0;
 	}
 
 	int WebotsTrashBin::getValue(){
-		return 0;
+		return ceil(this->myts->getValue());
 	}
 
 	bool WebotsTrashBin::isFull(){
-		return false;
+		return this->getValue() >= this->fullBias;
 	}
 
 	void WebotsTrashBin::setFullBias(double bias){
-		return;
+		if ( bias < 0 )
+			return;
+
+		this->fullBias = bias;
 	}
 
 } /* End of namespace robotapi::webts */

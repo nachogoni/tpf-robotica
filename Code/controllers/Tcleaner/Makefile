@@ -4,10 +4,10 @@
 # if your controller uses several C++ sources files:
 CPP_SOURCES = tcleaner.cpp GarbageCleaner.cpp WorldInfo.cpp \
 							behaviours/AbstractBehaviour.cpp behaviours/AvoidObstacle.cpp \
-							behaviours/CollectGarbage.cpp behaviours/FindLine.cpp behaviours/FocusGarbage.cpp \
-							behaviours/GoToBase.cpp behaviours/GoToDisposal.cpp behaviours/Recharge.cpp \
+							behaviours/CollectGarbage.cpp behaviours/GoToGarbage.cpp behaviours/FocusGarbage.cpp \
+							behaviours/FindLine.cpp behaviours/GoToBase.cpp behaviours/Recharge.cpp \
 							behaviours/GoToBaseGroup.cpp behaviours/PositionInLine.cpp \
-							behaviours/UnloadGarbage.cpp behaviours/Wander.cpp \
+							behaviours/GoToDisposal.cpp behaviours/UnloadGarbage.cpp behaviours/Wander.cpp \
 							utils/MinimalBoundingRectangle.cpp utils/Garbage.cpp utils/GarbageRecognition.cpp \
 							utils/Contours.cpp utils/Histogram.cpp \
 							utils/MyLine.cpp utils/MyPoint.cpp utils/MyAngle.cpp utils/MyWall.cpp utils/MyVector.cpp \

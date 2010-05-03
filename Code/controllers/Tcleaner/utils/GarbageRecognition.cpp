@@ -6,6 +6,7 @@
 #include <utils/contours.h>
 #include <utils/histogram.h>
 #include <utils/Garbage.h>
+#include <utils/MyAngle.h>
 #include <utils/MinimalBoundingRectangle.h>
 
 // image preprocessing values
@@ -45,32 +46,40 @@ void GarbageRecognition::setCamera(robotapi::ICamera &camera)
 
 bool GarbageRecognition::thereIsGarbage()
 {
+	this->imgWidth = 320;
+	this->imgHeight = 240;
 	this->getGarbageList();
-    return garbages.empty();
+    return !garbages.empty();
 }
 
 std::list<Garbage*> GarbageRecognition::getGarbageList()
 {
-    printf("HOLA\n");
     time_t request = time(NULL);
     
     if ( request - lastRequest > TIME_THRESHOLD ){
 		lastRequest = request;
 		std::string fn ("./ss.jpg");
-		//cam->saveImage(fn, 85);
-	    IplImage * src = cvLoadImage("./colilla-scene.png",1);
+		cam->saveImage(fn, 85);
+	    IplImage * src = cvLoadImage("./ss.jpg",1);
 	    IplImage * model = cvLoadImage("./colilla-sinBlanco.png",1);
 	    printf("antes\n");
-		garbages = this->garbageList(src,model);
+		this->garbageList(src,model);
 	}
 	return garbages;
 }
 
+utils::Garbage * GarbageRecognition::getClosestGarbage(std::list<utils::Garbage*> gs){
+		if ( gs.empty() )
+		    return NULL;
+
+        std::list<utils::Garbage *>::iterator it;
+		it=gs.begin();
+		return *it;
+}
+
 std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 
-                    
-    
-	std::list<Garbage*> garbageList;
+	garbages.clear();
 
 	//cvNamedWindow("output",CV_WINDOW_AUTOSIZE);
 	//object model
@@ -161,7 +170,6 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 
 
 	while(contours!=NULL){
-
 		CvSeq * aContour=getPolygon(contours);
 		utils::Contours * ct = new Contours(aContour);
 
@@ -178,9 +186,11 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 
 		//apply filters
 
-    
+        printf("ANTES DE FILTROS\n");
+        		system("pause");
 		if( pf && raf && baf && hmf	){
-				
+        printf("DESPUES DE FILTROS\n");
+        		system("pause");
 				//if passed filters
 				ct->printContour(3,cvScalar(127,127,0,0),
 					contourImage);
@@ -201,8 +211,9 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 
 
 				utils::Garbage * aGarbage = new utils::Garbage(r);
-
-				garbageList.push_back(aGarbage);
+				printf("%d , %d - %d , %d\n",boundingRect.x,boundingRect.y,boundingRect.width,boundingRect.height);
+				system("PAUSE");
+				garbages.push_back(aGarbage);
 
 
 			}
@@ -217,7 +228,31 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
    // cvWaitKey(0);
 	delete h;
 
-	return garbageList;
+	return garbages;
+}
+
+double GarbageRecognition::angleTo(utils::Garbage * g)
+{
+	if ( g == NULL )
+	    return PI;
+	int centerX = g->boundingBox()->getTopX() + g->boundingBox()->getWidth()/2;
+	int centerY = g->boundingBox()->getTopY() + g->boundingBox()->getHeight()/2;
+	
+	int transformedX = centerX - this->imgWidth/2;
+	int transformedY = this->imgHeight - centerY;
+	
+	// TODO Instead of returning PI/2, return FOV/2
+	if ( transformedY == 0 ){
+		return transformedX < 0 ? (-PI/2) : (PI/2);
+	}
+	
+	// Negative if its in the left side of the screen, positive otherwise
+    return atan((double)transformedX/(double)transformedY);
+}
+
+double GarbageRecognition::distanceTo(utils::Garbage * g)
+{
+    return 100.0;
 }
 
 } /* End of namespace utils */

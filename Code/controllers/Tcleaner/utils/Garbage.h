@@ -8,11 +8,7 @@ namespace utils{
 	class Garbage {
 		
 	 public:
-	
-	     double angleTo();
-	
-	     double distanceTo();
-	
+
 	     utils::MinimalBoundingRectangle * boundingBox();
 	
 	     Garbage(utils::MinimalBoundingRectangle * mbr);
