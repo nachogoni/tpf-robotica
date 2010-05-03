@@ -84,6 +84,7 @@ void doCommand(struct command_t * cmd); // Examina y ejecula el comando
 
 #define MAX_CONSUMPTION	150
 #define MAX_CONSUMPTION_COUNT	5
+#define MAX_SAFE_CONSUMPTION_COUNT 5
 
 // Correcion de la cantidad de cuentas por segundo en base al periodo del TMR0
 #define INTERVAL_CORRECTION	5
@@ -105,6 +106,7 @@ long last_consumption;
 signed long duty;
 // Cantidad de cuentas del encoder medidas por intervalo
 signed long counts_real;
+signed long last_real_speed;
 // Cantidad de cuentas del encoder esperadas por intervalo
 signed long counts_expected;
 // Cantidad de cuentas del encoder historicas (32 bits)
@@ -122,6 +124,8 @@ short correct_duty;
 short consumption_alarm;
 // Cuenta cuantas alarmas se enviaron
 int alarm_count;
+// Cuenta cuantos frames de buen consumo hubo
+int safeConsumption;
 // Indica que hay que avisar que el motor se detuvo
 short shutdown_alarm;
 // Indica si se apagaron los motores por el alto consumo
@@ -182,6 +186,8 @@ void Timer0_INT()
 
 		// Obtengo la cantidad de cuentas desde la ultima entrada
 		counts_real = get_timer1();
+		last_real_speed = counts_real;
+		
 		set_timer1(0);
 		last_counts = 0;
 		last_counts2 = 0;
@@ -191,6 +197,7 @@ void Timer0_INT()
 		if (last_consumption >= MAX_CONSUMPTION)
 		{
 			consumption_alarm = 1;
+			safeConsumption = 0;
 			if (alarm_count++ == MAX_CONSUMPTION_COUNT)
 			{
 				motor_shutdown = 1;
@@ -198,7 +205,13 @@ void Timer0_INT()
 				consumption_alarm = 0;
 				shutdown_alarm = 1;
 			}	
-		}
+		} else {
+			// Consumo normal -> espero para resetear el contador de shutdown
+			if (safeConsumption++ == MAX_SAFE_CONSUMPTION_COUNT)
+			{
+				alarm_count = 0;
+			}
+		}	
 		
 		tmr0_ticks = 0;
 
@@ -272,6 +285,8 @@ void init()
 	counts_expected = 0;
 	// Cantidad de cuentas del encoder totales
 	counts_total = 0;
+	// Velocidad en cuentas por cada frame
+	last_real_speed = 0;
 	// Cantidad de cuentas del encoder restantes para deterner el motor
 	counts_to_stop = 0;
 	// Cantidad de cuentas del encoder desde el ultimo intevalo
@@ -283,6 +298,8 @@ void init()
 	correct_duty = 1;
 	// Indica que hay que enviar una alarma de consumo
 	consumption_alarm = 0;
+	// Indica cuantos frames de buen consumo hubo
+	safeConsumption = 0;
 	// Cuenta cuantas alarmas se enviaron
 	alarm_count = 0;
 	// Indica que hay que enviar una alarma de consumo
@@ -328,7 +345,7 @@ void main()
 	// Init del protocol
 	initProtocol();
 
-counts_expected = 30;
+//counts_expected = 30;
 
 	// FOREVER
 	while(true)
@@ -614,9 +631,9 @@ void doCommand(struct command_t * cmd)
 			// A la posicion 1 dentro de response->data la tomo como signed long *
 			tmp16 = (response.data) + 1;
 			// Le asigno el valor de la velocidad ajustada a 1 segundo
-			(*tmp16) = counts_real * INTERVAL_CORRECTION;
+			(*tmp16) = last_real_speed * INTERVAL_CORRECTION;
 			// Corrijo el largo del paquete
-			response.len += 2;
+			response.len += 3;
 		break;
 
 		default:
