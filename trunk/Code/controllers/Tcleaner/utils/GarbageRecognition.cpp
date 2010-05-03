@@ -30,7 +30,7 @@
 #define HIST_S_BINS 8
 #define HIST_H_BINS 8
 #define HIST_MIN 0.7
-#define TIME_THRESHOLD 15 //seconds
+#define TIME_THRESHOLD 1 //seconds
 
 namespace utils {
 
@@ -47,8 +47,8 @@ void GarbageRecognition::setCamera(robotapi::ICamera &camera)
 
 bool GarbageRecognition::thereIsGarbage()
 {
-	this->imgWidth = 320;
-	this->imgHeight = 240;
+	this->imgWidth = 640;
+	this->imgHeight = 480;
 	this->getGarbageList();
     return !garbages.empty();
 }
@@ -57,15 +57,15 @@ std::list<Garbage*> GarbageRecognition::getGarbageList()
 {
     time_t request = time(NULL);
     
-    if ( request - lastRequest > TIME_THRESHOLD ){
+//    if ( request - lastRequest > TIME_THRESHOLD ){
 		lastRequest = request;
 		std::string fn ("./ss.jpg");
 		cam->saveImage(fn, 85);
 	    IplImage * src = cvLoadImage("./ss.jpg",1);
 	    IplImage * model = cvLoadImage("./colilla-sinBlanco.png",1);
-	    printf("antes\n");
+//	    printf("antes\n");
 		this->garbageList(src,model);
-	}
+//	}
 	return garbages;
 }
 
@@ -210,7 +210,7 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 
 				utils::Garbage * aGarbage = new utils::Garbage(r);
 				printf("%d , %d - %d , %d\n",boundingRect.x,boundingRect.y,boundingRect.width,boundingRect.height);
-				system("PAUSE");
+//				system("PAUSE");
 				garbages.push_back(aGarbage);
 
 
@@ -225,6 +225,21 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
    // cvShowImage("output",contourImage);
    // cvWaitKey(0);
 	delete h;
+
+	cvReleaseHist(&testImageHistogram);
+	//Image for thresholding
+	//cvReleaseMemStorage( &contours->storage );
+	cvReleaseImage(&threshImage);
+	cvReleaseImage(&equalizedImage);
+	cvReleaseImage(&morphImage);
+	cvReleaseImage(&smoothImage);
+	cvReleaseImage(&contourImage);
+	
+	cvReleaseImage(&hsv);
+	cvReleaseImage(&h_plane);
+	cvReleaseImage(&s_plane);
+	cvReleaseImage(&v_plane);
+
 
 	return garbages;
 }
@@ -245,7 +260,7 @@ double GarbageRecognition::angleTo(utils::Garbage * g)
 	}
 	
 	// Negative if its in the left side of the screen, positive otherwise
-    return atan((double)transformedX/(double)transformedY);
+	return atan((double)transformedX/(double)transformedY) * 1.1 / PI;
 }
 
 double GarbageRecognition::distanceTo(utils::Garbage * g)
