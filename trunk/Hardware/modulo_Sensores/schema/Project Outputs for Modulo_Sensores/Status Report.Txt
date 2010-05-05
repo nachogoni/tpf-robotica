@@ -1,13 +1,9 @@
-Output: NC Drill Files
-Type  : NC Drill
+Output: Bill of Materials
+Type  : BOM
 From  : Project [Modulo_Sensores.PrjPCB]
-   Generated File[Modulo_Sensores.TXT]
-   Generated File[Modulo_Sensores.DRL]
-   Generated File[Modulo_Sensores.LDP]
-   Generated File[Modulo_Sensores.DRR]
 
 
-Files Generated   : 4
+Files Generated   : 0
 Documents Printed : 0
 
-Finished Output Generation At 10:59:35 p.m. On 18/04/2010
+Finished Output Generation At 10:26:19 p.m. On 23/04/2010
