@@ -12,8 +12,8 @@
 
 // Determina contra que esta conectado el pin TRIGGER - CAMBIARLO SEGUN CORRESPONDA
 // Posibles valores: NONE o ULTRASONIC_SENSOR o SWITCH_SENSOR o LED
-#define TRIGGER_TYPE	ULTRASONIC_SENSOR
-//#define TRIGGER_TYPE	SWITCH_SENSOR
+//#define TRIGGER_TYPE	ULTRASONIC_SENSOR
+#define TRIGGER_TYPE	SWITCH_SENSOR
 
 // Define el estado logico para prender o apagar los sensores - CAMBIARLO SEGUN CORRESPONDA
 #define SENSOR_ON	0
@@ -278,6 +278,72 @@ void init()
 	set_tris_a(0b11111111);
 	set_tris_b(trisB_value);
 
+	// ***ADC***
+	setup_port_a(sAN0);
+	setup_adc(ADC_CLOCK_INTERNAL);
+	set_adc_channel(0);
+	setup_adc_ports(sAN0);
+	setup_vref(VREF_HIGH | 8);
+	
+	// Seteo el Timer1 como fuente interna
+	setup_timer_1(T1_INTERNAL | T1_DIV_BY_8);
+	set_timer1(26786);
+	
+	// Interrupcion sobre el Timer1
+	enable_interrupts(INT_TIMER1);
+
+	// Seteo el pin RB0 - Sensor de ultrasonido :)
+	ext_int_edge(L_TO_H);
+	enable_interrupts(INT_EXT);
+
+	// Habilito las interrupciones
+	enable_interrupts(GLOBAL);
+	
+	// Variable para hacer el reset
+	reset = false;
+
+	// Apaga todos los sensores
+	sensor1 = SENSOR_OFF;
+	sensor2 = SENSOR_OFF;
+	sensor3 = SENSOR_OFF;
+	sensor4 = SENSOR_OFF;
+	sensor5 = SENSOR_OFF;
+
+	// Inicializa los valores
+	values[0] = 0x0000;
+	values[1] = 0x0000;
+	values[2] = 0x0000;
+	values[3] = 0x0000;
+	values[4] = 0x0000;
+	values[5] = 0x0000;
+	
+	// Inicializa la mascara -> todos habilitados (0x3F)
+	sensorMask = 0x3F;
+	
+	//Determina el estado actual
+	state = STATE_FREE;
+	
+	// Sin lectura temprana
+	readSensor = 0x00;
+	bufferedReadSensor = 0x00;
+	actalTO = 0x00;
+	requestFrom = 0x00;
+	bufferedFrom = 0x00;
+	actalCmd = 0x00;
+	requestCmd = 0x00;
+	bufferedCmd = 0x00;
+
+	alarmType = 0x00;
+	triggerAlarm = 0;
+#if TRIGGER_TYPE == SWITCH_SENSOR
+	disable_interrupts(INT_EXT);
+#endif
+
+#if TRIGGER_TYPE == LED
+	// TRIGGER como escritura
+	bit_clear(trisB_value, 0);
+	set_tris_b(trisB_value);
+#endif
 
 	return;	
 }	
@@ -297,34 +363,177 @@ void main()
 	// Init del protocol
 	initProtocol();
 
-disable_interrupts(GLOBAL);
 
-	sensor1 = SENSOR_ON;
-	sensor2 = SENSOR_ON;
-	sensor3 = SENSOR_ON;
-	sensor4 = SENSOR_ON;
-	sensor5 = SENSOR_ON;
-
-	putc('0');
-
+readSensor = 0xFF;
 
 	// FOREVER
 	while(true)
 	{
-		//readSensors(0x3F);
-		/*printf("%ld:", values[0]);
-		printf("%ld:", values[1]);
-		printf("%ld:", values[2]);
-		printf("%ld:", values[3]);
-		printf("%ld:", values[4]);
-		printf("\r\n");*/
-		putc('1');
-		delay_ms(2);
-	}	
+		
+		
+delay_ms(1);		
+		
+		// Ejecucion de la maquina de estados
+		switch (state)
+		{
+			case STATE_FREE:
+				/*
+				* Analiza los paquetes y retransmite o lanza el pedido de lectura
+				*/
+				
+#if TRIGGER_TYPE == SWITCH_SENSOR
+				// Enviar alarma de trigger
+				if (triggerAlarm == 1)
+					sendAlarm();
+#endif
+
+				// Protocolo
+				runProtocol(&command);
 
 
-		putc('2');
 
+readSensor = 0x3F;
+
+
+				
+				if (readSensor != 0x00)
+				{
+					// Almacena el pedido sobre los sensores
+					actualReadSensor = readSensor;
+					readSensor = 0x00;
+					actalTO = requestFrom;
+					actalCmd = requestCmd;
+					// Cambio de estado
+					state = STATE_START_READING;
+				}	
+				break;
+			case STATE_START_READING:
+				/*
+				* Genera un pedido de lectura a los sensores que lo necesiten
+				* y setea los TIMERs para contabilizar los tiempos
+				*/
+				
+				// Limpio la variable
+				bufferedReadSensor = 0x00;
+
+				// Inhabilita los sensores enmascarados
+				actualReadSensor &= sensorMask;
+				
+				// Pedido de -START-
+				startReading(actualReadSensor);
+				
+				// Flag de interrupcion
+				intTMR = 0;
+				
+				// Seteo de TIMERs
+				set_timer1(SENSORS_WAITING_TIME);
+				enable_interrupts(INT_TIMER1);
+				
+				// Cambio de estado
+				state = STATE_WAIT_TO_READ;
+				
+				break;
+			case STATE_WAIT_TO_READ:
+				/*
+				* Espera el tiempo necesario para tomar las muestras en los sensores
+				* Recibe nuevos pedidos y los agraga para una proxima lectura
+				*/
+
+#if TRIGGER_TYPE == SWITCH_SENSOR
+				// Enviar alarma de trigger
+				if (triggerAlarm == 1)
+					sendAlarm();
+#endif
+
+				// Protocolo
+				runProtocol(&command);
+				
+				// Almacena el pedido sobre los sensores si no hay otro ya
+				if ((readSensor != 0x00) && (bufferedReadSensor == 0x00))
+				{
+					bufferedReadSensor = readSensor;
+					bufferedFrom = requestFrom;
+					bufferedCmd = requestCmd;
+					readSensor = 0x00;
+				}
+				
+				// Cambio de estado?
+				if (intTMR == 1)
+				{
+					// El TIMER1 hizo timeout -> leer sensores
+					state = STATE_READ_VALUES;
+				}	
+				
+				break;
+			case STATE_READ_VALUES:
+				/*
+				* Toma las muestras en los sensores y envia el paquete de respuesta
+				*/
+				
+				// Toma las muestras de los sensores
+				readSensors(actualReadSensor);
+				
+				// Mandar paquete de respuesta
+				sendValues(actalTO, actalCMD, values, actualReadSensor);
+				
+				// Flag de interrupcion
+				intTMR = 0;
+				
+				// Setea el tiempo de espera y pasa al estado de espera
+				set_timer1(WAITING_TIME);
+				enable_interrupts(INT_TIMER1);
+				
+				state = STATE_WAITING;
+				
+				break;
+			case STATE_WAITING:
+				/*
+				* Espera a que pase el tiempo de espera entre lecturas para evitar rebotes
+				* Recibe nuevos pedidos y los agraga para una proxima lectura
+				*/
+				
+#if TRIGGER_TYPE == SWITCH_SENSOR
+				// Enviar alarma de trigger
+				if (triggerAlarm == 1)
+					sendAlarm();
+#endif
+
+				// Protocolo
+				runProtocol(&command);
+				
+				// Almacena el pedido sobre los sensores si no hay otro ya
+				if ((readSensor != 0x00) && (bufferedReadSensor == 0x00))
+				{
+					bufferedReadSensor = readSensor;
+					bufferedFrom = requestFrom;
+					bufferedCmd = requestCmd;
+					readSensor = 0x00;
+				}
+				
+				// Cambio de estado?
+				if (intTMR == 1)
+				{
+					// El TIMER1 hizo timeout
+					if (bufferedReadSensor != 0x00)
+					{
+						// Hay un pedido pendiente y lo carga
+						actualReadSensor = bufferedReadSensor;
+						bufferedReadSensor = 0x00;
+						actalTO = bufferedFrom;
+						actalCmd = bufferedCmd;
+						// Cambio de estado 
+						state = STATE_START_READING;
+					} else {
+						state = STATE_FREE;
+					}	
+				}
+
+				break;
+			default:
+				init();
+				break;
+		}
+	}
 
 	return;
 }
@@ -400,7 +609,7 @@ void readSensors(int sensors)
 		delay_us(ADC_DELAY);
 		// Toma la muestra
 		values[0] = read_adc();
-//		sensor1 = SENSOR_OFF;
+		sensor1 = SENSOR_OFF;
 	}
 	
 	// Sensor2
@@ -412,7 +621,7 @@ void readSensors(int sensors)
 		delay_us(ADC_DELAY);
 		// Toma la muestra
 		values[1] = read_adc();
-//		sensor2 = SENSOR_OFF;
+		sensor2 = SENSOR_OFF;
 	}
 	
 	// Sensor3
@@ -424,7 +633,7 @@ void readSensors(int sensors)
 		delay_us(ADC_DELAY);
 		// Toma la muestra
 		values[2] = read_adc();
-//		sensor3 = SENSOR_OFF;
+		sensor3 = SENSOR_OFF;
 	}
 	
 	// Sensor4
@@ -436,7 +645,7 @@ void readSensors(int sensors)
 		delay_us(ADC_DELAY);
 		// Toma la muestra
 		values[3] = read_adc();
-//		sensor4 = SENSOR_OFF;
+		sensor4 = SENSOR_OFF;
 	}
 	
 	// Sensor5
@@ -448,7 +657,7 @@ void readSensors(int sensors)
 		delay_us(ADC_DELAY);
 		// Toma la muestra
 		values[4] = read_adc();
-//		sensor5 = SENSOR_OFF;
+		sensor5 = SENSOR_OFF;
 	}
 	
 	return;
@@ -466,6 +675,8 @@ void sendValues(int to, int cmd, long * values, int sensors)
 	command.cmd = cmd;
 	command.data[0] = sensors;
 
+printf("TO: %X\n\rFROM: %X\n\rCOMMAND: %X\n\r", command.to, command.from, command.cmd);
+	
 	// Valores de los sensores en command.data segun corresponda
 	for (i = 0; i < 6; i++)
 	{
@@ -475,6 +686,9 @@ void sendValues(int to, int cmd, long * values, int sensors)
 			tmp16 = (command.data + idx);
 			// Le asigno el valor del sensor
 			(*tmp16) = values[i];
+
+printf("DATA: %ld\n\r", values[i]);
+
 			idx+=2;
 			command.len += 2;
 		}
@@ -482,8 +696,11 @@ void sendValues(int to, int cmd, long * values, int sensors)
 
 	command.crc = generate_8bit_crc((char *)(&command), command.len, CRC_PATTERN);
 	// Envio del comando
-	send(&command);
+//	send(&command);
 
+printf("LEN: %X\n\rCRC: %X\n\r\n\n\n\n", command.len, command.crc);
+
+	
 	return;
 }
 
