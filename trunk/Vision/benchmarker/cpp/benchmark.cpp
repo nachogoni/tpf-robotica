@@ -6,7 +6,7 @@
 #include "Result.h"
 #include "visionInterface.h"
 #include "GarbageAdapter.h"
-
+#include <vector>
 using namespace benchmark;
 
 Result *
@@ -63,8 +63,8 @@ int main(int argc, char** argv)
 		
 		
 		if(videoFrameNumber==nextTestframe){
-			printf("Comparando frame %d\n", videoFrameNumber);
 			//compare FrameXml with FrameImg
+			printf(" comparando frame %d",videoFrameNumber);
 			result=compareFrameXmlWithFrame(videoFrameImg,*frameXml);
 			
 			
@@ -111,26 +111,35 @@ compareFrameXmlWithFrame(IplImage* frame,Frame* frameXml)
 	bool found=false;
 	std::list<Cobject*> objects=ga->recognizeObjects(frame);
 	std::list<Cobject*> objectsXml=frameXml->getObjects();
-	std::list<int> missContours;
+	std::list<int> foundVideoContours;
 	Result *aResult=new Result(frameXml);
+	vector<int> missCount (objects.size(),0);
+	
+	printf("(%d vid-%d xml)\n",objects.size(),objectsXml.size());
 	
 	for (std::list<Cobject*>::iterator itXml = objectsXml.begin(); itXml != objectsXml.end(); itXml++){
+		found=false;
 		for (std::list<Cobject*>::iterator itVid = objects.begin(); itVid != objects.end(); itVid++){
 			if( (*itVid)->isSimilar(*itXml)){
 				if(!found){
-					printf("found object %d index\n",(*itXml)->index);
+					printf("found object %d index %d\n",(*itXml)->index,(*itVid)->index);
 					aResult->addFound((*itXml)->index);
-					found=true;
-					
+					found=true;		
 					//could check if other detections also are similar to the one in the xml
 					//then it would be proper to keep the one which is more similar
 				}
 			}else{
-				missContours.push_back((*itVid)->index);
+					printf("%d no le pego a %d\n",(*itVid)->index,(*itXml)->index);
+					missCount[(*itVid)->index]++;
 			}
 		}
 	}
 	
+	for (std::list<Cobject*>::iterator itVid = objects.begin(); itVid != objects.end(); itVid++)
+	{
+		if(missCount[(*itVid)->index]==objectsXml.size())
+			aResult->addMiss((*itVid));
+	}
 	
 	
 	return aResult;
@@ -156,6 +165,6 @@ makeGlobalResults(list<Result*>  resultList){
 	printf(" number of detected objects that didn't exist %d\n",allFramesStats.falseDetections);
 	printf(" False positive detection  %g\n",(allFramesStats.hit + allFramesStats.falseDetections)/(double) allFramesStats.nObjects);
 	double falseNegativeDetectionProb=allFramesStats.hit==0?(allFramesStats.falseDetections>0?1:0):
-		allFramesStats.falseDetections/( (double)allFramesStats.hit+allFramesStats.falseDetections);
+		allFramesStats.falseDetections/( (double)allFramesStats.hit + allFramesStats.falseDetections);
 	printf(" False negative detection  %g\n",falseNegativeDetectionProb);
 }
