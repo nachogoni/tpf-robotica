@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <cmath>
-#define EPSILON 30
+#define EPSILON 200
 
 
 namespace benchmark{

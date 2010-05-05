@@ -10,6 +10,7 @@
 int main(int argc, char** argv)
 {
 	cvNamedWindow("output",CV_WINDOW_AUTOSIZE);
+	
 	//video to analyze
     CvCapture* capture;
 	
@@ -25,10 +26,8 @@ int main(int argc, char** argv)
 	
 	utils::GarbageRecognition * gr= new utils::GarbageRecognition();
 	
-	int frameCount=1;	
+	
 	while(src=cvQueryFrame(capture)){
-	if(frameCount++==1000)
-		break;
 		std::list<utils::Garbage*> glist=gr->getGarbageList(src);
 		
 		
@@ -43,7 +42,6 @@ int main(int argc, char** argv)
 						
 		cvShowImage("output",src);
 		cvWaitKey(1000/20);
-		//~ cvWaitKey(0);
 		
 	}
 	
