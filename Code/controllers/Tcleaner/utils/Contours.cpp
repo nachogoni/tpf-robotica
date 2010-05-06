@@ -7,8 +7,8 @@
  * 		using openCV library
  */
 
-#include <utils/Contours.h>
-#include <utils/Histogram.h>
+#include "Contours.h"
+#include "Histogram.h"
 #include <stdio.h>
 
 #define PER_TOLERANCE 50
@@ -57,7 +57,26 @@ namespace utils{
 
 Contours::Contours(CvSeq * contour){
 	this->c = contour;
+	CvPoint * p=CV_GET_SEQ_ELEM(CvPoint ,contour,0);
+	this->x=p->x;
+	this->y=p->y;
 }
+
+int getPointZone(int x, int y){
+	int zone;
+	
+	if(y>300){
+		zone=1;
+	}else if(y<300 && y>180){
+		zone=2;
+	}else if(y<180 && y>75){
+		zone=3;
+	}else
+		zone=4;
+		
+	return zone;
+}
+
 
 /* 
  * Prints a contour on a dst Image.
@@ -77,15 +96,28 @@ int Contours::areaFilter(double min_area,double max_area){
 	double area;
 	area=fabs(cvContourArea(this->c,CV_WHOLE_SEQ));
 	
-	return area> min_area && area<max_area;
+	int zone=getPointZone(this->x,this->y);
+	
+	double  minAreaByZone[]={0,200,150,65,50};
+	//double  maxAreaByZone[]={0,800,400,200,100};
+	double  maxAreaByZone[]={0,1000,550,350,250};
+	
+	return area>minAreaByZone[zone] && area<maxAreaByZone[zone];
 	
 }
 
 int Contours::perimeterFilter(double min_per,double max_per){
 	
 	double per;
-	per = cvArcLength(this->c, CV_WHOLE_SEQ, 1);
-	return per> min_per && per<max_per;	
+	per=cvContourPerimeter(this->c);
+	
+	//double  maxPerimeterByZone[]={0,300,300,75,50};
+	double  minPerimeterByZone[]={0,100,75,25,10};
+	double  maxPerimeterByZone[]={0,300,200,90,50};
+	
+	int zone=getPointZone(this->x,this->y);
+	
+	return per>minPerimeterByZone[zone] &&  per< maxPerimeterByZone[zone];
 	
 }
 
@@ -147,11 +179,13 @@ int Contours::histogramMatchingFilter(IplImage * src, CvHistogram * testImageHis
 	//get contour bounding box
 	box=cvBoundingRect(this->c,0);
 	
+	//printf("box x:%d y:%d \n",box.x,box.y);
 	
 	IplImage * src_bbox=cvCreateImage(cvSize(box.width,box.height),src->depth,src->nChannels);
 	
 	//gets subimage bounded by box
     cvGetSubArr( src,(CvMat*)src_bbox, box );
+
 	//gets subimage histogram
 	utils::Histogram * h = new Histogram(h_bins,s_bins);
 	CvHistogram* hist = h->getHShistogramFromRGB(src_bbox);
@@ -160,6 +194,7 @@ int Contours::histogramMatchingFilter(IplImage * src, CvHistogram * testImageHis
 	
 	cvReleaseHist(&hist);
 	cvReleaseImage(&src_bbox);
+	cvReleaseMemStorage(&mem);
 	delete h;
 	
 	return (val<min);
