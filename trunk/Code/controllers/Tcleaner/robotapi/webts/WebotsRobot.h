@@ -12,7 +12,7 @@ class WebotsRobot : virtual public robotapi::IRobot {
 
 public:
 
-	WebotsRobot(WorldInfo * wi, webots::DifferentialWheels & dw);
+	WebotsRobot(WorldInfo * wi, webots::DifferentialWheels & dw );
 
     std::string getName();
 
@@ -48,6 +48,7 @@ public:
 		IDifferentialWheels * df;
 		IBattery * robotBattery;
 		IBattery * pcBattery;
+
     };
 } /* End of namespace robotapi::webts */
 } /* End of namespace robotapi */

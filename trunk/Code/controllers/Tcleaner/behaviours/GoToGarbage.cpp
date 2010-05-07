@@ -2,7 +2,8 @@
 #include <list>
 
 #define ANGLE_TOLE 0.1
-#define BASE_SPD 50
+#define MAX_SPD 100
+#define MIN_SPD 10
 
 namespace behaviours {
 
@@ -38,8 +39,14 @@ namespace behaviours {
 		// Get distance to garbage ( it is supposed to be in front of the robot)
         double distanceToGarbage = this->gr->distanceTo(currentGarbage);
 
+		double speed = this->calculateSpeed(distanceToGarbage);
 		// Go forward till the garbage is about to leave the screen( with bias )
-		this->wheels->setSpeed(BASE_SPD,BASE_SPD);
+		this->wheels->setSpeed(speed,speed);
+	}
+
+	double GoToGarbage::calculateSpeed(double distanceToGarbage){
+		double coeff = distanceToGarbage/(this->gr->getMaximumDistance() - this->gr->getMinimumDistance());
+		return MIN_SPD * ( 1 - coeff ) + coeff * MAX_SPD;
 	}
 
 }

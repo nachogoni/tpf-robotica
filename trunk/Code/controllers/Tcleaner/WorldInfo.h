@@ -24,8 +24,13 @@ class WorldInfo {
 		double getLeftWheelFactor();
 		double getRightWheelFactor();
 		double getEncoderResolution();
-		double getCameraFOV();
+		double getCameraFOVH();
+		double getCameraFOVV();
+		double getCameraX();
 		double getCameraY();
+		double getCameraAngle();
+		int getCameraImageWidth();
+		int getCameraImageHeight();
 
 	private:
 		std::list< utils::MyWall * > walls;
@@ -40,7 +45,11 @@ class WorldInfo {
 		double rightWheelFactor;
 		double encoderResolution;
 		double cameraFOV;
+		double cameraX;
 		double cameraY;
+		double cameraAngle;
+		int cameraImageHeight;
+		int cameraImageWidth;
 
 
 
@@ -55,8 +64,10 @@ class WorldInfo {
 		void readInitialAngle(FILE * f);
 		void readEncoderResolution(FILE * f);
 		void readCameraFOV(FILE * f);
-		void readCameraY(FILE * f);
-
+		void readCameraPosition(FILE * f);
+		void readCameraAngle(FILE * f);
+		void readCameraImageSize(FILE * f);
+		
 };
 
 #endif // WorldInfo_h

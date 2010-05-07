@@ -21,7 +21,6 @@ namespace behaviours {
 		if ( ! garbagePresent )
 			return;
 
-		printf("PRESENTE? SI\n");
         std::list<utils::Garbage*> gs = this->gr->getGarbageList();
 
 		// Calculate nearest garbage and angle to it
@@ -33,6 +32,7 @@ namespace behaviours {
     void FocusGarbage::action(){
 		// Get angle to garbage
         double angleToGarbage = this->gr->angleTo(currentGarbage);
+        printf("Angle To Garbage: %g\n",angleToGarbage);
 		double module = fabs(angleToGarbage);
 
 		double leftSpeed = BASE_SPD * ( module / (PI/2) ) + MIN_SPD;

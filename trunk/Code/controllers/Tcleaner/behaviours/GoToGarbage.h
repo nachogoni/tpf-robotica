@@ -22,6 +22,8 @@ class GoToGarbage : public AbstractBehaviour
         utils::GarbageRecognition * gr;
    		utils::Garbage * currentGarbage;
 		robotapi::IDifferentialWheels * wheels;
+		
+		double calculateSpeed(double distanceToGarbage);
 };
 
 } /* End of namespace behaviours */
