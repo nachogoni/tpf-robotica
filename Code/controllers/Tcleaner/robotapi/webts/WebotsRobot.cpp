@@ -17,7 +17,6 @@ namespace webts {
 
     WebotsRobot::WebotsRobot( WorldInfo * wi, webots::DifferentialWheels & dw){
 		robot = &dw;
-
 		this->wi = wi;
 		this->df = new WebotsDifferentialWheels(this->wi, (webots::DifferentialWheels&)*robot);
 		IWbDeviceTag * wdt = new WebotsDeviceTag(3);

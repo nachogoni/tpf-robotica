@@ -1,15 +1,20 @@
 #include "CollectGarbage.h"
+#include <utils/MyPoint.h>
 #include <list>
 
 #define BOTTOM_SERVO_ANGLE 0.73
 #define TIME_STEP 32
-#define BASE_SPD 20.0
+#define BASE_SPD 50.0
 
-#define WAIT_STEPS 100
+#define WAIT_STEPS 80
+#define WAIT_STEPS_LAST 10
 
 #define ANGLE_TOLE 0.1
-#define DISTANCE_TOLE 0.1
 
+// Experimental
+#define DISTANCE_TOLE 0.0581187
+
+#define SHOVEL_ANGLE -0.1
 namespace behaviours {
 
 	int getStepsToGarbage(double distanceInMeters,double speed);
@@ -49,6 +54,7 @@ namespace behaviours {
 		this->robot->step(TIME_STEP);
 
 		// Get distance to the garbage
+        double distanceToGarbage = this->gr->distanceTo(currentGarbage);
 
 		// Lift up the Shovel
 		this->shovel->setPosition(1.57);
@@ -56,22 +62,44 @@ namespace behaviours {
 			this->robot->step(TIME_STEP);
 		}
 
-		// Go forward according to the distance
 		this->wheels->setSpeed(BASE_SPD,BASE_SPD);
-		int numberOfStepsToGarbage = getStepsToGarbage(0,BASE_SPD);
 
+		/*
+		int numberOfStepsToGarbage = getStepsToGarbage(0,BASE_SPD);
 		for ( int i = 0 ; i < numberOfStepsToGarbage ; i ++ ){
 			this->robot->step(TIME_STEP);
 		}
+		*/
+		double distanceCovered = 0;
+
+		utils::MyPoint * lastPosition = this->wheels->getPosition();
+		double initialX = lastPosition->getX();
+		double initialY = lastPosition->getY();
+
+		double currentX, currentY;
+		utils::MyPoint * currentPosition;
+		while ( distanceCovered < distanceToGarbage ){
+			this->robot->step(TIME_STEP);
+			currentPosition = this->wheels->getPosition();
+			currentX = currentPosition->getX();
+			currentY = currentPosition->getY();
+			distanceCovered = sqrt( pow(currentX-initialX,2) + pow(currentY-initialY,2) );
+		}
 		
 		// Turn the shovel in order to put the garbage into the trash bin
-		this->shovel->setPosition(-1.57);
+		this->shovel->setPosition(SHOVEL_ANGLE);
 		this->wheels->setSpeed(0,0);
 
 		for ( int i = 0 ; i < WAIT_STEPS ; i ++ ){
 			this->robot->step(TIME_STEP);
 		}
 
+		this->shovel->setPosition(0);
+		for ( int i = 0 ; i < WAIT_STEPS_LAST ; i ++ ){
+			this->robot->step(TIME_STEP);
+		}
+
+/*
 		// Wait till the trashBin changes it's value
 		int tbVal = this->trashBin->getValue();
 		int oldVal = tbVal;
@@ -86,7 +114,9 @@ namespace behaviours {
 		for ( int i = 0 ; i < WAIT_STEPS ; i ++ ){
 			this->robot->step(TIME_STEP);
 		}
-
+*/
+		// Make Garbage Recognition take a new image
+		this->gr->stepDone();
 	}
 
 	int getStepsToGarbage(double distanceInMeters,double speed){

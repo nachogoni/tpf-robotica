@@ -9,8 +9,8 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 1.6454
-  orientation -0.267445 0.890036 0.3692 1.99634
-  position 0.0125446 0.234079 -0.372373
+  orientation -0.190375 0.893071 0.407655 2.3514
+  position -0.139408 0.193525 -0.53016
 }
 PointLight {
   intensity 0.5
@@ -185,10 +185,10 @@ DEF short_rock_5 Solid {
   boundingObject USE short_brick_1_geometry
 }
 DEF E_PUCK DifferentialWheels {
-  translation -0.29138 0 0.249524
+  translation -0.231139 0 0.035
   children [
     Servo {
-      translation 0 0.0425 0.03
+      translation 0 0.0412 0.03
       rotation 1 0 0 0
       children [
         Solid {
@@ -215,7 +215,7 @@ DEF E_PUCK DifferentialWheels {
                 }
               }
               geometry DEF TS0_BOX Box {
-                size 0.025 0.012 1e-005
+                size 0.029 0.012 1e-005
               }
             }
           ]
@@ -1179,8 +1179,63 @@ DEF E_PUCK DifferentialWheels {
         0.03 82 0
       ]
     }
+    DEF EPUCK_FS0 DistanceSensor {
+      translation -0.01 0.003 -0.03
+      rotation 0 0 1 -1.57
+      children [
+        DEF SFH_FLOOR Group {
+          children [
+            Shape {
+              appearance Appearance {
+                material Material {
+                  diffuseColor 0.3 0.2 0.2
+                }
+              }
+              geometry Box {
+                size 0.0006 0.0007 0.0007
+              }
+            }
+          ]
+        }
+      ]
+      name "fs0"
+      lookupTable [
+        0 1 0
+        0.003 200 0
+        0.0035 300 0
+        0.004 400 0
+      ]
+    }
+    DEF EPUCK_FS1 DistanceSensor {
+      translation 0 0.003 -0.03
+      rotation 0 0 1 -1.57
+      children [
+        USE SFH_FLOOR
+      ]
+      name "fs1"
+      lookupTable [
+        0 1 0
+        0.003 200 0
+        0.0035 300 0
+        0.004 400 0
+      ]
+    }
+    DEF EPUCK_FS2 DistanceSensor {
+      translation 0.01 0.003 -0.03
+      rotation 0 0 1 -1.57
+      children [
+        USE SFH_FLOOR
+      ]
+      name "fs2"
+      lookupTable [
+        0 1 0
+        0.003 200 0
+        0.0035 300 0
+        0.004 400 0
+      ]
+    }
     DEF EPUCK_CAMERA Camera {
-      translation 0 0.038 -0.035
+      translation 0 0.038 -0.0355
       rotation 1 0 0 -0.5
       children [
         Transform {
@@ -1359,11 +1414,10 @@ DEF E_PUCK DifferentialWheels {
       ]
       name "camera0"
       fieldOfView 1.1
-      width 640
-      height 480
+      width 320
+      height 240
       near 0.004
-      windowPosition 0.75 0.75
-      pixelSize 4
+      windowPosition 1 1
     }
     DEF EPUCK_LED0 LED {
       translation 0 0.041 -0.0335
@@ -1908,7 +1962,7 @@ DEF E_PUCK DifferentialWheels {
   boundingObject Group {
     children [
       DEF ParedIzq Transform {
-        translation 0.0125 0.0175 -0.005
+        translation 0.0125 0.012505 -0.005
         children [
           Shape {
             appearance Appearance {
@@ -1924,7 +1978,7 @@ DEF E_PUCK DifferentialWheels {
         ]
       }
       DEF ParedDer Transform {
-        translation -0.0125 0.0175 -0.005
+        translation -0.0125 0.012505 -0.005
         children [
           Shape {
             appearance Appearance {
@@ -2181,7 +2235,7 @@ DEF n_Wall Solid {
   boundingObject USE n_WALL_SHAPE
 }
 DEF garbage Solid {
-  translation -0.20286 0.03 -0.554897
+  translation -0.183067 0.005 -0.370485
   rotation 0.819232 0 0.573462 1.57
   children [
     DEF garbage_shape Shape {
@@ -2210,7 +2264,7 @@ DEF garbage Solid {
   }
 }
 DEF garbage_uno Solid {
-  translation -0.16286 0.03 -0.474897
+  translation -0.04286 0.03 -0.474897
   rotation 0.819232 0 0.573462 1.57
   children [
     USE garbage_shape
@@ -2220,7 +2274,7 @@ DEF garbage_uno Solid {
   }
 }
 DEF garbage_dos Solid {
-  translation -0.26286 0.03 -0.474897
+  translation -0.298607 0.005 -0.327048
   rotation 0.819232 0 0.573462 1.57
   children [
     USE garbage_shape

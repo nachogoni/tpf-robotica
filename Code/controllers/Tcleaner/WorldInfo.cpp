@@ -17,8 +17,10 @@ WorldInfo::WorldInfo()
 	this->readEncoderResolution(pFile);
 	this->readWalls(pFile);
 	this->readLines(pFile);
-	this->readCameraY(pFile);
+	this->readCameraPosition(pFile);
 	this->readCameraFOV(pFile);
+	this->readCameraAngle(pFile);
+	this->readCameraImageSize(pFile);
 	this->readDistanceBetweenWheelsFactor(pFile);
 	this->readWheelsFactors(pFile);
 	fclose(pFile);
@@ -97,10 +99,21 @@ void WorldInfo::readCameraFOV(FILE * f){
 	printf("%g\n",this->cameraFOV);
 }
 
-void WorldInfo::readCameraY(FILE * f){
-	fscanf (f, "%lf\n", &this->cameraY);
-	printf("%g\n",this->cameraY);
+void WorldInfo::readCameraPosition(FILE * f){
+	fscanf (f, "%lf:%lf\n", &this->cameraX, &this->cameraY);
+	printf("%g:%g\n",this->cameraX,this->cameraY);
 }
+
+void WorldInfo::readCameraAngle(FILE * f){
+	fscanf (f, "%lf\n", &this->cameraAngle);
+	printf("Camera Angle: %g\n",this->cameraAngle);
+}
+
+void WorldInfo::readCameraImageSize(FILE * f){
+	fscanf (f, "%d:%d\n", &this->cameraImageWidth,&this->cameraImageHeight);
+	printf("%d:%d\n",this->cameraImageWidth,this->cameraImageHeight);
+}
+
 
 utils::MyLine * WorldInfo::getCurrentLine(){
 	// TODO Make calculations acording to the actual position
@@ -145,8 +158,28 @@ double WorldInfo::getEncoderResolution(){
 	return this->encoderResolution;
 }
 
-double WorldInfo::getCameraFOV(){
+double WorldInfo::getCameraAngle(){
+	return this->cameraAngle;
+}
+
+double WorldInfo::getCameraFOVH(){
 	return this->cameraFOV;
+}
+
+double WorldInfo::getCameraFOVV(){
+	return this->cameraFOV * this->cameraImageHeight / this->cameraImageWidth;
+}
+
+int WorldInfo::getCameraImageWidth(){
+	return this->cameraImageWidth;
+}
+
+int WorldInfo::getCameraImageHeight(){
+	return this->cameraImageHeight;
+}
+
+double WorldInfo::getCameraX(){
+	return this->cameraX;
 }
 
 double WorldInfo::getCameraY(){
