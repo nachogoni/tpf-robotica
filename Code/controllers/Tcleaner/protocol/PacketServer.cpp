@@ -78,7 +78,7 @@ void PacketServer::run(void){
     // Set file descriptors
     FD_SET(serfd,&readfd);
     FD_SET(this->pipes[PIPE_IN],&readfd);
-    maxfd = MAX(serfd,this->pipes[PIPE_IN]) + 1;
+    maxfd = MAXOF(serfd,this->pipes[PIPE_IN]) + 1;
     readfd_b = readfd;
     writefd_b = writefd;
     

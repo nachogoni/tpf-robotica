@@ -1,6 +1,8 @@
 #ifndef robotapi_IImage_h
 #define robotapi_IImage_h
 
+#include <highgui.h>
+
 namespace robotapi {
 class ICamera;
 } /* End of namespace robotapi */
@@ -16,6 +18,8 @@ class IImage {
     virtual int getHeight()  = 0;
 
     virtual int getDepth()  = 0;
+
+	virtual IplImage * toIPL()  = 0;
 
 public:
     // virtual destructor for interface 

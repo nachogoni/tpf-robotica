@@ -42,6 +42,7 @@ time_t lastRequest;
 GarbageRecognition::GarbageRecognition(WorldInfo * wi){
 	this->wi = wi;
 	this->gamma = PI/2 + this->wi->getCameraAngle() - this->wi->getCameraFOVV()/2;
+    this->model = cvLoadImage("./colilla-sinBlanco.png",1);
 }
 
 void GarbageRecognition::setCamera(robotapi::ICamera &camera)
@@ -63,11 +64,9 @@ std::list<Garbage*> GarbageRecognition::getGarbageList()
 {
 	if ( ! this->pooled ){
 		this->pooled = true;
-		std::string fn ("./ss.jpg");
-		cam->saveImage(fn, 85);
-	    IplImage * src = cvLoadImage("./ss.jpg",1);
-	    IplImage * model = cvLoadImage("./colilla-sinBlanco.png",1);
-		this->garbageList(src,model);
+	    IplImage * src = loadImage("./ss.jpg");
+//	    IplImage * src = loadImage();
+		this->garbageList(src,this->model);
 	}
 	return garbages;
 }
@@ -82,8 +81,6 @@ utils::Garbage * GarbageRecognition::getClosestGarbage(std::list<utils::Garbage*
 }
 
 std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * model){
-//		printf("-----------------------------------------------------ENTRE!\n");
-//	system("pause");
 	garbages.clear();
 
 	//cvNamedWindow("output",CV_WINDOW_AUTOSIZE);
@@ -142,7 +139,6 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 
 
 	frameCounter++;
-//	printf("frame number:%d\n",frameCounter);
 
 	//convert image to hsv
 	cvCvtColor( src, hsv, CV_BGR2HSV );
@@ -192,7 +188,7 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 		//apply filters
 
 		if( pf && raf && baf && hmf	){
-    //    printf("DESPUES DE FILTROS\n");
+
 				//if passed filters
 				ct->printContour(3,cvScalar(127,127,0,0),
 					contourImage);
@@ -214,7 +210,7 @@ std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * m
 
 				utils::Garbage * aGarbage = new utils::Garbage(r);
 //				printf("%d , %d - %d , %d\n",boundingRect.x,boundingRect.y,boundingRect.width,boundingRect.height);
-//				system("PAUSE");
+
 				garbages.push_back(aGarbage);
 
 
@@ -283,9 +279,11 @@ double GarbageRecognition::distanceTo(utils::Garbage * g)
 	double vAngleToGarbage = this->wi->getCameraFOVV()*transformedY/this->wi->getCameraImageHeight();
 	double distanceToGarbage = this->getDistance(vAngleToGarbage);
 
+
 	printf("Minimum Distance : %g - Maximum Distance : %g\n",minDist,maxDist);
 	printf("Garbage Y: %d - Camera Height : %d - Vertical FOV : %g\n",transformedY,this->wi->getCameraImageHeight(),this->wi->getCameraFOVV());
 	printf("Vertical angle to: %g - Distance to : %g\n",vAngleToGarbage,distanceToGarbage);
+
     return distanceToGarbage;
 }
 
@@ -303,6 +301,17 @@ double GarbageRecognition::getDistance(double angle){
 
 void GarbageRecognition::stepDone(){
 	this->pooled = false;
+}
+
+IplImage * GarbageRecognition::loadImage(std::string filename){
+//	std::string fn ("./ss.jpg");
+	cam->saveImage(filename, 85);
+    return cvLoadImage(filename.c_str(),1);
+}
+
+IplImage * GarbageRecognition::loadImage(void){
+	IplImage * ret = cam->getImage().toIPL();
+	return ret;
 }
 
 } /* End of namespace utils */

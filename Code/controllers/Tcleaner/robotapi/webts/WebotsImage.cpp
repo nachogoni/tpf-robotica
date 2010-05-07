@@ -1,21 +1,50 @@
 #include "WebotsImage.h"
+#include <webots/Camera.hpp>
 
 namespace robotapi {
 namespace webts {
 
 	int WebotsImage::getWidth(){
-		return 1;
+		return this->w;
 	}
 
 	int WebotsImage::getHeight(){
-		return 2;
+		return this->h;
 	}
 
     int WebotsImage::getDepth(){
-		return 32;
+		return 8;
 	}
 
-	WebotsImage::WebotsImage(unsigned char * img){
+	IplImage * WebotsImage::toIPL(){
+        IplImage * rgb = cvCreateImage( srcSize, IPL_DEPTH_8U, 3 );
+        unsigned char g, b, r;
+        
+        for(int i = 0; i < this->h; i ++ ){
+            for(int j = 0; j < this->w; j ++ ){
+//                IplImage* img=cvCreateImage(cvSize(640,480),IPL_DEPTH_8U,3); ((uchar *)(img->imageData + i*img->widthStep))[j*img->nChannels + 0]=111; // B ((uchar *)(img->imageData + i*img->widthStep))[j*img->nChannels + 1]=112; // G ((uchar *)(img->imageData + i*img->widthStep))[j*img->nChannels + 2]=113; // R
+				// B G R For IPL...
+
+				// Blue
+				b = webots::Camera::imageGetBlue(this->img,this->w,j,i);
+				((uchar *)(rgb->imageData + i*rgb->widthStep))[j*rgb->nChannels + 0] = b;
+
+				g = webots::Camera::imageGetGreen(this->img,this->w,j,i);
+				((uchar *)(rgb->imageData + i*rgb->widthStep))[j*rgb->nChannels + 1] = g;
+
+				r = webots::Camera::imageGetRed(this->img,this->w,j,i);
+				((uchar *)(rgb->imageData + i*rgb->widthStep))[j*rgb->nChannels + 2] = r;
+
+			}
+		}
+		return rgb;
+	}
+
+	WebotsImage::WebotsImage(const unsigned char * img, int w, int h){
+        this->srcSize = cvSize(w,h);
+		this->w = w;
+		this->h = h;
+		this->img = img;
 	}
 
 } /* End of namespace robotapi::webts */
