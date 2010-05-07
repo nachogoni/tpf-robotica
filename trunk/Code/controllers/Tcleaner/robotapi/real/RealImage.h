@@ -17,6 +17,7 @@ class RealImage : virtual public robotapi::IImage {
 
 		int getDepth();
 
+		IplImage * toIPL();
 	};
 
 } /* End of namespace robotapi::real */

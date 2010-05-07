@@ -11,7 +11,7 @@
 
 
 #define SERIAL_PORT "/dev/ttyUSB0"
-#define MAX(a,b) (a>b?a:b)
+#define MAXOF(a,b) (a>b?a:b)
 #define PIPE_IN 0
 #define PIPE_OUT 1
 

@@ -10,15 +10,22 @@ namespace webts {
 
 class WebotsImage : virtual public robotapi::IImage {
 
-public:
-	int getWidth();
+	public:
+		int getWidth();
 
-    int getHeight();
+	    int getHeight();
 
-    int getDepth();
+    	int getDepth();
 
-	WebotsImage(unsigned char * img);
+		IplImage * toIPL();
 
+		WebotsImage(const unsigned char * img, int w, int h);
+
+	private:
+		const unsigned char * img;
+		int w;
+		int h;
+		CvSize srcSize;
 	};
 } /* End of namespace robotapi::webts */
 } /* End of namespace robotapi */

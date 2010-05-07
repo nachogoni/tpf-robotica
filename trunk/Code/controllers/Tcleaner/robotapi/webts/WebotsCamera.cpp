@@ -17,7 +17,7 @@ namespace webts {
 	}
 
 	IImage & WebotsCamera::getImage(){
-		WebotsImage * wi = new WebotsImage(NULL);
+		WebotsImage * wi = new WebotsImage(this->mycam->getImage(),this->mycam->getWidth(),this->mycam->getHeight());
 		return *wi;
 	}
 

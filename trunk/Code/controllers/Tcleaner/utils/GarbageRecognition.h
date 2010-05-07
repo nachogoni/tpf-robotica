@@ -38,8 +38,11 @@ class GarbageRecognition {
 	WorldInfo * wi;
 	bool pooled;
 	double gamma;
+	IplImage * model;
 	
     double getDistance(double angle);
+    IplImage * loadImage(std::string filename);
+    IplImage * loadImage();
 };
 
 } /* End of namespace utils */
