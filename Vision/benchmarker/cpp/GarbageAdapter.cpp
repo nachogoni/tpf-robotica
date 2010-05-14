@@ -23,7 +23,7 @@ using namespace utils;
 		for (std::list<Garbage*>::iterator it = garbage.begin(); it != garbage.end(); it++)
 		{
 				MinimalBoundingRectangle * aMbr=(*it)->boundingBox();
-				obj=new benchmark::Cobject( index ,aMbr->x,aMbr->y,aMbr->height,aMbr->width);
+				obj=new benchmark::Cobject( index ,aMbr->x,aMbr->y,aMbr->width,aMbr->height);
 				resp.push_back(obj);
 				delete aMbr;
 				delete (*it);

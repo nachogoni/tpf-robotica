@@ -70,11 +70,11 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	//image for the histogram-based filter
 	//could be a parameter
 	
-	cvNamedWindow("andImage",CV_WINDOW_AUTOSIZE);
-	cvNamedWindow("andSimage",CV_WINDOW_AUTOSIZE);
-	cvNamedWindow("andSIImage",CV_WINDOW_AUTOSIZE);
-	cvNamedWindow("drawContours",CV_WINDOW_AUTOSIZE);
-	cvNamedWindow("andSThreshImage",CV_WINDOW_AUTOSIZE);
+	//~ cvNamedWindow("andImage",CV_WINDOW_AUTOSIZE);
+	//~ cvNamedWindow("andSimage",CV_WINDOW_AUTOSIZE);
+	//~ cvNamedWindow("andSIImage",CV_WINDOW_AUTOSIZE);
+	//~ cvNamedWindow("drawContours",CV_WINDOW_AUTOSIZE);
+	//~ cvNamedWindow("andSThreshImage",CV_WINDOW_AUTOSIZE);
 	//~ cvNamedWindow("threshImage",CV_WINDOW_AUTOSIZE);
 //	cvNamedWindow("andSequalizedImage",CV_WINDOW_AUTOSIZE);
 	//~ cvNamedWindow("morphImage",CV_WINDOW_AUTOSIZE);
@@ -158,11 +158,11 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	}
 	cvAnd(h_plane, v_plane, andImage);
 	cvAnd(h_plane, s_plane, andSimage);
-	cvOr(andSimage,andImage,andSIImage);
+	//~ cvOr(andSimage,andImage,andSIImage);
 	
-	cvShowImage("andImage",andImage);
-	cvShowImage("andSimage",andSimage);
-	cvShowImage("andand",andSIImage);
+	//~ cvShowImage("andImage",andImage);
+	//~ cvShowImage("andSimage",andSimage);
+	//~ cvShowImage("andand",andSIImage);
 	
 	
 	//apply morphologic operations
@@ -175,7 +175,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	cvErode(morphImage,morphImage,element,MORPH_ERODE_ITER);
 	
 	
-	cvShowImage("morphImage",morphImage);
+	//~ cvShowImage("morphImage",morphImage);
 	
 	
 	//cvEqualizeHist(andSimage,andSequalizedImage);
@@ -200,7 +200,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	
 	cvThreshold(morphImage,threshImage,120,255,CV_THRESH_BINARY);
 	//cvThreshold(andSimage,threshImage,80,255,CV_THRESH_BINARY);
-	cvShowImage("threshImage",threshImage);
+	//~ cvShowImage("threshImage",threshImage);
 	
 	//apply morphologic operations
 	element = cvCreateStructuringElementEx( MORPH_KERNEL_SIZE*2+1,
@@ -212,7 +212,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	//cvErode(morphImage,morphImage,element,MORPH_ERODE_ITER);
 	
 	
-	cvShowImage("morphImage",morphImage);
+	//~ cvShowImage("morphImage",morphImage);
 	
 	//get all contours
 	contours=myFindContours(threshImage);

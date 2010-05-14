@@ -150,7 +150,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 			uchar * hue=&((uchar*) (h_plane->imageData+h_plane->widthStep*y))[x];
 			uchar * sat=&((uchar*) (s_plane->imageData+s_plane->widthStep*y))[x];
 			uchar * val=&((uchar*) (v_plane->imageData+v_plane->widthStep*y))[x];
-			if(*hue>20 && *hue<40 && *sat>60)// && *val<180 )
+			if(*hue>20 && *hue<40 && *sat>70)// && *val<180 )
 				*hue=255;
 			else
 				*hue=0;
@@ -160,6 +160,8 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	cvAnd(h_plane, s_plane, andSimage);
 	cvAdd(andSimage,andImage,andSIImage);
 	
+	cvNamedWindow("hueImage",CV_WINDOW_AUTOSIZE);
+	cvShowImage("hueImage",h_plane);
 	cvShowImage("andImage",andImage);
 	cvShowImage("andSimage",andSimage);
 	cvShowImage("andand",andSIImage);
