@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include "GarbageAdapter.h"
-#include "alg4/GarbageRecognition.h"
-#include "alg4/Garbage.h"
-#include "alg4/MinimalBoundingRectangle.h"
+#include "alg8/GarbageRecognition.h"
+#include "alg8/Garbage.h"
+#include "alg8/MinimalBoundingRectangle.h"
 #include "Cobject.h"
 #include <list>
 
@@ -16,6 +16,7 @@ using namespace utils;
 	{
 		std::list<benchmark::Cobject*> resp;
 		int index=0;
+		std::vector<int> centroid;
 		Cobject * obj;
 		GarbageRecognition * gr= new GarbageRecognition();
 		
@@ -23,7 +24,8 @@ using namespace utils;
 		for (std::list<Garbage*>::iterator it = garbage.begin(); it != garbage.end(); it++)
 		{
 				MinimalBoundingRectangle * aMbr=(*it)->boundingBox();
-				obj=new benchmark::Cobject( index ,aMbr->x,aMbr->y,aMbr->width,aMbr->height);
+				centroid=(*it)->getCentroid();
+				obj=new benchmark::Cobject( index ,aMbr->x,aMbr->y,aMbr->width,aMbr->height,centroid);
 				resp.push_back(obj);
 				delete aMbr;
 				delete (*it);

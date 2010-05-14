@@ -10,6 +10,7 @@
 #include "Contours.h"
 #include "Histogram.h"
 #include <stdio.h>
+#include <vector>
 
 #define PER_TOLERANCE 50
 
@@ -202,6 +203,17 @@ int Contours::histogramMatchingFilter(IplImage * src, CvHistogram * testImageHis
 	return (val<min);
 }
 //30,32,10
+
+std::vector<int> Contours::getCentroid(){
+	 std::vector<int> vec(2);
+	
+	 CvMoments * myMoments = (CvMoments*)malloc( sizeof(CvMoments) );	 
+	 cvMoments( this->c, myMoments );
+	 vec[0]=(int) myMoments->m10/myMoments->m00;
+	 vec[1]=(int) myMoments->m01/myMoments->m00;
+	 
+	 return vec;
+}
 
 CvSeq * Contours::getContour(){
 	return this->c;

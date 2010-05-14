@@ -19,6 +19,17 @@ Cobject::Cobject(int index,int x,int y,int w,int h)
 	
 }
 
+Cobject::Cobject(int index,int x,int y,int w,int h,std::vector<int> centroid)
+{
+	this->index=index;
+	this->x=x;
+	this->y=y;
+	this->w=w;
+	this->h=h;
+	this->centroid=centroid;
+	
+}
+
 
 Cobject::Cobject(int x,int y,int w,int h)
 {
@@ -44,7 +55,7 @@ Cobject::print(){
  
 }
 
-std::vector<int> Cobject::centroid(){
+std::vector<int> Cobject::getCentroid(){
 	std::vector<int> centroid(2);
 	centroid[0]=this->x + this->w/2;
 	centroid[1]=this->y + this->h/2;
@@ -52,9 +63,9 @@ std::vector<int> Cobject::centroid(){
 }
 //other is xml object
 bool Cobject::isSimilar(Cobject * other){
-	std::vector<int> centroid1=this->centroid();
-	std::vector<int> centroid2=other->centroid();
-	double factor=2;
+	std::vector<int> centroid1=this->getCentroid();
+	std::vector<int> centroid2=other->getCentroid();
+	double factor=1;
 	
 	if(other->x<=centroid1[0] && centroid1[0]<=other->x+other->w*factor &&
 		other->y<=centroid1[1] && centroid1[1]<=other->y+other->h*factor){

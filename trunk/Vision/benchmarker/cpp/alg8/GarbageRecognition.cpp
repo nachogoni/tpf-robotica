@@ -256,12 +256,16 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 				//if passed filters
 				ct->printContour(3,cvScalar(127,127,0,0),
 					contourImage);
+				
+				std::vector<int> centroid(2);
+				centroid=ct->getCentroid();
+
 					
 				//build garbage List
 				utils::MinimalBoundingRectangle * r = new utils::MinimalBoundingRectangle(boundingRect.x,
 					boundingRect.y,boundingRect.width,boundingRect.height);
 
-				utils::Garbage * aGarbage = new utils::Garbage(r);
+				utils::Garbage * aGarbage = new utils::Garbage(r,centroid);
 
 				garbageList.push_back(aGarbage);
 
