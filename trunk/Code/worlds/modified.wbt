@@ -6,6 +6,7 @@ WorldInfo {
     "Date: 01 SEP 2006"
   ]
   title "E-puck"
+  displayRefresh 16
 }
 Viewpoint {
   fieldOfView 1.6454
@@ -185,14 +186,14 @@ DEF short_rock_5 Solid {
   boundingObject USE short_brick_1_geometry
 }
 DEF E_PUCK DifferentialWheels {
-  translation -0.231139 0 0.035
+  translation -0.251646 0 -0.179126
   children [
     Servo {
       translation 0 0.0412 0.03
       rotation 1 0 0 0
       children [
         Solid {
-          translation 0 -0.02 0
+          translation 0 -0.0231 0
           children [
             Shape {
               appearance Appearance {
@@ -205,7 +206,7 @@ DEF E_PUCK DifferentialWheels {
           boundingObject USE TBOX
         }
         DEF EPUCK_TS0 TouchSensor {
-          translation 0 -0.035 0
+          translation 0 -0.035 -1e-005
           rotation 1 0 0 3.1416
           children [
             Shape {
@@ -221,13 +222,6 @@ DEF E_PUCK DifferentialWheels {
           ]
           name "ts0"
           boundingObject USE TS0_BOX
-          physics Physics {
-          }
-          type "force"
-          lookupTable [
-            0 0 0
-            0.0001 50000 0
-          ]
         }
       ]
       name "servo1"
@@ -388,7 +382,6 @@ DEF E_PUCK DifferentialWheels {
           Cylinder {
             height 0.005
             radius 0.0205
-            subdivision 60
           }
         ]
       }
@@ -1418,6 +1411,7 @@ DEF E_PUCK DifferentialWheels {
       height 240
       near 0.004
       windowPosition 1 1
+      pixelSize 0
     }
     DEF EPUCK_LED0 LED {
       translation 0 0.041 -0.0335
@@ -1962,7 +1956,7 @@ DEF E_PUCK DifferentialWheels {
   boundingObject Group {
     children [
       DEF ParedIzq Transform {
-        translation 0.0125 0.012505 -0.005
+        translation 0.0125 0.0125005 -0.005
         children [
           Shape {
             appearance Appearance {
@@ -1978,7 +1972,7 @@ DEF E_PUCK DifferentialWheels {
         ]
       }
       DEF ParedDer Transform {
-        translation -0.0125 0.012505 -0.005
+        translation -0.0125 0.0125005 -0.005
         children [
           Shape {
             appearance Appearance {
@@ -2255,7 +2249,8 @@ DEF garbage Solid {
       }
       geometry Cylinder {
         height 0.01
-        radius 0.00125
+        radius 0.00175
+        subdivision 6
       }
     }
   ]

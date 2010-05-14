@@ -27,7 +27,7 @@ class WebotsTrashBin : public robotapi::ITrashBin, robotapi::webts::WebotsDevice
 	private:
        	webots::TouchSensor * myts;
        	double fullBias;
-
+		double currentValue;
     };
 
 } /* End of namespace robotapi::webts */

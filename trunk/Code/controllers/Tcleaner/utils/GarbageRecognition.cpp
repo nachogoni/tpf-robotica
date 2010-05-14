@@ -64,9 +64,10 @@ std::list<Garbage*> GarbageRecognition::getGarbageList()
 {
 	if ( ! this->pooled ){
 		this->pooled = true;
-	    IplImage * src = loadImage("./ss.jpg");
-//	    IplImage * src = loadImage();
+//	    IplImage * src = loadImage("./ss.jpg");
+	    IplImage * src = loadImage();
 		this->garbageList(src,this->model);
+		cvReleaseImage(&src);
 	}
 	return garbages;
 }
@@ -279,11 +280,11 @@ double GarbageRecognition::distanceTo(utils::Garbage * g)
 	double vAngleToGarbage = this->wi->getCameraFOVV()*transformedY/this->wi->getCameraImageHeight();
 	double distanceToGarbage = this->getDistance(vAngleToGarbage);
 
-
+/*
 	printf("Minimum Distance : %g - Maximum Distance : %g\n",minDist,maxDist);
 	printf("Garbage Y: %d - Camera Height : %d - Vertical FOV : %g\n",transformedY,this->wi->getCameraImageHeight(),this->wi->getCameraFOVV());
 	printf("Vertical angle to: %g - Distance to : %g\n",vAngleToGarbage,distanceToGarbage);
-
+*/
     return distanceToGarbage;
 }
 
@@ -311,6 +312,7 @@ IplImage * GarbageRecognition::loadImage(std::string filename){
 
 IplImage * GarbageRecognition::loadImage(void){
 	IplImage * ret = cam->getImage().toIPL();
+//	cvSaveImage("c:\aux.jpg",ret);
 	return ret;
 }
 

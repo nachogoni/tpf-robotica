@@ -48,6 +48,7 @@ public:
 		IDifferentialWheels * df;
 		IBattery * robotBattery;
 		IBattery * pcBattery;
+		ITrashBin * tb;
 
     };
 } /* End of namespace robotapi::webts */

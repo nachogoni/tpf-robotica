@@ -11,7 +11,7 @@ class Recharge : public AbstractBehaviour {
 
 	public:
 
-        Recharge(robotapi::IRobot * robot, robotapi::IDifferentialWheels * wheels, WorldInfo * wi, robotapi::IBattery * robotBatt, robotapi::IBattery * pcBatt, std::vector<robotapi::IDistanceSensor*> & fss);
+        Recharge(robotapi::IRobot * robot, robotapi::IDifferentialWheels * wheels, robotapi::IBattery * robotBatt, robotapi::IBattery * pcBatt, std::vector<robotapi::IDistanceSensor*> & fss);
 
 		void sense();
 		
@@ -23,7 +23,6 @@ class Recharge : public AbstractBehaviour {
 		robotapi::IRobot * robot;
 		robotapi::IDifferentialWheels * wheels;
 		std::vector<robotapi::IDistanceSensor*> * fss;
-		WorldInfo * wi;
 	};
 
 } /* End of namespace behaviours */

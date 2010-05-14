@@ -3,13 +3,12 @@
 
 #include "AbstractBehaviour.h"
 
-
 namespace behaviours {
 
 class UnloadGarbage : public AbstractBehaviour {
 
 	public:
-		UnloadGarbage(robotapi::ITrashBin * tb, robotapi::IServo * gate);
+		UnloadGarbage(robotapi::ITrashBin * tb, robotapi::IServo * gate, robotapi::IRobot * robot, robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & fss);
 
 		~UnloadGarbage();
 
@@ -20,6 +19,9 @@ class UnloadGarbage : public AbstractBehaviour {
 	private:
 		robotapi::IServo * gate;
 		robotapi::ITrashBin * trashbin;
+		robotapi::IRobot * robot;
+		robotapi::IDifferentialWheels * wheels;
+		std::vector<robotapi::IDistanceSensor*> * fss;
 	};
 
 } /* End of namespace behaviours */

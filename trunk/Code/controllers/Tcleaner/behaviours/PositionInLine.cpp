@@ -29,7 +29,7 @@ void PositionInLine::action(){
     double rspd = BASE_SPD;
     double lspd = BASE_SPD;
 	double currentAngle = this->wheels->getOrientation();
-	if ( this->wheels->getPosition()->getY() < 0.1 ){
+	if ( this->wheels->getPosition()->getY() < 0.06 ){
 		// It is the top right line
 		printf("On top right line\n");
 		if ( currentAngle > PI ){
@@ -47,7 +47,7 @@ void PositionInLine::action(){
 	  		    rspd = rspd * 2;
 			printf("Turning left\n");
 		}
-	}else{
+	}else if ( this->wheels->getPosition()->getY() > 0.15 ){
 		// It is the top left line
 		printf("On top left line\n");
        	if ( currentAngle > PI ){
