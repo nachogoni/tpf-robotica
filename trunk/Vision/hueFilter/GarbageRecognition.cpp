@@ -149,9 +149,9 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	cvShowImage("andImage",andImage);
 	
 	//apply smooth gaussian-filter
-	//~ cvSmooth(andImage,smoothImage,CV_GAUSSIAN,3,0,0,0);
-	//~ cvNamedWindow("smoothImage",CV_WINDOW_AUTOSIZE);
-	//~ cvShowImage("smoothImage",smoothImage);
+	cvSmooth(andImage,smoothImage,CV_GAUSSIAN,5,5,0,0);
+	cvNamedWindow("smoothImage",CV_WINDOW_AUTOSIZE);
+	cvShowImage("smoothImage",smoothImage);
 	
 	
 	//cvEqualizeHist(threshImage,equalizedImage);
@@ -165,8 +165,8 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 		CV_SHAPE_RECT, NULL);
 
 	
-	cvDilate(threshImage,morphImage,element,MORPH_DILATE_ITER);
-	cvErode(morphImage,morphImage,element,MORPH_ERODE_ITER);
+	//~ cvDilate(threshImage,morphImage,element,MORPH_DILATE_ITER);
+	//~ cvErode(morphImage,morphImage,element,MORPH_ERODE_ITER);
 	
 	cvNamedWindow("morphImage",CV_WINDOW_AUTOSIZE);
 	cvShowImage("morphImage",morphImage);

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <cmath>
-#define EPSILON 200
+#define EPSILON 75 
 
 
 namespace benchmark{
@@ -47,25 +47,27 @@ Cobject::print(){
 std::vector<int> Cobject::centroid(){
 	std::vector<int> centroid(2);
 	centroid[0]=this->x + this->w/2;
-	centroid[1]=this->x + this->h/2;
+	centroid[1]=this->y + this->h/2;
 	return centroid;
 }
+//other is xml object
 bool Cobject::isSimilar(Cobject * other){
 	std::vector<int> centroid1=this->centroid();
 	std::vector<int> centroid2=other->centroid();
+	double factor=2;
 	
-	if( pow(
+	if(other->x<=centroid1[0] && centroid1[0]<=other->x+other->w*factor &&
+		other->y<=centroid1[1] && centroid1[1]<=other->y+other->h*factor){
+			return true;
+	}
+/*	if( pow(
 		( 	pow(fabs(centroid1[0]- centroid2[0]),2) +  
 			pow(fabs(centroid1[1]- centroid2[1]),2)
 		),0.5)< EPSILON){
 		return true;
-	}
+	}*/
 	
 	return false;
-
-/*	if(this->overlap(other))
-		return true;
-		*/
 }
 
 bool Cobject::overlap(Cobject* other){

@@ -18,21 +18,32 @@ makeGlobalResults(list<Result*>  resultList);
 Result*
 getFrameResults(IplImage * frame);
 
+void
+drawCompare(std::list<Cobject*>,std::list<Cobject*>);
+
+
 GarbageAdapter * ga;
+
+#define _RED  cvScalar (0, 0, 255, 0)
+#define _GREEN cvScalar (0, 255, 0, 0)
 
 typedef struct {
 	int hit;
 	int falseDetections;
 	int nObjects;
 } stats;
+
+//frame from video
+IplImage * videoFrameImg;
+IplImage * compareImg;
 	
 
 int main(int argc, char** argv)
 {	    
 	CvCapture* capture;
+	cvNamedWindow("compare",CV_WINDOW_AUTOSIZE);
 	
-	//frame from video
-	IplImage * videoFrameImg;
+	
 	
 	if (argc < 3) {
         fprintf(stderr, "Usage: %s filename.xml\n video", argv[0]);
@@ -49,17 +60,26 @@ int main(int argc, char** argv)
     videoInfo vinfo=parseXmlObjects(argv[1]);
     std::list<Frame*> framesList=vinfo.framesList;
     int maxFrameNumber=vinfo.numberOfFrames;
-    int nextTestframe=1;
+    int nextTestframe=1,h=0,frameStart=10;
     int videoFrameNumber=1;
     bool continueVideo=true;
     
     std::list<Frame*>::iterator frameXml = framesList.begin();
+    nextTestframe=(*frameXml)->frameNumber;
+    
     std::list<Result*> resultList;
+    
+    while(h!=frameStart){
+		cvQueryFrame(capture);
+		h++;
+	}
+		
     
     
     while((videoFrameImg=cvQueryFrame(capture))!=NULL && videoFrameNumber<maxFrameNumber)
     {
 		Result* result=NULL;
+		compareImg=cvCloneImage (videoFrameImg);
 		
 		
 		if(videoFrameNumber==nextTestframe){
@@ -109,11 +129,15 @@ Result*
 compareFrameXmlWithFrame(IplImage* frame,Frame* frameXml)
 {
 	bool found=false;
+	int hit=0,miss=0;
 	std::list<Cobject*> objects=ga->recognizeObjects(frame);
 	std::list<Cobject*> objectsXml=frameXml->getObjects();
 	std::list<int> foundVideoContours;
 	Result *aResult=new Result(frameXml);
 	vector<int> missCount (objects.size(),0);
+	
+	drawCompare(objects,objectsXml);
+	
 	
 	printf("(%d vid-%d xml)\n",objects.size(),objectsXml.size());
 	
@@ -125,11 +149,12 @@ compareFrameXmlWithFrame(IplImage* frame,Frame* frameXml)
 					printf("found object %d index %d\n",(*itXml)->index,(*itVid)->index);
 					aResult->addFound((*itXml)->index);
 					found=true;		
+					hit++;
 					//could check if other detections also are similar to the one in the xml
 					//then it would be proper to keep the one which is more similar
 				}
 			}else{
-					printf("%d no le pego a %d\n",(*itVid)->index,(*itXml)->index);
+					//printf("%d no le pego a %d\n",(*itVid)->index,(*itXml)->index);
 					missCount[(*itVid)->index]++;
 			}
 		}
@@ -137,9 +162,14 @@ compareFrameXmlWithFrame(IplImage* frame,Frame* frameXml)
 	
 	for (std::list<Cobject*>::iterator itVid = objects.begin(); itVid != objects.end(); itVid++)
 	{
-		if(missCount[(*itVid)->index]==objectsXml.size())
+		if(missCount[(*itVid)->index]==objectsXml.size()){
+			printf("index %d, no encontro nada \n",(*itVid)->index);
 			aResult->addMiss((*itVid));
+			miss++;
+		}
 	}
+	
+	printf("hits:%d, miss:%d\n",hit,miss);
 	
 	
 	return aResult;
@@ -163,8 +193,30 @@ makeGlobalResults(list<Result*>  resultList){
 	printf(" Total number of objects to be recognized %d\n",allFramesStats.nObjects);
 	printf(" number of hits %d\n",allFramesStats.hit);
 	printf(" number of detected objects that didn't exist %d\n",allFramesStats.falseDetections);
-	printf(" False positive detection  %g\n",(allFramesStats.hit + allFramesStats.falseDetections)/(double) allFramesStats.nObjects);
+	printf(" False negative detection  %g\n",1 - (allFramesStats.hit)/(double) allFramesStats.nObjects);
 	double falseNegativeDetectionProb=allFramesStats.hit==0?(allFramesStats.falseDetections>0?1:0):
 		allFramesStats.falseDetections/( (double)allFramesStats.hit + allFramesStats.falseDetections);
-	printf(" False negative detection  %g\n",falseNegativeDetectionProb);
+	printf(" False positive detection  %g\n",falseNegativeDetectionProb);
+}
+
+void drawCompare(std::list<Cobject*> objects,std::list<Cobject*> objectsXml){
+	Cobject * boundingRect;
+	
+	for (std::list<Cobject*>::iterator itXml = objectsXml.begin(); itXml != objectsXml.end(); itXml++){
+		boundingRect=(*itXml);
+		cvRectangle(compareImg,cvPoint(boundingRect->x,boundingRect->y),
+								cvPoint(boundingRect->x+boundingRect->w,
+								boundingRect->y+boundingRect->h),
+								_GREEN,1,8,0);
+	}
+	for (std::list<Cobject*>::iterator itVid = objects.begin(); itVid != objects.end(); itVid++){
+		boundingRect=(*itVid);
+		cvRectangle(compareImg,cvPoint(boundingRect->x,boundingRect->y),
+								cvPoint(boundingRect->x+boundingRect->w,
+								boundingRect->y+boundingRect->h),
+								_RED,1,8,0);
+		
+	}
+	cvShowImage("compare",compareImg);
+	cvWaitKey(0);
 }
