@@ -60,7 +60,7 @@ int main(int argc, char** argv)
     videoInfo vinfo=parseXmlObjects(argv[1]);
     std::list<Frame*> framesList=vinfo.framesList;
     int maxFrameNumber=vinfo.numberOfFrames;
-    int nextTestframe=1,h=0,frameStart=10;
+    int nextTestframe=1,h=0,frameStart=0;
     int videoFrameNumber=1;
     bool continueVideo=true;
     
@@ -215,8 +215,12 @@ void drawCompare(std::list<Cobject*> objects,std::list<Cobject*> objectsXml){
 								cvPoint(boundingRect->x+boundingRect->w,
 								boundingRect->y+boundingRect->h),
 								_RED,1,8,0);
+		std::vector<int> centroid=(*itVid)->getCentroid();
+		
+		cvCircle(compareImg,cvPoint(centroid[0],centroid[1]), 5, _RED, 1);
+
 		
 	}
 	cvShowImage("compare",compareImg);
-	cvWaitKey(0);
+	cvWaitKey(1000/20);
 }

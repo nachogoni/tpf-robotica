@@ -3,6 +3,7 @@
 
 #include <cv.h>
 #include <highgui.h>
+#include <vector>
 
 CvSeq * myFindContours(IplImage * image);
 CvSeq * getPolygon(CvSeq * aContour);
@@ -59,12 +60,18 @@ namespace utils {
  * the minimum value of similiarity they must comply.
  */
 		int histogramMatchingFilter(IplImage * src, CvHistogram * testImageHistogram,int h_bins,int s_bins,double min);
+/*
+ * Calculates the centroid of the contour
+ */
+		std::vector<int> getCentroid();
 
 		private :
 			CvSeq * c;
 			int x;
 			int y;
 	};
+
+
 
 }
 
