@@ -78,17 +78,19 @@ namespace webts {
     }
 
 	ITrashBin & WebotsRobot::getTrashBin(std::string name){
-        WebotsTrashBin * tb = new WebotsTrashBin(*robot->getTouchSensor(name));
-        return * tb;
+		if ( this->tb == NULL )
+	        this->tb = new WebotsTrashBin(*robot->getTouchSensor(name));
+        return * (this->tb);
 	}
 
 	void WebotsRobot::step(int ms){
 		robot->step(ms);
 		df->computeOdometry();
-
+/*
 		printf("Current Position : %g %g %g\n",df->getPosition()->getX(),df->getPosition()->getY(),df->getOrientation());
 		printf("Robot Battery : %g - PC Battery : %g\n",robotBattery->getValue(),pcBattery->getValue());
-
+		printf("Current Touch Sensor value : %d\n",this->tb->getValue());
+		*/
 		return ;
 	}
     

@@ -26,7 +26,7 @@ GoToBaseGroup::GoToBaseGroup(WorldInfo * wi,robotapi::IRobot * robot, robotapi::
 	ab = new behaviours::GoToBase( wheels, fss );
 	myBehaviours[2] = ab;
 	
-	ab = new behaviours::Recharge( robot, wheels, wi, robotBatt, pcBatt, fss);
+	ab = new behaviours::Recharge( robot, wheels, robotBatt, pcBatt, fss);
 	myBehaviours[3] = ab;
 }
 
@@ -37,13 +37,15 @@ GoToBaseGroup::~GoToBaseGroup()
 }
 
 void GoToBaseGroup::sense(){
-//	this->setStimulusPresent();
+//		this->setStimulusPresent();
 	if ( this->robotBattery->isEmpty() || this->pcBattery->isEmpty() )
 		this->setStimulusPresent();
 
+/*
         for (int j = 0; j < FLOOR_SENSORS; j++){
 			printf("Floor sensor %d: %d\n", j, (*this->fss).at(j)->getValue() );
 		}
+ */
 }
 
 int following = 0;
@@ -83,10 +85,12 @@ bool GoToBaseGroup::inLine(){
 }
 
 bool GoToBaseGroup::inPosition(){
-//	return fabs( this->wheels->getOrientation() - this->wi->getCurrentLine()->getOrientation() ) < ORIENTATION_TOLE;
-	double targetAngle = 0;
-	if ( this->wheels->getPosition()->getY() < 0.1 )
+	double targetAngle = PI/2;
+	if ( this->wheels->getPosition()->getY() < 0.06 )
 	    targetAngle = PI;
+	else if ( this->wheels->getPosition()->getY() > 0.15 )
+	    	targetAngle = 0;
+
 	return fabs( this->wheels->getOrientation() - targetAngle ) < ORIENTATION_TOLE;
 }
 

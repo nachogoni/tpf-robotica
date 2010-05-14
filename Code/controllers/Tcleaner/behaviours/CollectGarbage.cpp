@@ -7,6 +7,7 @@
 #define BASE_SPD 50.0
 
 #define WAIT_STEPS 80
+#define WAIT_STEPS_A_LAST 30
 #define WAIT_STEPS_LAST 10
 
 #define ANGLE_TOLE 0.1
@@ -58,7 +59,7 @@ namespace behaviours {
 
 		// Lift up the Shovel
 		this->shovel->setPosition(1.57);
-		for ( int i = 0 ; i < WAIT_STEPS ; i ++ ){
+		for ( int i = 0 ; i < WAIT_STEPS_A_LAST ; i ++ ){
 			this->robot->step(TIME_STEP);
 		}
 
@@ -90,7 +91,7 @@ namespace behaviours {
 		this->shovel->setPosition(SHOVEL_ANGLE);
 		this->wheels->setSpeed(0,0);
 
-		for ( int i = 0 ; i < WAIT_STEPS ; i ++ ){
+		for ( int i = 0 ; i < WAIT_STEPS_A_LAST ; i ++ ){
 			this->robot->step(TIME_STEP);
 		}
 

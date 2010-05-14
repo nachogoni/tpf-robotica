@@ -1,11 +1,13 @@
 #include "WebotsTrashBin.h"
 #include <math.h>
+#include <stdio.h>
 
 namespace robotapi {
 namespace webts {
 
     WebotsTrashBin::WebotsTrashBin( webots::TouchSensor & ts ) : WebotsDevice ( ts ){
 		this->myts = &ts;
+		this->currentValue = 0;
 	}
 
 	int WebotsTrashBin::enable(int ms){
@@ -15,11 +17,15 @@ namespace webts {
 
 	int WebotsTrashBin::disable(){
 		this->myts->disable();
+		this->currentValue = 0;
 		return 0;
 	}
 
 	int WebotsTrashBin::getValue(){
-		return ceil(this->myts->getValue());
+		if ( this->currentValue >= 1 )
+		    return this->currentValue;
+        this->currentValue = this->myts->getValue();
+		return (int)ceil(this->currentValue);
 	}
 
 	bool WebotsTrashBin::isFull(){

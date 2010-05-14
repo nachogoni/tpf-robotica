@@ -32,7 +32,7 @@ namespace behaviours {
     void FocusGarbage::action(){
 		// Get angle to garbage
         double angleToGarbage = this->gr->angleTo(currentGarbage);
-        printf("Angle To Garbage: %g\n",angleToGarbage);
+//        printf("Angle To Garbage: %g\n",angleToGarbage);
 		double module = fabs(angleToGarbage);
 
 		double leftSpeed = BASE_SPD * ( module / (PI/2) ) + MIN_SPD;

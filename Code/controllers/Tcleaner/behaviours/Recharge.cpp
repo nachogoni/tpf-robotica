@@ -20,10 +20,9 @@
 
 namespace behaviours {
 
-	Recharge::Recharge(robotapi::IRobot * robot, robotapi::IDifferentialWheels * wheels, WorldInfo * wi, robotapi::IBattery * robotBatt, robotapi::IBattery * pcBatt, std::vector<robotapi::IDistanceSensor*> & fss) : AbstractBehaviour("Recharge"){
+	Recharge::Recharge(robotapi::IRobot * robot, robotapi::IDifferentialWheels * wheels, robotapi::IBattery * robotBatt, robotapi::IBattery * pcBatt, std::vector<robotapi::IDistanceSensor*> & fss) : AbstractBehaviour("Recharge"){
        	this->robotBattery = robotBatt;
 		this->pcBattery = pcBatt;
-		this->wi = wi;
 		this->robot = robot;
 		this->wheels = wheels;
 		this->fss = &fss;

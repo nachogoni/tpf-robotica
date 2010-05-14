@@ -61,7 +61,7 @@ void GarbageCleaner::initializeSensors(){
 		ids->enable(TIME_STEP);
 		dss.push_back(ids);
 	}
-/*
+
 	for( int i=0 ; i < FLOOR_SENSORS ; i++ ){
 		std::stringstream sstr;
 		sstr << "fs" << i;
@@ -69,19 +69,19 @@ void GarbageCleaner::initializeSensors(){
 		fds->enable(TIME_STEP);
 		fss.push_back(fds);
 	}
-*/
+
 	wheels = &myIRobot.getDifferentialWheels("df");
 	wheels->enableEncoders(TIME_STEP);
 
 /*
 	servoBottom = &myIRobot.getServo("servo0");
 	servoBottom->enablePosition(TIME_STEP);
-	*/
+ */
 	servoFront = &myIRobot.getServo("servo2");
 	servoFront->enablePosition(TIME_STEP);
 //	servoFront->setForce(90);
-	servoFront->setMotorForce(90);
-	servoFront->setVelocity(4);
+//	servoFront->setMotorForce(90);
+//	servoFront->setVelocity(4);
 	servoRear = &myIRobot.getServo("servo1");
 	servoRear->enablePosition(TIME_STEP);
 
@@ -98,19 +98,6 @@ void GarbageCleaner::initializeSensors(){
 	camera = &myIRobot.getCamera("camera0");
 	camera->enable(TIME_STEP);
 
-/*
-	for( int i=0 ; i < FLOOR_SENSORS ; i++ ){
-		std::stringstream sstr;
-		sstr << "fs" << i;
-		robotapi::IDistanceSensor * ifs = &myIRobot.getDistanceSensor(sstr.str());
-		ifs->enable(TIME_STEP);
-		fss->push_back(ifs);
-	}
-
-
-
-
-*/
 	
 }
 
@@ -132,8 +119,7 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 	ab = new behaviours::CollectGarbage( gr, &myIRobot, trashBin, wheels, wi, servoFront );
 	myAbstractBehaviours.push_back(ab);
 
-/*
-	ab = new behaviours::UnloadGarbage( trashBin , servoRear );
+	ab = new behaviours::GoToDisposal( wi, &myIRobot, trashBin , wheels, fss , servoRear );
 	myAbstractBehaviours.push_back(ab);
 
 	ab = new behaviours::GoToBaseGroup( wi, &myIRobot, robotBattery , pcBattery , wheels, fss );
@@ -141,7 +127,7 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 
 	ab = new behaviours::AvoidObstacle(wheels,dss);
 	myAbstractBehaviours.push_back(ab);
-*/
+
 }
 
 void GarbageCleaner::cleanGarbage()
@@ -149,6 +135,9 @@ void GarbageCleaner::cleanGarbage()
 // section -64--88-1-100--1230920c:125cb7ecd6f:-8000:0000000000000DBA begin
 {
     std::list<behaviours::AbstractBehaviour*>::iterator it;
+
+	for ( int i = 0; i < 20 ; i++ )
+		this->myIRobot.step(TIME_STEP);
 
 	while ( 1 ){
 		std::list<behaviours::AbstractBehaviour*>::iterator it;
