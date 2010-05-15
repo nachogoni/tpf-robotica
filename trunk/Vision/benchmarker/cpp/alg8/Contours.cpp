@@ -96,15 +96,16 @@ void Contours::printContour(int depthLevel, CvScalar color,IplImage * dst){
 int Contours::areaFilter(double min_area,double max_area){
 	double area;
 	area=fabs(cvContourArea(this->c,CV_WHOLE_SEQ));
+	 
 	
 	int zone=getPointZone(this->x,this->y);
 	
-	//~ double  minAreaByZone[]={0,80,40,20,10};
+	double  minAreaByZone[]={0,80,40,20,10};
 	//double  maxAreaByZone[]={0,800,400,200,100};
-	//~ double  maxAreaByZone[]={0,800,550,200,50};
+	double  maxAreaByZone[]={0,800,550,200,50};
 	
-	//~ return area>minAreaByZone[zone] && area<maxAreaByZone[zone];
-	return area>50 && area<1000;
+	return area>minAreaByZone[zone] && area<maxAreaByZone[zone];
+	//~ return area>50 && area<1000;
 	
 }
 
