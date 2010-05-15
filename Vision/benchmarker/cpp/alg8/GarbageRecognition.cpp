@@ -158,11 +158,6 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	}
 	cvAnd(h_plane, v_plane, andImage);
 	cvAnd(h_plane, s_plane, andSimage);
-	//~ cvOr(andSimage,andImage,andSIImage);
-	
-	//~ cvShowImage("andImage",andImage);
-	//~ cvShowImage("andSimage",andSimage);
-	//~ cvShowImage("andand",andSIImage);
 	
 	
 	//apply morphologic operations
@@ -175,44 +170,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	cvErode(morphImage,morphImage,element,MORPH_ERODE_ITER);
 	
 	
-	//~ cvShowImage("morphImage",morphImage);
-	
-	
-	//cvEqualizeHist(andSimage,andSequalizedImage);
-	//cvShowImage("andSequalizedImage",andSequalizedImage);
-	
-	
-	//revisar parametros
-	//cvAdaptiveThreshold( andImage, andSThreshImage, 255,
-    // CV_ADAPTIVE_THRESH_GAUSSIAN_C,CV_THRESH_BINARY_INV,9, 5 );
-                          
-	//cvThreshold(andSequalizedImage,andSThreshImage,254,255,CV_THRESH_BINARY);
-	//cvShowImage("andSThreshImage",andSThreshImage);
-	
-
-	//~ //apply smooth gaussian-filter
-	//~ cvSmooth(andImage,smoothImage,CV_GAUSSIAN,3,3,0,0);
-	//~ cvNamedWindow("smoothImage",CV_WINDOW_AUTOSIZE);
-	//~ cvShowImage("smoothImage",smoothImage);
-	
-	
-	//cvEqualizeHist(threshImage,equalizedImage);
-	
 	cvThreshold(morphImage,threshImage,120,255,CV_THRESH_BINARY);
-	//cvThreshold(andSimage,threshImage,80,255,CV_THRESH_BINARY);
-	//~ cvShowImage("threshImage",threshImage);
-	
-	//apply morphologic operations
-	element = cvCreateStructuringElementEx( MORPH_KERNEL_SIZE*2+1,
-		MORPH_KERNEL_SIZE*2+1, MORPH_KERNEL_SIZE, MORPH_KERNEL_SIZE,
-		CV_SHAPE_RECT, NULL);
-
-	
-	//cvDilate(threshImage,morphImage,element,MORPH_DILATE_ITER);
-	//cvErode(morphImage,morphImage,element,MORPH_ERODE_ITER);
-	
-	
-	//~ cvShowImage("morphImage",morphImage);
 	
 	//get all contours
 	contours=myFindContours(threshImage);
