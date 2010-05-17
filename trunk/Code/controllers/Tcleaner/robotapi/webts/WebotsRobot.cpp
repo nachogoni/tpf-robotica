@@ -9,6 +9,7 @@
 #include <robotapi/webts/WebotsTrashBin.h>
 #include <webots/Camera.hpp>
 #include <webots/Robot.hpp>
+#include <utils/ArenaGridSlot.h>
 
 namespace robotapi {
 namespace webts {
@@ -23,6 +24,7 @@ namespace webts {
 		std::string s = "HOLA";
 		this->pcBattery = new WebotsPCBattery(s,*wdt);
 		this->robotBattery = new WebotsBattery(*robot,s,*wdt);
+		this->ag = this->wi->getArenaGrid();
 	}
 
     std::string WebotsRobot::getName(){
@@ -86,6 +88,9 @@ namespace webts {
 	void WebotsRobot::step(int ms){
 		robot->step(ms);
 		df->computeOdometry();
+		utils::ArenaGridSlot * ags = this->ag->getSlotAt(df->getPosition());
+		printf("Current Slot: %g - %g --> Timestamp: %ld\n",ags->getX(),ags->getZ(),ags->getTimeStamp());
+		ags->setTimeStamp();
 /*
 		printf("Current Position : %g %g %g\n",df->getPosition()->getX(),df->getPosition()->getY(),df->getOrientation());
 		printf("Robot Battery : %g - PC Battery : %g\n",robotBattery->getValue(),pcBattery->getValue());
