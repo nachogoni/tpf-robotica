@@ -1,7 +1,7 @@
 [Project]
 FileName=Tcleaner.dev
 Name=Tcleaner
-UnitCount=145
+UnitCount=147
 Type=1
 Ver=1
 ObjFiles=
@@ -1489,6 +1489,26 @@ BuildCmd=
 
 [Unit145]
 FileName=utils\ArenaGrid.h
+CompileCpp=1
+Folder=utils
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit146]
+FileName=utils\ArenaGridSlot.h
+CompileCpp=1
+Folder=utils
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit147]
+FileName=utils\ArenaGridSlot.cpp
 CompileCpp=1
 Folder=utils
 Compile=1
