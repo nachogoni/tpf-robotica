@@ -11,6 +11,7 @@ CPP_SOURCES = tcleaner.cpp GarbageCleaner.cpp WorldInfo.cpp \
 							utils/MinimalBoundingRectangle.cpp utils/Garbage.cpp utils/GarbageRecognition.cpp \
 							utils/Contours.cpp utils/Histogram.cpp \
 							utils/MyLine.cpp utils/MyPoint.cpp utils/MyAngle.cpp utils/MyWall.cpp \
+							utils/ArenaGrid.cpp utils/ArenaGridSlot.cpp \
 							robotapi/DifferentialWheelsWOdometry.cpp \
 							robotapi/real/RealBattery.cpp robotapi/real/RealTrashBin.cpp robotapi/real/RealPCBattery.cpp \
 							robotapi/real/RealCamera.cpp robotapi/real/RealDevice.cpp robotapi/real/RealDeviceTag.cpp \

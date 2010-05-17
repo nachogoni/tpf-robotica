@@ -23,8 +23,10 @@ WorldInfo::WorldInfo()
 	this->readCameraImageSize(pFile);
 	this->readDistanceBetweenWheelsFactor(pFile);
 	this->readWheelsFactors(pFile);
+	this->readArenaBoundaries(pFile);
+	this->readGridResolutions(pFile);
+	this->arena = new utils::ArenaGrid(this->arenaMinX,this->arenaMinZ,this->arenaMaxX,this->arenaMaxZ,this->resolutionX,this->resolutionZ);
 	fclose(pFile);
-
 }
 
 void WorldInfo::readWalls(FILE * f){
@@ -114,6 +116,15 @@ void WorldInfo::readCameraImageSize(FILE * f){
 	printf("%d:%d\n",this->cameraImageWidth,this->cameraImageHeight);
 }
 
+void WorldInfo::readArenaBoundaries(FILE * f){
+	fscanf (f, "%lf:%lf:%lf:%lf\n", &this->arenaMinX, &this->arenaMinZ, &this->arenaMaxX, &this->arenaMaxZ);
+	printf("%g:%g:%g:%g\n",this->arenaMinX, this->arenaMinZ, this->arenaMaxX, this->arenaMaxZ);
+}
+
+void WorldInfo::readGridResolutions(FILE * f){
+	fscanf (f, "%d:%d\n", &this->resolutionX,&this->resolutionZ);
+	printf("%d:%d\n",this->resolutionX,this->resolutionZ);
+}
 
 utils::MyLine * WorldInfo::getCurrentLine(){
 	// TODO Make calculations acording to the actual position
@@ -186,3 +197,6 @@ double WorldInfo::getCameraY(){
 	return this->cameraY;
 }
 
+utils::ArenaGrid * WorldInfo::getArenaGrid(){
+	return this->arena;
+}

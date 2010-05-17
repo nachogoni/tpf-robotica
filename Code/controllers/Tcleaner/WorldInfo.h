@@ -4,6 +4,7 @@
 #include <utils/MyLine.h>
 #include <utils/MyWall.h>
 #include <utils/MyPoint.h>
+#include <utils/ArenaGrid.h>
 #include <stdio.h>
 #include <list>
 #define CONFIG_FILE "worldInfo.cfg"
@@ -31,6 +32,7 @@ class WorldInfo {
 		double getCameraAngle();
 		int getCameraImageWidth();
 		int getCameraImageHeight();
+		utils::ArenaGrid * getArenaGrid();
 
 	private:
 		std::list< utils::MyWall * > walls;
@@ -50,9 +52,13 @@ class WorldInfo {
 		double cameraAngle;
 		int cameraImageHeight;
 		int cameraImageWidth;
-
-
-
+		double arenaMinX;
+		double arenaMinZ;
+		double arenaMaxX;
+		double arenaMaxZ;
+		int resolutionX;
+		int resolutionZ;
+		utils::ArenaGrid * arena;
 
 		void readWalls(FILE * f);
 		void readLines(FILE * f);
@@ -67,6 +73,8 @@ class WorldInfo {
 		void readCameraPosition(FILE * f);
 		void readCameraAngle(FILE * f);
 		void readCameraImageSize(FILE * f);
+		void readArenaBoundaries(FILE * f);
+		void readGridResolutions(FILE * f);
 		
 };
 

@@ -4,6 +4,7 @@
 #include <robotapi/IRobot.h>
 #include <webots/DifferentialWheels.hpp>
 #include <WorldInfo.h>
+#include <utils/ArenaGrid.h>
 
 namespace robotapi {
 namespace webts {
@@ -49,6 +50,7 @@ public:
 		IBattery * robotBattery;
 		IBattery * pcBattery;
 		ITrashBin * tb;
+		utils::ArenaGrid * ag;
 
     };
 } /* End of namespace robotapi::webts */
