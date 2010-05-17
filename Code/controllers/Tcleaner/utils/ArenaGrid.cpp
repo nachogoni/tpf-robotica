@@ -16,8 +16,7 @@ ArenaGrid::ArenaGrid(double arenaMinX, double arenaMinZ, double arenaMaxX, doubl
 	
 	int maxI = this->getI(arenaMaxX);
 	int maxJ = this->getJ(arenaMaxZ);
-	
-	// TODO!!! CALL TIME!
+
 	time_t timestamp = time(NULL);
 	for( int i = 0 ; i < maxI ; i++ ){
 		for( int j = 0 ; j < maxJ ; j++ ){
