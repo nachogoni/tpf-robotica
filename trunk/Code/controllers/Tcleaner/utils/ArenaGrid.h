@@ -4,6 +4,7 @@
 #define utils_ArenaGrid_h
 #include <iostream>
 #include <map>
+#include <vector>
 #include <utils/ArenaGridSlot.h>
 #include <utils/MyPoint.h>
 
@@ -22,7 +23,7 @@ class ArenaGrid
 		~ArenaGrid();
 
 		utils::ArenaGridSlot * getSlotAt(utils::MyPoint * p);
-
+		std::vector<utils::ArenaGridSlot *> getNeighboursAt(utils::MyPoint * p);
 	private:
 		double dx;
 		double dz;

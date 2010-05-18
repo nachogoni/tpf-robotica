@@ -6,7 +6,6 @@ WorldInfo {
     "Date: 01 SEP 2006"
   ]
   title "E-puck"
-  displayRefresh 16
 }
 Viewpoint {
   fieldOfView 1.6454
@@ -2107,17 +2106,6 @@ DEF f_Wall Solid {
   translation -0.940864 0.05 0.10426
   rotation 0 1 0 3.14159
   children [
-    Solid {
-      translation 0.04 0 0
-      children [
-        DEF Base_Connector Shape {
-          geometry Box {
-            size 0.09 0.02 0.02
-          }
-        }
-      ]
-      boundingObject USE Base_Connector
-    }
     DEF f_WALL_SHAPE Shape {
       appearance USE WALL_APPEARANCE
       geometry Box {

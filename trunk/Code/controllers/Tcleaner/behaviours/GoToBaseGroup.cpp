@@ -4,6 +4,10 @@
 #include "GarbageCleaner.h"
 #include <math.h>
 
+#define BASE_X -0.874047
+#define TOLE 0.2
+#define BASE_POSITION (BASE_X+TOLE)
+
 namespace behaviours {
 
 // class constructor
@@ -66,12 +70,13 @@ void GoToBaseGroup::action(){
 
 	}
 	following = 1;
-	if ( !this->inLine() && fabs( this->wheels->getOrientation() - PI/2 ) < ORIENTATION_TOLE ){
+//	if ( !this->inLine() && fabs( this->wheels->getOrientation() - PI/2 ) < ORIENTATION_TOLE ){
+	double xpos = this->wheels->getPosition()->getX();
+	if ( !this->inLine() && xpos < BASE_POSITION ){
 	    printf("Recharging\n");
 		this->myBehaviours[3]->action();
 		following = 0;
-	}
-	else{
+	}else{
 	    this->myBehaviours[2]->action();
 	    printf("Following Line\n");
 	}

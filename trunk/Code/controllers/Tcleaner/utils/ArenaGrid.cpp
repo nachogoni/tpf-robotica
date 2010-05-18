@@ -47,4 +47,21 @@ utils::ArenaGridSlot * ArenaGrid::getSlotAt(utils::MyPoint * p){
 	return slot;
 }
 
+/* i, j-1 ; i, j+1 ; i-1, j ; i+1, j
+	Returns four neighbours, the ones at the left, right, top and bottom, in that order
+	Some of they may be NULL, indicating that neighbour is out of the arena
+*/
+std::vector<utils::ArenaGridSlot *> ArenaGrid::getNeighboursAt(utils::MyPoint * p){
+	int i = this->getI(p->getX());
+	int j = this->getJ(p->getY());
+	std::vector<utils::ArenaGridSlot *> out;
+
+	out.push_back(this->slots[i][j-1]);
+	out.push_back(this->slots[i][j+1]);
+	out.push_back(this->slots[i-1][j]);
+	out.push_back(this->slots[i+1][j]);
+
+	return out;
+}
+
 }
