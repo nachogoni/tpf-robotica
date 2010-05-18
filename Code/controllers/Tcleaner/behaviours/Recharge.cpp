@@ -7,10 +7,10 @@
 #define BASE_SPD 20.0
 #define R_ORIENTATION_TOLE 0.1
 
-#define BACKWARD_STEPS 75
+#define BACKWARD_STEPS 40
 #define BACKWARD_SPD 100.0
 
-#define FORWARD_STEPS 25
+#define FORWARD_STEPS 35
 #define FORWARD_SPD 100.0
 
 #define BASE_X -0.847015
@@ -39,8 +39,8 @@ namespace behaviours {
 		// and wait till the battery is full
 		double currentAngle = this->wheels->getOrientation();
 
+   		this->wheels->setSpeed(FORWARD_SPD,FORWARD_SPD);
 		for( int i = 0 ; i < FORWARD_STEPS ; i ++ ){
-      		this->wheels->setSpeed(FORWARD_SPD,FORWARD_SPD);
 			this->robot->step(TIME_STEP);
 		}
 
@@ -84,13 +84,16 @@ namespace behaviours {
 			this->robot->step(TIME_STEP);
 		}
 
-		// Go back a little bit in order to get to the base
+		// Go back a little bit till the sensor is not on the line anymore
    		this->wheels->setSpeed(-BACKWARD_SPD,-BACKWARD_SPD);
-		for( int i = 0 ; i < BACKWARD_STEPS ; i ++ ){
-
+		while( (*this->fss).at(1)->getValue() < LINE_THRESHOLD){
 			this->robot->step(TIME_STEP);
 		}
 		
+		for( int i = 0 ; i < BACKWARD_STEPS; i ++ ){
+			this->robot->step(TIME_STEP);
+		}
+
 		this->wheels->setSpeed(0,0);
 		while( !this->robotBattery->isFull() || !this->pcBattery->isFull() )
 			this->robot->step(TIME_STEP);

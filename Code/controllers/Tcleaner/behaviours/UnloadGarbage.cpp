@@ -1,15 +1,16 @@
 #include "UnloadGarbage.h"
 #include "GoToBaseGroup.h"
 #include "GarbageCleaner.h"
+#include <math.h>
 
-#define TIME_STEP 64
+#define TIME_STEP 32
 #define BASE_SPD 20.0
 #define R_ORIENTATION_TOLE 0.1
 
 #define BACKWARD_STEPS 75
 #define BACKWARD_SPD 100.0
 
-#define FORWARD_STEPS 25
+#define FORWARD_STEPS 45
 #define FORWARD_SPD 100.0
 
 #define BASE_X -0.847015
@@ -17,6 +18,7 @@
 #define BASE_ANGLE (3.0*PI/2.0)
 
 #define WAIT_STEPS 80
+#define E_PUCK_DIAMETER 0.052
 
 namespace behaviours {
 
@@ -97,8 +99,21 @@ namespace behaviours {
 
 			// Go forward a little bit
 			this->wheels->setSpeed(BASE_SPD,BASE_SPD);
-			for( int i = 0; i < WAIT_STEPS ; i++ )
+			double distanceCovered = 0;
+		
+			utils::MyPoint * lastPosition = this->wheels->getPosition();
+			double initialX = lastPosition->getX();
+			double initialY = lastPosition->getY();
+		
+			double currentX, currentY;
+			utils::MyPoint * currentPosition;
+			while ( distanceCovered < E_PUCK_DIAMETER ){
 				this->robot->step(TIME_STEP);
+				currentPosition = this->wheels->getPosition();
+				currentX = currentPosition->getX();
+				currentY = currentPosition->getY();
+				distanceCovered = sqrt( pow(currentX-initialX,2) + pow(currentY-initialY,2) );
+			}
 
 			// Close Gate!
 			this->gate->setPosition(0);

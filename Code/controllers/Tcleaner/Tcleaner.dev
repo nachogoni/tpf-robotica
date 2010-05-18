@@ -1,7 +1,7 @@
 [Project]
 FileName=Tcleaner.dev
 Name=Tcleaner
-UnitCount=147
+UnitCount=145
 Type=1
 Ver=1
 ObjFiles=
@@ -26,7 +26,7 @@ UseCustomMakefile=0
 CustomMakefile=
 IncludeVersionInfo=0
 SupportXPThemes=0
-CompilerSet=1
+CompilerSet=0
 CompilerSettings=0000000000000001000000
 
 [Unit1]
@@ -1438,26 +1438,6 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit141]
-FileName=utils\MyVector.cpp
-CompileCpp=1
-Folder=utils
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit140]
-FileName=utils\MyVector.h
-CompileCpp=1
-Folder=utils
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=
-
-[Unit143]
 FileName=behaviours\GoToGarbage.cpp
 CompileCpp=1
 Folder=behaviours
@@ -1467,7 +1447,7 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit142]
+[Unit140]
 FileName=behaviours\GoToGarbage.h
 CompileCpp=1
 Folder=behaviours
@@ -1477,7 +1457,17 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
-[Unit144]
+[Unit143]
+FileName=utils\ArenaGrid.h
+CompileCpp=1
+Folder=utils
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit142]
 FileName=utils\ArenaGrid.cpp
 CompileCpp=1
 Folder=utils
@@ -1487,8 +1477,18 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=
 
+[Unit144]
+FileName=utils\ArenaGridSlot.h
+CompileCpp=1
+Folder=utils
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
 [Unit145]
-FileName=utils\ArenaGrid.h
+FileName=utils\ArenaGridSlot.cpp
 CompileCpp=1
 Folder=utils
 Compile=1

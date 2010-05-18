@@ -107,7 +107,7 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 
     behaviours::AbstractBehaviour * ab;
 
-	ab = new behaviours::Wander(wheels);
+	ab = new behaviours::Wander(wi, wheels);
 	myAbstractBehaviours.push_back(ab);
 
 	ab = new behaviours::FocusGarbage( gr, wheels );
