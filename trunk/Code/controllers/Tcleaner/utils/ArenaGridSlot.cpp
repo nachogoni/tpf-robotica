@@ -10,7 +10,14 @@ ArenaGridSlot::ArenaGridSlot(double x, double z, time_t timestamp)
 {
 	this->x = x;
 	this->z = z;
-	memcpy(&this->timestamp,&timestamp,sizeof(time_t));
+	this->timestamp = timestamp;
+}
+
+ArenaGridSlot::ArenaGridSlot(utils::ArenaGridSlot * ags, int dir){
+	this->x = ags->getX();
+	this->z = ags->getZ();
+	this->timestamp = ags->getTimeStamp();
+	this->dir = dir;
 }
 
 time_t ArenaGridSlot::getTimeStamp(){
@@ -31,6 +38,10 @@ double ArenaGridSlot::getX(){
 
 double ArenaGridSlot::getZ(){
 	return this->z;
+}
+
+int ArenaGridSlot::getDir(){
+	return this->dir;
 }
 
 // class destructor

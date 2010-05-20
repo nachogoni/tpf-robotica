@@ -89,8 +89,10 @@ namespace webts {
 		robot->step(ms);
 		df->computeOdometry();
 		utils::ArenaGridSlot * ags = this->ag->getSlotAt(df->getPosition());
-		printf("Current Slot: %g - %g --> Timestamp: %ld\n",ags->getX(),ags->getZ(),ags->getTimeStamp());
-		ags->setTimeStamp();
+		if ( ags != NULL ){
+			printf("Current Slot: %g - %g --> Timestamp: %ld\n",ags->getX(),ags->getZ(),ags->getTimeStamp());
+			ags->setTimeStamp();
+		}
 /*
 		printf("Current Position : %g %g %g\n",df->getPosition()->getX(),df->getPosition()->getY(),df->getOrientation());
 		printf("Robot Battery : %g - PC Battery : %g\n",robotBattery->getValue(),pcBattery->getValue());

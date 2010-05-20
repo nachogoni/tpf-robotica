@@ -25,7 +25,7 @@ class Wander : public AbstractBehaviour {
 		WorldInfo * wi;
 		robotapi::IDifferentialWheels* wheels;
 
-		int getOldestSlot(std::vector<utils::ArenaGridSlot *> nb);
+		utils::ArenaGridSlot * getOldestSlot(std::vector<utils::ArenaGridSlot *> nb);
 	};
 
 } /* End of namespace behaviours */

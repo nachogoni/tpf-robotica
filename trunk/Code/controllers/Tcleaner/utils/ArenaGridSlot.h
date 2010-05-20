@@ -15,6 +15,9 @@ class ArenaGridSlot
 	public:
 		// class constructor
 		ArenaGridSlot( double x, double z, time_t timestamp);
+
+		ArenaGridSlot( utils::ArenaGridSlot * ags, int dir);
+
 		// class destructor
 		~ArenaGridSlot();
 
@@ -23,11 +26,12 @@ class ArenaGridSlot
 		void setTimeStamp(time_t timestamp);
 		double getX();
 		double getZ();
-
+		int getDir();
 	private:
 		double x;
 		double z;
 		time_t timestamp;
+		int dir;
 };
 
 }
