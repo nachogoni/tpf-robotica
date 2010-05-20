@@ -9,8 +9,8 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 1.6454
-  orientation -0.190375 0.893071 0.407655 2.3514
-  position -0.139408 0.193525 -0.53016
+  orientation 0.02101 0.998363 0.0531943 3.89357
+  position -0.0781081 0.164315 -0.94855
 }
 PointLight {
   intensity 0.5
@@ -185,7 +185,7 @@ DEF short_rock_5 Solid {
   boundingObject USE short_brick_1_geometry
 }
 DEF E_PUCK DifferentialWheels {
-  translation -0.251646 0 -0.179126
+  translation 0.0658777 0 -0.783459
   children [
     Servo {
       translation 0 0.0412 0.03
@@ -232,7 +232,7 @@ DEF E_PUCK DifferentialWheels {
       }
     }
     Servo {
-      translation 0 0.035 -0.04
+      translation 0 0.035 -0.035
       rotation 1 0 0 0
       children [
         Solid {
@@ -256,7 +256,7 @@ DEF E_PUCK DifferentialWheels {
         mass 0.005
         orientation 0 1 0 0
       }
-      maxVelocity 5
+      maxVelocity 0.5
       maxForce 100
     }
     DEF EPUCK_LEFT_WHEEL Solid {
@@ -1955,7 +1955,7 @@ DEF E_PUCK DifferentialWheels {
   boundingObject Group {
     children [
       DEF ParedIzq Transform {
-        translation 0.0125 0.0125005 -0.005
+        translation 0.0125 0.0125005 0
         children [
           Shape {
             appearance Appearance {
@@ -1965,13 +1965,13 @@ DEF E_PUCK DifferentialWheels {
               }
             }
             geometry DEF INSIDE_WALL_BOX Box {
-              size 0.0001 0.025 0.07
+              size 0.0001 0.025 0.06
             }
           }
         ]
       }
       DEF ParedDer Transform {
-        translation -0.0125 0.0125005 -0.005
+        translation -0.0125 0.0125005 0
         children [
           Shape {
             appearance Appearance {
@@ -1992,7 +1992,7 @@ DEF E_PUCK DifferentialWheels {
   }
   controller "Tcleaner"
   battery [
-    5000, 18000, 600
+    11000, 18000, 600
   ]
   cpuConsumption 10
   motorConsumption 20

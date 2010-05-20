@@ -35,10 +35,10 @@ CPP_SOURCES = tcleaner.cpp GarbageCleaner.cpp WorldInfo.cpp \
 #
 # if your controller needs additional libraries,add them to the
 # existing LIBRARIES variable:
-#LIBRARIES= -lCppController  -L"C:/Archivos de programa/OpenCV/lib" -L"C:/Archivos de programa/OpenCV/otherlibs/highgui" -lcxcore -lcv -lcvaux -lhighgui -lml -g3
+#LIBRARIES= -lCppController  -L"C:/Program Files/OpenCV/lib" -L"C:/Program Files/OpenCV/otherlibs/highgui" -lcxcore -lcv -lcvaux -lhighgui -lml -g3
 #LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/OpenCV2.0/lib"
 
-LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/Archivos de programa/OpenCV/lib"
+LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/Program Files/OpenCV/lib"
 
 #
 # if some special CFLAGS need to be passed, for example to find include
@@ -46,10 +46,10 @@ LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/Archivos de pr
 
 #CFLAGS= -g -Wall -I"C:/tpf-robotica/Code/controllers/TCleaner" -I"C:\OpenCV2.0\include\opencv"
 
-CFLAGS= -g -Wall -I"C:\projects\tpf-robotica\Code\controllers\Tcleaner" -I"C:/Archivos de programa/OpenCV/include/opencv" 
+CFLAGS= -g -Wall -I"C:\projects\tpf-robotica\Code\controllers\Tcleaner" -I"C:/Program Files/OpenCV/include/opencv" 
 
-#-L"C:/Archivos de Programa/OpenCV/lib" -lcxcore -lcv -lcvaux -lhighgui -lml -g3
-#-L"C:/Archivos de programa/OpenCV/lib" 
+#-L"C:/Program Files/OpenCV/lib" -lcxcore -lcv -lcvaux -lhighgui -lml -g3
+#-L"C:/Program Files/OpenCV/lib" 
 # you may want, for example, to use the C API in your C++ program by adding:
 # CFLAGS=-I"$(WEBOTS_HOME)/include/controller/c"
 
