@@ -33,7 +33,7 @@ namespace behaviours {
 	}
 
 	utils::ArenaGridSlot * Wander::getOldestSlot(std::vector<utils::ArenaGridSlot *> nb){
-		unsigned int i = 0;
+		unsigned int i = 1;
 		utils::ArenaGridSlot * oldestSlot = nb.at(0);
 		time_t oldestTimeStamp = oldestSlot->getTimeStamp();
 		while( i < nb.size() ){
