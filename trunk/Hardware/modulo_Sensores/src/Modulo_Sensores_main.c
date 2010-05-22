@@ -19,6 +19,8 @@
 #define SENSOR_ON	0
 #define SENSOR_OFF	1
 
+#define SAMPLES_DEFAULT 5
+
 // Ancho del pulso que se debe enviar al sensor de ultrasonido como INIT - CAMBIARLO SEGUN CORRESPONDA
 #define ULTRASONIC_INIT_PULSE_WIDTH_US	15
 
@@ -177,6 +179,9 @@ int state;
 // Vector donde se almacenan los valores de los sensores
 unsigned long values[6];
 
+// Cantidad de muestras a tomar por sensor
+int samples;
+
 // Mascara que ignora ciertos sensores
 int sensorMask;
 
@@ -316,6 +321,9 @@ void init()
 	values[3] = 0x0000;
 	values[4] = 0x0000;
 	values[5] = 0x0000;
+
+	// Muestras iniciales
+	samples = SAMPLES_DEFAULT;
 	
 	// Inicializa la mascara -> todos habilitados (0x3F)
 	sensorMask = 0x3F;
@@ -605,7 +613,7 @@ void readSensors(int sensors)
 	values[3] = 0;
 	values[4] = 0;
 	
-	for (i = 0; i < 4; i++)
+	for (i = 0; i < samples; i++)
 	{	
 		// Sensor1
 		if (bit_test(sensors, 0) == 1)
@@ -668,11 +676,11 @@ void readSensors(int sensors)
 		}
 	}
 	
-	values[0] /= 4;
-	values[1] /= 4;
-	values[2] /= 4;
-	values[3] /= 4;
-	values[4] /= 4;
+	values[0] /= samples;
+	values[1] /= samples;
+	values[2] /= samples;
+	values[3] /= samples;
+	values[4] /= samples;
 	
 	return;
 }	
@@ -897,6 +905,7 @@ void doCommand(struct command_t * cmd)
 			requestFrom = 	response.to;
 			requestCmd = response.cmd;
 			sendResponse = false;
+			samples = SAMPLES_DEFAULT;
 		break;
  		case DISTANCE_SENSOR_GET_ONE_VALUE:
 			/* Obtiene el valor de la entrada del sensor indicado. Igual al comando 8.5 pero
@@ -920,6 +929,7 @@ void doCommand(struct command_t * cmd)
 			requestFrom = 	response.to;
 			requestCmd = response.cmd;
 			sendResponse = false;
+			samples = 1;
 		break;
 		case DISTANCE_SENSOR_ALARM_ON_STATE:
 			/* Cuando un switch esta presente en el ID: 0x05, establece si se desea o no
