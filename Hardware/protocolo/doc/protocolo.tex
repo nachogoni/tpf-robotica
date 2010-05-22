@@ -775,8 +775,8 @@ Puede ser ante cualquier cambio o sobre un flanco ascendente o descendente.
 	\item{DATO:} Valor de 0x00 a 0x05 con el $ID$ del switch que se est\'a configurando.
 	Valor entre 0x00 y 0x03 con el tipo de cambio ante el cual generar la alarma.
 	Con un 0x00 ignora cualquier cambio en el switch.
-	Se utiliza 0x01 para que cualquier cambio en el switch genere el mensaje, 
-	0x02 para que sea s\'olo ante un flanco ascendente y 0x03 para que sea s\'olo ante un flanco descendente.
+	Se utiliza 0x01 para que sea ante un flanco ascendente y 0x02 para que sea s\'olo ante un flanco descendente
+	y 0x03 para que cualquier cambio en el switch genere el mensaje (opcional). 
 
 \end{itemize}
 
@@ -784,6 +784,27 @@ Puede ser ante cualquier cambio o sobre un flanco ascendente o descendente.
 
 \begin{itemize}
 	\item{COMANDO:} 0xCB
+	\item{DATO:} vac\'io
+\end{itemize}
+
+\subsection{SWITCH ALARM}
+\label{switch_alarm_servos}
+
+Comando enviado desde la placa a la controladora principal informando que fue satisfecha la condici\'on de la alarma.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x4C
+	\item{DATO:} Valor de 0x00 a 0x05 con el $ID$ del switch que provoc\'o el comando.
+	Valor entre 0x00 y 0x03 con el tipo de cambio configurado y el estado actual, 0x00 para un estado bajo y 
+	0x01 para un estado alto.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0xCC
 	\item{DATO:} vac\'io
 \end{itemize}
 
@@ -945,15 +966,34 @@ Puede ser ante cualquier cambio o sobre un flanco ascendente o descendente.
 	\item{COMANDO:} 0x46
 	\item{DATO:} Valor entre 0x00 y 0x03 con el tipo de cambio ante el cual generar la alarma.
 	Con un 0x00 ignora cualquier cambio en el switch.
-	Se utiliza 0x01 para que cualquier cambio en el switch genere el mensaje, 
-	0x02 para que sea s\'olo ante un flanco ascendente y 0x03 para que sea s\'olo ante un flanco descendente.
-
+	Se utiliza 0x01 para que sea ante un flanco ascendente y 0x02 para que sea s\'olo ante un flanco descendente
+	y 0x03 para que cualquier cambio en el switch genere el mensaje (opcional). 
 \end{itemize}
 
 \subsubsection*{Respuesta al comando}
 
 \begin{itemize}
 	\item{COMANDO:} 0xC6
+	\item{DATO:} vac\'io
+\end{itemize}
+
+\subsection{SWITCH ALARM}
+\label{switch_alarm_ds}
+
+Comando enviado desde la placa a la controladora principal informando que fue satisfecha la condici\'on de la alarma.
+
+\subsubsection*{Comando enviado}
+
+\begin{itemize}
+	\item{COMANDO:} 0x47
+	\item{DATO:} Valor entre 0x00 y 0x03 con el tipo de cambio configurado y el estado actual, 0x00 para un estado bajo y 
+	0x01 para un estado alto.
+\end{itemize}
+
+\subsubsection*{Respuesta al comando}
+
+\begin{itemize}
+	\item{COMANDO:} 0xC7
 	\item{DATO:} vac\'io
 \end{itemize}
 

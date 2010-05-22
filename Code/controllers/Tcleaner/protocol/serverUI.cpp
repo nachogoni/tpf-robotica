@@ -121,55 +121,40 @@ cmd_type commands[] = {
     {"dc", "dcStressAlarm", cmd_dcStressAlarm, "Indicates main controller of extreme consumption on the motor", "\%hd consumption that raise alarm"},
     {"dc", "dcShutDownAlarm", cmd_dcShutDownAlarm, "Shutdowns dcMotor stress alarm", "\%hd consumption that raise alarm"},   
     {"dc", "dcGetSpeed", cmd_dcGetSpeed, "Get motor speed in counts per second", ""},
+    // Commands for DistanceSensor (ds)
+    {"ds", "dsOn", cmd_dsOn, "Turn on a sensor", "\%d for the sensor ID"},
+    {"ds", "dsOff", cmd_dsOff, "Turn off a sensor", "\%d for the sensor ID"},
+    {"ds", "dsEnable", cmd_dsEnable, "Set the sensors mask for the next reads", "\%hd representing each bit a sensor ID (LSB)"},
+    {"ds", "dsGetStatus", cmd_dsStatus, "Get the sensors mask", ""},
+    {"ds", "dsGetValue", cmd_dsGetValue, "Get an average value for each sensor", "\%hd representing each bit a sensor ID (LSB)"},
+    {"ds", "dsGetOneValue", cmd_dsGetOneValue, "Get just one value for each sensor", "\%hd representing each bit a sensor ID (LSB)"},
+    {"ds", "dsAlarmOn", cmd_dsAlarmOn, "Set the alarm to rising or falling edge", "\%d for the alarm status where 0 means off, 1 for rising edge, 2 for falling edge and 3 for any change"},
+    {"ds", "dsAlarmCommand", cmd_dsAlarmCommand, "Alarm command on same state", "\%d for the alarm status to be sent. 0 for off, 1 for rising edge, 2 for falling edge and 3 for any change"},
     // Commands for ServoMotor (sm)
     {"sm", "smSetPos", cmd_smSetPos, "Set servo position", ""},
-    {"sm", "smSetAllPos", cmd_smSetAllPos, "", ""},
-    {"sm", "smGetPos", cmd_smGetPos, "", ""},   
-    {"sm", "smGetAllPos", cmd_smGetAllPos, "", ""},
-    {"sm", "smSetSpeed", cmd_smSetSpeed, "", ""}, 
-    {"sm", "smSetAllSpeed", cmd_smSetAllSpeed, "", ""},
-    {"sm", "smGetSpeed", cmd_smGetSpeed, "", ""},   
-    {"sm", "smGetAllSpeed", cmd_smGetAllSpeed, "", ""},
-    {"sm", "smFree", cmd_smFree, "", ""},       
-    {"sm", "smFreeAll", cmd_smFreeAll, "", ""},    
-    // Commands for DistanceSensor (ds)
-    {"ds", "dsEnable", cmd_dsEnable, "", ""},
-    {"ds", "dsDisable", cmd_dsDisable, "", ""},
-    {"ds", "dsSetAll", cmd_dsSetAll, "", ""}, 
-    {"ds", "dsGetValue", cmd_dsGetValue, "", ""},
-    {"ds", "dsGetAllValue", cmd_dsGetAllValue, "", ""},
-    {"ds", "dsGetOneValue", cmd_dsGetOneValue, "", ""},
-    {"ds", "dsGetOneValueAll", cmd_dsGetOneValueAll, "", ""},
-    // Commands for FloorSensor (fs)      
-    {"fs", "fsEnable", cmd_fsEnable, "", ""},
-    {"fs", "fsDisable", cmd_fsDisable, "", ""},
-    {"fs", "fsSetAll", cmd_fsSetAll, "", ""},
-    {"fs", "fsGetValue", cmd_fsGetValue, "", ""},
-    {"fs", "fsGetAllValue", cmd_fsGetAllValue, "", ""},
-    {"fs", "fsGetOneValue", cmd_fsGetOneValue, "", ""},
-    {"fs", "fsGetOneValueAll", cmd_fsGetOneValueAll, "", ""},
-    // Commands for UltraSonicSensor (us)
-    {"us", "usEnable", cmd_usEnable, "", ""},
-    {"us", "usDisable", cmd_usDisable, "", ""},
-    {"us", "usSetAll", cmd_usSetAll, "", ""},
-    {"us", "usGetValue", cmd_usGetValue, "", ""},
-    {"us", "usGetAllValue", cmd_usGetAllValue, "", ""},
-    {"us", "usGetOneValue", cmd_usGetOneValue, "", ""},
-    {"us", "usGetOneValueAll", cmd_usGetOneValueAll, "", ""},
+    {"sm", "smSetAllPos", cmd_smSetAllPos, "NOT YET IMPLEMENTED", ""},
+    {"sm", "smGetPos", cmd_smGetPos, "NOT YET IMPLEMENTED", ""},   
+    {"sm", "smGetAllPos", cmd_smGetAllPos, "NOT YET IMPLEMENTED", ""},
+    {"sm", "smSetSpeed", cmd_smSetSpeed, "NOT YET IMPLEMENTED", ""}, 
+    {"sm", "smSetAllSpeed", cmd_smSetAllSpeed, "NOT YET IMPLEMENTED", ""},
+    {"sm", "smGetSpeed", cmd_smGetSpeed, "NOT YET IMPLEMENTED", ""},   
+    {"sm", "smGetAllSpeed", cmd_smGetAllSpeed, "NOT YET IMPLEMENTED", ""},
+    {"sm", "smFree", cmd_smFree, "NOT YET IMPLEMENTED", ""},       
+    {"sm", "smFreeAll", cmd_smFreeAll, "NOT YET IMPLEMENTED", ""},    
     // Commands for BatteryController (bc)
-    {"bc", "bcEnable", cmd_bcEnable, "", ""},
-    {"bc", "bcDisable", cmd_bcDisable, "", ""},
-    {"bc", "bcGetValue", cmd_bcGetValue, "", ""},
-    {"bc", "bcFullAlarm", cmd_bcFullAlarm, "", ""},
-    {"bc", "bcSetEmptyValue", cmd_bcSetEmptyValue, "", ""},
-    {"bc", "bcEmptyAlarm", cmd_bcEmptyAlarm, "", ""},
-    {"bc", "bcSetFullValue", cmd_bcSetFullValue, "", ""},
+    {"bc", "bcEnable", cmd_bcEnable, "NOT YET IMPLEMENTED", ""},
+    {"bc", "bcDisable", cmd_bcDisable, "NOT YET IMPLEMENTED", ""},
+    {"bc", "bcGetValue", cmd_bcGetValue, "NOT YET IMPLEMENTED", ""},
+    {"bc", "bcFullAlarm", cmd_bcFullAlarm, "NOT YET IMPLEMENTED", ""},
+    {"bc", "bcSetEmptyValue", cmd_bcSetEmptyValue, "NOT YET IMPLEMENTED", ""},
+    {"bc", "bcEmptyAlarm", cmd_bcEmptyAlarm, "NOT YET IMPLEMENTED", ""},
+    {"bc", "bcSetFullValue", cmd_bcSetFullValue, "NOT YET IMPLEMENTED", ""},
     // Commands for TrashBin (tb)
-    {"tb", "tbGetValue", cmd_tbGetValue, "", ""},
-    {"tb", "tbFullAlarm", cmd_tbFullAlarm, "", ""},
-    {"tb", "tbSetFullValue", cmd_tbSetFullValue, "", ""},
+    {"tb", "tbGetValue", cmd_tbGetValue, "NOT YET IMPLEMENTED", ""},
+    {"tb", "tbFullAlarm", cmd_tbFullAlarm, "NOT YET IMPLEMENTED", ""},
+    {"tb", "tbSetFullValue", cmd_tbSetFullValue, "NOT YET IMPLEMENTED", ""},
     
-    {"common", "help", cmd_help, "This help", "\%s one of: all, common, mc, dc, sm, ds, fs, us, bc, tb"},
+    {"common", "help", cmd_help, "This help", "\%s one of: all, common, mc, dc, sm, ds, bc, tb"},
     {"common", "quit", cmd_quit, "Quit to system", ""},
     {"common", NULL, cmd_quit, "", ""}
 };
@@ -718,152 +703,77 @@ void cmd_smFreeAll(char * data)
 
 // Commands for DistanceSensor (ds)
 
-// DISTANCE_SENSOR_ENABLE_DISTANCE_SENSOR      0X40
+// DISTANCE_SENSOR_ON_DISTANCE_SENSOR		0X40
+void cmd_dsOn(char * data)
+{
+	 short id;
+    
+    if (data == NULL || sscanf(data, "%hd", &id) != 1)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+
+	protocol::handlers::DistanceSensorBoardPacketHandler * packet = new 
+        protocol::handlers::DistanceSensorBoardPacketHandler( ps, dest_group, dest_card);
+
+	char d[10];
+	int i = 1;
+
+	
+
+// 	packets::DistanceSensorPacket * p = new packets::DistanceSensorPacket(dest_group, dest_card);
+// 	p->addData(data, i);
+// 	p->prepareToSend();
+// 	ps->sendPacket(p);
+
+    return;
+}
+
+// DISTANCE_SENSOR_OFF_DISTANCE_SENSOR		0X41
+void cmd_dsOff(char * data)
+{
+    // TODO
+    return;
+}
+
+// DISTANCE_SENSOR_ENABLE_DISTANCE_SENSORS		0X42
 void cmd_dsEnable(char * data)
 {
     // TODO
     return;
 }
 
-// DISTANCE_SENSOR_DISABLE_DISTANCE_SENSOR     0X41
-void cmd_dsDisable(char * data)
+// DISTANCE_SENSOR_GET_STATUS			0X43
+void cmd_dsStatus(char * data)
 {
     // TODO
     return;
 }
 
-// DISTANCE_SENSOR_SET_ALL_DISTANCE_SENSORS    0X42
-void cmd_dsSetAll(char * data)
-{
-    // TODO
-    return;
-}
-
-// DISTANCE_SENSOR_GET_VALUE           0X43
+// DISTANCE_SENSOR_GET_VALUE           0X44
 void cmd_dsGetValue(char * data)
 {
     // TODO
     return;
 }
 
-// DISTANCE_SENSOR_GET_ALL_VALUES          0X44
-void cmd_dsGetAllValue(char * data)
-{
-    // TODO
-    return;
-}
-
-// DISTANCE_SENSOR_GET_ONE_VALUE           0X45
+// DISTANCE_SENSOR_GET_ONE_VALUE          0X45
 void cmd_dsGetOneValue(char * data)
 {
     // TODO
     return;
 }
 
-// DISTANCE_SENSOR_GET_ONE_VALUE_FOR_ALL       0X46
-void cmd_dsGetOneValueAll(char * data)
+// DISTANCE_SENSOR_ALARM_ON_STATE			0X46
+void cmd_dsAlarmOn(char * data)
 {
     // TODO
     return;
 }
 
-// Commands for FloorSensor (fs)
-
-// FLOOR_SENSOR_ENABLE_FLOOR_SENSOR    0X40
-void cmd_fsEnable(char * data)
-{
-    // TODO
-    return;
-}
-
-// FLOOR_SENSOR_DISABLE_FLOOR_SENSOR   0X41
-void cmd_fsDisable(char * data)
-{
-    // TODO
-    return;
-}
-
-// FLOOR_SENSOR_SET_ALL_FLOOR_SENSORS  0X42
-void cmd_fsSetAll(char * data)
-{
-    // TODO
-    return;
-}
-
-// FLOOR_SENSOR_GET_VALUE          0X43
-void cmd_fsGetValue(char * data)
-{
-    // TODO
-    return;
-}
-
-// FLOOR_SENSOR_GET_ALL_VALUES     0X44
-void cmd_fsGetAllValue(char * data)
-{
-    // TODO
-    return;
-}
-
-// FLOOR_SENSOR_GET_ONE_VALUE      0X45
-void cmd_fsGetOneValue(char * data)
-{
-    // TODO
-    return;
-}
-
-// FLOOR_SENSOR_GET_ONE_VALUE_FOR_ALL  0X46
-void cmd_fsGetOneValueAll(char * data)
-{
-    // TODO
-    return;
-}
-
-// Commands for UltraSonicSensor (us)
-
-// ULTRASONIC_SENSOR_ENABLE_ULTRASONIC_SENSOR  0X40
-void cmd_usEnable(char * data)
-{
-    // TODO
-    return;
-}
-
-// ULTRASONIC_SENSOR_DISABLE_ULTRASONIC_SENSOR 0X41
-void cmd_usDisable(char * data)
-{
-    // TODO
-    return;
-}
-
-// ULTRASONIC_SENSOR_SET_ALL_ULTRASONIC_SENSOR 0X42
-void cmd_usSetAll(char * data)
-{
-    // TODO
-    return;
-}
-
-// ULTRASONIC_SENSOR_GET_VALUE         0X43
-void cmd_usGetValue(char * data)
-{
-    // TODO
-    return;
-}
-
-// ULTRASONIC_SENSOR_GET_ALL_VALUES        0X44
-void cmd_usGetAllValue(char * data)
-{
-    // TODO
-    return;
-}
-
-// ULTRASONIC_SENSOR_GET_ONE_VALUE         0X45
-void cmd_usGetOneValue(char * data)
-{
-    // TODO
-    return;
-}
-
-// ULTRASONIC_SENSOR_GET_ONE_VALUE_FOR_ALL     0X46
-void cmd_usGetOneValueAll(char * data)
+// DISTANCE_SENSOR_SWITCH_ALARM			0X47
+void cmd_dsAlarmCommand(char * data)
 {
     // TODO
     return;
