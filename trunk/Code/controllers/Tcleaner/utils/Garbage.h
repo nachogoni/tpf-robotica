@@ -13,6 +13,7 @@ namespace utils{
 	
 	     Garbage(utils::MinimalBoundingRectangle * mbr);
 	
+		~Garbage();
 	 private:
 	    double angle;
 	    double distance;

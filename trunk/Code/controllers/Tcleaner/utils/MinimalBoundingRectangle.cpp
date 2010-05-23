@@ -10,6 +10,9 @@ MinimalBoundingRectangle::MinimalBoundingRectangle(int x,int y,int height,int wi
   this->y=y;
 }
 
+MinimalBoundingRectangle::~MinimalBoundingRectangle(){
+}
+
 int MinimalBoundingRectangle::getTopX()
 {
     return x;
