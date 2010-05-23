@@ -17,6 +17,7 @@ class MinimalBoundingRectangle {
 
 	MinimalBoundingRectangle(int x,int y,int height,int width);
 	
+	~MinimalBoundingRectangle();
 	private:
 	 int x;
 	 int y;

@@ -64,7 +64,6 @@ std::list<Garbage*> GarbageRecognition::getGarbageList()
 {
 	if ( ! this->pooled ){
 		this->pooled = true;
-//	    IplImage * src = loadImage("./ss.jpg");
 	    IplImage * src = loadImage();
 		this->garbageList(src,this->model);
 		cvReleaseImage(&src);
@@ -81,7 +80,10 @@ utils::Garbage * GarbageRecognition::getClosestGarbage(std::list<utils::Garbage*
 		return *it;
 }
 
-std::list<Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * model){
+std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * model){
+	std::list<utils::Garbage*>::iterator it;
+	for ( it=garbages.begin() ; it != garbages.end() ; it++ )
+		delete *it;
 	garbages.clear();
 
 	//cvNamedWindow("output",CV_WINDOW_AUTOSIZE);
@@ -305,14 +307,12 @@ void GarbageRecognition::stepDone(){
 }
 
 IplImage * GarbageRecognition::loadImage(std::string filename){
-//	std::string fn ("./ss.jpg");
 	cam->saveImage(filename, 85);
     return cvLoadImage(filename.c_str(),1);
 }
 
 IplImage * GarbageRecognition::loadImage(void){
 	IplImage * ret = cam->getImage().toIPL();
-//	cvSaveImage("c:\aux.jpg",ret);
 	return ret;
 }
 
