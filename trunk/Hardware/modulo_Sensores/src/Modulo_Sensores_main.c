@@ -372,7 +372,7 @@ void main()
 	initProtocol();
 
 
-readSensor = 0xFF;
+//readSensor = 0xFF;
 
 	// FOREVER
 	while(true)
@@ -397,7 +397,7 @@ readSensor = 0xFF;
 
 
 
-readSensor = 0x3F;
+//readSensor = 0x3F;
 
 
 				
@@ -624,7 +624,6 @@ void readSensors(int sensors)
 			delay_us(ADC_DELAY);
 			// Toma la muestra
 			values[0] += read_adc();
-			//sensor1 = SENSOR_OFF;
 		}
 		
 		// Sensor2
@@ -636,7 +635,6 @@ void readSensors(int sensors)
 			delay_us(ADC_DELAY);
 			// Toma la muestra
 			values[1] += read_adc();
-			//sensor2 = SENSOR_OFF;
 		}
 		
 		// Sensor3
@@ -648,7 +646,6 @@ void readSensors(int sensors)
 			delay_us(ADC_DELAY);
 			// Toma la muestra
 			values[2] += read_adc();
-			//sensor3 = SENSOR_OFF;
 		}
 		
 		// Sensor4
@@ -660,7 +657,6 @@ void readSensors(int sensors)
 			delay_us(ADC_DELAY);
 			// Toma la muestra
 			values[3] += read_adc();
-			//sensor4 = SENSOR_OFF;
 		}
 		
 		// Sensor5
@@ -672,9 +668,14 @@ void readSensors(int sensors)
 			delay_us(ADC_DELAY);
 			// Toma la muestra
 			values[4] += read_adc();
-			//sensor5 = SENSOR_OFF;
 		}
 	}
+	
+	sensor1 = SENSOR_OFF;
+	sensor2 = SENSOR_OFF;
+	sensor3 = SENSOR_OFF;
+	sensor4 = SENSOR_OFF;
+	sensor5 = SENSOR_OFF;
 	
 	values[0] /= samples;
 	values[1] /= samples;
@@ -697,8 +698,6 @@ void sendValues(int to, int cmd, long * values, int sensors)
 	command.cmd = cmd;
 	command.data[0] = sensors;
 
-printf("TO: %X\n\rFROM: %X\n\rCOMMAND: %X\n\r", command.to, command.from, command.cmd);
-	
 	// Valores de los sensores en command.data segun corresponda
 	for (i = 0; i < 6; i++)
 	{
@@ -708,9 +707,6 @@ printf("TO: %X\n\rFROM: %X\n\rCOMMAND: %X\n\r", command.to, command.from, comman
 			tmp16 = (command.data + idx);
 			// Le asigno el valor del sensor
 			(*tmp16) = values[i];
-
-printf("DATA: %ld\n\r", values[i]);
-
 			idx+=2;
 			command.len += 2;
 		}
@@ -718,9 +714,7 @@ printf("DATA: %ld\n\r", values[i]);
 
 	command.crc = generate_8bit_crc((char *)(&command), command.len, CRC_PATTERN);
 	// Envio del comando
-//	send(&command);
-
-printf("LEN: %X\n\rCRC: %X\n\r\n\n\n\n", command.len, command.crc);
+	send(&command);
 
 	return;
 }
@@ -856,7 +850,7 @@ void doCommand(struct command_t * cmd)
 				led1 = 0;
 #endif
 		break;
- 		case DISTANCE_SENSOR_ENABLE_DISTANCE_SENSORS:
+ 		case DISTANCE_SENSOR_SET_MASK:
 			/* Habilita o deshabilita cada uno de los sensores de distancia conectados al
 			controlador. Permite identificar los sensores a los que se debera tener en
 			cuenta para futuras lecturas.
@@ -869,7 +863,7 @@ void doCommand(struct command_t * cmd)
 			*/
 			sensorMask = (cmd->data)[0];
 		break;
- 		case DISTANCE_SENSOR_GET_STATUS:
+ 		case DISTANCE_SENSOR_GET_MASK:
 			/* Obtiene el estado de habilitacion de cada uno de los sensores de distancia
 			conectados al controlador.
 			:DATO:
