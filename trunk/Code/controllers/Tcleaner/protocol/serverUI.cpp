@@ -20,21 +20,19 @@
 #include "serverUI.h"
 
 #define MAX(a,b) (a>b?a:b)
-#define PIPE_IN 0
-#define PIPE_OUT 1
 
 //define group and board ids
 #define DCMOTOR_GID 1
-#define SERVO_GID 2
 #define DISTANCESENSOR_GID 3
-#define BATTERY_GID 4
-#define TRASH_GID 5
 
-#define DCMOTOR_BOARD_ID 1
-#define SERVO_BOARD_ID 0
-#define DISTANCESENSOR_BOARD_ID 0
-#define BATTERY_BOARD_ID 0
-#define TRASH_BOARD_ID 0
+#define DCMOTOR_BOARD_ID0 0
+#define DCMOTOR_BOARD_ID1 1
+#define DISTANCESENSOR_BOARD_ID0 0
+#define DISTANCESENSOR_BOARD_ID1 1
+#define DISTANCESENSOR_BOARD_ID2 2
+
+#define PIPE_IN 0
+#define PIPE_OUT 1
 
 typedef struct {
     const char * group;
@@ -46,17 +44,26 @@ typedef struct {
 
 bool quit = false, groupBC = false, fullBC = false;
 int fd = 5;
-
-int dest_group = 0x01, dest_card = 0x01;
-protocol::packets::DCMotorPacket * packetToSend = NULL;
-
-protocol::PacketServer * ps;
 int pipes[2];
 int lastCMD = -1;
 
-bool init();
-char getDest();
-void sendAPacket(protocol::Packet * p);
+int dest_group = 0x01, dest_card = 0x01;
+
+// TODO: desvincularlo del DCMotor
+protocol::packets::DCMotorPacket * packetToSend = NULL;
+
+// Packet Server
+protocol::PacketServer * ps;
+
+// Handlers for the boards
+protocol::handlers::DCMotorBoardPacketHandler * dcHandler = NULL;
+protocol::handlers::DistanceSensorBoardPacketHandler * dsHandler = NULL;
+
+protocol::handlers::DCMotorBoardPacketHandler * dcMotorHandler0 = NULL;
+protocol::handlers::DCMotorBoardPacketHandler * dcMotorHandler1 = NULL;
+protocol::handlers::DistanceSensorBoardPacketHandler * distanceSensorHandler0 = NULL;
+protocol::handlers::DistanceSensorBoardPacketHandler * distanceSensorHandler1 = NULL;
+protocol::handlers::DistanceSensorBoardPacketHandler * distanceSensorHandler2 = NULL;
 
 // Common commands
 void cmd_help(char * data);
@@ -66,8 +73,13 @@ void cmd_setDest(char * data);
 void cmd_groupBC(char * data);
 void cmd_fullBC(char * data);
 
+bool init();
+char getDest();
+void sendAPacket(protocol::Packet * p);
 bool isBitSet(int val,int index);
-void cmd_a(char * data);
+
+
+// Implementation
 
 bool isBitSet(int val,int index) {
 	if(val & ( 0x01 << index)){
@@ -84,6 +96,8 @@ cmd_type commands[] = {
     {"common", "getDest", cmd_getDest, "Get group and card id for destination", ""},
     {"common", "groupBC", cmd_groupBC, "Change group broadcast state", ""},
     {"common", "fullBC", cmd_fullBC, "Change full broadcast state", ""},
+    {"common", "dc", cmd_setDC, "Set actual DC Motor board", "\%d for the board ID (0 or 1)"},
+    {"common", "ds", cmd_setDS, "Set actual Distance Sensor board", "\%d for the board ID (0, 1 or 2)"},
     // Commands for MainController (mc)
     {"mc", "init", cmd_init, "Send init command", ""},
     {"mc", "reset", cmd_reset, "Send reset command", ""},
@@ -255,31 +269,33 @@ int main( int argc, const char **argv)
     
     return 0;
 }
+
 void
 registerHandlers(protocol::PacketServer * ps){
-	//register handlers
-    protocol::handlers::DCMotorBoardPacketHandler * dcMotorHandler=
-		new protocol::handlers::DCMotorBoardPacketHandler(ps,DCMOTOR_GID,DCMOTOR_BOARD_ID);
-		
-	protocol::handlers::ServoBoardPacketHandler * servoHandler= new
-		protocol::handlers::ServoBoardPacketHandler(ps,SERVO_GID,SERVO_BOARD_ID);
-		
-	protocol::handlers::DistanceSensorBoardPacketHandler * distanceSensorHandler= new
-		protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCESENSOR_GID,DISTANCESENSOR_BOARD_ID);
-	
-	protocol::handlers::BatteryBoardPacketHandler * batteryHandler= new
-		protocol::handlers::BatteryBoardPacketHandler(ps,BATTERY_GID,BATTERY_BOARD_ID);
-		
-	protocol::handlers::TrashBinBoardPacketHandler * trashHandler= new
-		protocol::handlers::TrashBinBoardPacketHandler(ps,TRASH_GID,TRASH_BOARD_ID);
-    
-    ps->registerHandler(dcMotorHandler,DCMOTOR_GID,DCMOTOR_BOARD_ID);
-    ps->registerHandler(servoHandler,SERVO_GID,SERVO_BOARD_ID);
-    ps->registerHandler(distanceSensorHandler,DISTANCESENSOR_GID,DISTANCESENSOR_BOARD_ID);
-    ps->registerHandler(batteryHandler,BATTERY_GID,BATTERY_BOARD_ID);
-    ps->registerHandler(trashHandler,TRASH_GID,TRASH_BOARD_ID);
-}
 
+	//register handlers
+    protocol::handlers::DCMotorBoardPacketHandler * dcMotorHandler0 =
+		new protocol::handlers::DCMotorBoardPacketHandler(ps,DCMOTOR_GID,DCMOTOR_BOARD_ID0);
+		
+    protocol::handlers::DCMotorBoardPacketHandler * dcMotorHandler1 =
+		new protocol::handlers::DCMotorBoardPacketHandler(ps,DCMOTOR_GID,DCMOTOR_BOARD_ID1);
+	
+	protocol::handlers::DistanceSensorBoardPacketHandler * distanceSensorHandler0 = new
+		protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCESENSOR_GID,DISTANCESENSOR_BOARD_ID0);
+	    
+	protocol::handlers::DistanceSensorBoardPacketHandler * distanceSensorHandler1 = new
+		protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCESENSOR_GID,DISTANCESENSOR_BOARD_ID1);
+	    
+	protocol::handlers::DistanceSensorBoardPacketHandler * distanceSensorHandler2 = new
+		protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCESENSOR_GID,DISTANCESENSOR_BOARD_ID2);
+	    
+    ps->registerHandler(dcMotorHandler0, DCMOTOR_GID, DCMOTOR_BOARD_ID0);
+    ps->registerHandler(dcMotorHandler1, DCMOTOR_GID, DCMOTOR_BOARD_ID1);
+    ps->registerHandler(distanceSensorHandler0, DISTANCESENSOR_GID, DISTANCESENSOR_BOARD_ID0);
+    ps->registerHandler(distanceSensorHandler1, DISTANCESENSOR_GID, DISTANCESENSOR_BOARD_ID1);
+    ps->registerHandler(distanceSensorHandler2, DISTANCESENSOR_GID, DISTANCESENSOR_BOARD_ID2);
+
+}
 
 void sendAPacket(protocol::Packet * p){
     unsigned char i;
@@ -358,6 +374,80 @@ void cmd_error(char * data)
     packetToSend->prepareToSend();
     sendAPacket(packetToSend);
     // TODO: armar paquete de error y mandarlo
+    return;
+}
+
+void cmd_setDC(char * data)
+{
+	int id = 0;
+	
+    if (data == NULL || sscanf(data, "%d", &id) != 1)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+
+	dest_group = DCMOTOR_GID;
+    
+    switch (id)
+    {
+		case 0:
+			dcHandler = dcMotorHandler0;
+			dest_card = DCMOTOR_BOARD_ID0;
+			break;
+		case 1:
+			dcHandler = dcMotorHandler1;
+			dest_card = DCMOTOR_BOARD_ID1;
+			break;
+		default:
+			// DEFAULT
+			printf("Bad ID, setting first board\n");
+			dcHandler = dcMotorHandler0;
+			dest_card = DCMOTOR_BOARD_ID0;
+			break;
+	}
+	
+    printf("GroupID: %d CardID: %d -> (%X)\n", dest_group, dest_card, getDest());
+    
+    return;
+}
+
+void cmd_setDS(char * data)
+{
+	int id = 0;
+	
+    if (data == NULL || sscanf(data, "%d", &id) != 1)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+
+	dest_group = DISTANCESENSOR_GID;
+    
+    switch (id)
+    {
+		case 0:
+			dsHandler = distanceSensorHandler0;
+			dest_card = DISTANCESENSOR_BOARD_ID0;
+			break;
+		case 1:
+			dsHandler = distanceSensorHandler1;
+			dest_card = DISTANCESENSOR_BOARD_ID1;
+			break;
+		case 1:
+			dsHandler = distanceSensorHandler2;
+			dest_card = DISTANCESENSOR_BOARD_ID2;
+			break;
+		default:
+			// DEFAULT
+			printf("Bad ID, setting first board\n");
+			dsHandler = distanceSensorHandler0;
+			dest_card = DISTANCESENSOR_BOARD_ID0;
+			break;
+	}
+	
+    printf("GroupID: %d CardID: %d -> (%X)\n", dest_group, dest_card, getDest());
+    
     return;
 }
 

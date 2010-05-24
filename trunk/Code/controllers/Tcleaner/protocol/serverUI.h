@@ -9,6 +9,8 @@ void cmd_init(char * data);
 void cmd_reset(char * data);
 void cmd_ping(char * data);
 void cmd_error(char * data);
+void cmd_setDC(char * data);
+void cmd_setDS(char * data);
 // Commands for MotorDC (dc)                                                                      
 void cmd_dcSetDirection(char * data);
 void cmd_dcSetSpeed(char * data);    
