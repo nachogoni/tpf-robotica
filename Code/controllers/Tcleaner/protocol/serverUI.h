@@ -36,8 +36,8 @@ void cmd_smFreeAll(char * data);
 // Commands for DistanceSensor (ds)
 void cmd_dsOn(char * data);
 void cmd_dsOff(char * data);
-void cmd_dsEnable(char * data);
-void cmd_dsStatus(char * data);
+void cmd_dsSetMask(char * data);
+void cmd_dsGetMask(char * data);
 void cmd_dsGetValue(char * data);
 void cmd_dsGetOneValue(char * data);
 void cmd_dsAlarmOn(char * data);
