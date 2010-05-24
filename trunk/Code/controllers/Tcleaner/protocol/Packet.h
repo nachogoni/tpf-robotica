@@ -53,10 +53,12 @@ class Packet
 		void addData(int data);
 		char * getPacket();
 		char getActualLength();
+		
 		void clear();
 		void print();
 	protected:
 		void resetDataIdx();
+		void resetDataIdx(int offset);
 	private:
 		char packet [MAX_PACKET_SIZE];
 		char actualLength;

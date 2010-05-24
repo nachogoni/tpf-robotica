@@ -24,13 +24,13 @@
 #define PIPE_OUT 1
 
 //define group and board ids
-#define DCMOTOR_GID 0x10
-#define SERVO_GID 0x20
-#define DISTANCESENSOR_GID 0x30
-#define BATTERY_GID 0x40
-#define TRASH_GID 0x50
+#define DCMOTOR_GID 1
+#define SERVO_GID 2
+#define DISTANCESENSOR_GID 3
+#define BATTERY_GID 4
+#define TRASH_GID 5
 
-#define DCMOTOR_BOARD_ID 0
+#define DCMOTOR_BOARD_ID 1
 #define SERVO_BOARD_ID 0
 #define DISTANCESENSOR_BOARD_ID 0
 #define BATTERY_BOARD_ID 0
@@ -46,7 +46,7 @@ typedef struct {
 
 bool quit = false, groupBC = false, fullBC = false;
 int fd = 5;
-int dest_group = 0x01, dest_card = 0x00;
+int dest_group = 0x01, dest_card = 0x01;
 protocol::packets::DCMotorPacket * packetToSend = NULL;
 
 protocol::PacketServer * ps;
@@ -65,40 +65,9 @@ void cmd_setDest(char * data);
 void cmd_groupBC(char * data);
 void cmd_fullBC(char * data);
 
-
-void cmd_a(char * data);
-
-
-void cmd_a(char * data)
-{    
-    for (int i=0;i<5;i++)
-	{
-		protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
-	
-		if ( (i % 2) == 0 )
-			p->setDirection(false);
-		else
-			p->setDirection(true);
-		p->prepareToSend();
-
-		ps->sendPacket(p);
-	}
-
-    return;
-}
-
-
-
-
-
 // Command list
 cmd_type commands[] = {
-
-
-	{"dc", "a", cmd_a, "", ""},
-
-	
-	// Common commands
+    // Common commands
     {"common", "setDest", cmd_setDest, "Set group and card id for destination", "\%d \%d for group and card (0 to 15)"},
     {"common", "getDest", cmd_getDest, "Get group and card id for destination", ""},
     {"common", "groupBC", cmd_groupBC, "Change group broadcast state", ""},
@@ -420,6 +389,7 @@ void cmd_dcSetDirection(char * data)
 {
     int turn;
     
+    
     if (data == NULL || sscanf(data, "%d", &turn) != 1)
     {
         printf("Wrong parameters\n");
@@ -428,12 +398,11 @@ void cmd_dcSetDirection(char * data)
 
     // TODO
     protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
-    if ( turn < 0 )
-        p->setDirection(false);
-    else
+    if ( turn <= 0 )
         p->setDirection(true);
+    else
+        p->setDirection(false);
     p->prepareToSend();
-
 	ps->sendPacket(p);
 
 
@@ -461,8 +430,8 @@ void cmd_dcSetSpeed(char * data)
         turn = -1;
 
     // set speed
-    for (int i=0;i<1;i++)
-        packet->setSpeed(speed * turn);
+    
+	packet->setSpeed(speed * turn);
     return;
 }
 
@@ -580,8 +549,8 @@ void cmd_dcStressAlarm(char * data)
     protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
 	p->isMotorAlarm();
     p->prepareToSend();
-    for (int i=0;i<1;i++)
-        ps->sendPacket(p);
+    
+	ps->sendPacket(p);
 
     return;
 }
@@ -613,7 +582,7 @@ void cmd_dcGetSpeed(char * data)
         protocol::handlers::DCMotorBoardPacketHandler( ps, dest_group, dest_card);
 
     // set speed
-    for (int i=0;i<1;i++)
+    //for (int i=0;i<1;i++)
         packet->getSpeed();
     return;
 }
