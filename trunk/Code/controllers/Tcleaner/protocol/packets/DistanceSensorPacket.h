@@ -5,13 +5,13 @@
 
 #include <protocol/packets/BoardPacket.h> // inheriting class's header file
 
-#define CMD_ENABLE 0x40
-#define CMD_DISABLE 0x41
-#define CMD_SET_ALL 0x42
-#define CMD_GET_VALUE 0x43
-#define CMD_GET_ALL_VALUES 0x44
-#define CMD_GET_SHOT_VALUE 0x45
-#define CMD_GET_SHOT_ALL_VALUES 0x46
+#define CMD_ON 0x40
+#define CMD_OFF 0x41
+#define CMD_SET_STATUS 0x42
+#define CMD_GET_STATUS 0x43
+#define CMD_GET_VALUE 0x44
+#define CMD_GET_ONE_VALUE 0x45
+#define CMD_ALARM_ON 0x46
 
 namespace protocol {
 namespace packets {
@@ -28,20 +28,22 @@ class DistanceSensorPacket : public protocol::packets::BoardPacket
 		~DistanceSensorPacket();
 
 		// Commands to be sent
-		void enableSensor(char sensorId);
-		void disableSensor(char sensorId);
-		void setAllSensors(char sensorIds);
-		void getSensor(char sensorId);
-		void getSensor();
-
-		void getShotSensor(char sensorId);
-		void getShotSensor();
-		
+		void on(char sensorId);
+		void off(char sensorId);
+		void setMask(char sensorMask);
+		void getMask();
+		void getValue(char sensorIds);
+		void getOneValue(char sensorIds);
+		void alarmOn(char data);
+	
 		// Get data from package
 		short getSensorValue();
 		short * getSensorValues();
 		short getShotSensorValue();
 		short * getShotSensorValues();
+		
+		
+		void alarmCommand(char * data);
 };
 
 }

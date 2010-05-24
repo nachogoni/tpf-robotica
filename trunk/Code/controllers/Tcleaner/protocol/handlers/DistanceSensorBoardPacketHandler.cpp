@@ -30,7 +30,7 @@ void DistanceSensorBoardPacketHandler::handlePacket(Packet * p){
 	packets::DistanceSensorPacket * dsp = new packets::DistanceSensorPacket(groupid,boardid);
 	dsp->analysePacket(p);
 	
-	if ( dsp->getCommand() == CMD_GET_ALL_VALUES ){
+	if ( dsp->getCommand() == CMD_GET_VALUE ){
 		short * value = dsp->getSensorValues();
 		// TODO convert from short to double
 		// Lock Mutex
@@ -54,7 +54,7 @@ void DistanceSensorBoardPacketHandler::handlePacket(Packet * p){
 void DistanceSensorBoardPacketHandler::enable(int dsId){
 	packets::DistanceSensorPacket * p = new packets::DistanceSensorPacket(groupid,boardid);
 	// TODO convert from double to char
-	p->enableSensor(dsId);
+	p->on(dsId);
 	p->prepareToSend();
 	this->ps->sendPacket(p);
 }
@@ -62,7 +62,7 @@ void DistanceSensorBoardPacketHandler::enable(int dsId){
 void DistanceSensorBoardPacketHandler::disable(int dsId){
 	packets::DistanceSensorPacket * p = new packets::DistanceSensorPacket(groupid,boardid);
 	// TODO convert from double to char
-	p->disableSensor(dsId);
+	p->off(dsId);
 	p->prepareToSend();
 	this->ps->sendPacket(p);
 }
@@ -70,10 +70,10 @@ void DistanceSensorBoardPacketHandler::disable(int dsId){
 int DistanceSensorBoardPacketHandler::getValue(int dsId){
 	// TODO Put timestamps to prevent flooding
    	packets::DistanceSensorPacket * p = new packets::DistanceSensorPacket(groupid,boardid);
-	p->getSensor();
+	p->getValue((char)0x0000003F);
 	p->prepareToSend();
 	this->ps->sendPacket(p);
-
+	
 	// Lock Mutex
 	#ifdef LINUX
 	this->dsValueMutex->enterMutex();
@@ -86,6 +86,57 @@ int DistanceSensorBoardPacketHandler::getValue(int dsId){
 	this->dsValueMutex->leaveMutex();
 	#endif
 	return value;
+}
+
+int DistanceSensorBoardPacketHandler::getOneValue(int dsId){
+	// TODO Put timestamps to prevent flooding
+   	packets::DistanceSensorPacket * p = new packets::DistanceSensorPacket(groupid,boardid);
+	p->getOneValue((char)0x0000003F);
+	p->prepareToSend();
+	this->ps->sendPacket(p);
+	
+	// Lock Mutex
+	#ifdef LINUX
+	this->dsValueMutex->enterMutex();
+	#endif
+
+	int value = this->dsValue[dsId];
+
+	// Release Mutex
+	#ifdef LINUX
+	this->dsValueMutex->leaveMutex();
+	#endif
+	return value;
+}
+
+
+void DistanceSensorBoardPacketHandler::setMask(int dsId){
+	packets::DistanceSensorPacket * p = new packets::DistanceSensorPacket(groupid,boardid);
+	p->setMask(dsId);
+	p->prepareToSend();
+	this->ps->sendPacket(p);
+	
+}
+		
+int DistanceSensorBoardPacketHandler::getMask(){
+	packets::DistanceSensorPacket * p = new packets::DistanceSensorPacket(groupid,boardid);
+	p->getMask();
+	p->prepareToSend();
+	this->ps->sendPacket(p);
+	
+	// Lock Mutex
+	#ifdef LINUX
+	this->dsMaskMutex->enterMutex();
+	#endif
+	
+	int mask=this->dsMask;
+	
+	// Release Mutex
+	#ifdef LINUX
+	this->dsValueMutex->leaveMutex();
+	#endif
+	return mask;
+
 }
 
 }

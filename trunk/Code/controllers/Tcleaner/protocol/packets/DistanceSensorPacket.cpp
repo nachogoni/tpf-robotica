@@ -5,6 +5,15 @@
 namespace protocol {
 namespace packets {
 
+
+bool isBitSet(int val,int index){
+	if(val & ( 0x01 << index)){
+		return true;
+	}
+	
+	return false;
+}
+
 // class constructor
 DistanceSensorPacket::DistanceSensorPacket(char groupid, char boardid) : protocol::packets::BoardPacket(groupid, boardid)
 {
@@ -16,44 +25,42 @@ DistanceSensorPacket::~DistanceSensorPacket()
 	// insert your code here
 }
 
-void DistanceSensorPacket::enableSensor(char sensorId){
+void DistanceSensorPacket::on(char sensorId){
 	this->addData(sensorId);
-	this->setCommand(CMD_ENABLE);
+	this->setCommand(CMD_ON);
 }
 
-void DistanceSensorPacket::disableSensor(char sensorId){
+void DistanceSensorPacket::off(char sensorId){
 	this->addData(sensorId);
-	this->setCommand(CMD_DISABLE);
+	this->setCommand(CMD_OFF);
 }
 
-void DistanceSensorPacket::setAllSensors(char sensorIds){
+void DistanceSensorPacket::setMask(char sensorMask){
+	this->addData(sensorMask);
+	this->setCommand(CMD_SET_STATUS);
+}
+
+void DistanceSensorPacket::getMask(){
+	this->setCommand(CMD_GET_STATUS);
+}
+
+void DistanceSensorPacket::getValue(char sensorIds){
 	this->addData(sensorIds);
-	this->setCommand(CMD_SET_ALL);
-}
-
-void DistanceSensorPacket::getSensor(char sensorId){
-	this->addData(sensorId);
 	this->setCommand(CMD_GET_VALUE);
 }
 
-void DistanceSensorPacket::getSensor(){
-	this->setCommand(CMD_GET_ALL_VALUES);
+void DistanceSensorPacket::getOneValue(char sensorIds){
+	this->addData(sensorIds);
+	this->setCommand(CMD_GET_ONE_VALUE);
 }
 
-void DistanceSensorPacket::getShotSensor(char sensorId){
-	this->addData(sensorId);
-	this->setCommand(CMD_GET_SHOT_VALUE);
-}
-
-void DistanceSensorPacket::getShotSensor(){
-	this->setCommand(CMD_GET_SHOT_ALL_VALUES);
+void DistanceSensorPacket::alarmOn(char data){
+	this->addData(data);
+	this->setCommand(CMD_ALARM_ON);
 }
 
 
-
-
-
-
+//get values
 short DistanceSensorPacket::getSensorValue(){
 	return this->getShortData();
 }

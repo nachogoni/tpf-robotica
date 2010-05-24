@@ -46,6 +46,7 @@ typedef struct {
 
 bool quit = false, groupBC = false, fullBC = false;
 int fd = 5;
+
 int dest_group = 0x01, dest_card = 0x01;
 protocol::packets::DCMotorPacket * packetToSend = NULL;
 
@@ -64,6 +65,17 @@ void cmd_getDest(char * data);
 void cmd_setDest(char * data);
 void cmd_groupBC(char * data);
 void cmd_fullBC(char * data);
+
+bool isBitSet(int val,int index);
+void cmd_a(char * data);
+
+bool isBitSet(int val,int index) {
+	if(val & ( 0x01 << index)){
+		return true;
+	}
+	
+	return false;
+}
 
 // Command list
 cmd_type commands[] = {
@@ -93,8 +105,8 @@ cmd_type commands[] = {
     // Commands for DistanceSensor (ds)
     {"ds", "dsOn", cmd_dsOn, "Turn on a sensor", "\%d for the sensor ID"},
     {"ds", "dsOff", cmd_dsOff, "Turn off a sensor", "\%d for the sensor ID"},
-    {"ds", "dsEnable", cmd_dsEnable, "Set the sensors mask for the next reads", "\%hd representing each bit a sensor ID (LSB)"},
-    {"ds", "dsGetStatus", cmd_dsStatus, "Get the sensors mask", ""},
+    {"ds", "dsSetMask", cmd_dsSetMask, "Set the sensors mask for the next reads", "\%hd representing each bit a sensor ID (LSB)"},
+    {"ds", "dsGetMask", cmd_dsGetMask, "Get the actual sensors mask", ""},
     {"ds", "dsGetValue", cmd_dsGetValue, "Get an average value for each sensor", "\%hd representing each bit a sensor ID (LSB)"},
     {"ds", "dsGetOneValue", cmd_dsGetOneValue, "Get just one value for each sensor", "\%hd representing each bit a sensor ID (LSB)"},
     {"ds", "dsAlarmOn", cmd_dsAlarmOn, "Set the alarm to rising or falling edge", "\%d for the alarm status where 0 means off, 1 for rising edge, 2 for falling edge and 3 for any change"},
@@ -592,18 +604,7 @@ void cmd_dcGetSpeed(char * data)
 // SERVO_MOTOR_SET_POSITION    0X40
 void cmd_smSetPos(char * data)
 {
-    int servoid;
-    int servopos;
-    if (data == NULL || sscanf(data, "%d %d", &servoid, &servopos) != 2)
-    {
-        printf("Wrong parameters\n");
-        return;
-    }
-    
-    packetToSend->clear();
-    //packetToSend->setPosition(servoid,servopos);
-    packetToSend->prepareToSend();
-    sendAPacket(packetToSend);
+	//TODO 
     return;
 }
 
@@ -686,51 +687,89 @@ void cmd_dsOn(char * data)
 	protocol::handlers::DistanceSensorBoardPacketHandler * packet = new 
         protocol::handlers::DistanceSensorBoardPacketHandler( ps, dest_group, dest_card);
 
-	char d[10];
-	int i = 1;
-
-	
-
-// 	packets::DistanceSensorPacket * p = new packets::DistanceSensorPacket(dest_group, dest_card);
-// 	p->addData(data, i);
-// 	p->prepareToSend();
-// 	ps->sendPacket(p);
-
+	packet->enable(id);
     return;
 }
 
 // DISTANCE_SENSOR_OFF_DISTANCE_SENSOR		0X41
 void cmd_dsOff(char * data)
 {
-    // TODO
+	short id;
+    
+    if (data == NULL || sscanf(data, "%hd", &id) != 1)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+
+	protocol::handlers::DistanceSensorBoardPacketHandler * packet = new 
+        protocol::handlers::DistanceSensorBoardPacketHandler( ps, dest_group, dest_card);
+
+	packet->disable(id);
     return;
+  
 }
 
 // DISTANCE_SENSOR_ENABLE_DISTANCE_SENSORS		0X42
-void cmd_dsEnable(char * data)
+void cmd_dsSetMask(char * data)
 {
-    // TODO
+    unsigned int id;
+    
+    if (data == NULL || sscanf(data, "%x", &id) != 1)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+
+	protocol::handlers::DistanceSensorBoardPacketHandler * packet = new 
+        protocol::handlers::DistanceSensorBoardPacketHandler( ps, dest_group, dest_card);
+
+	packet->setMask(id);
     return;
 }
 
 // DISTANCE_SENSOR_GET_STATUS			0X43
-void cmd_dsStatus(char * data)
+void cmd_dsGetMask(char * data)
 {
-    // TODO
+    protocol::handlers::DistanceSensorBoardPacketHandler * packet = new 
+        protocol::handlers::DistanceSensorBoardPacketHandler( ps, dest_group, dest_card);
+
+	packet->getMask();
     return;
 }
 
 // DISTANCE_SENSOR_GET_VALUE           0X44
 void cmd_dsGetValue(char * data)
 {
-    // TODO
+	int sensorMask;
+	if (data == NULL || sscanf(data, "%x", &sensorMask) != 1)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+	
+	protocol::handlers::DistanceSensorBoardPacketHandler * packet = new 
+        protocol::handlers::DistanceSensorBoardPacketHandler( ps, dest_group, dest_card);
+
+	packet->getValue(sensorMask);
+
     return;
 }
 
 // DISTANCE_SENSOR_GET_ONE_VALUE          0X45
 void cmd_dsGetOneValue(char * data)
 {
-    // TODO
+    int sensorMask;
+	if (data == NULL || sscanf(data, "%x", &sensorMask) != 1)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+	
+	protocol::handlers::DistanceSensorBoardPacketHandler * packet = new 
+        protocol::handlers::DistanceSensorBoardPacketHandler( ps, dest_group, dest_card);
+
+	packet->getOneValue(sensorMask);
     return;
 }
 

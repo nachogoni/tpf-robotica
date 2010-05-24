@@ -27,17 +27,27 @@ class DistanceSensorBoardPacketHandler : public protocol::BoardPacketHandler
 
 		void disable(int dsId);
 		
-		int getValue(int dsId);
+		int getValue(int dsIds);
+		
+		int getOneValue(int dsIds);
+		
+		void setMask(int dsId);
+		
+		int getMask();
 		
 	private:
 		char groupid;
 		char boardid;
+		
 		PacketServer * ps;
 
 #ifdef LINUX
 		Mutex::Mutex dsValueMutex;
+		Mutex::Mutex dsMaskMutex;
 #endif
 		int dsValue [5];
+		int dsMask;
+		
 };
 
 }
