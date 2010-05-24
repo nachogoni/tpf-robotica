@@ -29,7 +29,6 @@ CPP_SOURCES = tcleaner.cpp GarbageCleaner.cpp WorldInfo.cpp \
 							protocol/handlers/BatteryBoardPacketHandler.cpp protocol/handlers/DCMotorBoardPacketHandler.cpp \
 							protocol/handlers/DistanceSensorBoardPacketHandler.cpp protocol/handlers/ServoBoardPacketHandler.cpp \
 							protocol/handlers/TrashBinBoardPacketHandler.cpp protocol/handlers/DefaultBoardPacketHandler.cpp
-#CPP_SOURCES = tcleaner.cpp GarbageCleaner.cpp behaviours/AbstractBehaviour.cpp behaviours/AvoidObstacle.cpp behaviours/CollectGarbage.cpp behaviours/FindLine.cpp behaviours/FocusGarbage.cpp behaviours/GoToBase.cpp behaviours/GoToDisposal.cpp behaviours/Recharge.cpp behaviours/UnloadGarbage.cpp behaviours/Wander.cpp robotapi/real/RealBattery.cpp robotapi/real/RealCamera.cpp robotapi/real/RealDevice.cpp robotapi/real/RealDeviceTag.cpp robotapi/real/RealDifferentialWheels.cpp robotapi/real/RealDistanceSensor.cpp robotapi/real/RealImage.cpp robotapi/real/RealRobot.cpp robotapi/real/RealServo.cpp robotapi/webts/WebotsBattery.cpp robotapi/webts/WebotsCamera.cpp robotapi/webts/WebotsDevice.cpp robotapi/webts/WebotsDeviceTag.cpp robotapi/webts/WebotsDifferentialWheels.cpp robotapi/webts/WebotsDistanceSensor.cpp robotapi/webts/WebotsImage.cpp robotapi/webts/WebotsRobot.cpp robotapi/webts/WebotsServo.cpp robotapi/real/RealTrashBin.cpp robotapi/webts/WebotsTrashBin.cpp protocol/BoardPacketHandler.cpp protocol/packet.cpp protocol/PacketServer.cpp protocol/packets/batterypacket.cpp protocol/packets/BoardPacket.cpp protocol/packets/DCMotorPacket.cpp protocol/packets/DistanceSensorPacket.cpp protocol/packets/floorsensorpacket.cpp protocol/packets/GroupPacket.cpp protocol/packets/ServoMotorPacket.cpp protocol/packets/trashbinpacket.cpp protocol/packets/ultrasonicsensorpacket.cpp protocol/handlers/BatteryBoardPacketHandler.cpp protocol/handlers/DCMotorBoardPacketHandler.cpp protocol/handlers/DistanceSensorBoardPacketHandler.cpp protocol/handlers/ServoBoardPacketHandler.cpp protocol/handlers/TrashBinBoardPacketHandler.cpp protocol/handlers/DefaultBoardPacketHandler.cpp robotapi/real/RealPCBattery.cpp robotapi/webts/WebotsPCBattery.cpp
 # or
 # CC_SOURCES = my_controller.cc my_clever_algo.cc my_gui.cc
 #
@@ -37,21 +36,6 @@ CPP_SOURCES = tcleaner.cpp GarbageCleaner.cpp WorldInfo.cpp \
 # existing LIBRARIES variable:
 #LIBRARIES= -lCppController  -L"C:/Program Files/OpenCV/lib" -L"C:/Program Files/OpenCV/otherlibs/highgui" -lcxcore -lcv -lcvaux -lhighgui -lml -g3
 #LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/OpenCV2.0/lib"
-
-LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/Program Files/OpenCV/lib"
-
-#
-# if some special CFLAGS need to be passed, for example to find include
-# files, or set optimization level:
-
-#CFLAGS= -g -Wall -I"C:/tpf-robotica/Code/controllers/TCleaner" -I"C:\OpenCV2.0\include\opencv"
-
-CFLAGS= -g -Wall -I"C:\projects\tpf-robotica\Code\controllers\Tcleaner" -I"C:/Program Files/OpenCV/include/opencv" 
-
-#-L"C:/Program Files/OpenCV/lib" -lcxcore -lcv -lcvaux -lhighgui -lml -g3
-#-L"C:/Program Files/OpenCV/lib" 
-# you may want, for example, to use the C API in your C++ program by adding:
-# CFLAGS=-I"$(WEBOTS_HOME)/include/controller/c"
 
 ifndef WEBOTS_HOME_PATH
 ifeq ($(OS),Windows_NT)
@@ -64,3 +48,27 @@ endif
 endif
 
 include $(WEBOTS_HOME_PATH)/projects/default/controllers/Makefile.include
+
+ifeq ($(OSTYPE),linux)
+LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"$(HOME)/OpenCV-2.0.0/lib" -lccext2
+else
+LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/Program Files/OpenCV/lib"
+endif
+
+#
+# if some special CFLAGS need to be passed, for example to find include
+# files, or set optimization level:
+
+#CFLAGS= -g -Wall -I"C:/tpf-robotica/Code/controllers/TCleaner" -I"C:\OpenCV2.0\include\opencv"
+
+ifeq ($(OSTYPE),linux)
+CFLAGS= -g -Wall -I"$(HOME)/tpf-robotica/Code/controllers/Tcleaner" -I"$(HOME)/OpenCV-2.0.0/include/opencv" -std=c++0x
+else
+CFLAGS= -g -Wall -I"C:\projects\tpf-robotica\Code\controllers\Tcleaner" -I"C:/Program Files/OpenCV/include/opencv" 
+endif
+
+#-L"C:/Program Files/OpenCV/lib" -lcxcore -lcv -lcvaux -lhighgui -lml -g3
+#-L"C:/Program Files/OpenCV/lib" 
+# you may want, for example, to use the C API in your C++ program by adding:
+# CFLAGS=-I"$(WEBOTS_HOME)/include/controller/c"
+
