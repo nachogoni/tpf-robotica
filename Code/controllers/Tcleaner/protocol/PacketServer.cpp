@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#define _DEBUG 1
+
 #ifdef __linux__
 	#include <termios.h>
 	#include <unistd.h>
@@ -112,6 +114,9 @@ void PacketServer::run(void){
             Packet * p = new Packet(ser_buf, ser_buf[0]+1);
 			BoardPacketHandler * bph = this->getHandler(p->getOriginGroup(),p->getOriginId());
 			bph->handlePacket(p);
+			#ifdef _DEBUG
+				defaultHandler->handlePacket(p);
+			#endif
 /*            if (((a + 1) & 0x000000FF) != (c & 0x000000FF))
 			char c;
             // Have things in buffer! :P
@@ -172,6 +177,7 @@ void PacketServer::registerHandler(BoardPacketHandler * bph,int groupid,int boar
 
 BoardPacketHandler * PacketServer::getHandler(unsigned char groupid , unsigned char boardid){
 	BoardPacketHandler * handler = this->handlers[groupid][boardid];
+	
 	if ( handler == NULL )
 		handler = defaultHandler;
 	return handler;

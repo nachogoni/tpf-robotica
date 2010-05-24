@@ -53,6 +53,8 @@ class DCMotorPacket : public protocol::packets::BoardPacket
 		short getEncoderValueToStop();
 		short getSpeedValue();
 		short getMotorConsumptionValue();
+		short getStressAlarmValue();
+		short getShutdownValue();
 	private:
 		void setDirection(char dir);
 };

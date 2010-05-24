@@ -135,9 +135,10 @@ void Packet::setCommand(char command){
 }
 
 char Packet::getCommand(){
-	return this->packet[COMMAND_FIELD] & 0x7F;
+	return this->packet[COMMAND_FIELD];// & 0x7F;
 }
 
+//TODO: Habria qeu tomar ACK como cualquier respuesta y no solo las qeu vienen como dato
 bool Packet::isACK(){
 	return this->getDataLength() == 0;
 }
@@ -173,6 +174,7 @@ void Packet::addData(int data){
 }
 
 void Packet::addData(char data){
+	//printf(" addData char %c \n",30+data);
     packet[this->dataIdx] = data;
     this->dataIdx++;
 	this->actualLength += 1;
@@ -181,6 +183,10 @@ void Packet::addData(char data){
 
 void Packet::resetDataIdx(){
 	this->dataIdx = DATA_FIELD;
+}
+
+void Packet::resetDataIdx(int offset){
+	this->dataIdx = offset + DATA_FIELD;
 }
 
 void Packet::clear(){
@@ -196,18 +202,22 @@ short Packet::getShortData(){
     short up = packet[this->dataIdx++] & 0x00FF;
     short down = packet[this->dataIdx++] & 0x00FF;
     short ret = 0xFFFF;
-    ret &= ( down << 8 );
-    ret &= up;
+    ret &= (( down << 8  ) | 0x00FF);
+    ret &= up | 0xFF00;
     return ret;
 }
 
 //TODO
 int Packet::getIntData(){
+    int upup = packet[this->dataIdx++] & 0x00FF;
     int up = packet[this->dataIdx++] & 0x00FF;
     int down = packet[this->dataIdx++] & 0x00FF;
-    int ret = 0xFFFF;
-    ret &= ( up << 8 );
-    ret &= down;
+    int downdown = packet[this->dataIdx++] & 0x00FF;
+    int ret = 0xFFFFFFFF;
+    ret &= (( downdown << 24  ) | 0x00FFFFFF);
+    ret &= (( down << 16 )| 0xFF00FFFF);
+    ret &= (( up << 8 )| 0xFFFF00FF);
+    ret &= (upup |  0xFFFFFF00);
     return ret;
 }
 
