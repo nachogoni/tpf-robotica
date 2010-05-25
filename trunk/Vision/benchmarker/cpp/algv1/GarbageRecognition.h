@@ -3,6 +3,7 @@
 
 #include <list>
 #include "Garbage.h"
+#include "Prediction.h"
 #include <cv.h>
 
 namespace utils {
@@ -11,12 +12,17 @@ class GarbageRecognition {
 
  public:
 
-
+	GarbageRecognition();
+	GarbageRecognition(int a);
+	~GarbageRecognition();
     std::list<utils::Garbage*> getGarbageList(IplImage * img);
+    Prediction* prediction;
+
 
 
  private:
     std::list<Garbage*> garbageList(IplImage * src, IplImage * model);
+    //std::list<utils::Garbage*> garbages;
 
 };
 

@@ -1,4 +1,5 @@
 #include "GarbageRecognition.h"
+#include "Prediction.h"
 
 #include <highgui.h>
 #include <cv.h>
@@ -42,16 +43,30 @@ int main(void)
 }
 */
 namespace utils {
-
-
-
+	
 std::list<utils::Garbage*> garbages;
+std::list<utils::Garbage*> garbagePrediction;
+
+GarbageRecognition::GarbageRecognition(){};
+GarbageRecognition::~GarbageRecognition(){};
+
+GarbageRecognition::GarbageRecognition(int a){
+	this->prediction= new Prediction();
+	printf("prediction list size:%d\n",this->prediction->ghist.size());
+}
+
+
+
 
 std::list<Garbage*> 
 GarbageRecognition::getGarbageList(IplImage * src)
 {
+		
 	    IplImage * model = cvLoadImage("./colilla-sinBlanco.png",1);
 		garbages = this->garbageList(src,model);
+		//prediction
+		garbagePrediction= this->prediction->getPrediction(garbages);
+		
 	
 		cvReleaseImage(&model);
 	return garbages;
