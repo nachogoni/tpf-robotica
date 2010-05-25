@@ -365,14 +365,12 @@ void sendAlarm()
 
 void main()
 {
+//long j = 0;
 	// Placa Generica - Implementacion del protocolo
 	init();
 
 	// Init del protocol
 	initProtocol();
-
-
-//readSensor = 0xFF;
 
 	// FOREVER
 	while(true)
@@ -395,12 +393,12 @@ void main()
 				// Protocolo
 				runProtocol(&command);
 
+/*if (j++ == 5000) {
+ 	readSensor = 0xFF;
+ 	requestCmd = 0x44;
+ 	j = 0;
+}*/
 
-
-//readSensor = 0x3F;
-
-
-				
 				if (readSensor != 0x00)
 				{
 					// Almacena el pedido sobre los sensores
@@ -671,11 +669,11 @@ void readSensors(int sensors)
 		}
 	}
 	
-	sensor1 = SENSOR_OFF;
+	/*sensor1 = SENSOR_OFF;
 	sensor2 = SENSOR_OFF;
 	sensor3 = SENSOR_OFF;
 	sensor4 = SENSOR_OFF;
-	sensor5 = SENSOR_OFF;
+	sensor5 = SENSOR_OFF;*/
 	
 	values[0] /= samples;
 	values[1] /= samples;
