@@ -73,7 +73,7 @@ void DistanceSensorBoardPacketHandler::handlePacket(Packet * p){
 		this->dsValueMutex->leaveMutex();
 		#endif
 
-		printf("Get values response: ID0: %d ID1: %d ID2: %d ID3: %d ID4: %d ID5: %d\n", 
+		printf("Get values response: ID0: %4d ID1: %4d ID2: %4d ID3: %4d ID4: %4d ID5: %5d\n", 
 			this->dsValue[0],this->dsValue[1],this->dsValue[2],this->dsValue[3],this->dsValue[4],this->dsValue[5]);
 
 	} else
