@@ -98,7 +98,7 @@ int Contours::areaFilter(double min_area,double max_area){
 	area=fabs(cvContourArea(this->c,CV_WHOLE_SEQ));
 	 
 	
-	int zone=getPointZone(this->x,this->y);ls
+	int zone=getPointZone(this->x,this->y);
 	
 	
 	double  minAreaByZone[]={0,80,40,20,10};
@@ -121,8 +121,8 @@ int Contours::perimeterFilter(double min_per,double max_per){
 	
 	int zone=getPointZone(this->x,this->y);
 	
-	return per>10 && per<1000;
-	//return per>minPerimeterByZone[zone] &&  per< maxPerimeterByZone[zone];
+	//return per>10 && per<1000;
+	return per>minPerimeterByZone[zone] &&  per< maxPerimeterByZone[zone];
 	
 }
 
