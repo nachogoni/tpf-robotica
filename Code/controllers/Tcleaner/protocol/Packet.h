@@ -53,7 +53,7 @@ class Packet
 		void addData(int data);
 		char * getPacket();
 		char getActualLength();
-		
+		void refresh();
 		void clear();
 		void print();
 	protected:

@@ -12,6 +12,7 @@
 #define CMD_GET_VALUE 0x44
 #define CMD_GET_ONE_VALUE 0x45
 #define CMD_ALARM_ON 0x46
+#define CMD_SWITCH_ALARM 0x47
 
 namespace protocol {
 namespace packets {

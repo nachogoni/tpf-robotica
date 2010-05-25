@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define _DEBUG 1
-
 #ifdef __linux__
 	#include <termios.h>
 	#include <unistd.h>
@@ -20,15 +18,11 @@
 
 namespace protocol {
 	
-
-
-
-
-
 // class constructor
 PacketServer::PacketServer()
 {
 	defaultHandler = new protocol::handlers::DefaultBoardPacketHandler(this);
+	this->debug = false;
 	#ifdef __linux__
 	this->init();
 	#endif
@@ -59,9 +53,11 @@ void PacketServer::sendAPacket(Packet * p){
 	unsigned char i;
 	p->calculateCRC();
 	char * packet = p->getPacket();
-	p->print();
+	if (debug == true)
+		p->print();
 	#ifdef __linux__
-	printf("escribi : %d bytes en el pipe\n",write(pipes[PIPE_OUT],packet,p->getActualLength()));
+	//printf("escribi : %d bytes en el pipe\n",write(pipes[PIPE_OUT],packet,p->getActualLength()));
+	write(pipes[PIPE_OUT],packet,p->getActualLength());
 	#endif
 	this->waitingForResponse.push_back(p);
 }
@@ -114,9 +110,8 @@ void PacketServer::run(void){
             Packet * p = new Packet(ser_buf, ser_buf[0]+1);
 			BoardPacketHandler * bph = this->getHandler(p->getOriginGroup(),p->getOriginId());
 			bph->handlePacket(p);
-			#ifdef _DEBUG
+			if (debug == true)
 				defaultHandler->handlePacket(p);
-			#endif
 /*            if (((a + 1) & 0x000000FF) != (c & 0x000000FF))
 			char c;
             // Have things in buffer! :P
@@ -214,6 +209,10 @@ bool PacketServer::init()
     
     #endif
     return true;
+}
+
+void PacketServer::setDebug(bool mode) {
+	this->debug = mode;
 }
 
 }

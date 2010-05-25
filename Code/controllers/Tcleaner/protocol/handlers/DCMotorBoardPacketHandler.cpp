@@ -39,34 +39,35 @@ void DCMotorBoardPacketHandler::handlePacket(Packet * p){
 	dcmp->analysePacket(p);
 	
 	char cmd=dcmp->getCommand();
+
 	cmd=cmd & 0x7F;
+
+	printf("DC Motor %d:%d -> ",  this->groupid, this->boardid);
+
 	//ACK commands
 	if ( cmd == CMD_SET_DIRECTION ){
 		printf("Set direction ACK received\n");
-	}
+	} else
 	if ( cmd == CMD_SET_DC_SPEED){
 		printf("Set Speed ACK received\n");
-	}	
+	} else	
 	if ( cmd == CMD_SET_ENCODER){
 		printf("Set encoder ACK received\n");
-	}
+	} else
 	if ( cmd == CMD_RESET_ENCODER){
 		printf("Reset encoder ACK received\n");
-	}
-	
+	} else
 	if ( cmd == CMD_SET_ENCODER_T_S){
 		printf("Set encoder to stop ACK received\n");
-	}
+	} else
 	if ( cmd == CMD_DONT_STOP){
 		printf("Dont stop ACK received\n");
-	}
-	
-	
+	} else	
 	if ( cmd == CMD_GET_ENCODER ){
 		int value = dcmp->getEncoderValue();
 		double val=value;
 		
-		printf("GET_ENCODER:  %g\n",val);
+		printf("Encoder value:  %g\n",val);
 		
 		// TODO convert from int(4 bytes) to double
 		// Lock Mutex
@@ -79,10 +80,10 @@ void DCMotorBoardPacketHandler::handlePacket(Packet * p){
 		this->encoderMutex->leaveMutex();
 		#endif
 
-	}
+	} else
 	if ( cmd == CMD_GET_DC_SPEED ){
 		int value = dcmp->getSpeedValue();
-		printf("GET_DC_SPEED: %d\n",value);
+		printf("Motor speed value: %d\n",value);
 		// TODO convert from int(4 bytes) to double
 		// Lock Mutex
 		#ifdef LINUX
@@ -94,11 +95,11 @@ void DCMotorBoardPacketHandler::handlePacket(Packet * p){
 		this->speedMutex->leaveMutex();
 		#endif
 
-	}
+	} else
  	if ( cmd == CMD_MOTOR_CONSUMPTION ){
 		int value = dcmp->getMotorConsumptionValue();
 		double val =value;
-		printf("MOTOR_CONSUMPTION %g\n",val);
+		printf("Motor consumption value: %g\n",val);
 		// TODO convert from int(4 bytes) to double
 		// Lock Mutex
 		#ifdef LINUX
@@ -110,7 +111,7 @@ void DCMotorBoardPacketHandler::handlePacket(Packet * p){
 		this->consumptionMutex->leaveMutex();
 		#endif
 
-	}
+	} else
 	//TODO: No esta implementada esta en el handler?
 	// no se guarda en el handler?
 	if ( cmd == CMD_GET_ENCODER_T_S ){
@@ -128,8 +129,7 @@ void DCMotorBoardPacketHandler::handlePacket(Packet * p){
 		this->consumptionMutex->leaveMutex();
 		#endif
 		*/
-	}
-	
+	} else
  	if ( dcmp->isMotorAlarm() ){
 		// Lock Mutex
 		printf("ALERT: Consumption %d\n",dcmp->getStressAlarmValue());
@@ -142,7 +142,7 @@ void DCMotorBoardPacketHandler::handlePacket(Packet * p){
 		this->stressMutex->leaveMutex();
 		#endif
 
-	}
+	} else
 	if ( dcmp->isMotorShutDown() ){
 		printf("ALERT: MAX consumption alerts reached, system is going DOWN!! \n"); 
 		printf("consumption at shutdown: %d\n",dcmp->getShutdownValue());
@@ -156,8 +156,12 @@ void DCMotorBoardPacketHandler::handlePacket(Packet * p){
 		this->shutdownMutex->leaveMutex();
 		#endif
 
+	} else {
+		printf("Packet received unknown\n");
+		p->print();
 	}
 	
+	return;	
 }
 
 void DCMotorBoardPacketHandler::setSpeed(double value){

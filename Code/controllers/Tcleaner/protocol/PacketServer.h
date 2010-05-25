@@ -40,6 +40,8 @@ class PacketServer {
 		void sendPacket(Packet * p);
 		void registerHandler(BoardPacketHandler * bph,int groupid,int boardid);
 
+		void setDebug(bool debug);
+
 	private:
 		BoardPacketHandler * getHandler(unsigned char groupid,unsigned char boardid);
 		bool init();
@@ -50,6 +52,8 @@ class PacketServer {
 		std::map<char, std::map<char, BoardPacketHandler *> > handlers;
 		BoardPacketHandler * defaultHandler;
 		void run(void);
+		bool debug;
+
 
 		#ifdef __linux__
 		int pipes[2];

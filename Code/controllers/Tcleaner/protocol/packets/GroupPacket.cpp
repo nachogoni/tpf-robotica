@@ -64,6 +64,7 @@ void GroupPacket::prepareToSend(){
 
 void GroupPacket::analysePacket(Packet * p){
 	memcpy(this->getPacket(),p->getPacket(),p->getActualLength());
+	this->refresh();
 }
 
 }

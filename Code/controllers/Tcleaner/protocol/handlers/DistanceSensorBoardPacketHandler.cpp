@@ -18,6 +18,7 @@ DistanceSensorBoardPacketHandler::DistanceSensorBoardPacketHandler(PacketServer 
 	this->dsValue[2] = 0;
 	this->dsValue[3] = 0;
 	this->dsValue[4] = 0;
+	this->dsValue[5] = 0;
 }
 
 // class destructor
@@ -27,12 +28,34 @@ DistanceSensorBoardPacketHandler::~DistanceSensorBoardPacketHandler()
 }
 
 void DistanceSensorBoardPacketHandler::handlePacket(Packet * p){
+
 	packets::DistanceSensorPacket * dsp = new packets::DistanceSensorPacket(groupid,boardid);
 	dsp->analysePacket(p);
 	
-	if ( dsp->getCommand() == CMD_GET_VALUE ){
+	char cmd=dsp->getCommand();
+
+	cmd=cmd & 0x7F;
+
+	printf("Distance Sensor %d:%d -> ",  this->groupid, this->boardid);
+
+	//ACK commands
+	if ( cmd == CMD_ON ){
+		printf("On sensor ACK received\n");
+	} else
+	if ( cmd == CMD_OFF ){
+		printf("Off sensor ACK received\n");
+	} else
+	if ( cmd == CMD_SET_STATUS ){
+		printf("Set status ACK received\n");
+	} else
+	if ( cmd == CMD_GET_STATUS ){
+		printf("Get status ACK received\n");
+	} else
+	if ( cmd == CMD_GET_VALUE ){
 		short * value = dsp->getSensorValues();
+
 		// TODO convert from short to double
+
 		// Lock Mutex
 		#ifdef LINUX
 		this->dsValueMutex->enterMutex();
@@ -43,12 +66,31 @@ void DistanceSensorBoardPacketHandler::handlePacket(Packet * p){
 		this->dsValue[2] = value[2];
 		this->dsValue[3] = value[3];
 		this->dsValue[4] = value[4];
+		this->dsValue[5] = value[5];
 		
 		// Release Mutex
 		#ifdef LINUX
 		this->dsValueMutex->leaveMutex();
 		#endif
+
+		printf("Get values response: ID0: %d ID1: %d ID2: %d ID3: %d ID4: %d ID5: %d\n", 
+			this->dsValue[0],this->dsValue[1],this->dsValue[2],this->dsValue[3],this->dsValue[4],this->dsValue[5]);
+
+	} else
+	if ( cmd == CMD_GET_ONE_VALUE ){
+		printf("Set direction ACK received\n");
+	} else
+	if ( cmd == CMD_ALARM_ON ){
+		printf("Set direction ACK received\n");
+	} else
+	if ( cmd == CMD_SWITCH_ALARM ){
+		printf("Set direction ACK received\n");
+	} else {
+		printf("Packet received unknown\n");
+		p->print();
 	}
+	
+	return;
 }
 
 void DistanceSensorBoardPacketHandler::enable(int dsId){
