@@ -45,7 +45,7 @@ class DistanceSensorBoardPacketHandler : public protocol::BoardPacketHandler
 		Mutex::Mutex dsValueMutex;
 		Mutex::Mutex dsMaskMutex;
 #endif
-		int dsValue [5];
+		int dsValue[6];
 		int dsMask;
 		
 };

@@ -21,6 +21,11 @@ Packet::Packet(char * data, unsigned char length){
 	this->resetDataIdx();
 }
 
+void Packet::refresh(){
+	this->actualLength = packet[0] + 1;
+	this->resetDataIdx();
+}
+
 // class destructor
 Packet::~Packet()
 {
@@ -222,8 +227,8 @@ int Packet::getIntData(){
 }
 
 void Packet::print(){
-    	for(int i = 0; i <this->getActualLength(); i++ )
-    		printf("%02X:",( (char) this->packet[i]) & 0x000000FF);
+	for(int i = 0; i <this->getActualLength(); i++ )
+		printf("%02X:",( (char) this->packet[i]) & 0x000000FF);
 	putchar('\n');
 	fflush(stdout);
 }

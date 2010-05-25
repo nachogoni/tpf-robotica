@@ -10,6 +10,7 @@
 #include <protocol/packets/BoardPacket.h>
 #include <protocol/packets/ServoMotorPacket.h>
 #include <protocol/packets/DCMotorPacket.h>
+#include <protocol/packets/DistanceSensorPacket.h>
 #include <protocol/handlers/DCMotorBoardPacketHandler.h> // class's header file
 #include <protocol/handlers/BatteryBoardPacketHandler.h>
 #include <protocol/handlers/DistanceSensorBoardPacketHandler.h>
@@ -42,18 +43,27 @@ typedef struct {
     const char * cmd_help_param;
 } cmd_type;
 
-bool quit = false, groupBC = false, fullBC = false;
+bool quit = false, groupBC = false, fullBC = false, debug = false;
 int fd = 5;
 int pipes[2];
 int lastCMD = -1;
 
 int dest_group = 0x01, dest_card = 0x01;
 
-// TODO: desvincularlo del DCMotor
-protocol::packets::DCMotorPacket * packetToSend = NULL;
-
 // Packet Server
 protocol::PacketServer * ps;
+
+// Packet boards
+protocol::packets::BoardPacket * boardPacket = NULL;
+protocol::packets::DCMotorPacket * dcPacket = NULL;
+protocol::packets::DistanceSensorPacket * dsPacket = NULL;
+
+protocol::packets::DCMotorPacket * dcPacket0 = NULL;
+protocol::packets::DCMotorPacket * dcPacket1 = NULL;
+
+protocol::packets::DistanceSensorPacket * dsPacket0 = NULL;
+protocol::packets::DistanceSensorPacket * dsPacket1 = NULL;
+protocol::packets::DistanceSensorPacket * dsPacket2 = NULL;
 
 // Handlers for the boards
 protocol::handlers::DCMotorBoardPacketHandler * dcHandler = NULL;
@@ -76,33 +86,24 @@ void cmd_fullBC(char * data);
 bool init();
 char getDest();
 void sendAPacket(protocol::Packet * p);
-bool isBitSet(int val,int index);
-
 
 // Implementation
-
-bool isBitSet(int val,int index) {
-	if(val & ( 0x01 << index)){
-		return true;
-	}
-	
-	return false;
-}
 
 // Command list
 cmd_type commands[] = {
     // Common commands
+    {"common", "dc", cmd_setDC, "Set actual DC Motor board", "\%d for the board ID (0 or 1)"},
+    {"common", "ds", cmd_setDS, "Set actual Distance Sensor board", "\%d for the board ID (0, 1 or 2)"},
     {"common", "setDest", cmd_setDest, "Set group and card id for destination", "\%d \%d for group and card (0 to 15)"},
     {"common", "getDest", cmd_getDest, "Get group and card id for destination", ""},
     {"common", "groupBC", cmd_groupBC, "Change group broadcast state", ""},
     {"common", "fullBC", cmd_fullBC, "Change full broadcast state", ""},
-    {"common", "dc", cmd_setDC, "Set actual DC Motor board", "\%d for the board ID (0 or 1)"},
-    {"common", "ds", cmd_setDS, "Set actual Distance Sensor board", "\%d for the board ID (0, 1 or 2)"},
+    {"common", "debug", cmd_debug, "Set if debug messages must be shown", "\%d value, 0 means off and 1 means on"},
     // Commands for MainController (mc)
-    {"mc", "init", cmd_init, "Send init command", ""},
-    {"mc", "reset", cmd_reset, "Send reset command", ""},
-    {"mc", "ping", cmd_ping, "Send ping command", ""},
-    {"mc", "error", cmd_error, "Send error command", "\%d for error"},
+    {"mc", "mcInit", cmd_init, "Send init command", ""},
+    {"mc", "mcReset", cmd_reset, "Send reset command", ""},
+    {"mc", "mcPing", cmd_ping, "Send ping command", ""},
+    {"mc", "mcError", cmd_error, "Send error command", "\%d for error"},
     // Commands for MotorDC (dc)                                                                      
     {"dc", "dcSetDirection", cmd_dcSetDirection, "Set motor turn", "\%d for Clockwise:0 or counter-clockwise:1"},
     {"dc", "dcSetSpeed", cmd_dcSetSpeed, "Set motor speed", "\%d \%d for Clockwise:0 or counter-clockwise:1 and counts per second"},
@@ -113,8 +114,6 @@ cmd_type commands[] = {
     {"dc", "dcGetEncoderToStop", cmd_dcGetEncoderToStop, "Obtain remaining counts of encoder to stop", ""},
     {"dc", "dcDontStop", cmd_dcDontStop, "Undo commands for stopping encoder, disables encoder counting", ""},
     {"dc", "dcConsumption", cmd_dcConsumption, "Gets current motor consumption", ""},
-    {"dc", "dcStressAlarm", cmd_dcStressAlarm, "Indicates main controller of extreme consumption on the motor", "\%hd consumption that raise alarm"},
-    {"dc", "dcShutDownAlarm", cmd_dcShutDownAlarm, "Shutdowns dcMotor stress alarm", "\%hd consumption that raise alarm"},   
     {"dc", "dcGetSpeed", cmd_dcGetSpeed, "Get motor speed in counts per second", ""},
     // Commands for DistanceSensor (ds)
     {"ds", "dsOn", cmd_dsOn, "Turn on a sensor", "\%d for the sensor ID"},
@@ -159,12 +158,10 @@ char getDest()
     int group = dest_group & 0x0F;
     int card = dest_card & 0x0F;
     
-    if (fullBC == true)
-    {
+    if (fullBC == true) {
         group = 0x0F;
         card = 0x0F;
-    } else if (groupBC == true)
-    {
+    } else if (groupBC == true) {
         card = 0x0F;
     } 
     
@@ -223,6 +220,8 @@ int main( int argc, const char **argv)
 	registerHandlers(ps);
 	ps->start();
 
+    createPacketBoards();
+        
     // Set file descriptors
     FD_SET(0,&readfd);
 
@@ -270,25 +269,37 @@ int main( int argc, const char **argv)
     return 0;
 }
 
+void createPacketBoards() {
+	
+    dcPacket0 = new protocol::packets::DCMotorPacket(DCMOTOR_GID, DCMOTOR_BOARD_ID0);
+    dcPacket1 = new protocol::packets::DCMotorPacket(DCMOTOR_GID, DCMOTOR_BOARD_ID1);
+
+    dsPacket0 = new protocol::packets::DistanceSensorPacket(DISTANCESENSOR_GID, DISTANCESENSOR_BOARD_ID0);
+    dsPacket1 = new protocol::packets::DistanceSensorPacket(DISTANCESENSOR_GID, DISTANCESENSOR_BOARD_ID1);
+    dsPacket2 = new protocol::packets::DistanceSensorPacket(DISTANCESENSOR_GID, DISTANCESENSOR_BOARD_ID2);
+	
+	dcPacket = dcPacket0;
+	dsPacket = dsPacket0;
+	
+    boardPacket = dcPacket0;
+
+	return;
+}
+
 void
 registerHandlers(protocol::PacketServer * ps){
 
-	//register handlers
-    protocol::handlers::DCMotorBoardPacketHandler * dcMotorHandler0 =
-		new protocol::handlers::DCMotorBoardPacketHandler(ps,DCMOTOR_GID,DCMOTOR_BOARD_ID0);
-		
-    protocol::handlers::DCMotorBoardPacketHandler * dcMotorHandler1 =
-		new protocol::handlers::DCMotorBoardPacketHandler(ps,DCMOTOR_GID,DCMOTOR_BOARD_ID1);
-	
-	protocol::handlers::DistanceSensorBoardPacketHandler * distanceSensorHandler0 = new
-		protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCESENSOR_GID,DISTANCESENSOR_BOARD_ID0);
+	// Create handlers
+    dcMotorHandler0 = new protocol::handlers::DCMotorBoardPacketHandler(ps,DCMOTOR_GID,DCMOTOR_BOARD_ID0);
+    dcMotorHandler1 = new protocol::handlers::DCMotorBoardPacketHandler(ps,DCMOTOR_GID,DCMOTOR_BOARD_ID1);
+	distanceSensorHandler0 = new protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCESENSOR_GID,DISTANCESENSOR_BOARD_ID0);
+	distanceSensorHandler1 = new protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCESENSOR_GID,DISTANCESENSOR_BOARD_ID1);
+	distanceSensorHandler2 = new protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCESENSOR_GID,DISTANCESENSOR_BOARD_ID2);
+
+    dcHandler = dcMotorHandler0;
+	dsHandler = distanceSensorHandler0;
 	    
-	protocol::handlers::DistanceSensorBoardPacketHandler * distanceSensorHandler1 = new
-		protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCESENSOR_GID,DISTANCESENSOR_BOARD_ID1);
-	    
-	protocol::handlers::DistanceSensorBoardPacketHandler * distanceSensorHandler2 = new
-		protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCESENSOR_GID,DISTANCESENSOR_BOARD_ID2);
-	    
+	// Register handlers
     ps->registerHandler(dcMotorHandler0, DCMOTOR_GID, DCMOTOR_BOARD_ID0);
     ps->registerHandler(dcMotorHandler1, DCMOTOR_GID, DCMOTOR_BOARD_ID1);
     ps->registerHandler(distanceSensorHandler0, DISTANCESENSOR_GID, DISTANCESENSOR_BOARD_ID0);
@@ -301,8 +312,9 @@ void sendAPacket(protocol::Packet * p){
     unsigned char i;
     p->calculateCRC();
     char * packet = p->getPacket();
-    p->print();
-    printf("escribi: %d bytes en el pipe\n",write(pipes[PIPE_OUT],packet,p->getActualLength()));
+    if (debug == true)
+		p->print();
+    //printf("escribi: %d bytes en el pipe\n",write(pipes[PIPE_OUT],packet,p->getActualLength()));
     //this->waitingForResponse.push_back(p);
 }
 
@@ -339,40 +351,40 @@ void cmd_quit(char * data)
 // COMMON_INIT 0X01
 void cmd_init(char * data)
 {
-    packetToSend->clear();
-    packetToSend->setInit();
-    packetToSend->prepareToSend();
-    sendAPacket(packetToSend);
+    boardPacket->clear();
+    boardPacket->setInit();
+    boardPacket->prepareToSend();
+    sendAPacket(boardPacket);
     return;
 }
 
-// COMMON_RESET    0X02
+// COMMON_RESET 0X02
 void cmd_reset(char * data)
 {
-    packetToSend->clear();
-    packetToSend->setReset();
-    packetToSend->prepareToSend();
-    sendAPacket(packetToSend);
+    boardPacket->clear();
+    boardPacket->setReset();
+    boardPacket->prepareToSend();
+    sendAPacket(boardPacket);
     return;
 }
 
 // COMMON_PING 0X03
 void cmd_ping(char * data)
 {
-    packetToSend->clear();
-    packetToSend->setPing();
-    packetToSend->prepareToSend();
-    sendAPacket(packetToSend);
+    boardPacket->clear();
+    boardPacket->setPing();
+    boardPacket->prepareToSend();
+    sendAPacket(boardPacket);
     return;
 }
 
-// COMMON_ERROR    0X04
+// COMMON_ERROR	0X04
 void cmd_error(char * data)
 {
-    packetToSend->clear();
-    packetToSend->setPing();
-    packetToSend->prepareToSend();
-    sendAPacket(packetToSend);
+    boardPacket->clear();
+    boardPacket->setPing();
+    boardPacket->prepareToSend();
+    sendAPacket(boardPacket);
     // TODO: armar paquete de error y mandarlo
     return;
 }
@@ -393,21 +405,25 @@ void cmd_setDC(char * data)
     {
 		case 0:
 			dcHandler = dcMotorHandler0;
+			dcPacket = dcPacket0;
 			dest_card = DCMOTOR_BOARD_ID0;
 			break;
 		case 1:
 			dcHandler = dcMotorHandler1;
+			dcPacket = dcPacket1;
 			dest_card = DCMOTOR_BOARD_ID1;
 			break;
 		default:
 			// DEFAULT
 			printf("Bad ID, setting first board\n");
 			dcHandler = dcMotorHandler0;
+			dcPacket = dcPacket0;
 			dest_card = DCMOTOR_BOARD_ID0;
 			break;
 	}
 	
-    printf("GroupID: %d CardID: %d -> (%X)\n", dest_group, dest_card, getDest());
+	boardPacket = dcPacket;
+    printf("DC Motor Board -> GroupID: %d CardID: %d -> (%X)\n", dest_group, dest_card, getDest());
     
     return;
 }
@@ -428,25 +444,31 @@ void cmd_setDS(char * data)
     {
 		case 0:
 			dsHandler = distanceSensorHandler0;
+			dsPacket = dsPacket0;
 			dest_card = DISTANCESENSOR_BOARD_ID0;
 			break;
 		case 1:
 			dsHandler = distanceSensorHandler1;
+			dsPacket = dsPacket1;
 			dest_card = DISTANCESENSOR_BOARD_ID1;
 			break;
-		case 1:
+		case 2:
 			dsHandler = distanceSensorHandler2;
+			dsPacket = dsPacket2;
 			dest_card = DISTANCESENSOR_BOARD_ID2;
 			break;
 		default:
 			// DEFAULT
 			printf("Bad ID, setting first board\n");
 			dsHandler = distanceSensorHandler0;
+			dsPacket = dsPacket0;
 			dest_card = DISTANCESENSOR_BOARD_ID0;
 			break;
 	}
 	
-    printf("GroupID: %d CardID: %d -> (%X)\n", dest_group, dest_card, getDest());
+	boardPacket = dsPacket;
+	
+    printf("Distanse Sensor Board -> GroupID: %d CardID: %d -> (%X)\n", dest_group, dest_card, getDest());
     
     return;
 }
@@ -458,8 +480,10 @@ void cmd_setDest(char * data)
         printf("Wrong parameters\n");
         return;
     }
-    packetToSend = new protocol::packets::DCMotorPacket(dest_group,dest_card);
-    printf("GroupID: %d CardID: %d -> (%X)\n", dest_group, dest_card, getDest());
+    
+    boardPacket = new protocol::packets::BoardPacket(dest_group,dest_card);
+    
+    printf("Board -> GroupID: %d CardID: %d -> (%X)\n", dest_group, dest_card, getDest());
     
     return;
 }
@@ -484,6 +508,27 @@ void cmd_fullBC(char * data)
     return;
 }
 
+void cmd_debug(char * data)
+{
+	int v = 0;
+	
+    if (data == NULL || sscanf(data, "%d", &v) != 1)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+    
+    if (v == 1) {
+		debug = true;
+	} else {
+		debug = false;
+	}
+
+	ps->setDebug(debug);
+    printf("Debug mode %s\n", (debug == true?"ON":"OFF"));
+    return;
+}
+
 // Commands for MotorDC (dc)
 
 // DC_MOTOR_SET_DIRECTION      0X40
@@ -491,22 +536,23 @@ void cmd_dcSetDirection(char * data)
 {
     int turn;
     
-    
     if (data == NULL || sscanf(data, "%d", &turn) != 1)
     {
         printf("Wrong parameters\n");
-        return;
+			return;
     }
 
-    // TODO
-    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
-    if ( turn <= 0 )
-        p->setDirection(true);
-    else
-        p->setDirection(false);
-    p->prepareToSend();
-	ps->sendPacket(p);
+	// TODO:
+    dcPacket->clear();
 
+    if ( turn <= 0 )
+        dcPacket->setDirection(true);
+    else
+        dcPacket->setDirection(false);
+        
+    dcPacket->prepareToSend();
+
+	ps->sendPacket(dcPacket);
 
     return;
 }
@@ -522,9 +568,6 @@ void cmd_dcSetSpeed(char * data)
         return;
     }
 
-    protocol::handlers::DCMotorBoardPacketHandler * packet = new 
-        protocol::handlers::DCMotorBoardPacketHandler( ps, dest_group, dest_card);
-
     // Clockwise?
     if (turn == 0)
         turn = 1;
@@ -532,8 +575,7 @@ void cmd_dcSetSpeed(char * data)
         turn = -1;
 
     // set speed
-    
-	packet->setSpeed(speed * turn);
+	dcHandler->setSpeed(speed * turn);
     return;
 }
 
@@ -548,11 +590,13 @@ void cmd_dcSetEncoder(char * data)
         return;
     }
 
-    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
-	p->setEncoder(turn);
-    p->prepareToSend();
-    for (int i=0;i<1;i++)
-        ps->sendPacket(p);
+	// TODO:
+    dcPacket->clear();
+	
+	dcPacket->setEncoder(turn);
+    dcPacket->prepareToSend();
+	
+	ps->sendPacket(dcPacket);
 
     return;
 }
@@ -560,11 +604,12 @@ void cmd_dcSetEncoder(char * data)
 // DC_MOTOR_GET_ENCODER        0X43
 void cmd_dcGetEncoder(char * data)
 {
-    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
-	p->getEncoder();
-    p->prepareToSend();
-    for (int i=0;i<1;i++)
-        ps->sendPacket(p);
+    dcPacket->clear();
+
+	dcPacket->getEncoder();
+    dcPacket->prepareToSend();
+
+    ps->sendPacket(dcPacket);
 
     return;
 }
@@ -572,11 +617,12 @@ void cmd_dcGetEncoder(char * data)
 // DC_MOTOR_RESET_ENCODER      0X44
 void cmd_dcResetEncoder(char * data)
 {
-	protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
-	p->resetEncoder();
-	p->prepareToSend();
-	for (int i=0;i<1;i++)
-       ps->sendPacket(p);
+    dcPacket->clear();
+
+	dcPacket->resetEncoder();
+	dcPacket->prepareToSend();
+	
+	ps->sendPacket(dcPacket);
 
     return;
 }
@@ -584,7 +630,7 @@ void cmd_dcResetEncoder(char * data)
 // DC_MOTOR_SET_ENCODER_TO_STOP    0X45
 void cmd_dcSetEncoderToStop(char * data)
 {
-	 short counts;
+	short counts;
     
     if (data == NULL || sscanf(data, "%hd", &counts) != 1)
     {
@@ -592,11 +638,12 @@ void cmd_dcSetEncoderToStop(char * data)
         return;
     }
 
-    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
-    p->setEncoderToStop(counts);
-    p->prepareToSend();
-    for (int i=0;i<1;i++)
-        ps->sendPacket(p);
+    dcPacket->clear();
+
+    dcPacket->setEncoderToStop(counts);
+    dcPacket->prepareToSend();
+    
+	ps->sendPacket(dcPacket);
 
     return;
 }
@@ -604,11 +651,12 @@ void cmd_dcSetEncoderToStop(char * data)
 // DC_MOTOR_GET_ENCODER_TO_STOP    0X46
 void cmd_dcGetEncoderToStop(char * data)
 {
-    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
-	p->getEncoderToStop();
-    p->prepareToSend();
-    for (int i=0;i<1;i++)
-        ps->sendPacket(p);
+    dcPacket->clear();
+
+	dcPacket->getEncoderToStop();
+    dcPacket->prepareToSend();
+
+	ps->sendPacket(dcPacket);
 
     return;
 }
@@ -616,11 +664,12 @@ void cmd_dcGetEncoderToStop(char * data)
 // DC_MOTOR_DONT_STOP      0X47
 void cmd_dcDontStop(char * data)
 {
-    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
-	p->setNonStop();
-    p->prepareToSend();
-    for (int i=0;i<1;i++)
-        ps->sendPacket(p);
+    dcPacket->clear();
+
+	dcPacket->setNonStop();
+    dcPacket->prepareToSend();
+
+	ps->sendPacket(dcPacket);
 
     return;
 }
@@ -628,11 +677,12 @@ void cmd_dcDontStop(char * data)
 // DC_MOTOR_MOTOR_CONSUMPTION  0X48
 void cmd_dcConsumption(char * data)
 {
-    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
-	p->getMotorConsumption();
-    p->prepareToSend();
-    for (int i=0;i<1;i++)
-        ps->sendPacket(p);
+    dcPacket->clear();
+
+	dcPacket->getMotorConsumption();
+    dcPacket->prepareToSend();
+
+	ps->sendPacket(dcPacket);
 
     return;
 }
@@ -640,7 +690,7 @@ void cmd_dcConsumption(char * data)
 // DC_MOTOR_MOTOR_STRESS_ALARM 0X49
 void cmd_dcStressAlarm(char * data)
 {
-	 short consumption;
+	short consumption;
     
     if (data == NULL || sscanf(data, "%hd", &consumption) != 1)
     {
@@ -648,11 +698,12 @@ void cmd_dcStressAlarm(char * data)
         return;
     }
     
-    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
-	p->isMotorAlarm();
-    p->prepareToSend();
-    
-	ps->sendPacket(p);
+	dcPacket->clear();
+
+	dcPacket->isMotorAlarm();
+    dcPacket->prepareToSend();
+
+	ps->sendPacket(dcPacket);
 
     return;
 }
@@ -660,7 +711,7 @@ void cmd_dcStressAlarm(char * data)
 // DC_MOTOR_MOTOR_SHUT_DOWN_ALARM  0X4A
 void cmd_dcShutDownAlarm(char * data)
 {
-	 short consumption;
+	short consumption;
 	
 	if (data == NULL || sscanf(data, "%hd", &consumption) != 1)
     {
@@ -668,11 +719,12 @@ void cmd_dcShutDownAlarm(char * data)
         return;
     }
 	
-    protocol::packets::DCMotorPacket * p = new protocol::packets::DCMotorPacket(dest_group, dest_card);
-	p->isMotorShutDown();
-    p->prepareToSend();
-    for (int i=0;i<1;i++)
-        ps->sendPacket(p);
+	dcPacket->clear();
+
+	dcPacket->isMotorShutDown();
+    dcPacket->prepareToSend();
+
+	ps->sendPacket(dcPacket);
 
     return;
 }
@@ -680,12 +732,8 @@ void cmd_dcShutDownAlarm(char * data)
 // DC_MOTOR_GET_DC_SPEED       0X4B
 void cmd_dcGetSpeed(char * data)
 {
-    protocol::handlers::DCMotorBoardPacketHandler * packet = new 
-        protocol::handlers::DCMotorBoardPacketHandler( ps, dest_group, dest_card);
+	dcHandler->getSpeed();
 
-    // set speed
-    //for (int i=0;i<1;i++)
-        packet->getSpeed();
     return;
 }
 
@@ -695,6 +743,7 @@ void cmd_dcGetSpeed(char * data)
 void cmd_smSetPos(char * data)
 {
 	//TODO 
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -702,6 +751,7 @@ void cmd_smSetPos(char * data)
 void cmd_smSetAllPos(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -709,6 +759,7 @@ void cmd_smSetAllPos(char * data)
 void cmd_smGetPos(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -716,6 +767,7 @@ void cmd_smGetPos(char * data)
 void cmd_smGetAllPos(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -723,6 +775,7 @@ void cmd_smGetAllPos(char * data)
 void cmd_smSetSpeed(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -730,6 +783,7 @@ void cmd_smSetSpeed(char * data)
 void cmd_smSetAllSpeed(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -737,6 +791,7 @@ void cmd_smSetAllSpeed(char * data)
 void cmd_smGetSpeed(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -744,6 +799,7 @@ void cmd_smGetSpeed(char * data)
 void cmd_smGetAllSpeed(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -751,6 +807,7 @@ void cmd_smGetAllSpeed(char * data)
 void cmd_smFree(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -758,6 +815,7 @@ void cmd_smFree(char * data)
 void cmd_smFreeAll(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -766,7 +824,7 @@ void cmd_smFreeAll(char * data)
 // DISTANCE_SENSOR_ON_DISTANCE_SENSOR		0X40
 void cmd_dsOn(char * data)
 {
-	 short id;
+	short id;
     
     if (data == NULL || sscanf(data, "%hd", &id) != 1)
     {
@@ -774,10 +832,7 @@ void cmd_dsOn(char * data)
         return;
     }
 
-	protocol::handlers::DistanceSensorBoardPacketHandler * packet = new 
-        protocol::handlers::DistanceSensorBoardPacketHandler( ps, dest_group, dest_card);
-
-	packet->enable(id);
+	dsHandler->enable(id);
     return;
 }
 
@@ -792,10 +847,7 @@ void cmd_dsOff(char * data)
         return;
     }
 
-	protocol::handlers::DistanceSensorBoardPacketHandler * packet = new 
-        protocol::handlers::DistanceSensorBoardPacketHandler( ps, dest_group, dest_card);
-
-	packet->disable(id);
+	dsHandler->disable(id);
     return;
   
 }
@@ -811,20 +863,14 @@ void cmd_dsSetMask(char * data)
         return;
     }
 
-	protocol::handlers::DistanceSensorBoardPacketHandler * packet = new 
-        protocol::handlers::DistanceSensorBoardPacketHandler( ps, dest_group, dest_card);
-
-	packet->setMask(id);
+	dsHandler->setMask(id);
     return;
 }
 
 // DISTANCE_SENSOR_GET_STATUS			0X43
 void cmd_dsGetMask(char * data)
 {
-    protocol::handlers::DistanceSensorBoardPacketHandler * packet = new 
-        protocol::handlers::DistanceSensorBoardPacketHandler( ps, dest_group, dest_card);
-
-	packet->getMask();
+    dsHandler->getMask();
     return;
 }
 
@@ -832,17 +878,14 @@ void cmd_dsGetMask(char * data)
 void cmd_dsGetValue(char * data)
 {
 	int sensorMask;
+	
 	if (data == NULL || sscanf(data, "%x", &sensorMask) != 1)
     {
         printf("Wrong parameters\n");
         return;
     }
 	
-	protocol::handlers::DistanceSensorBoardPacketHandler * packet = new 
-        protocol::handlers::DistanceSensorBoardPacketHandler( ps, dest_group, dest_card);
-
-	packet->getValue(sensorMask);
-
+	dsHandler->getValue(sensorMask);
     return;
 }
 
@@ -850,16 +893,14 @@ void cmd_dsGetValue(char * data)
 void cmd_dsGetOneValue(char * data)
 {
     int sensorMask;
+    
 	if (data == NULL || sscanf(data, "%x", &sensorMask) != 1)
     {
         printf("Wrong parameters\n");
         return;
     }
 	
-	protocol::handlers::DistanceSensorBoardPacketHandler * packet = new 
-        protocol::handlers::DistanceSensorBoardPacketHandler( ps, dest_group, dest_card);
-
-	packet->getOneValue(sensorMask);
+	dsHandler->getOneValue(sensorMask);
     return;
 }
 
@@ -867,6 +908,7 @@ void cmd_dsGetOneValue(char * data)
 void cmd_dsAlarmOn(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -874,6 +916,7 @@ void cmd_dsAlarmOn(char * data)
 void cmd_dsAlarmCommand(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -883,6 +926,7 @@ void cmd_dsAlarmCommand(char * data)
 void cmd_bcEnable(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -890,6 +934,7 @@ void cmd_bcEnable(char * data)
 void cmd_bcDisable(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -897,6 +942,7 @@ void cmd_bcDisable(char * data)
 void cmd_bcGetValue(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -904,6 +950,7 @@ void cmd_bcGetValue(char * data)
 void cmd_bcFullAlarm(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -911,6 +958,7 @@ void cmd_bcFullAlarm(char * data)
 void cmd_bcSetEmptyValue(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -918,6 +966,7 @@ void cmd_bcSetEmptyValue(char * data)
 void cmd_bcEmptyAlarm(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -925,6 +974,7 @@ void cmd_bcEmptyAlarm(char * data)
 void cmd_bcSetFullValue(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -934,6 +984,7 @@ void cmd_bcSetFullValue(char * data)
 void cmd_tbGetValue(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -941,6 +992,7 @@ void cmd_tbGetValue(char * data)
 void cmd_tbFullAlarm(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }
 
@@ -948,5 +1000,6 @@ void cmd_tbFullAlarm(char * data)
 void cmd_tbSetFullValue(char * data)
 {
     // TODO
+    printf("NOT YET IMPLEMENTED\n");
     return;
 }

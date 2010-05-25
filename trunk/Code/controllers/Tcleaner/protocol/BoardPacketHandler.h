@@ -21,6 +21,9 @@ class BoardPacketHandler
 		virtual ~BoardPacketHandler(){};
 		
 		virtual void handlePacket(Packet * p) = 0;
+
+		bool isBitSet(int val, int index);
+
 };
 
 }

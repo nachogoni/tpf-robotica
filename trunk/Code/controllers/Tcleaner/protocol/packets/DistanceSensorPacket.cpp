@@ -67,11 +67,51 @@ short DistanceSensorPacket::getSensorValue(){
 
 short * DistanceSensorPacket::getSensorValues(){
 	// TODO
-	/*
+	short * values = new short[6];
+
+	for (int i = 0; i < 6; i++)
+		values[i] = 0;
+
+	char mask = this->getCharData();
+	
+	// Get mask for data values
+	for (int i = 0; i < 6; i++) {
+		if (isBitSet(mask, i)) {
+			values[i] = this->getShortData();
+		}
+	}
+
+	return values;
+
+/*
+ * 	short * values = new short[6];
+
+	for (int i = 0; i < 6; i++)
+		values[i] = 0;
+
 	int dataLength = this->getDataLength();
 	char * data = this->getData();
-	*/
-	return NULL;
+	
+	if (dataLength < 1)
+		return values;
+
+	char mask = data[0];
+	
+	// Skip mask
+	data++;
+	
+	// Get mask for data values
+	for (int i = 0; i < 6; i++) {
+		if (isBitSet(mask, i)) {
+			values[i] = *((short*)data);
+			// Go to next value...
+			data += 2;
+		}
+	}
+
+	return values;
+
+*/
 }
 
 short DistanceSensorPacket::getShotSensorValue(){

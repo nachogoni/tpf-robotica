@@ -1,8 +1,8 @@
 #ifndef _SERVERUI_H
 #define _SERVERUI_H
 
-void
-registerHandlers(protocol::PacketServer * ps);
+void registerHandlers(protocol::PacketServer * ps);
+void createPacketBoards();
 
 // Commands for Main Controller (mc)
 void cmd_init(char * data);
@@ -11,6 +11,7 @@ void cmd_ping(char * data);
 void cmd_error(char * data);
 void cmd_setDC(char * data);
 void cmd_setDS(char * data);
+void cmd_debug(char * data);
 // Commands for MotorDC (dc)                                                                      
 void cmd_dcSetDirection(char * data);
 void cmd_dcSetSpeed(char * data);    
