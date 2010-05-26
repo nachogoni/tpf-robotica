@@ -39,6 +39,14 @@ namespace utils{
 					(*itHist)->state=SHOW;
 			}
 			
+			
+			if((*itHist)->age % 10){
+				if((*itHist)->state==SHOW){
+					(*itHist)->maxNumberOfFramesNoAppear=10*((*itHist)->appeareances/(double) (*itHist)->age);
+				}					
+			}
+
+			//collect
 			if((*itHist)->state==SHOW){
 				factor=(*itHist)->lastAppeareance - (*itHist)->age;
 				if( factor!=1){
@@ -100,5 +108,28 @@ namespace utils{
 			this->ghist.push_back(garbageHist);			
 		}
 	}
+	GarbageHistoric * Prediction::focusGarbage(){
+		//get oldest garbage
+		if((ghist).empty())
+			return NULL;
+			
+		std::list<GarbageHistoric*>::iterator itHist=(ghist).begin();
+		int maxAge=(*itHist)->age;
+		GarbageHistoric* result=(*itHist);
+		
+		for(itHist = ++itHist; itHist != (ghist).end(); itHist++){
+			if((*itHist)->state==SHOW && (*itHist)->age > maxAge){
+				maxAge=(*itHist)->age;
+				result=(*itHist);
+			}
+		}
+		
+		if(result->state!=SHOW)
+			return NULL;
+		
+		result->focus=true;
+		return result;
+	}
+
 	
 }
