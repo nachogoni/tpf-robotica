@@ -4,6 +4,7 @@
 #include <list>
 #include "Garbage.h"
 #include "Prediction.h"
+#include "Windowing.h"
 #include <cv.h>
 
 
@@ -19,6 +20,9 @@ class GarbageRecognition {
 	~GarbageRecognition();
     std::list<utils::Garbage*> getGarbageList(IplImage * img);
     Prediction* prediction;
+    int frameNumber;
+    bool focused;
+    Windowing* window;
 
 
 

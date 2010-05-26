@@ -18,6 +18,7 @@ namespace utils{
 		 //~ ~Prediction();
 	     std::list<Garbage*> getPrediction(std::list<Garbage*> garbageList);
 	     void updateHistorical(std::list<Garbage*> garbageList);
+	     GarbageHistoric * focusGarbage();
 	     
 	     
 	    std::list<Garbage*> garbageList;

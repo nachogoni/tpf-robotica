@@ -9,6 +9,7 @@
 #include "Contours.h"
 #include "Histogram.h"
 #include "Garbage.h"
+#include "Windowing.h"
 #include "MinimalBoundingRectangle.h"
 
 // image preprocessing values
@@ -54,8 +55,12 @@ void drawPrediction(IplImage * src,std::list<utils::Garbage*> garbagePrediction)
 std::list<utils::Garbage*> garbages;
 std::list<utils::Garbage*> garbagePrediction;
 
+
 GarbageRecognition::GarbageRecognition(){
 	this->prediction= new Prediction();
+	this->window=new Windowing();
+	frameNumber=0;
+	focused=false;
 	
 	}
 GarbageRecognition::~GarbageRecognition(){};
@@ -64,14 +69,49 @@ std::list<Garbage*>
 GarbageRecognition::getGarbageList(IplImage * src)
 {
 		IplImage * model = cvLoadImage("./colilla-sinBlanco.png",1);
+		IplImage * src_window;
+		//windowing
+		if(this->focused){
+			if(window->currentGarbage->state!=DEAD){
+				src_window=this->window->getWindow(src);
+				if(src_window==NULL){
+					this->focused=false;
+					delete window;
+					src_window=src;
+				}
+			}
+			else{
+				this->focused=false;
+				delete window;
+				src_window=src;
+			}
+		}else{
+			src_window=src;
+		}
 		
-		garbages = this->garbageList(src,model);
+		garbages = this->garbageList(src_window,model);
+		
+		if(this->focused){
+			garbages=this->window->correctGarbages(garbages);
+		}
+		
 		//prediction
 		garbagePrediction= this->prediction->getPrediction(garbages);
+		
+		//start  windowing
+		if(!(this->frameNumber % 20) && this->focused==false){
+			GarbageHistoric * focusedGarbage=prediction->focusGarbage();
+			if(focusedGarbage!=NULL){
+				this->window=new Windowing(focusedGarbage,cvGetSize(src));
+				this->focused=true;
+			}
+		}
+		
 		printf(" Garbage Prediction %d\n",garbagePrediction.size());
 		drawPrediction(src,garbagePrediction);
 		
 		cvReleaseImage(&model);
+		this->frameNumber++;
 	//return garbages;
 	return garbagePrediction;
 }
@@ -109,6 +149,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	//gets a frame for setting  image size
 	//CvSize srcSize = cvSize(frameWidth,frameHeight);
 	CvSize srcSize = cvGetSize(src);
+	
 
 	//images for HSV conversion
 	IplImage* hsv = cvCreateImage( srcSize, 8, 3 );
@@ -164,8 +205,8 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	I(x,y)green ~ ((uchar*)(img->imageData + img->widthStep*y))[x*3+1]
 	I(x,y)red ~ ((uchar*)(img->imageData + img->widthStep*y))[x*3+2]*/
 	
-	for(int x=0;x<640;x++){
-		for(int y=0;y<480;y++){
+	for(int x=0;x<srcSize.width;x++){
+		for(int y=0;y<srcSize.height;y++){
 			uchar * hue=&((uchar*) (h_plane->imageData+h_plane->widthStep*y))[x];
 			uchar * sat=&((uchar*) (s_plane->imageData+s_plane->widthStep*y))[x];
 			uchar * val=&((uchar*) (v_plane->imageData+v_plane->widthStep*y))[x];

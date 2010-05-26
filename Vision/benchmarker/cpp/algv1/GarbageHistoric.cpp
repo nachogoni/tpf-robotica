@@ -27,6 +27,7 @@ namespace utils{
 		this->currentPos=newGarbage->getCentroid();
 		this->state=NOT_SHOW;
 		this->maxNumberOfFramesNoAppear=PREDICTION_DEFAULT_FRAMES_NOAPPEAR;
+		this->focus=false;
 
 	}
 	
@@ -39,6 +40,7 @@ namespace utils{
 		this->currentPos=currentPos;
 		this->state=NOT_SHOW;
 		this->maxNumberOfFramesNoAppear=PREDICTION_DEFAULT_FRAMES_NOAPPEAR;
+		this->focus=false;
 	}
 	
 	void GarbageHistoric::updateHistoricWithGarbage(Garbage * movedGarbage){
@@ -110,12 +112,12 @@ namespace utils{
 		std::vector<int> delta (this->deltaPos);
 		int factor=(this->age - this->lastAppeareance);
 		
-		if(factor==1){
+		if(factor<=2){
 			return this->garbage;
 		}
 
-		int deltax=factor*delta[0];
-		int deltay=factor*delta[1];
+		int deltax=(factor-1)*delta[0];
+		int deltay=(factor-1)*delta[1];
 		newCentroid[0]=centroid[0] +deltax;
 		newCentroid[1]=centroid[1] +deltay;
 	
@@ -127,7 +129,7 @@ namespace utils{
 		int w=oldMbr->getWidth();
 		
 		MinimalBoundingRectangle * mbr= new MinimalBoundingRectangle(x+deltax,y+deltay,h,w);
-		Garbage * newGarbage=new   Garbage(mbr,newCentroid);
+		Garbage * newGarbage=new  Garbage(mbr,newCentroid);
 		
 		return newGarbage;
 	}

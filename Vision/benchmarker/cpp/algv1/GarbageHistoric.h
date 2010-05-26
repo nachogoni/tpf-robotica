@@ -39,6 +39,8 @@ namespace utils{
 		gHistState state;
 		//number of frames that can live without an appeareance
 		int maxNumberOfFramesNoAppear;
+		//is used for focus
+		bool focus;
 		
 		
 	};

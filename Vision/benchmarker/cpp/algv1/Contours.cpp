@@ -105,8 +105,8 @@ int Contours::areaFilter(double min_area,double max_area){
 	//double  maxAreaByZone[]={0,800,400,200,100};
 	double  maxAreaByZone[]={0,800,550,200,50};
 	
-	return area>minAreaByZone[zone] && area<maxAreaByZone[zone];
-	//~ return area>50 && area<1000;
+	//~ return area>minAreaByZone[zone] && area<maxAreaByZone[zone];
+	return area>50 && area<1000;
 	
 }
 
@@ -121,8 +121,8 @@ int Contours::perimeterFilter(double min_per,double max_per){
 	
 	int zone=getPointZone(this->x,this->y);
 	
-	//return per>10 && per<1000;
-	return per>minPerimeterByZone[zone] &&  per< maxPerimeterByZone[zone];
+	return per>10 && per<1000;
+	//~ return per>minPerimeterByZone[zone] &&  per< maxPerimeterByZone[zone];
 	
 }
 
