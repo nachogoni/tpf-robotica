@@ -11,7 +11,7 @@ using namespace utils;
 
 
 	GarbageAdapter::GarbageAdapter(){
-		this->gr=new GarbageRecognition(2);
+		this->gr=new GarbageRecognition();
 
 	}
 	
@@ -31,8 +31,8 @@ using namespace utils;
 				centroid=(*it)->getCentroid();
 				obj=new benchmark::Cobject( index ,aMbr->x,aMbr->y,aMbr->width,aMbr->height,centroid);
 				resp.push_back(obj);
-				delete aMbr;
-				delete (*it);
+				//~ delete aMbr;
+				//~ delete (*it);
 				index++;
 		}
 		

@@ -32,6 +32,10 @@
 #define HIST_H_BINS 8
 #define HIST_MIN 0.7
 #define TIME_THRESHOLD 15 //seconds
+
+
+
+
 /*
 int main(void)
 {
@@ -43,33 +47,33 @@ int main(void)
 }
 */
 namespace utils {
-	
+
+void drawPrediction(IplImage * src,std::list<utils::Garbage*> garbagePrediction);
+
+
 std::list<utils::Garbage*> garbages;
 std::list<utils::Garbage*> garbagePrediction;
 
-GarbageRecognition::GarbageRecognition(){};
-GarbageRecognition::~GarbageRecognition(){};
-
-GarbageRecognition::GarbageRecognition(int a){
+GarbageRecognition::GarbageRecognition(){
 	this->prediction= new Prediction();
-	printf("prediction list size:%d\n",this->prediction->ghist.size());
-}
-
-
-
-
+	
+	}
+GarbageRecognition::~GarbageRecognition(){};
+	
 std::list<Garbage*> 
 GarbageRecognition::getGarbageList(IplImage * src)
 {
+		IplImage * model = cvLoadImage("./colilla-sinBlanco.png",1);
 		
-	    IplImage * model = cvLoadImage("./colilla-sinBlanco.png",1);
 		garbages = this->garbageList(src,model);
 		//prediction
 		garbagePrediction= this->prediction->getPrediction(garbages);
+		printf(" Garbage Prediction %d\n",garbagePrediction.size());
+		drawPrediction(src,garbagePrediction);
 		
-	
 		cvReleaseImage(&model);
-	return garbages;
+	//return garbages;
+	return garbagePrediction;
 }
 
 std::list<Garbage*> 
@@ -277,6 +281,27 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	
 
 	return garbageList;
+}
+
+void drawPrediction(IplImage * src,std::list<Garbage*> garbagePrediction){
+	CvSize srcSize = cvGetSize(src);
+	IplImage * predictionImage=cvCreateImage(srcSize,8,3);
+	
+	cvCopy(src,predictionImage,0);	
+	MinimalBoundingRectangle * boundingRect;
+	
+	for (std::list<Garbage*>::iterator itGar = garbagePrediction.begin(); itGar != garbagePrediction.end(); itGar++)
+	{
+		boundingRect=(*itGar)->boundingBox();
+		cvRectangle(predictionImage,cvPoint(boundingRect->x,boundingRect->y),
+								cvPoint(boundingRect->x+boundingRect->width,
+								boundingRect->y+boundingRect->height),
+								_RED,1,8,0);
+	}
+	
+	cvShowImage("prediction",predictionImage);
+	
+	cvReleaseImage(&predictionImage);
 }
 
 } /* End of namespace utils */

@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 		
 		if(videoFrameNumber==nextTestframe){
 			//compare FrameXml with FrameImg
-			printf(" comparando frame %d",videoFrameNumber);
+			printf(" comparando frame %d\n",videoFrameNumber);
 			result=compareFrameXmlWithFrame(videoFrameImg,*frameXml);
 			
 			
@@ -191,4 +191,5 @@ void drawCompare(std::list<Cobject*> objects,std::list<Cobject*> objectsXml){
 	}
 	cvShowImage("compare",compareImg);
 	cvWaitKey(1000/20);
+	//~ cvWaitKey(0);
 }

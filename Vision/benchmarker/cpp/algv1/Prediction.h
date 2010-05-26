@@ -5,6 +5,9 @@
 #include <vector>
 #include <list>
 #include "Garbage.h"
+#include "PredictionParameters.h"
+
+
 
 namespace utils{
 
@@ -15,6 +18,7 @@ namespace utils{
 		 //~ ~Prediction();
 	     std::list<Garbage*> getPrediction(std::list<Garbage*> garbageList);
 	     void updateHistorical(std::list<Garbage*> garbageList);
+	     
 	     
 	    std::list<Garbage*> garbageList;
 	    std::list<GarbageHistoric*> ghist;

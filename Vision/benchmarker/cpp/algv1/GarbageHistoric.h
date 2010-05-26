@@ -7,6 +7,7 @@
 #include "Garbage.h"
 
 namespace utils{
+	enum gHistState { NOT_SHOW, SHOW, DEAD };
 
 	class GarbageHistoric {
 		
@@ -16,7 +17,11 @@ namespace utils{
 		 GarbageHistoric(std::vector<int> currentPos);
 		 GarbageHistoric(Garbage * garbage);
 		 bool isSameObject(Garbage * garbage);
-		 void updateHistoric(Garbage * garbage);
+		 void updateHistoric();
+		 void updateHistoricWithGarbage(Garbage * garbage);
+		 Garbage * guessPosition();
+		 void printPrediction();
+
 
 	    //garbage found
 	    Garbage * garbage;
@@ -27,9 +32,13 @@ namespace utils{
 		//how many frames ago did the last appeareance
 		int lastAppeareance;
 		//how many frames had it lived in total
-		int age;
+		int age; 
 		//how many appeareances it had during life frames
 		int appeareances;
+		//automata state
+		gHistState state;
+		//number of frames that can live without an appeareance
+		int maxNumberOfFramesNoAppear;
 		
 		
 	};
