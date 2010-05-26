@@ -16,6 +16,7 @@ namespace utils{
 	
 	     utils::MinimalBoundingRectangle * boundingBox();
 	
+		 ~Garbage();
 	     Garbage(utils::MinimalBoundingRectangle * mbr);
 	     Garbage(utils::MinimalBoundingRectangle * mbr,std::vector<int> centroid);
 	     std::vector<int> getCentroid();

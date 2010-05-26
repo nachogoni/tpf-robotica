@@ -5,6 +5,11 @@
 
 namespace utils{
 
+Garbage::~Garbage(){
+	//~ if(this->mbr!=NULL){
+		//~ delete this->mbr;
+	//~ }
+}
 Garbage::Garbage(utils::MinimalBoundingRectangle * myRect)
 {
     this->mbr=myRect;

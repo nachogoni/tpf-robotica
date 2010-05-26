@@ -10,54 +10,95 @@
 
 namespace utils{
 	
-	//~ Prediction::Prediction(){
-		//~ 
-	//~ }
-	//~ Prediction::Prediction(int minAppereances,int maxLife){
-		//~ 
-	//~ }
-	//~ 
-	//~ Prediction::~Prediction(){
-	//~ }
-	//~ Prediction::Prediction(int minAppereances,int maxLife){
-		//~ 
-	//~ }
-	
 	
 	std::list<Garbage*> Prediction::getPrediction(std::list<Garbage*> garbageList){
-		
+		std::list<GarbageHistoric*>::iterator itHist;
+		std::list<GarbageHistoric*> gHistCopy (this->ghist);
 		std::list<Garbage*> newGarbageList;
-				
-		this->updateHistorical(garbageList);
-		//update then collect
+		Garbage * guess;
+		int factor=1;
 		
-		//~ for (std::list<GarbageHistoric*>::iterator itHist = this->ghist.begin(); itHist != this->ghist.end(); itHist++)
-		//~ {
-			//~ newGarbageList.push_back((*itHist)->garbage);
-		//~ }
+		//update then collect		
+		this->updateHistorical(garbageList);
+		
+		
+		for (itHist = gHistCopy.begin(); itHist != gHistCopy.end(); itHist++)
+		{
+			(*itHist)->printPrediction();
+			
+			//check for removal
+			if( (*itHist)->age - (*itHist)->lastAppeareance >= (*itHist)->maxNumberOfFramesNoAppear){
+				(*itHist)->state=DEAD;
+				//delete (*itHist);
+				this->ghist.remove(*itHist);
+				
+			}
+			
+			if((*itHist)->age >= PREDICTION_MIN_AGE){
+				if((*itHist)->state==NOT_SHOW && (*itHist)->appeareances/(double) (*itHist)->age > 0.75)
+					(*itHist)->state=SHOW;
+			}
+			
+			if((*itHist)->state==SHOW){
+				factor=(*itHist)->lastAppeareance - (*itHist)->age;
+				if( factor!=1){
+					//make a guess
+					guess=(*itHist)->guessPosition();
+					newGarbageList.push_back(guess);
+				}else{
+					newGarbageList.push_back((*itHist)->garbage);
+				}
+			}
+			
+			
+		}
+		
 			
 		return newGarbageList;
 	}
 	
 	void Prediction::updateHistorical(std::list<Garbage*> garbageList){
 		//traverse a garbageList, for every new garbage create a new historical
-			//~ printf("garbageList size:%d/n",garbageList.size());
-			//~ printf("Historic size:%d\n",this->ghist.size());
-			
-
+		GarbageHistoric * garbageHist;
 		
-			for (std::list<Garbage*>::iterator itGar = garbageList.begin(); itGar != garbageList.end(); itGar++)
+		std::list<Garbage*>::iterator itGar;
+		std::list<GarbageHistoric*>::iterator itHist;
+		
+		//copy garbage and historic list
+		std::list<GarbageHistoric*> garHist (this->ghist);
+		std::list<Garbage*> gar (garbageList);
+				
+		
+		//foreach existing garbageHistoric	
+		for(itHist = (garHist).begin(); itHist != (garHist).end(); itHist++)
+		{
+			bool updated=false;
+			//check if it match any garbage detected in this frame
+			for (itGar = gar.begin(); itGar != gar.end(); itGar++)
 			{
-				//~ this->ghist2.size();
-				//~ for(std::list<GarbageHistoric*>::iterator itHist = (this->ghist).begin();this->ghist.size()!=0, itHist != (this->ghist).end(); itHist++)
-				//~ {
-					//~ if((*itHist)->isSameObject((*itGar))){
-						//~ (*itHist)->updateHistoric((*itGar));
-					//~ }else{
-						//~ GarbageHistoric * garbageHist=new GarbageHistoric((*itGar));
-						//~ this->ghist.push_back(garbageHist);
-					//~ }
-				//~ }
+				if((*itHist)->isSameObject((*itGar))){
+					//if so, update it with new garbage
+					(*itHist)->updateHistoricWithGarbage((*itGar));
+					updated=true;
+					break;
+				}
 			}
+			
+			if(updated){
+				//erase the garbage (avoid new match w/historic)
+				gar.erase(itGar);
+			}else{
+				//update historic as it didnt match any garbage
+				(*itHist)->updateHistoric();
+			}	
+		}
+		
+		//for remaining garbages which didnt match any historical, add a new Historical
+		for (std::list<Garbage*>::iterator itGar = gar.begin(); itGar != gar.end(); itGar++)
+		{
+			garbageHist=new GarbageHistoric((*itGar));
+			this->ghist.push_back(garbageHist);			
+		}
 	}
+	
 }
