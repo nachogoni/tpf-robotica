@@ -1,23 +1,30 @@
-import java.util.*;
-import java.io.*;
+import java.io.File;
+import java.util.TimerTask;
 
 public abstract class FileWatcher extends TimerTask {
-  private long timeStamp;
   private File file;
 
   public FileWatcher( File file ) {
     this.file = file;
-    this.timeStamp = file.lastModified();
   }
 
   public final void run() {
-    long timeStamp = file.lastModified();
+	  while ( !file.exists() );
+	
+	long timeStamp = file.lastModified();
+	long lastTimeStamp = timeStamp;
+	
+	while( true ){
+		while( timeStamp == lastTimeStamp ){
+			lastTimeStamp = file.lastModified();
+			while ( lastTimeStamp == 0 )
+				lastTimeStamp = file.lastModified();
+		}
 
-    if( this.timeStamp != timeStamp ) {
-      this.timeStamp = timeStamp;
-      onChange(file);
-    }
-  }
+		onChange(file);
+		timeStamp = lastTimeStamp;
+	}
+}
 
   protected abstract void onChange( File file );
 }
