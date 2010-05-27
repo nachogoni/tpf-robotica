@@ -24,6 +24,8 @@ class ArenaGrid
 
 		utils::ArenaGridSlot * getSlotAt(utils::MyPoint * p);
 		std::vector<utils::ArenaGridSlot *> getNeighboursAt(utils::MyPoint * p, double orientation);
+		int getSlotXIdx(utils::ArenaGridSlot * ags);
+		int getSlotZIdx(utils::ArenaGridSlot * ags);
 /*
 		std::vector<utils::ArenaGridSlot *> getNeighboursAt(utils::MyPoint * p);
 */
