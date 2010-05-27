@@ -3,6 +3,7 @@
 #include <protocol/handlers/DistanceSensorBoardPacketHandler.h> // class's header file
 #include <protocol/packets/DistanceSensorPacket.h>
 #include <math.h>
+#include <stdio.h>
 
 namespace protocol {
 namespace handlers {

@@ -92,6 +92,7 @@ namespace webts {
 		if ( ags != NULL ){
 			printf("Current Slot: %g - %g --> Timestamp: %ld\n",ags->getX(),ags->getZ(),ags->getTimeStamp());
 			ags->setTimeStamp();
+			this->saveChanges(ags);
 		}
 /*
 		printf("Current Position : %g %g %g\n",df->getPosition()->getX(),df->getPosition()->getY(),df->getOrientation());
@@ -101,5 +102,9 @@ namespace webts {
 		return ;
 	}
     
+	void WebotsRobot::saveChanges(utils::ArenaGridSlot * ags){
+		//TODO open file, save data and close file
+		return;
+	}
 } /* End of namespace robotapi::webts */
 } /* End of namespace robotapi */

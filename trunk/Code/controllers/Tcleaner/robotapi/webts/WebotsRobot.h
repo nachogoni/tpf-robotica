@@ -41,6 +41,8 @@ public:
 
     void step(int ms);
 
+	void saveChanges(utils::ArenaGridSlot * ags);
+
     // destructor for interface
     ~WebotsRobot() { }
     

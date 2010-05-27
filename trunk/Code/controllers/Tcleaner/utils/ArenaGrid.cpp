@@ -53,6 +53,14 @@ utils::ArenaGridSlot * ArenaGrid::getSlotAt(utils::MyPoint * p){
  	return this->slots[i][j];
 }
 
+int ArenaGrid::getSlotXIdx(utils::ArenaGridSlot * ags){
+	return this->getI(ags->getX());
+}
+
+int ArenaGrid::getSlotZIdx(utils::ArenaGridSlot * ags){
+	return this->getJ(ags->getZ());
+}
+
 /* i, j-1 ; i, j+1 ; i-1, j ; i+1, j
 	Returns four neighbours, the ones at the left, right, top and bottom, in that order
 	Some of they may be NULL, indicating that neighbour is out of the arena
