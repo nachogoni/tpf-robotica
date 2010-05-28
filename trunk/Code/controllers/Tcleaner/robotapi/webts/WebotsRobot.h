@@ -4,6 +4,7 @@
 #include <robotapi/IRobot.h>
 #include <webots/DifferentialWheels.hpp>
 #include <WorldInfo.h>
+#include <list>
 #include <utils/ArenaGrid.h>
 
 namespace robotapi {
@@ -41,7 +42,9 @@ public:
 
     void step(int ms);
 
-	void saveChanges(utils::ArenaGridSlot * ags);
+	void saveChanges(std::list<utils::ArenaGridSlot *> ags);
+
+	std::list<utils::ArenaGridSlot *> getSlotsSeen(utils::ArenaGridSlot * currentSlot);
 
     // destructor for interface
     ~WebotsRobot() { }
