@@ -88,11 +88,11 @@ namespace webts {
 	void WebotsRobot::step(int ms){
 		robot->step(ms);
 		df->computeOdometry();
-		utils::ArenaGridSlot * ags = this->ag->getSlotAt(df->getPosition());
-		if ( ags != NULL ){
-			printf("Current Slot: %g - %g --> Timestamp: %ld\n",ags->getX(),ags->getZ(),ags->getTimeStamp());
-			ags->setTimeStamp();
-			this->saveChanges(ags);
+		utils::ArenaGridSlot * currentSlot = this->ag->getSlotAt(df->getPosition());
+		if ( currentSlot != NULL ){
+			std::list<utils::ArenaGridSlot *> seenSlots = this->getSlotsSeen(currentSlot);
+			printf("Current Slot: %g - %g --> Timestamp: %ld\n",currentSlot->getX(),currentSlot->getZ(),currentSlot->getTimeStamp());
+			this->saveChanges(seenSlots);
 		}
 /*
 		printf("Current Position : %g %g %g\n",df->getPosition()->getX(),df->getPosition()->getY(),df->getOrientation());
@@ -102,9 +102,27 @@ namespace webts {
 		return ;
 	}
     
-	void WebotsRobot::saveChanges(utils::ArenaGridSlot * ags){
-		//TODO open file, save data and close file
+	void WebotsRobot::saveChanges(std::list<utils::ArenaGridSlot *> ags){
+		std::list<utils::ArenaGridSlot *>::iterator it;
+		time_t ts = time(NULL);
+		FILE * pFile;
+		pFile = fopen ("changes.tmp","w");
+		if (pFile!=NULL){
+			for ( it=ags.begin() ; it != ags.end() ; it++ ){
+				(*it)->setTimeStamp(ts);
+				fprintf(pFile,"(%d,%d)",this->ag->getSlotXIdx(*it),this->ag->getSlotZIdx(*it));
+				printf("(%d,%d)",this->ag->getSlotXIdx(*it),this->ag->getSlotZIdx(*it));
+			}
+		}
+		fclose (pFile);
+
 		return;
+	}
+
+	std::list<utils::ArenaGridSlot *> WebotsRobot::getSlotsSeen(utils::ArenaGridSlot * currentSlot){
+		std::list<utils::ArenaGridSlot *> out;
+		out.push_back(currentSlot);
+		return out;
 	}
 } /* End of namespace robotapi::webts */
 } /* End of namespace robotapi */

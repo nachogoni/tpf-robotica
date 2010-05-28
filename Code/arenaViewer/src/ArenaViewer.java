@@ -41,15 +41,17 @@ public class ArenaViewer {
 				try {
 					br = new BufferedReader(new FileReader(file));
 					String line = br.readLine();
-					Matcher m = cellPattern.matcher(line);
-					i++;
-					while( m.find() ){
-						Color color = new Color(255-((i*5)%255),255-((i*10)%255),255-((i*20)%255));
-						image.setRGB(d.width-1-Integer.valueOf(m.group(2)), Integer.valueOf(m.group(1)), color.getRGB());
+					if ( line != null && !line.isEmpty() ){
+						Matcher m = cellPattern.matcher(line);
+						i++;
+						while( m.find() ){
+							Color color = new Color(255-((i*5)%255),255-((i*10)%255),255-((i*20)%255));
+							image.setRGB(d.width-1-Integer.valueOf(m.group(2)), Integer.valueOf(m.group(1)), color.getRGB());
+						}
+						contentPane.repaint();
+						jsp.repaint();
+						f.repaint();
 					}
-					contentPane.repaint();
-					jsp.repaint();
-					f.repaint();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
