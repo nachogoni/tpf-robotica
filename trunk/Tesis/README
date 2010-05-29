@@ -1,0 +1,6 @@
+Para generar TODA la tesis, hacer en la carpeta tesis: pdflatex tesis.tex (2 veces por si no se genera bien la Table Of Contents)
+
+Para generar la tesis de una rama espec\'ifica, por ejemplo hardware, ir a tesis/hardware y hacer pdflatex all.tex
+
+El contenido de la tesis de una rama espec\'ifica se encuentra en tesis/ramaespecifica/tesis.tex y el ap\'endice est\'a en la misma ubicaci\'on bajo el nombre de ap\'endice.tex
+
