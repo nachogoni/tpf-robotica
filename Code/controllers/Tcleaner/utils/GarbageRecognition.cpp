@@ -41,7 +41,6 @@ time_t lastRequest;
 
 GarbageRecognition::GarbageRecognition(WorldInfo * wi){
 	this->wi = wi;
-	this->gamma = PI/2 + this->wi->getCameraAngle() - this->wi->getCameraFOVV()/2;
     this->model = cvLoadImage("./colilla-sinBlanco.png",1);
 }
 
@@ -291,15 +290,15 @@ double GarbageRecognition::distanceTo(utils::Garbage * g)
 }
 
 double GarbageRecognition::getMaximumDistance(){
-	return this->getDistance(this->wi->getCameraFOVV());
+	return this->wi->getMaximumDistance();
 }
 
 double GarbageRecognition::getMinimumDistance(){
-	return this->getDistance(0);
+	return this->wi->getMinimumDistance();
 }
 
 double GarbageRecognition::getDistance(double angle){
-	return tan(this->gamma+angle) * this->wi->getCameraY();
+	return this->wi->getDistance(angle);
 }
 
 void GarbageRecognition::stepDone(){
