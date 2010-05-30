@@ -119,9 +119,40 @@ namespace webts {
 		return;
 	}
 
-	std::list<utils::ArenaGridSlot *> WebotsRobot::getSlotsSeen(utils::ArenaGridSlot * currentSlot){
+	std::list<utils::ArenaGridSlot *> WebotsRobot::getSlotsSeen(utils::MyPoint * position, double angle, utils::ArenaGridSlot * currentSlot){
 		std::list<utils::ArenaGridSlot *> out;
 		out.push_back(currentSlot);
+		utils::Rectangle2D * rect = new utils::Rectangle2D( position,
+										this->wi->getMinimumDistance(),
+										this->wi->getMaximumDistance(),
+										angle, this->wi->getCameraFOVH());
+
+		
+		utils::MyPoint * minP = rect->getMinPoint();
+		utils::MyPoint * maxP = rect->getMaxPoint();
+		utils::ArenaGridSlot * minSlot = this->ag->getSlotAt(minP);
+		utils::ArenaGridSlot * maxSlot = this->ag->getSlotAt(maxP);
+		int minI = this->ag->getSlotXIdx(minSlot);
+		int maxI = this->ag->getSlotXIdx(maxSlot);
+		int minJ = this->ag->getSlotZIdx(minSlot);
+		int maxJ = this->ag->getSlotZIdx(maxSlot);
+
+		for( int i = minI ; i < maxI ; i++ ){
+			for( int j = minJ ; j < maxJ ; j++ ){
+				utils::ArenaGridSlot * current = this->ag->getSlotAt(i,j);
+				if ( current != NULL ){
+					utils::MyPoint * cp = new utils::MyPoint(current->getX(),current->getZ());
+					if ( rect->containsPoint(cp) )
+						out.push_back(cp);
+					else
+						delete cp;
+				}
+			}
+		}
+		if ( minP != NULL )
+			delete minP;
+		if ( maxP != NULL )
+			delete maxP;
 		return out;
 	}
 

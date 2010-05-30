@@ -34,6 +34,9 @@ class WorldInfo {
 		int getCameraImageHeight();
 		utils::ArenaGrid * getArenaGrid();
 
+		double getMaximumDistance();
+		double getMinimumDistance();
+		double getDistance(double angle);
 	private:
 		std::list< utils::MyWall * > walls;
 		std::list< utils::MyLine * > lines;
@@ -59,6 +62,8 @@ class WorldInfo {
 		int resolutionX;
 		int resolutionZ;
 		utils::ArenaGrid * arena;
+
+		double gamma;
 
 		void readWalls(FILE * f);
 		void readLines(FILE * f);

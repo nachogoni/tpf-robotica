@@ -37,7 +37,6 @@ class GarbageRecognition {
     std::list<Garbage*> garbageList(IplImage * src, IplImage * model);
 	WorldInfo * wi;
 	bool pooled;
-	double gamma;
 	IplImage * model;
 	
     double getDistance(double angle);

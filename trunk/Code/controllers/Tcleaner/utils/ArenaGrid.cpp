@@ -48,16 +48,24 @@ utils::ArenaGridSlot * ArenaGrid::getSlotAt(utils::MyPoint * p){
 	int i = this->getI(p->getX());
 	int j = this->getJ(p->getY());
 	//printf("requested %d, %d\n",i,j);
+	return this->getSlotAt(i,j);
+}
+
+utils::ArenaGridSlot * ArenaGrid::getSlotAt(int i, int j){
 	if ( this->cellOutOfBounds(i,j) )
 		return NULL;
  	return this->slots[i][j];
 }
 
 int ArenaGrid::getSlotXIdx(utils::ArenaGridSlot * ags){
+	if ( ags == NULL )
+		return 0;
 	return this->getI(ags->getX());
 }
 
 int ArenaGrid::getSlotZIdx(utils::ArenaGridSlot * ags){
+	if ( ags == NULL )
+		return 0;
 	return this->getJ(ags->getZ());
 }
 

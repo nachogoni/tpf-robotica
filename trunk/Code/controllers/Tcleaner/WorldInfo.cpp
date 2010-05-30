@@ -1,4 +1,5 @@
 #include <WorldInfo.h>
+#include <math.h>
 
 WorldInfo::WorldInfo()
 {
@@ -27,6 +28,7 @@ WorldInfo::WorldInfo()
 	this->readGridResolutions(pFile);
 	this->arena = new utils::ArenaGrid(this->arenaMinX,this->arenaMinZ,this->arenaMaxX,this->arenaMaxZ,this->resolutionX,this->resolutionZ);
 	fclose(pFile);
+	this->gamma = PI/2 + this->getCameraAngle() - this->getCameraFOVV()/2;
 }
 
 void WorldInfo::readWalls(FILE * f){
@@ -200,3 +202,16 @@ double WorldInfo::getCameraY(){
 utils::ArenaGrid * WorldInfo::getArenaGrid(){
 	return this->arena;
 }
+
+double WorldInfo::getMaximumDistance(){
+	return this->getDistance(this->getCameraFOVV());
+}
+
+double WorldInfo::getMinimumDistance(){
+	return this->getDistance(0);
+}
+
+double WorldInfo::getDistance(double angle){
+	return tan(this->gamma+angle) * this->getCameraY();
+}
+
