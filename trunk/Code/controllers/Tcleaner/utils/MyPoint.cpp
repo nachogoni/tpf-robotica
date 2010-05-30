@@ -22,6 +22,10 @@ void MyPoint::add(double x, double y){
 	this->y = this->y + y;
 }
 
+MyPoint * MyPoint::subNew(MyPoint * p){
+	return new MyPoint( this->x - p->getX() , this->z - p->getZ() );
+}
+
 void MyPoint::setX(double x){
 	this->x = x;
 }
@@ -37,6 +41,11 @@ double MyPoint::getX(){
 double MyPoint::getY(){
 	return this->y;
 }
+
+double MyPoint::dot(MyPoint * p){
+	return this->x * p->getX() + this->y * p->getY();
+}
+
 
 std::ostream& MyPoint::operator<<(std::ostream& out) {
   out << "(" << this->x << "," << this->y << ")";
