@@ -68,9 +68,8 @@ int main(int argc, char** argv)
 		if(result!=NULL)
 			resultList.push_back(result);
 		videoFrameNumber++;
-		
-
-		
+				
+		cvReleaseImage( &compareImg );
 	}
 	
 	//cvReleaseImage( &videoFrameImg );

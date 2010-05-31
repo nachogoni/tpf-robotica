@@ -214,6 +214,7 @@ std::vector<int> Contours::getCentroid(){
 	 vec[0]=(int) myMoments->m10/myMoments->m00;
 	 vec[1]=(int) myMoments->m01/myMoments->m00;
 	 
+	 free(myMoments);
 	 return vec;
 }
 
