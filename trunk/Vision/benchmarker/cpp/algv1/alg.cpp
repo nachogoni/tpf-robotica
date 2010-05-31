@@ -38,6 +38,7 @@ int main(int argc, char** argv)
 								cvPoint(boundingRect->x+boundingRect->width,
 								boundingRect->y+boundingRect->height),
 								_GREEN,1,8,0);
+			
 						}
 						
 		cvShowImage("output",src);

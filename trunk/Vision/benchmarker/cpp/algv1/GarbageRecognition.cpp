@@ -11,6 +11,7 @@
 #include "Garbage.h"
 #include "Windowing.h"
 #include "MinimalBoundingRectangle.h"
+#include "PredictionParameters.h"
 
 // image preprocessing values
 #define THRESHOLD_VALUE 240
@@ -34,6 +35,7 @@
 #define HIST_MIN 0.7
 #define TIME_THRESHOLD 15 //seconds
 
+#define ENABLE_WINDOWING true
 
 
 
@@ -55,10 +57,12 @@ void drawPrediction(IplImage * src,std::list<utils::Garbage*> garbagePrediction)
 std::list<utils::Garbage*> garbages;
 std::list<utils::Garbage*> garbagePrediction;
 
+IplImage * src_window;
+
 
 GarbageRecognition::GarbageRecognition(){
 	this->prediction= new Prediction();
-	this->window=new Windowing();
+	this->window=NULL;
 	frameNumber=0;
 	focused=false;
 	
@@ -69,16 +73,29 @@ std::list<Garbage*>
 GarbageRecognition::getGarbageList(IplImage * src)
 {
 		IplImage * model = cvLoadImage("./colilla-sinBlanco.png",1);
-		IplImage * src_window;
+		IplImage * copy;
 		//windowing
 		if(this->focused){
 			if(window->currentGarbage->state!=DEAD){
+				if(src_window!=NULL){
+					if(window->last_last_window!=NULL)
+						//cvReleaseImageHeader(&(window->last_last_window));
+				
+					//logic to release sub-windowing memory
+					if(window->release_window){
+						window->last_last_window=window->last_window;
+						window->last_window=src_window;
+					}
+				
+				}
+				
 				src_window=this->window->getWindow(src);
 				if(src_window==NULL){
 					this->focused=false;
 					delete window;
 					src_window=src;
 				}
+				window->release_window=true;
 			}
 			else{
 				this->focused=false;
@@ -99,19 +116,21 @@ GarbageRecognition::getGarbageList(IplImage * src)
 		garbagePrediction= this->prediction->getPrediction(garbages);
 		
 		//start  windowing
-		if(!(this->frameNumber % 20) && this->focused==false){
+		if(!(this->frameNumber % NUMBER_OF_FRAMES_TO_FOCUS) && this->focused==false && ENABLE_WINDOWING){
+			
 			GarbageHistoric * focusedGarbage=prediction->focusGarbage();
 			if(focusedGarbage!=NULL){
 				this->window=new Windowing(focusedGarbage,cvGetSize(src));
 				this->focused=true;
+				window->release_window=false;
 			}
 		}
 		
-		printf(" Garbage Prediction %d\n",garbagePrediction.size());
 		drawPrediction(src,garbagePrediction);
 		
 		cvReleaseImage(&model);
 		this->frameNumber++;
+		
 	//return garbages;
 	return garbagePrediction;
 }
@@ -120,37 +139,15 @@ std::list<Garbage*>
 GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 
                     
-    
 	std::list<Garbage*> garbageList;
-
-	//cvNamedWindow("output",CV_WINDOW_AUTOSIZE);
-	//object model
-
-	//image for the histogram-based filter
-	//could be a parameter
+	std::vector<int> centroid(2);
 	
-	//~ cvNamedWindow("andImage",CV_WINDOW_AUTOSIZE);
-	//~ cvNamedWindow("andSimage",CV_WINDOW_AUTOSIZE);
-	//~ cvNamedWindow("andSIImage",CV_WINDOW_AUTOSIZE);
-	//~ cvNamedWindow("drawContours",CV_WINDOW_AUTOSIZE);
-	//~ cvNamedWindow("andSThreshImage",CV_WINDOW_AUTOSIZE);
-	//~ cvNamedWindow("threshImage",CV_WINDOW_AUTOSIZE);
-//	cvNamedWindow("andSequalizedImage",CV_WINDOW_AUTOSIZE);
-	//~ cvNamedWindow("morphImage",CV_WINDOW_AUTOSIZE);
-
 	utils::Histogram * h = new Histogram(HIST_H_BINS,HIST_S_BINS);
 	CvHistogram * testImageHistogram = h->getHShistogramFromRGB(model);
 
-	//~ int frameWidth=cvGetCaptureProperty(capture,CV_CAP_PROP_FRAME_WIDTH);
-	//~ int frameHeight=cvGetCaptureProperty(capture,CV_CAP_PROP_FRAME_HEIGHT);
-
-
-
 	//gets a frame for setting  image size
-	//CvSize srcSize = cvSize(frameWidth,frameHeight);
 	CvSize srcSize = cvGetSize(src);
 	
-
 	//images for HSV conversion
 	IplImage* hsv = cvCreateImage( srcSize, 8, 3 );
 	IplImage* h_plane = cvCreateImage( srcSize, 8, 1 );
@@ -158,25 +155,14 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	IplImage* v_plane = cvCreateImage( srcSize, 8, 1 );
 
 
-	//Image for thresholding
-	IplImage * andImage=cvCreateImage(srcSize,8,1);
-	
-	IplImage * andSimage=cvCreateImage(srcSize,8,1);
-	IplImage * andSThreshImage=cvCreateImage(srcSize,8,1);
-	IplImage * andSequalizedImage=cvCreateImage(srcSize,8,1);
-	IplImage * andSIImage=cvCreateImage(srcSize,8,1);
+	//Image for filtering
+	IplImage * andImage=cvCreateImage(srcSize,8,1);	
 
 	//Image for thresholding
 	IplImage * threshImage=cvCreateImage(srcSize,8,1);
 
-	//image for equalization
-	IplImage * equalizedImage=cvCreateImage(srcSize,8,1);
-
 	//image for Morphing operations(Dilate-erode)
 	IplImage * morphImage=cvCreateImage(srcSize,8,1);
-
-	//image for image smoothing
-	IplImage * smoothImage=cvCreateImage(srcSize,8,1);
 	
 	//image for contour-finding operations
 	IplImage * contourImage=cvCreateImage(srcSize,8,3);
@@ -192,6 +178,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 
 	//contours
 	CvSeq * contours;
+	CvSeq * contoursCopy;
 
 	//Main loop
 
@@ -216,8 +203,9 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 				*hue=0;
 		}
 	}
+	
+	
 	cvAnd(h_plane, v_plane, andImage);
-	cvAnd(h_plane, s_plane, andSimage);
 	
 	
 	//apply morphologic operations
@@ -225,7 +213,6 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 		MORPH_KERNEL_SIZE*2+1, MORPH_KERNEL_SIZE, MORPH_KERNEL_SIZE,
 		CV_SHAPE_RECT, NULL);
 
-	
 	cvDilate(andImage,morphImage,element,MORPH_DILATE_ITER);
 	cvErode(morphImage,morphImage,element,MORPH_ERODE_ITER);
 	
@@ -234,7 +221,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	
 	//get all contours
 	contours=myFindContours(threshImage);
-	//contours=myFindContours(smoothImage);
+	contoursCopy=contours;
 
 
 	cont_index=0;
@@ -247,9 +234,6 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 
 		CvSeq * aContour=getPolygon(contours);
 		utils::Contours * ct = new Contours(aContour);
-
-	
-
 
 		//apply filters
 
@@ -275,7 +259,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 				ct->printContour(3,cvScalar(127,127,0,0),
 					contourImage);
 				
-				std::vector<int> centroid(2);
+				
 				centroid=ct->getCentroid();
 
 					
@@ -297,27 +281,22 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	}
 
     cvShowImage("drawContours",contourImage);
-   // cvWaitKey(0);
+
 	delete h;
 	
+	if(contoursCopy!=NULL)
+		cvReleaseMemStorage( &contoursCopy->storage );
 	
 	cvReleaseHist(&testImageHistogram);
-	//Image for thresholding
-	//cvReleaseMemStorage( &contours->storage );
 	cvReleaseImage(&threshImage);
-	cvReleaseImage(&equalizedImage);
 	cvReleaseImage(&morphImage);
-	cvReleaseImage(&smoothImage);
 	cvReleaseImage(&contourImage);
-	
 	cvReleaseImage(&hsv);
 	cvReleaseImage(&h_plane);
 	cvReleaseImage(&s_plane);
 	cvReleaseImage(&v_plane);
 	cvReleaseImage(&andImage);
-	cvReleaseImage(&andSimage);
-	cvReleaseImage(&andSThreshImage);
-	cvReleaseImage(&andSequalizedImage);
+	
 	
 	
 

@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include "Prediction.h"
 #include "GarbageHistoric.h"
+#include "PredictionParameters.h"
 
 
 
@@ -40,7 +41,7 @@ namespace utils{
 			}
 			
 			
-			if((*itHist)->age % 10){
+			if(((*itHist)->age % PREDICTION_REFRESH_AGE) ==0){
 				if((*itHist)->state==SHOW){
 					(*itHist)->maxNumberOfFramesNoAppear=10*((*itHist)->appeareances/(double) (*itHist)->age);
 				}					
