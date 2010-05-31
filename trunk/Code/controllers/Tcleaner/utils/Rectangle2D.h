@@ -3,6 +3,8 @@
 
 #include <utils/MyPoint.h>
 
+#define RECT_INTERSECT_EPS 0.00001
+
 namespace utils{
 
 class Rectangle2D {

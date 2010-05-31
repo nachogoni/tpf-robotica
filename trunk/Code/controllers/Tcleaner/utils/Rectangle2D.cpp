@@ -1,5 +1,6 @@
 #include <utils/Rectangle2D.h>
 #include <math.h>
+#include <stdio.h>
 
 namespace utils{
 
@@ -10,14 +11,15 @@ Rectangle2D::Rectangle2D(utils::MyPoint * p, double shortDistance, double longDi
 	double dCosAlpha = shortDistance * cosAlpha;
 	double dhSenAlpha = longDistance * senAlpha;
 	double dhCosAlpha = longDistance * cosAlpha;
-	double senHalfFOV = sin(fovh/2);
-	double dSenHalfFOV = shortDistance * senHalfFOV;
-	this->a1 = new utils::MyPoint(p->getX() + dSenAlpha + senHalfFOV * ( - dCosAlpha) , p->getY() + dCosAlpha + senHalfFOV * ( dSenAlpha));
-	this->a2 = new utils::MyPoint(p->getX() + dSenAlpha - senHalfFOV * ( - dCosAlpha) , p->getY() + dCosAlpha - senHalfFOV * ( dSenAlpha));
+	double tanHalfFOV = tan(fovh/2);
+	double dTanHalfFOV = shortDistance * tanHalfFOV;
+	this->a1 = new utils::MyPoint(p->getX() + dSenAlpha + tanHalfFOV * ( - dCosAlpha) , p->getY() + dCosAlpha + tanHalfFOV * ( dSenAlpha));
+	this->a2 = new utils::MyPoint(p->getX() + dSenAlpha - tanHalfFOV * ( - dCosAlpha) , p->getY() + dCosAlpha - tanHalfFOV * ( dSenAlpha));
 
-	this->b1 = new utils::MyPoint(p->getX() + dhSenAlpha + dSenHalfFOV * ( - dCosAlpha) , p->getY() + dhCosAlpha + dSenHalfFOV * ( dSenAlpha));
-	this->b2 = new utils::MyPoint(p->getX() + dhSenAlpha - dSenHalfFOV * ( - dCosAlpha) , p->getY() + dhCosAlpha - dSenHalfFOV * ( dSenAlpha));
-
+	this->b1 = new utils::MyPoint(p->getX() + dhSenAlpha + dTanHalfFOV * ( - dCosAlpha) , p->getY() + dhCosAlpha + dTanHalfFOV * ( dSenAlpha));
+	this->b2 = new utils::MyPoint(p->getX() + dhSenAlpha - dTanHalfFOV * ( - dCosAlpha) , p->getY() + dhCosAlpha - dTanHalfFOV * ( dSenAlpha));
+	printf("A: (%g : %g)\nB: (%g : %g)\nC: (%g : %g)\nD: (%g : %g)\n",a2->getX(),a2->getY(),a1->getX(),a1->getY(),b1->getX(),b1->getY(),b2->getX(),b2->getY());
+	printf("w: %g, h: %g\n",2*dTanHalfFOV, longDistance - shortDistance);
 	this->u = this->a2->subNew(this->a1);
 	this->v = this->b1->subNew(this->a1);
 	this->w = this->b2->subNew(this->a1);
@@ -71,16 +73,16 @@ bool Rectangle2D::containsPoint(utils::MyPoint * p){
 }
 
 bool Rectangle2D::triangleContainsPoint(utils::MyPoint * tFirstVector, utils::MyPoint * tSecondVector, utils::MyPoint * vectorTriangleToPoint, double uu, double uv, double vv){
-	double wu = vectorTriangleToPoint->dot(tFirstVector);
-	double wv = vectorTriangleToPoint->dot(tSecondVector);
+	double awu = vectorTriangleToPoint->dot(tFirstVector);
+	double awv = vectorTriangleToPoint->dot(tSecondVector);
 
 	double D = uv * uv - uu * vv;
 
-	double s = (uv * wv - vv * wu) / D;
-	if (s < 0.0 || s > 1.0)        // I is outside T
+	double s = (uv * awv - vv * awu) / D;
+	if (s < -RECT_INTERSECT_EPS || s > (1.0+RECT_INTERSECT_EPS) )        // I is outside T
 		return false;
-	double t = (uv * wu - uu * wv) / D;
-	if (t < 0.0 || (s + t) > 1.0)  // I is outside T
+	double t = (uv * awu - uu * awv) / D;
+	if (t < -RECT_INTERSECT_EPS || (s + t) > (1.0+RECT_INTERSECT_EPS) )  // I is outside T
 		return false;
 	
 	return true;                      // I is in T

@@ -15,11 +15,12 @@ import javax.swing.JScrollPane;
 
 public class ArenaViewer {
 
+	protected static final int SCALE = 1;
 	public static void main(String[] args) throws IOException {
 		File worldInfo = new File("../controllers/Tcleaner/worldInfo.cfg");
 		final Dimension d = getArenaDimension(worldInfo);
 		
-		final BufferedImage image = new BufferedImage(d.width, d.height, BufferedImage.TYPE_INT_RGB);
+		final BufferedImage image = new BufferedImage(d.width*SCALE, d.height*SCALE, BufferedImage.TYPE_INT_RGB);
 		
 		final ImagePanel contentPane = new ImagePanel(image);
 		final JScrollPane jsp = new JScrollPane(contentPane);
@@ -34,7 +35,7 @@ public class ArenaViewer {
 
 		File changesFile = new File("../controllers/Tcleaner/changes.tmp");
 		FileWatcher fw = new FileWatcher(changesFile) {
-			int i = 0;
+			int iter = 0;
 			@Override
 			protected void onChange(File file) {
 				BufferedReader br;
@@ -43,10 +44,10 @@ public class ArenaViewer {
 					String line = br.readLine();
 					if ( line != null && !line.isEmpty() ){
 						Matcher m = cellPattern.matcher(line);
-						i++;
+						iter++;
 						while( m.find() ){
-							Color color = new Color(255-((i*5)%255),255-((i*10)%255),255-((i*20)%255));
-							image.setRGB(d.width-1-Integer.valueOf(m.group(2)), Integer.valueOf(m.group(1)), color.getRGB());
+							Color color = new Color(255-((iter*5)%255),255-((iter*10)%255),255-((iter*20)%255));
+							setPixelColor(image,d.width-1-Integer.valueOf(m.group(2)), Integer.valueOf(m.group(1)), color.getRGB());
 						}
 						contentPane.repaint();
 						jsp.repaint();
@@ -56,6 +57,14 @@ public class ArenaViewer {
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
+				}
+			}
+			
+			private void setPixelColor(BufferedImage image, int i, int j, int rgb) {
+				for(int k = 0; k < SCALE ; k++){
+					for(int l = 0; l < SCALE ; l++){
+						image.setRGB(i*SCALE+k,j*SCALE+l,rgb);
+					}
 				}
 			}
 		};
