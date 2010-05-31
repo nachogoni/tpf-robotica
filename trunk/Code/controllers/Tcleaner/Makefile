@@ -50,7 +50,7 @@ endif
 include $(WEBOTS_HOME_PATH)/projects/default/controllers/Makefile.include
 
 ifeq ($(OSTYPE),linux)
-LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"$(HOME)/OpenCV-2.0.0/lib" -lccext2
+LIBRARIES= -lCppController -lcv -lhighgui -lcxcore -L"$(HOME)/OpenCV-2.0.0/lib" -lccext2
 else
 LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/Program Files/OpenCV/lib"
 endif
