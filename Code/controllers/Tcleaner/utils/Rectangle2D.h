@@ -24,6 +24,7 @@ class Rectangle2D {
 		bool triangleContainsPoint(utils::MyPoint * tFirstVector, utils::MyPoint * tSecondVector, utils::MyPoint * vectorTriangleToPoint, double uu, double uv, double vv);
 
 		double min(double a1, double a2, double a3, double a4);
+		double max(double a1, double a2, double a3, double a4);
 
 		utils::MyPoint * a1;
 		utils::MyPoint * a2;
