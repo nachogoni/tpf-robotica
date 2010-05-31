@@ -130,6 +130,8 @@ int safeConsumption;
 short shutdown_alarm;
 // Indica si se apagaron los motores por el alto consumo
 short motor_shutdown;
+// Usado como flag para indicar que hubo una interrupcion en el TMR0
+short interrupted;
 
 // Variables temporales
 signed int32 * tmp32;
@@ -142,95 +144,24 @@ void SetPWM(signed long pwm);
 #INT_RTCC
 void Timer0_INT()
 {
+	// Levanto el flag de interrupcion
+	interrupted = 1;
+	
 	// Seteo el valor para que interrumpa cada 6.25ms
 	set_timer0(12);
 	
 	// Comienza la lectura del ADC
-	read_adc(ADC_START_ONLY);
+	//read_adc(ADC_START_ONLY);
 	
-	// Agrego al historico de cuentas el ultimo acumulado
-	counts_real = get_timer1();
-	counts_total += (counts_real - last_counts2) * turn;
-	last_counts2 = counts_real;
+	// Hago un delay
+	//delay_us(20);
 	
-	// Tengo una cantidad de cuentas para hacer?
-	if (counts_check == 1)
-	{
-		// Verifico si pasaron las cuentas que se habian pedido
-		if (counts_to_stop < 1)
-		{
-			// Detengo el motor
-			counts_check = 0;
-			counts_to_stop = 0;
-			counts_expected = 0;
-			duty = 0;
-			SetPWM(duty);
-			correct_duty = 0;
-			last_counts = 0;
-		} else {
-			counts_real = get_timer1();
-			counts_to_stop -= (counts_real - last_counts);// * turn;
-			correct_duty = 1;
-			last_counts = counts_real;
-		}
-	} else {
-		correct_duty = 1;
-	}
+	// Tomo la muestra para el ADC
+	//adc_value += read_adc(ADC_READ_ONLY);
 	
-	// Tomo la muestra
-	adc_value += read_adc(ADC_READ_ONLY);
+	// Tomo el valor del TMR1 -> encoder
+	//counts_real = get_timer1();
 	
-	if (++tmr0_ticks == 32)
-	{
-		// Entra cada 200ms
-
-		// Obtengo la cantidad de cuentas desde la ultima entrada
-		counts_real = get_timer1();
-		last_real_speed = counts_real;
-		
-		set_timer1(0);
-		last_counts = 0;
-		last_counts2 = 0;
-		// Promedio el consumo segun la cantidad de tmr0_ticks
-		last_consumption = adc_value / tmr0_ticks;
-		
-		if (last_consumption >= MAX_CONSUMPTION)
-		{
-			consumption_alarm = 1;
-			safeConsumption = 0;
-			if (alarm_count++ == MAX_CONSUMPTION_COUNT)
-			{
-				motor_shutdown = 1;
-				alarm_count = 0;
-				consumption_alarm = 0;
-				shutdown_alarm = 1;
-			}	
-		} else {
-			// Consumo normal -> espero para resetear el contador de shutdown
-			if (safeConsumption++ == MAX_SAFE_CONSUMPTION_COUNT)
-			{
-				alarm_count = 0;
-			}
-		}	
-		
-		tmr0_ticks = 0;
-
-		// Mantengo el consumo promedio desde que arranque y borro el temporal
-		adc_value = 0;
-
-		// Corrijo el PWM segun lo esperado
-		if ((correct_duty == 1) && (counts_real != counts_expected))
-		{
-			duty += (counts_expected - counts_real) * 5;
-			if (duty > 1023L)
-				duty = 1023;
-			else if (duty < 0)
-				duty = 0;
-			SetPWM(duty * turn);
-		} else if ((counts_expected == 0) && (duty != 0)) {		
-			SetPWM(duty = 0);
-		}	
-	}
 	return;
 }
 
@@ -306,6 +237,8 @@ void init()
 	shutdown_alarm = 0;
 	// Indica si se apagaron los motores por el alto consumo
 	motor_shutdown = 0;
+	// Usado como flag para indicar que hubo una interrupcion en el TMR0
+	interrupted = 0;
 
 	return;	
 }	
@@ -350,7 +283,101 @@ void main()
 	// FOREVER
 	while(true)
 	{
-		// Hace sus funciones -> interrupcion
+		// Hace sus funciones -> Ex-Interrupcion
+		if (interrupted == 1)
+		{
+			interrupted = 0;
+			
+			// Seteo el valor para que interrumpa cada 6.25ms
+			set_timer0(12);
+			
+			// Comienza la lectura del ADC
+			read_adc(ADC_START_ONLY);
+			
+			// Agrego al historico de cuentas el ultimo acumulado
+			counts_real = get_timer1();
+			counts_total += (counts_real - last_counts2) * turn;
+			last_counts2 = counts_real;
+			
+			// Tengo una cantidad de cuentas para hacer?
+			if (counts_check == 1)
+			{
+				// Verifico si pasaron las cuentas que se habian pedido
+				if (counts_to_stop < 1)
+				{
+					// Detengo el motor
+					counts_check = 0;
+					counts_to_stop = 0;
+					counts_expected = 0;
+					duty = 0;
+					SetPWM(duty);
+					correct_duty = 0;
+					last_counts = 0;
+				} else {
+					counts_real = get_timer1();
+					counts_to_stop -= (counts_real - last_counts);// * turn;
+					correct_duty = 1;
+					last_counts = counts_real;
+				}
+			} else {
+				correct_duty = 1;
+			}
+			
+			// Tomo la muestra
+			adc_value += read_adc(ADC_READ_ONLY);
+			
+			if (++tmr0_ticks == 32)
+			{
+				// Entra cada 200ms
+		
+				// Obtengo la cantidad de cuentas desde la ultima entrada
+				counts_real = get_timer1();
+				last_real_speed = counts_real;
+				
+				set_timer1(0);
+				last_counts = 0;
+				last_counts2 = 0;
+				// Promedio el consumo segun la cantidad de tmr0_ticks
+				last_consumption = adc_value / tmr0_ticks;
+				
+				if (last_consumption >= MAX_CONSUMPTION)
+				{
+					consumption_alarm = 1;
+					safeConsumption = 0;
+					if (alarm_count++ == MAX_CONSUMPTION_COUNT)
+					{
+						motor_shutdown = 1;
+						alarm_count = 0;
+						consumption_alarm = 0;
+						shutdown_alarm = 1;
+					}	
+				} else {
+					// Consumo normal -> espero para resetear el contador de shutdown
+					if (safeConsumption++ == MAX_SAFE_CONSUMPTION_COUNT)
+					{
+						alarm_count = 0;
+					}
+				}	
+				
+				tmr0_ticks = 0;
+		
+				// Mantengo el consumo promedio desde que arranque y borro el temporal
+				adc_value = 0;
+		
+				// Corrijo el PWM segun lo esperado
+				if ((correct_duty == 1) && (counts_real != counts_expected))
+				{
+					duty += (counts_expected - counts_real) * 5;
+					if (duty > 1023L)
+						duty = 1023;
+					else if (duty < 0)
+						duty = 0;
+					SetPWM(duty * turn);
+				} else if ((counts_expected == 0) && (duty != 0)) {		
+					SetPWM(duty = 0);
+				}	
+			}
+		}
 	
 		// Enviar alarma de alto consumo
 		if (consumption_alarm == 1)
