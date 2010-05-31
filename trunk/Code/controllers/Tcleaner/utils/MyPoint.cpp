@@ -23,7 +23,7 @@ void MyPoint::add(double x, double y){
 }
 
 MyPoint * MyPoint::subNew(MyPoint * p){
-	return new MyPoint( this->x - p->getX() , this->z - p->getZ() );
+	return new MyPoint( this->x - p->getX() , this->y - p->getY() );
 }
 
 void MyPoint::setX(double x){

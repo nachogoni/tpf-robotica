@@ -9,7 +9,7 @@
 #include <robotapi/webts/WebotsTrashBin.h>
 #include <webots/Camera.hpp>
 #include <webots/Robot.hpp>
-#include <utils/ArenaGridSlot.h>
+#include <utils/Rectangle2D.h>
 
 namespace robotapi {
 namespace webts {
@@ -90,7 +90,7 @@ namespace webts {
 		df->computeOdometry();
 		utils::ArenaGridSlot * currentSlot = this->ag->getSlotAt(df->getPosition());
 		if ( currentSlot != NULL ){
-			std::list<utils::ArenaGridSlot *> seenSlots = this->getSlotsSeen(currentSlot);
+			std::list<utils::ArenaGridSlot *> seenSlots = this->getSlotsSeen(df->getPosition(), df->getOrientation(), currentSlot);
 			printf("Current Slot: %g - %g --> Timestamp: %ld\n",currentSlot->getX(),currentSlot->getZ(),currentSlot->getTimeStamp());
 			this->saveChanges(seenSlots);
 		}
@@ -142,8 +142,9 @@ namespace webts {
 				utils::ArenaGridSlot * current = this->ag->getSlotAt(i,j);
 				if ( current != NULL ){
 					utils::MyPoint * cp = new utils::MyPoint(current->getX(),current->getZ());
-					if ( rect->containsPoint(cp) )
-						out.push_back(cp);
+					if ( rect->containsPoint(cp) ){
+						out.push_back(current);
+					}
 					else
 						delete cp;
 				}

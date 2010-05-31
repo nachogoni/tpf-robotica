@@ -12,11 +12,11 @@ Rectangle2D::Rectangle2D(utils::MyPoint * p, double shortDistance, double longDi
 	double dhCosAlpha = longDistance * cosAlpha;
 	double senHalfFOV = sin(fovh/2);
 	double dSenHalfFOV = shortDistance * senHalfFOV;
-	this->a1 = new utils::MyPoint(p->getX() + dSenAlpha + senHalfFOV * ( - dCosAlpha) , p->getZ() + dCosAlpha + senHalfFOV * ( dSenAlpha));
-	this->a2 = new utils::MyPoint(p->getX() + dSenAlpha - senHalfFOV * ( - dCosAlpha) , p->getZ() + dCosAlpha - senHalfFOV * ( dSenAlpha));
+	this->a1 = new utils::MyPoint(p->getX() + dSenAlpha + senHalfFOV * ( - dCosAlpha) , p->getY() + dCosAlpha + senHalfFOV * ( dSenAlpha));
+	this->a2 = new utils::MyPoint(p->getX() + dSenAlpha - senHalfFOV * ( - dCosAlpha) , p->getY() + dCosAlpha - senHalfFOV * ( dSenAlpha));
 
-	this->b1 = new utils::MyPoint(p->getX() + dhSenAlpha + dSenHalfFOV * ( - dCosAlpha) , p->getZ() + dhCosAlpha + dSenHalfFOV * ( dSenAlpha));
-	this->b2 = new utils::MyPoint(p->getX() + dhSenAlpha - dSenHalfFOV * ( - dCosAlpha) , p->getZ() + dhCosAlpha - dSenHalfFOV * ( dSenAlpha));
+	this->b1 = new utils::MyPoint(p->getX() + dhSenAlpha + dSenHalfFOV * ( - dCosAlpha) , p->getY() + dhCosAlpha + dSenHalfFOV * ( dSenAlpha));
+	this->b2 = new utils::MyPoint(p->getX() + dhSenAlpha - dSenHalfFOV * ( - dCosAlpha) , p->getY() + dhCosAlpha - dSenHalfFOV * ( dSenAlpha));
 
 	this->u = this->a2->subNew(this->a1);
 	this->v = this->b1->subNew(this->a1);

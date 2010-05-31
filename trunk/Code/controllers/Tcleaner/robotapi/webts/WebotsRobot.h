@@ -6,6 +6,8 @@
 #include <WorldInfo.h>
 #include <list>
 #include <utils/ArenaGrid.h>
+#include <utils/ArenaGridSlot.h>
+#include <utils/MyPoint.h>
 
 namespace robotapi {
 namespace webts {
@@ -44,7 +46,7 @@ public:
 
 	void saveChanges(std::list<utils::ArenaGridSlot *> ags);
 
-	std::list<utils::ArenaGridSlot *> getSlotsSeen(utils::ArenaGridSlot * currentSlot);
+	std::list<utils::ArenaGridSlot *> getSlotsSeen(utils::MyPoint * position, double angle, utils::ArenaGridSlot * currentSlot);
 
     // destructor for interface
     ~WebotsRobot() { }
