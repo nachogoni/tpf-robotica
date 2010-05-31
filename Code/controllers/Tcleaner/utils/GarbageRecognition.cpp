@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <string>
 #include <time.h>
-#include <utils/contours.h>
-#include <utils/histogram.h>
+#include <utils/Contours.h>
+#include <utils/Histogram.h>
 #include <utils/Garbage.h>
 #include <utils/MyAngle.h>
 #include <utils/MinimalBoundingRectangle.h>
