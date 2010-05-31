@@ -111,7 +111,7 @@ namespace webts {
 			for ( it=ags.begin() ; it != ags.end() ; it++ ){
 				(*it)->setTimeStamp(ts);
 				fprintf(pFile,"(%d,%d)",this->ag->getSlotXIdx(*it),this->ag->getSlotZIdx(*it));
-				printf("(%d,%d)",this->ag->getSlotXIdx(*it),this->ag->getSlotZIdx(*it));
+				//printf("(%d,%d)",this->ag->getSlotXIdx(*it),this->ag->getSlotZIdx(*it));
 			}
 		}
 		fclose (pFile);
@@ -127,9 +127,12 @@ namespace webts {
 										this->wi->getMaximumDistance(),
 										angle, this->wi->getCameraFOVH());
 
-		
+		printf("Pos act: (%g,%g)",position->getX(),position->getY());
+		printf("Angle: %g",angle);
 		utils::MyPoint * minP = rect->getMinPoint();
 		utils::MyPoint * maxP = rect->getMaxPoint();
+		printf("Punto Min: (%g : %g)\nPunto Max: (%g : %g)\n",minP->getX(),minP->getY(),maxP->getX(),maxP->getY());
+
 		utils::ArenaGridSlot * minSlot = this->ag->getSlotAt(minP);
 		utils::ArenaGridSlot * maxSlot = this->ag->getSlotAt(maxP);
 		int minI = this->ag->getSlotXIdx(minSlot);

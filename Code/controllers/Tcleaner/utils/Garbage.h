@@ -12,7 +12,7 @@ namespace utils{
 	     utils::MinimalBoundingRectangle * boundingBox();
 	
 	     Garbage(utils::MinimalBoundingRectangle * mbr);
-	
+
 		~Garbage();
 	 private:
 	    double angle;
