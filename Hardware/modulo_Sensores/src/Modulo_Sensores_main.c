@@ -1,19 +1,37 @@
 //CCS PCM V4.023 COMPILER
 
 #define CARD_GROUP	DISTANCE_SENSOR	// Ver protocol.h
-#define CARD_ID		0		// Valor entre 0 y E
+#define CARD_ID		1		// Valor entre 0 y E
+
+// ID:0 -> Placa de telemetros
+// ID:1 -> Placa de sensores de piso y sensor de ultrasonido
+// ID:2 -> Placa de telemetros
 
 // Descripcion de la placa
 #define DESC		"PLACA SENSORES 1.0" // Maximo DATA_SIZE bytes
 
 // Determina el tipo de sensores principales en la placa - CAMBIARLO SEGUN CORRESPONDA
 // Posibles valores: FLOOR_SENSORS o TELEMETERS_SENSORS o NONE
-#define SENSORS_TYPE	TELEMETERS_SENSORS
+//#define SENSORS_TYPE	TELEMETERS_SENSORS
 
 // Determina contra que esta conectado el pin TRIGGER - CAMBIARLO SEGUN CORRESPONDA
 // Posibles valores: NONE o ULTRASONIC_SENSOR o SWITCH_SENSOR o LED
-#define TRIGGER_TYPE	ULTRASONIC_SENSOR
+//#define TRIGGER_TYPE	ULTRASONIC_SENSOR
 //#define TRIGGER_TYPE	SWITCH_SENSOR
+
+#if CARD_ID == 0
+	#define SENSORS_TYPE	TELEMETERS_SENSORS
+	#define TRIGGER_TYPE	SWITCH_SENSOR
+	#define DEFAULT_MASK	0x2F
+#elif CARD_ID == 1
+	#define SENSORS_TYPE	FLOOR_SENSORS
+	#define TRIGGER_TYPE	ULTRASONIC_SENSOR
+	#define DEFAULT_MASK	0x27
+#elif CARD_ID == 2
+	#define SENSORS_TYPE	TELEMETERS_SENSORS
+	#define TRIGGER_TYPE	SWITCH_SENSOR
+	#define DEFAULT_MASK	0x2F
+#endif
 
 // Define el estado logico para prender o apagar los sensores - CAMBIARLO SEGUN CORRESPONDA
 #define SENSOR_ON	0
@@ -326,7 +344,7 @@ void init()
 	samples = SAMPLES_DEFAULT;
 	
 	// Inicializa la mascara -> todos habilitados (0x3F)
-	sensorMask = 0x3F;
+	sensorMask = DEFAULT_MASK;
 	
 	//Determina el estado actual
 	state = STATE_FREE;
@@ -365,7 +383,6 @@ void sendAlarm()
 
 void main()
 {
-//long j = 0;
 	// Placa Generica - Implementacion del protocolo
 	init();
 
@@ -392,12 +409,6 @@ void main()
 
 				// Protocolo
 				runProtocol(&command);
-
-/*if (j++ == 5000) {
- 	readSensor = 0xFF;
- 	requestCmd = 0x44;
- 	j = 0;
-}*/
 
 				if (readSensor != 0x00)
 				{
