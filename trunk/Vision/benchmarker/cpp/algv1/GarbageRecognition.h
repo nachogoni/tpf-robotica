@@ -19,6 +19,10 @@ class GarbageRecognition {
 	GarbageRecognition(int a);
 	~GarbageRecognition();
     std::list<utils::Garbage*> getGarbageList(IplImage * img);
+    void enablePrediction();
+    void disablePrediction();
+    void enableWindowing();
+    void disableWindowing();
     Prediction* prediction;
     int frameNumber;
     bool focused;
@@ -27,6 +31,8 @@ class GarbageRecognition {
 
 
  private:
+	bool doWindowing;
+	bool doPrediction;
     std::list<Garbage*> garbageList(IplImage * src, IplImage * model);
     //std::list<utils::Garbage*> garbages;
 

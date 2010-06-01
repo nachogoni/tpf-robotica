@@ -1,7 +1,6 @@
 /*
  *      contours.c
  *      
- *      Copyright 2010 Diego Nul <dnul@alu.itba.edu.ar>
  *      
  *      This library takes care of contour finding and filtering
  * 		using openCV library

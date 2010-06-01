@@ -24,10 +24,16 @@ int main(int argc, char** argv)
 		return 0;
 	}
 	
+	
+	
 	utils::GarbageRecognition * gr= new utils::GarbageRecognition();
+	gr->disablePrediction();
+	gr->disableWindowing();
 	
 	
 	while(src=cvQueryFrame(capture)){
+		
+		//~ src=cvLoadImage("webots.jpg");
 		std::list<utils::Garbage*> glist=gr->getGarbageList(src);
 		
 		
