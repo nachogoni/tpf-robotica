@@ -2,7 +2,7 @@
 #define robotapi_webts_WebotsDifferentialWheels_h
 
 #include <robotapi/DifferentialWheelsWOdometry.h>
-#include <robotapi/Webts/WebotsDevice.h>
+#include <robotapi/webts/WebotsDevice.h>
 #include <webots/DifferentialWheels.hpp>
 #include <WorldInfo.h>
 

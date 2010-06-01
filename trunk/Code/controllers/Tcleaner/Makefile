@@ -49,8 +49,13 @@ endif
 
 include $(WEBOTS_HOME_PATH)/projects/default/controllers/Makefile.include
 
+CVFLAGSCOMMAND = pkg-config opencv --libs
+
+OPENCVFLAGS = $(shell $(CVFLAGSCOMMAND) )
+
 ifeq ($(OSTYPE),linux)
-LIBRARIES= -lCppController -lcv -lhighgui -lcxcore -L"$(HOME)/OpenCV-2.0.0/lib" -lccext2
+#LIBRARIES= -lCppController -lcv -lhighgui -lcxcore -L"$(HOME)/OpenCV-2.0.0/lib" -lccext2
+LIBRARIES= -lCppController -lccext2 $(OPENCVFLAGS)
 else
 LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/Program Files/OpenCV/lib"
 endif
@@ -60,6 +65,7 @@ endif
 # files, or set optimization level:
 
 #CFLAGS= -g -Wall -I"C:/tpf-robotica/Code/controllers/TCleaner" -I"C:\OpenCV2.0\include\opencv"
+
 
 ifeq ($(OSTYPE),linux)
 CFLAGS= -g -Wall -I"$(HOME)/tpf-robotica/Code/controllers/Tcleaner" -I"$(HOME)/OpenCV-2.0.0/include/opencv" -std=c++0x

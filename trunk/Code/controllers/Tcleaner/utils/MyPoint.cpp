@@ -22,6 +22,14 @@ void MyPoint::add(double x, double y){
 	this->y = this->y + y;
 }
 
+MyPoint * MyPoint::addNew(MyPoint * p){
+	return new MyPoint( this->x + p->getX() , this->y + p->getY() );
+}
+
+MyPoint * MyPoint::addNewBy(MyPoint * p, double mult){
+	return new MyPoint( this->x + p->getX()*mult, this->y + p->getY()*mult );
+}
+
 MyPoint * MyPoint::subNew(MyPoint * p){
 	return new MyPoint( this->x - p->getX() , this->y - p->getY() );
 }
