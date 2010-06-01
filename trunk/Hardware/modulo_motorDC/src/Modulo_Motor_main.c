@@ -2,6 +2,7 @@
 
 #define CARD_GROUP	MOTOR_DC	// Ver protocol.h
 #define CARD_ID		0		// Valor entre 0 y E
+// Motor derecho (ID: 0) y Motor izquierdo (ID: 1)
 
 // Descripcion de la placa
 #define DESC		"CONTROL MOTOR DC 1.0" // Maximo DATA_SIZE bytes
@@ -91,8 +92,8 @@ void doCommand(struct command_t * cmd); // Examina y ejecula el comando
 
 // Girar -> clockwise or unclockwise
 // Intercambiar entre el motor derecho y el izquierdo
-#define CLOCKWISE	1
-#define UNCLOCKWISE	-1
+#define CLOCKWISE	1 	// Motor derecho 	(ID: 0)
+#define UNCLOCKWISE	-1	// Motor izquierdo 	(ID: 1)
 
 // Sentido de giro del motor
 signed int turn;
@@ -203,8 +204,13 @@ void init()
 	// Variable para hacer el reset
 	reset = false;
 
-	// Sentido de giro del motor
-	turn = CLOCKWISE;
+	// Sentido de giro del motor - Motor derecho (ID: 0) y Motor izquierdo (ID: 1)
+	#if CARD_ID == 0
+		turn = CLOCKWISE;
+	#else
+		turn = UNCLOCKWISE;
+	#endif
+
 	// Cantidad de overflows del TMR0
 	tmr0_ticks = 0;
 	// Valor acumulado del ADC - Consumo aprox
