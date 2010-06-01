@@ -65,6 +65,8 @@ GarbageRecognition::GarbageRecognition(){
 	this->window=NULL;
 	frameNumber=0;
 	focused=false;
+	doWindowing=true;
+	doPrediction=true;
 	
 	}
 GarbageRecognition::~GarbageRecognition(){};
@@ -113,10 +115,13 @@ GarbageRecognition::getGarbageList(IplImage * src)
 		}
 		
 		//prediction
-		garbagePrediction= this->prediction->getPrediction(garbages);
+		if(this->doPrediction)
+			garbagePrediction= this->prediction->getPrediction(garbages);
+		else
+			garbagePrediction=garbages;
 		
 		//start  windowing
-		if(!(this->frameNumber % NUMBER_OF_FRAMES_TO_FOCUS) && this->focused==false && ENABLE_WINDOWING){
+		if(!(this->frameNumber % NUMBER_OF_FRAMES_TO_FOCUS) && this->focused==false && this->doWindowing){
 			
 			GarbageHistoric * focusedGarbage=prediction->focusGarbage();
 			if(focusedGarbage!=NULL){
@@ -216,20 +221,18 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	cvDilate(andImage,morphImage,element,MORPH_DILATE_ITER);
 	cvErode(morphImage,morphImage,element,MORPH_ERODE_ITER);
 	
+	cvThreshold(morphImage,threshImage,100,255,CV_THRESH_BINARY);
 	
-	cvThreshold(morphImage,threshImage,120,255,CV_THRESH_BINARY);
+	cvShowImage("threshImage",threshImage);
 	
 	//get all contours
 	contours=myFindContours(threshImage);
 	contoursCopy=contours;
-
-
+	
 	cont_index=0;
 	
 	cvCopy(src,contourImage,0);
 	
-
-
 	while(contours!=NULL){
 
 		CvSeq * aContour=getPolygon(contours);
@@ -323,5 +326,19 @@ void drawPrediction(IplImage * src,std::list<Garbage*> garbagePrediction){
 	
 	cvReleaseImage(&predictionImage);
 }
+
+	void GarbageRecognition::enablePrediction(){
+		this->doPrediction=true;
+	}
+	
+    void GarbageRecognition::disablePrediction(){
+		this->doPrediction=false;
+	}
+    void GarbageRecognition::enableWindowing(){
+		this->doWindowing=true;
+	}
+    void GarbageRecognition::disableWindowing(){
+		this->doWindowing=false;
+	}
 
 } /* End of namespace utils */
