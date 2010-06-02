@@ -20,6 +20,14 @@ Garbage::Garbage(utils::MinimalBoundingRectangle * mbr,std::vector<int> centroid
 	this->centroid=centroid;
 }
 
+Garbage::Garbage(utils::MinimalBoundingRectangle * mbr,std::vector<int> centroid,Contours * contour){
+	this->mbr=mbr;
+	this->centroid=centroid;
+	this->area=contour->getArea();
+	this->perimeter=contour->getPerimeter();
+}
+
+
 std::vector<int> Garbage::getCentroid(){
 	return this->centroid;
 	

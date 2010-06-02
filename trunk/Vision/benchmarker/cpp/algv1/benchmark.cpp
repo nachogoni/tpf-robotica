@@ -113,7 +113,7 @@ compareFrameXmlWithFrame(IplImage* frame,Frame* frameXml)
 		for (std::list<Cobject*>::iterator itVid = objects.begin(); itVid != objects.end(); itVid++){
 			if( (*itVid)->isSimilar(*itXml)){
 				if(!found){
-					printf("found object %d index %d\n",(*itXml)->index,(*itVid)->index);
+					//~ printf("found object %d index %d\n",(*itXml)->index,(*itVid)->index);
 					aResult->addFound((*itXml)->index);
 					found=true;		
 					hit++;
@@ -130,13 +130,13 @@ compareFrameXmlWithFrame(IplImage* frame,Frame* frameXml)
 	for (std::list<Cobject*>::iterator itVid = objects.begin(); itVid != objects.end(); itVid++)
 	{
 		if(missCount[(*itVid)->index]==objectsXml.size()){
-			printf("index %d, no encontro nada \n",(*itVid)->index);
+			//~ printf("index %d, no encontro nada \n",(*itVid)->index);
 			aResult->addMiss((*itVid));
 			miss++;
 		}
 	}
 	
-	printf("hits:%d, miss:%d\n",hit,miss);
+	printf("	hits:%d, miss:%d\n",hit,miss);
 	
 	
 	return aResult;
