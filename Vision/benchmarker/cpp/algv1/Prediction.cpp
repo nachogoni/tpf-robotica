@@ -53,8 +53,10 @@ namespace utils{
 				if( factor!=1){
 					//make a guess
 					guess=(*itHist)->guessPosition();
+					guess->isPredicted=true;
 					newGarbageList.push_back(guess);
 				}else{
+					guess->isPredicted=true;
 					newGarbageList.push_back((*itHist)->garbage);
 				}
 			}

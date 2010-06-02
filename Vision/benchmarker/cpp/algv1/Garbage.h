@@ -3,6 +3,7 @@
 
 #include "MinimalBoundingRectangle.h"
 #include <vector>
+#include "Contours.h"
 
 namespace utils{
 
@@ -19,8 +20,17 @@ namespace utils{
 		 ~Garbage();
 	     Garbage(utils::MinimalBoundingRectangle * mbr);
 	     Garbage(utils::MinimalBoundingRectangle * mbr,std::vector<int> centroid);
+	     Garbage(utils::MinimalBoundingRectangle * mbr,std::vector<int> centroid,Contours * contour);
 	     std::vector<int> getCentroid();
 	     
+	     double area;
+	     double perimeter;
+	     CvHistogram * pgh;
+	     
+	     //benchmark purposes
+	     bool isPredicted;
+	     bool isVisualized;
+	     bool isFocused;
 	
 	 private:
 	    double angle;

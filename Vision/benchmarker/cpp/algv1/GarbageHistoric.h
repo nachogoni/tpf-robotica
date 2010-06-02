@@ -20,6 +20,7 @@ namespace utils{
 		 void updateHistoric();
 		 void updateHistoricWithGarbage(Garbage * garbage);
 		 Garbage * guessPosition();
+		 bool compareContour(Garbage * garbage);
 		 void printPrediction();
 
 

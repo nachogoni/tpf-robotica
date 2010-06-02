@@ -16,7 +16,13 @@ namespace utils {
 	
 		Contours(CvSeq * contour);
 		
+		Contours(CvSeq * contour,CvRect window);
+		
 		void printContour(int depthLevel, CvScalar color,IplImage * dst);
+		
+		double getArea();
+		
+		double getPerimeter();
 
 		CvSeq * getContour();
 

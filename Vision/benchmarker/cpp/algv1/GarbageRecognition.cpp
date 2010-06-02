@@ -235,9 +235,15 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	
 	while(contours!=NULL){
 
+		
 		CvSeq * aContour=getPolygon(contours);
-		utils::Contours * ct = new Contours(aContour);
-
+		utils::Contours * ct;
+		
+		if(this->window==NULL)
+			ct = new Contours(aContour);
+		else
+			ct = new Contours(aContour,this->window->window);
+		
 		//apply filters
 
     
@@ -270,14 +276,16 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 				utils::MinimalBoundingRectangle * r = new utils::MinimalBoundingRectangle(boundingRect.x,
 					boundingRect.y,boundingRect.width,boundingRect.height);
 
-				utils::Garbage * aGarbage = new utils::Garbage(r,centroid);
+				utils::Garbage * aGarbage = new utils::Garbage(r,centroid,ct);
+				//benchmark purposes
+				aGarbage->isVisualized=true;
 
 				garbageList.push_back(aGarbage);
 
 
 			}
 
-		delete ct;
+		//delete ct;
 		cvReleaseMemStorage( &aContour->storage );
 		contours=contours->h_next;
 		cont_index++;

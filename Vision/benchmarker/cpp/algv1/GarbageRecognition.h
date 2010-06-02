@@ -34,6 +34,7 @@ class GarbageRecognition {
 	bool doWindowing;
 	bool doPrediction;
     std::list<Garbage*> garbageList(IplImage * src, IplImage * model);
+    IplImage * oldImage;
     //std::list<utils::Garbage*> garbages;
 
 };

@@ -10,8 +10,12 @@
 #include "Histogram.h"
 #include <stdio.h>
 #include <vector>
+#include <cv.h>
 
-#define PER_TOLERANCE 50
+
+#define PER_TOLERANCE 500
+
+
 
 /* findContours
  * Given a binary image returns a sequence of contours found in
@@ -62,6 +66,14 @@ Contours::Contours(CvSeq * contour){
 	this->y=p->y;
 }
 
+//accept window for configuring perimeter and area filters
+Contours::Contours(CvSeq * contour,CvRect window){
+	this->c = contour;
+	CvPoint * p=CV_GET_SEQ_ELEM(CvPoint ,contour,0);
+	this->x=p->x + window.x;
+	this->y=p->y + window.y;
+}
+
 int getPointZone(int x, int y){
 	int zone;
 	
@@ -78,13 +90,41 @@ int getPointZone(int x, int y){
 }
 
 
+
+
 /* 
  * Prints a contour on a dst Image.
  */
 void Contours::printContour(int depthLevel, CvScalar color,IplImage * dst){
 	
+	CvFont font;
+	int line_type=CV_AA;
+	
+	char * a=(char *) malloc(20);
+	char * b=(char *) malloc(20);
+	char * c=(char *) malloc(20);
+	char * d=(char *) malloc(20);
+	
 	cvDrawContours( dst, this->c, CV_RGB(255,0,0), CV_RGB(0,255,0), 
 		depthLevel, 3, CV_AA, cvPoint(0,0) );
+
+	std::vector<int> centroid=this->getCentroid();
+	CvPoint pt2=cvPoint(centroid[0]+5,centroid[1]+5);
+	CvPoint pt3=cvPoint(centroid[0]+5,centroid[1]+15);
+	CvPoint pt4=cvPoint(centroid[0]+5,centroid[1]+25);
+	CvPoint pt5=cvPoint(centroid[0]+5,centroid[1]+35);
+	sprintf(a,"per: %g",this->getPerimeter());
+	sprintf(b,"zone: %d",getPointZone(this->x,this->y));
+	sprintf(c,"area: %g",this->getArea());
+	//~ sprintf(d,"convex: %d",cvCheckContourConvexity(this->c));
+	
+	cvInitFont( &font, CV_FONT_HERSHEY_COMPLEX, 0.5, 0.5, 0.0,0.5, line_type );
+	cvPutText( dst, a, pt2, &font, CV_RGB(255,255,0));
+	cvPutText( dst, c, pt3, &font, CV_RGB(255,255,0));
+	cvPutText( dst, b, pt4, &font, CV_RGB(255,255,0));
+	cvPutText( dst, d, pt5, &font, CV_RGB(255,255,0));
+
+	//~ free(a);
 }
 
 
@@ -94,13 +134,13 @@ void Contours::printContour(int depthLevel, CvScalar color,IplImage * dst){
 
 int Contours::areaFilter(double min_area,double max_area){
 	double area;
-	area=fabs(cvContourArea(this->c,CV_WHOLE_SEQ));
+	area=this->getArea();
 	 
 	
 	int zone=getPointZone(this->x,this->y);
 	
 	
-	double  minAreaByZone[]={0,80,40,20,10};
+	double  minAreaByZone[]={0,100,40,20,10};
 	//double  maxAreaByZone[]={0,800,400,200,100};
 	double  maxAreaByZone[]={0,800,550,200,50};
 	
@@ -112,10 +152,10 @@ int Contours::areaFilter(double min_area,double max_area){
 int Contours::perimeterFilter(double min_per,double max_per){
 	
 	double per;
-	per=cvContourPerimeter(this->c);
-	
+	per=this->getPerimeter();
+		
 	//double  maxPerimeterByZone[]={0,300,300,75,50};
-	double  minPerimeterByZone[]={0,30,15,10,10};
+	double  minPerimeterByZone[]={0,50,15,10,10};
 	double  maxPerimeterByZone[]={0,300,200,100,50};
 	
 	int zone=getPointZone(this->x,this->y);
@@ -156,12 +196,16 @@ int Contours::boxAreaFilter(double minAreaRatio){
 	
 	box=cvMinAreaRect2(this->c,mem);
 	boxArea=box.size.width*box.size.height;
-	contourArea=fabs(cvContourArea(this->c,CV_WHOLE_SEQ));
+	contourArea=this->getArea();
 	dif=boxArea-contourArea;
 	ret=(1- (dif/boxArea));
+	
+	int zone=getPointZone(this->x,this->y);
+	
+	double minAreaRatioByZone[]={0,0.6,0.55,0.55,0.55};
         
-     
     cvReleaseMemStorage( &mem );
+	//~ return ret > minAreaRatioByZone[zone];
 	return ret > minAreaRatio;
 }
 
@@ -221,4 +265,37 @@ CvSeq * Contours::getContour(){
 	return this->c;
 }
 
+double Contours::getArea(){
+	return fabs(cvContourArea(this->c,CV_WHOLE_SEQ));
+}
+		
+double Contours::getPerimeter(){
+	return cvContourPerimeter(this->c);
+	
+}
+
+//~ CvHistogram * Contours::getPGH(){
+	//~ int dims[] = {8, 8};
+	//~ float range[] = {-180, 180, -100, 100};
+	//~ float *ranges[] = {&range[0], &range[2]}; 	
+	//~ cvHistogram * hist;
+	//~ cvCalcPGH( const CvSeq* contour, CvHistogram* hist );
+	//~ hist = cvCreateHist( 2, hist_size, CV_HIST_ARRAY, ranges, 1 );
+
+
+//~ double pghMatchShapes(CvSeq *shape1, CvSeq *shape2) {
+	//~ int dims[] = {8, 8};
+	//~ float range[] = {-180, 180, -100, 100};
+	//~ float *ranges[] = {&range[0], &range[2]};
+    //~ CvHistogram* hist1 = cvCreateHist(2, dims, CV_HIST_ARRAY, ranges, 1);
+    //~ CvHistogram* hist2 = cvCreateHist(2, dims, CV_HIST_ARRAY, ranges, 1);
+	//~ cvCalcPGH(shape1, hist1);
+    //~ cvCalcPGH(shape2, hist2);
+	//~ cvNormalizeHist(hist1, 100.0f);
+	//~ cvNormalizeHist(hist2, 100.0f);
+    //~ double corr = cvCompareHist(hist1, hist2, CV_COMP_BHATTACHARYYA);
+    //~ cvReleaseHist(&hist1);
+    //~ cvReleaseHist(&hist2);
+	//~ return corr;
+//~ }
 }

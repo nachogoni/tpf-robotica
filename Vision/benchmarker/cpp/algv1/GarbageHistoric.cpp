@@ -92,11 +92,35 @@ namespace utils{
 		int toleranceY=factor*fabs(deltaPos[1]) < PREDICTION_DELTA ? PREDICTION_DELTA : factor*fabs(deltaPos[1]);
 		
 		if(fabs(deltax)<toleranceX && fabs(deltay)<toleranceY){
-			return true;
+			if(compareContour(foundGarbage))
+				return true;
 		}
 		
 		return false;
 	}
+	bool GarbageHistoric::compareContour(Garbage * foundGarbage){
+		double selfArea,selfPer,areaDiff,perDiff;
+		
+		//~ return true;
+		
+		if(foundGarbage==NULL)
+			return true;
+			
+		selfArea=this->garbage->area;
+		selfPer=this->garbage->perimeter;
+		
+		areaDiff=fabs(selfArea-foundGarbage->area);
+		perDiff=fabs(selfPer-foundGarbage->perimeter);
+		
+		if(areaDiff < 0.25 * selfArea && perDiff < 0.25 * selfPer)
+			return true;
+		else{
+			printf("areaDiff %g perDiff %g\n",areaDiff,perDiff);
+			return false;
+		}
+		
+	}
+
 	
 	void GarbageHistoric::printPrediction(){
 		std::vector<int> centroid (this->garbage->getCentroid());
@@ -112,7 +136,7 @@ namespace utils{
 		std::vector<int> delta (this->deltaPos);
 		int factor=(this->age - this->lastAppeareance);
 		
-		if(factor<=2){
+		if(factor<=1){
 			return this->garbage;
 		}
 

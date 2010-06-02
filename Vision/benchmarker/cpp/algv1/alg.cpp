@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 	
 	
 	utils::GarbageRecognition * gr= new utils::GarbageRecognition();
-	gr->disablePrediction();
+	//~ gr->disablePrediction();
 	gr->disableWindowing();
 	
 	
