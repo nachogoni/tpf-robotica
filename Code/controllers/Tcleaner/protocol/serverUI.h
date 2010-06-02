@@ -3,6 +3,8 @@
 
 void registerHandlers(protocol::PacketServer * ps);
 void createPacketBoards();
+void getTelemetry();
+void alarmHandler(int s);
 
 // Commands for Main Controller (mc)
 void cmd_init(char * data);
@@ -12,6 +14,7 @@ void cmd_error(char * data);
 void cmd_setDC(char * data);
 void cmd_setDS(char * data);
 void cmd_debug(char * data);
+void cmd_telemetry(char * data);
 // Commands for MotorDC (dc)                                                                      
 void cmd_dcSetDirection(char * data);
 void cmd_dcSetSpeed(char * data);    
