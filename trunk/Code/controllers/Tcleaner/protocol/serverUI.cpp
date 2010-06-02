@@ -43,7 +43,7 @@ typedef struct {
     const char * cmd_help_param;
 } cmd_type;
 
-bool quit = false, groupBC = false, fullBC = false, debug = false;
+bool quit = false, groupBC = false, fullBC = false, debug = false, alarmSignal = false;
 int fd = 5;
 int pipes[2];
 int lastCMD = -1;
@@ -99,6 +99,7 @@ cmd_type commands[] = {
     {"common", "groupBC", cmd_groupBC, "Change group broadcast state", ""},
     {"common", "fullBC", cmd_fullBC, "Change full broadcast state", ""},
     {"common", "debug", cmd_debug, "Set if debug messages must be shown", "\%d value, 0 means off and 1 means on"},
+    {"common", "telemetry", cmd_telemetry, "Set if telemetry messages must be shown every second", "\%d value, 0 means off and 1 means on"},
     // Commands for MainController (mc)
     {"mc", "mcInit", cmd_init, "Send init command", ""},
     {"mc", "mcReset", cmd_reset, "Send reset command", ""},
@@ -122,7 +123,7 @@ cmd_type commands[] = {
     {"ds", "dsGetMask", cmd_dsGetMask, "Get the actual sensors mask", ""},
     {"ds", "dsGetValue", cmd_dsGetValue, "Get an average value for each sensor", "\%hd representing each bit a sensor ID (LSB)"},
     {"ds", "dsGetOneValue", cmd_dsGetOneValue, "Get just one value for each sensor", "\%hd representing each bit a sensor ID (LSB)"},
-    {"ds", "dsAlarmOn", cmd_dsAlarmOn, "Set the alarm to rising or falling edge", "\%d for the alarm status where 0 means off, 1 for rising edge, 2 for falling edge and 3 for any change"},
+    {"ds", "dsAlarmOn", cmd_dsAlarmOn, "Set the alarm to rising or falling edge", "\%d for the  status where 0 means off, 1 for rising edge, 2 for falling edge and 3 for any change"},
     {"ds", "dsAlarmCommand", cmd_dsAlarmCommand, "Alarm command on same state", "\%d for the alarm status to be sent. 0 for off, 1 for rising edge, 2 for falling edge and 3 for any change"},
     // Commands for ServoMotor (sm)
     {"sm", "smSetPos", cmd_smSetPos, "Set servo position", ""},
@@ -206,6 +207,56 @@ void command(char * cmd, int lenght)
     return;
 }
 
+// Ask for telemetry...
+void getTelemetry() {
+	char * str = NULL;
+	// Backup...
+	protocol::handlers::DCMotorBoardPacketHandler * dcHBackup = dcHandler;
+	protocol::handlers::DistanceSensorBoardPacketHandler * dsHBackup = dsHandler;
+	protocol::packets::DCMotorPacket * dcPBackup = dcPacket;
+	protocol::packets::DistanceSensorPacket * dsPBackup = dsPacket;
+
+	// Motor0
+    dcHandler = dcMotorHandler0;
+	dcPacket = dcPacket0;
+	cmd_dcGetSpeed(str);
+	cmd_dcGetEncoder(str);
+	cmd_dcGetEncoderToStop(str);
+	// Motor1
+    dcHandler = dcMotorHandler1;
+	dcPacket = dcPacket1;
+	cmd_dcGetSpeed(str);
+	cmd_dcGetEncoder(str);
+	cmd_dcGetEncoderToStop(str);
+	
+	// Sensor0
+	dsHandler = distanceSensorHandler0;
+	dsPacket = dsPacket0;
+	cmd_dsGetValue((char*)"3F");
+	// Sensor1
+	dsHandler = distanceSensorHandler1;
+	dsPacket = dsPacket0;
+	cmd_dsGetValue((char*)"3F");
+	// Sensor2
+	dsHandler = distanceSensorHandler2;
+	dsPacket = dsPacket0;
+	cmd_dsGetValue((char*)"3F");
+
+	// Restore Backup
+	dsPacket = dsPBackup;
+	dcPacket = dcPBackup;
+	dsHandler = dsHBackup;
+	dcHandler = dcHBackup;
+	
+	return;
+}
+
+void alarmHandler(int s) {
+	alarm(1);
+	alarmSignal = true;
+	return;
+}
+
 int main( int argc, const char **argv)
 {
     int maxfd = 1, select_resp = 0;
@@ -230,6 +281,9 @@ int main( int argc, const char **argv)
     
     cmd_help((char *)"common");
 
+	// Set the alarm SIGNAL Handler
+	signal(SIGALRM, &alarmHandler);
+
     while ( quit != true )
     {
         if ((select_resp = select(maxfd, &readfd, &writefd, NULL, NULL)) == 0)
@@ -238,6 +292,12 @@ int main( int argc, const char **argv)
             // TODO: retransmitir la lista de mensajes sin responder...
             printf("TIME OUT!\n");
         }
+
+		if (alarmSignal == true) {
+			getTelemetry();
+			alarmSignal = false;
+		}
+
         if (errno == EINTR)
         {
             // A signal was delivered befor time_out 
@@ -505,6 +565,26 @@ void cmd_fullBC(char * data)
 {
     fullBC = !fullBC;
     printf("Full broadcast state: %s\n", (fullBC?"Activated":"Deactivated"));
+    return;
+}
+
+void cmd_telemetry(char * data)
+{
+	int v = 0;
+	
+    if (data == NULL || sscanf(data, "%d", &v) != 1)
+    {
+        printf("Wrong parameters\n");
+        return;
+    }
+    
+    if (v == 1) {
+		alarm(1);
+	} else {
+		alarm(0);
+	}
+
+    printf("Telemetry mode %s\n", (v == 1?"ON":"OFF"));
     return;
 }
 
