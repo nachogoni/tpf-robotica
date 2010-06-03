@@ -12,13 +12,13 @@
  *
  *                               PIC16F88
  *                .------------------------------------.
- *          VREF -|RA2/AN2/CVREF/VREF           RA1/AN1|- MOTOR:CHA_B
- *           LED -|RA3/AN3/VREF+/C1OUT          RA0/AN0|- L298:SEN
+ *          VREF -|RA2/AN2/CVREF/VREF           RA1/AN1|- LED
+ *          VREF -|RA3/AN3/VREF+/C1OUT          RA0/AN0|- L298:SEN
  *           LED -|RA4/AN4/T0CKI/C2OUT    RA7/OSC1/CLKI|- XT CLOCK pin1, 27pF to GND
  * RST/ICD2:MCLR -|RA5/MCLR/VPP           RA6/OSC2/CLKO|- XT CLOCK pin2, 27pF to GND
  *           GND -|VSS                              VDD|- +5v
  *   L298:ENABLE -|RB0/INT/CCP1       RB7/AN6/PGD/T1OSI|- ICD2:PGD
- *     MOTOR:IDX -|RB1/SDI/SDA  RB6/AN5/PGC/T1OSO/T1CKI|- ICD2:PGC/MOTOR:CHA_A
+ *     MOTOR:IDX -|RB1/SDI/SDA  RB6/AN5/PGC/T1OSO/T1CKI|- ICD2:PGC/MOTOR:CHA_A/B
  *  MAX232:R1OUT -|RB2/SDO/RX/DT           RB5/SS/TX/CK|- MAX232:T1IN
  * L298:INPUT_B/ -|RB3/PGM/CCP1             RB4/SCK/SCL|- L298:INPUT_A
  *     ICD2:PGM   '------------------------------------'
@@ -46,19 +46,12 @@
 #bit rx=portb.2
 
 // Led
-#bit led1=porta.3
-#bit led2=porta.4
+#bit led1=porta.1 // Amarillo
+#bit led2=porta.4 // Rojo
 
 // L298
 #bit inputA=portb.4
 #bit inputB=portb.3
-#bit enable=portb.0
-#bit sensor=porta.0
-
-// Motor inuts
-#bit motorIDX=portb.1
-#bit channelA=portb.6
-#bit channelB=porta.1
 
 #include <../../protocolo/src/protocol.c>
 /*
@@ -91,9 +84,18 @@ void doCommand(struct command_t * cmd); // Examina y ejecula el comando
 #define INTERVAL_CORRECTION	5
 
 // Girar -> clockwise or unclockwise
+#define CLOCKWISE	1
+#define UNCLOCKWISE	-1
+
 // Intercambiar entre el motor derecho y el izquierdo
-#define CLOCKWISE	1 	// Motor derecho 	(ID: 0)
-#define UNCLOCKWISE	-1	// Motor izquierdo 	(ID: 1)
+// Motor derecho (ID: 0) y Motor izquierdo (ID: 1)
+#if CARD_ID == 0
+	#define FORWARD		CLOCKWISE
+	#define BACKWARD	UNCLOCKWISE
+#else
+	#define FORWARD		UNCLOCKWISE
+	#define BACKWARD	CLOCKWISE
+#endif
 
 // Sentido de giro del motor
 signed int turn;
@@ -169,7 +171,7 @@ void Timer0_INT()
 void init()
 {
 	// Inicializa puertos
-	set_tris_a(0b11100111);
+	set_tris_a(0b11101101);
 	set_tris_b(0b11100110);
 
 	// ***ADC***
@@ -204,12 +206,8 @@ void init()
 	// Variable para hacer el reset
 	reset = false;
 
-	// Sentido de giro del motor - Motor derecho (ID: 0) y Motor izquierdo (ID: 1)
-	#if CARD_ID == 0
-		turn = CLOCKWISE;
-	#else
-		turn = UNCLOCKWISE;
-	#endif
+	// Sentido de giro del motor
+	turn = FORWARD;
 
 	// Cantidad de overflows del TMR0
 	tmr0_ticks = 0;
@@ -246,6 +244,7 @@ void init()
 	// Usado como flag para indicar que hubo una interrupcion en el TMR0
 	interrupted = 0;
 
+	led2 = 0;
 	return;	
 }	
 
@@ -302,7 +301,7 @@ void main()
 			
 			// Agrego al historico de cuentas el ultimo acumulado
 			counts_real = get_timer1();
-			counts_total += (counts_real - last_counts2) * turn;
+			counts_total += (counts_real - last_counts2) * turn * FORWARD;
 			last_counts2 = counts_real;
 			
 			// Tengo una cantidad de cuentas para hacer?
@@ -321,7 +320,7 @@ void main()
 					last_counts = 0;
 				} else {
 					counts_real = get_timer1();
-					counts_to_stop -= (counts_real - last_counts);// * turn;
+					counts_to_stop -= (counts_real - last_counts);
 					correct_duty = 1;
 					last_counts = counts_real;
 				}
@@ -335,6 +334,7 @@ void main()
 			if (++tmr0_ticks == 32)
 			{
 				// Entra cada 200ms
+				led1++;
 		
 				// Obtengo la cantidad de cuentas desde la ultima entrada
 				counts_real = get_timer1();
@@ -431,6 +431,7 @@ void main()
 			(*tmp16) = last_consumption;
 			command.crc = generate_8bit_crc((char *)(&command), command.len, CRC_PATTERN);
 			shutdown_alarm = 0;
+			led2 = 1;
 			// Envio del comando
 			send(&command);
 		}
@@ -479,6 +480,8 @@ void doCommand(struct command_t * cmd)
 		return;
 	}
 
+	led2 = 0;
+
 	crcOK = true;
 	
 	// Minimo todos setean esto
@@ -521,9 +524,9 @@ void doCommand(struct command_t * cmd)
 			*/
 			if (((cmd->data)[0] & 0x01) == 0)
 			{
-				turn = CLOCKWISE;
+				turn = FORWARD;
 			} else {
-				turn = UNCLOCKWISE;
+				turn = BACKWARD;
 			}
 		break;
  		case DC_MOTOR_SET_DC_SPEED:
@@ -537,9 +540,9 @@ void doCommand(struct command_t * cmd)
 			*/
 			if (((cmd->data)[0] & 0x01) == 0)
 			{
-				turn = CLOCKWISE;
+				turn = FORWARD;
 			} else {
-				turn = UNCLOCKWISE;
+				turn = BACKWARD;
 			}
 			// A la posicion 1 dentro de cmd->data la tomo como signed long *
 			tmp16 = (cmd->data) + 1;
@@ -655,7 +658,7 @@ void doCommand(struct command_t * cmd)
 			-
 			*/
 			// Sentido de giro del motor
-			if (turn == CLOCKWISE)
+			if (turn == FORWARD)
 			{
 				(response.data)[0] = 0x00;
 			} else {
