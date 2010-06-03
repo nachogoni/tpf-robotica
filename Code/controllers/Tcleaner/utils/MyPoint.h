@@ -22,6 +22,7 @@ class MyPoint
 		void add(double x, double y);
 		MyPoint * addNew(MyPoint * p);
 		MyPoint * addNewBy(MyPoint * p, double mult);
+		MyPoint * plusVector(double module, double angle);
 		MyPoint * subNew(MyPoint * p);
 		void setX(double x);
 		void setY(double y);
