@@ -28,10 +28,11 @@ class Rectangle2D {
 		double min(double a1, double a2, double a3, double a4);
 		double max(double a1, double a2, double a3, double a4);
 
-		utils::MyPoint * a1;
-		utils::MyPoint * a2;
-		utils::MyPoint * b1;
-		utils::MyPoint * b2;
+		utils::MyPoint * a;
+		utils::MyPoint * b;
+		utils::MyPoint * c;
+		utils::MyPoint * d;
+
 		utils::MyPoint * u;
 		utils::MyPoint * v;
 		utils::MyPoint * w;
