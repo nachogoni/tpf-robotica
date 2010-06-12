@@ -21,14 +21,17 @@ class GarbageCleaner {
 
     robotapi::IRobot &myIRobot;
 
+	void stepWasDone();
     /**
      * @element-type AbstractBehaviour
      */
     std::list< behaviours::AbstractBehaviour* > myAbstractBehaviours;
     
+	void printStats();
  private:
 	void initializeBehaviours(WorldInfo * wi);
 	void initializeSensors();
+	int stats [20];
 
 };
 

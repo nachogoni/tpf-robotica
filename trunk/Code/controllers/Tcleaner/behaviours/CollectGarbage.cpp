@@ -52,8 +52,10 @@ namespace behaviours {
 
     void CollectGarbage::action(){
 		this->wheels->setSpeed(0,0);
+		printf("COLLECTING\n");
 		this->robot->step(TIME_STEP);
 
+		printf("COLLECTING\n");
 		// Get distance to the garbage
         double distanceToGarbage = this->gr->distanceTo(currentGarbage);
 

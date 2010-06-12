@@ -24,6 +24,8 @@ public:
 
     int getMode();
 
+    void setGC(GarbageCleaner * gc);
+
     bool getSynchronization();
 
     double getBasicTimeStep();
@@ -52,6 +54,7 @@ public:
     ~WebotsRobot() { }
     
 	private:
+    	GarbageCleaner * gc;
         WorldInfo * wi;
 		IDifferentialWheels * df;
 		IBattery * robotBattery;

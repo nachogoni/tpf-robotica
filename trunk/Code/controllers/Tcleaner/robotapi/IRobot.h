@@ -9,6 +9,7 @@
 #include "IServo.h"
 #include "ITrashBin.h"
 #include <string>
+//#include <GarbageCleaner.h>
 
 class GarbageCleaner;
 
@@ -23,6 +24,8 @@ class IRobot {
     virtual double getTime()  = 0;
 
     virtual int getMode()  = 0;
+
+    virtual void setGC(GarbageCleaner * gc)  = 0;
 
     virtual bool getSynchronization()  = 0;
 

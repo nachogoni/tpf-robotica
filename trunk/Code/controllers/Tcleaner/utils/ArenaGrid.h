@@ -27,6 +27,8 @@ class ArenaGrid
 		std::vector<utils::ArenaGridSlot *> getNeighboursAt(utils::MyPoint * p, double orientation);
 		int getSlotXIdx(utils::ArenaGridSlot * ags);
 		int getSlotZIdx(utils::ArenaGridSlot * ags);
+		time_t getInitialTimeStamp();
+		void setSlotVisited(utils::ArenaGridSlot * ags);
 /*
 		std::vector<utils::ArenaGridSlot *> getNeighboursAt(utils::MyPoint * p);
 */
@@ -36,16 +38,19 @@ class ArenaGrid
 		double dz;
 		double xMin;
 		double zMin;
+		int maxI;
+		int maxJ;
+		int excludeSlots;
+		int totalSlots;
+		int visitedSlots;
+		time_t initialTimeStamp;
+		std::map<int, std::map<int, utils::ArenaGridSlot *> > slots;
 
 
 		int getI(double x);
 		int getJ(double z);
-
 		int getIncX(int slot);
 		int getIncZ(int slot);
-		std::map<int, std::map<int, utils::ArenaGridSlot *> > slots;
-		int maxI;
-		int maxJ;
 		bool cellOutOfBounds(int i, int j);
 };
 

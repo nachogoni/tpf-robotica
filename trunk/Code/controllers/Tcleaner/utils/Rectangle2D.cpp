@@ -6,7 +6,7 @@
 namespace utils{
 
 Rectangle2D::Rectangle2D(utils::MyPoint * p, double shortDistance, double longDistance, double orientation, double fov){
-	printf("TODO: %g , %g , %g , %g , %g , %g\n",p->getX(),p->getY(),shortDistance,longDistance,orientation,fov);
+	//printf("TODO: %g , %g , %g , %g , %g , %g\n",p->getX(),p->getY(),shortDistance,longDistance,orientation,fov);
 	double angle = orientation + PI;
 
 	double hfov = fov / 2.0;
@@ -27,11 +27,11 @@ Rectangle2D::Rectangle2D(utils::MyPoint * p, double shortDistance, double longDi
 
 	this->v = this->c->subNew(this->a);
 	this->w = this->d->subNew(this->a);
-	printf("A: (%g : %g)\nB: (%g : %g)\nC: (%g : %g)\nD: (%g : %g)\n",a->getX(),a->getY(),b->getX(),b->getY(),c->getX(),c->getY(),d->getX(),d->getY());
+	//printf("A: (%g : %g)\nB: (%g : %g)\nC: (%g : %g)\nD: (%g : %g)\n",a->getX(),a->getY(),b->getX(),b->getY(),c->getX(),c->getY(),d->getX(),d->getY());
 
-	printf("[%g,%g,%g,%g,%g]\n[%g,%g,%g,%g,%g]\n",a->getX(),b->getX(),c->getX(),d->getX(),p->getX(),a->getY(),b->getY(),c->getY(),d->getY(),p->getY());
+	//printf("[%g,%g,%g,%g,%g]\n[%g,%g,%g,%g,%g]\n",a->getX(),b->getX(),c->getX(),d->getX(),p->getX(),a->getY(),b->getY(),c->getY(),d->getY(),p->getY());
 
-	printf("w: %g, h: %g\n",2*an, longDistance - shortDistance);
+	//printf("w: %g, h: %g\n",2*an, longDistance - shortDistance);
 }
 
 Rectangle2D::~Rectangle2D(){

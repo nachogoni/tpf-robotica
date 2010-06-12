@@ -15,12 +15,12 @@ import javax.swing.JScrollPane;
 
 public class ArenaViewer {
 
-	protected static final int SCALE = 1;
+	protected static final int SCALE = 3;
 	public static void main(String[] args) throws IOException {
 		File worldInfo = new File("../controllers/Tcleaner/worldInfo.cfg");
 		final Dimension d = getArenaDimension(worldInfo);
 		
-		final BufferedImage image = new BufferedImage(d.width*SCALE, d.height*SCALE, BufferedImage.TYPE_INT_RGB);
+		final BufferedImage image = new BufferedImage(d.height*SCALE, d.width*SCALE, BufferedImage.TYPE_INT_RGB);
 		
 		final ImagePanel contentPane = new ImagePanel(image);
 		final JScrollPane jsp = new JScrollPane(contentPane);
@@ -46,8 +46,9 @@ public class ArenaViewer {
 						Matcher m = cellPattern.matcher(line);
 						iter++;
 						while( m.find() ){
-							Color color = new Color(255-((iter*5)%255),255-((iter*10)%255),255-((iter*20)%255));
-							setPixelColor(image,d.width-1-Integer.valueOf(m.group(2)), Integer.valueOf(m.group(1)), color.getRGB());
+//							Color color = new Color(255-((iter*5)%255),255-((iter*10)%255),255-((iter*20)%255));
+							Color color = new Color(255,255,255);
+							setPixelColor(image,d.height-1-Integer.valueOf(m.group(2)), Integer.valueOf(m.group(1)), color.getRGB());
 						}
 						contentPane.repaint();
 						jsp.repaint();
@@ -60,10 +61,11 @@ public class ArenaViewer {
 				}
 			}
 			
-			private void setPixelColor(BufferedImage image, int i, int j, int rgb) {
+			private void setPixelColor(BufferedImage image, int z, int x, int rgb) {
 				for(int k = 0; k < SCALE ; k++){
 					for(int l = 0; l < SCALE ; l++){
-						image.setRGB(i*SCALE+k,j*SCALE+l,rgb);
+//						System.out.println("To be set i: "+z+" , j:"+x+" , k:"+k+" , l:"+l+" , ik:"+(z*SCALE+k)+" , jl:"+(x*SCALE+l));
+						image.setRGB(z*SCALE+k,x*SCALE+l,rgb);
 					}
 				}
 			}

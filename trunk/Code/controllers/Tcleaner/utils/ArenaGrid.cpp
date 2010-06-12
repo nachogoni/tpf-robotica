@@ -4,6 +4,10 @@
 #include <utils/MyAngle.h>
 #include <ctime>
 #include <stdio.h>
+#include <math.h>
+
+#define EXCLUDE_ZONE_X -0.15
+#define EXCLUDE_ZONE_Z -0.15
 
 namespace utils {
 
@@ -22,10 +26,18 @@ ArenaGrid::ArenaGrid(double arenaMinX, double arenaMinZ, double arenaMaxX, doubl
 	time_t timestamp = time(NULL);
 	for( int i = 0 ; i < maxI ; i++ ){
 		for( int j = 0 ; j < maxJ ; j++ ){
-			this->slots[i][j] = new utils::ArenaGridSlot(arenaMinX + i*dx,arenaMinZ + j*dz,timestamp);
+			this->slots[i][j] = new utils::ArenaGridSlot(arenaMinX + i*dx,arenaMinZ + j*dz,i,j,timestamp);
 		}
 	}
 
+	this->excludeSlots = (int)ceil( ((arenaMaxX - EXCLUDE_ZONE_X) / dx) * ((arenaMaxZ - EXCLUDE_ZONE_Z) / dz) );
+	this->totalSlots = resolutionX * resolutionZ;
+	this->visitedSlots = 0;
+	this->initialTimeStamp = timestamp;
+
+	printf("arenaMaxX %g, arenaMinX %g, arenaMaxZ %g, arenaMinZ %g\n",arenaMaxX,arenaMinX,arenaMaxZ,arenaMinZ);
+	printf("resolutionX %d, dx %g, resolutionZ %d, dz %g\n",resolutionX,dx,resolutionZ,dz);
+	printf("maxI %d, maxJ %d\n",maxI,maxJ);
 	this->maxI = maxI;
 	this->maxJ = maxJ;
 
@@ -37,11 +49,13 @@ ArenaGrid::~ArenaGrid()
 }
 
 int ArenaGrid::getI(double x){
-    return (x - this->xMin)/this->dx;
+    //printf("VALOR X: %g - %d\n",floor((x - this->xMin)/this->dx),(int)floor((x - this->xMin)/this->dx));
+    return (int)floor((x - this->xMin)/this->dx);
 }
 
 int ArenaGrid::getJ(double z){
-	return (z - this->zMin)/this->dz;
+    //printf("VALOR Z: %g - %d\n",floor((z - this->zMin)/this->dz),(int)floor((z - this->zMin)/this->dz));
+	return (int)floor((z - this->zMin)/this->dz);
 }
 
 utils::ArenaGridSlot * ArenaGrid::getSlotAt(utils::MyPoint * p){
@@ -144,6 +158,20 @@ int ArenaGrid::getIncZ(int slot){
 
 bool ArenaGrid::cellOutOfBounds(int i, int j){
 	return ( i < 0 || j < 0 || i >= this->maxI || j >= this->maxJ );
+}
+
+time_t ArenaGrid::getInitialTimeStamp(){
+	return this->initialTimeStamp;
+}
+
+void ArenaGrid::setSlotVisited(utils::ArenaGridSlot * ags){
+	if ( ags != NULL ){
+		this->visitedSlots = this->visitedSlots + 1;
+		int left = this->totalSlots - this->excludeSlots - this->visitedSlots;
+		printf("Slots left %d\n",left);
+		if ( left <= 0 )
+			system("pause");
+	}
 }
 
 

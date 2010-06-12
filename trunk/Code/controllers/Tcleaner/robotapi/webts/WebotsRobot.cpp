@@ -10,6 +10,7 @@
 #include <webots/Camera.hpp>
 #include <webots/Robot.hpp>
 #include <utils/Rectangle2D.h>
+#include <GarbageCleaner.h>
 
 namespace robotapi {
 namespace webts {
@@ -89,6 +90,7 @@ namespace webts {
 		robot->step(ms);
 		df->computeOdometry();
 		utils::ArenaGridSlot * currentSlot = this->ag->getSlotAt(df->getPosition());
+		printf("STEPPING");
 		if ( currentSlot != NULL ){
 			std::list<utils::ArenaGridSlot *> seenSlots = this->getSlotsSeen(df->getPosition(), df->getOrientation(), currentSlot);
 			printf("Current Slot: %g - %g --> Timestamp: %ld\n",currentSlot->getX(),currentSlot->getZ(),currentSlot->getTimeStamp());
@@ -99,6 +101,11 @@ namespace webts {
 		printf("Robot Battery : %g - PC Battery : %g\n",robotBattery->getValue(),pcBattery->getValue());
 		printf("Current Touch Sensor value : %d\n",this->tb->getValue());
 		*/
+
+		// Refresh stats
+		if ( gc != NULL )
+			gc->stepWasDone();
+
 		return ;
 	}
     
@@ -108,10 +115,13 @@ namespace webts {
 		FILE * pFile;
 		pFile = fopen ("changes.tmp","w");
 		if (pFile!=NULL){
+			time_t ts0 = this->ag->getInitialTimeStamp();
 			for ( it=ags.begin() ; it != ags.end() ; it++ ){
-				(*it)->setTimeStamp(ts);
-				fprintf(pFile,"(%d,%d)",this->ag->getSlotXIdx(*it),this->ag->getSlotZIdx(*it));
-				//printf("(%d,%d)",this->ag->getSlotXIdx(*it),this->ag->getSlotZIdx(*it));
+				if ( (*it)->setTimeStamp(ts) <= ts0 )
+					this->ag->setSlotVisited(*it);
+
+				fprintf(pFile,"(%d,%d)",(*it)->getI(),(*it)->getJ());
+//				printf("(%d,%d)\n",(*it)->getI(),(*it)->getJ());
 			}
 		}
 		fclose (pFile);
@@ -127,19 +137,19 @@ namespace webts {
 										this->wi->getMaximumDistance(),
 										angle, this->wi->getCameraFOVH());
 
-		printf("Pos act: (%g,%g)",position->getX(),position->getY());
-		printf("Angle: %g",angle);
+		//printf("Pos act: (%g,%g)",position->getX(),position->getY());
+		//printf("Angle: %g",angle);
 		utils::MyPoint * minP = rect->getMinPoint();
 		utils::MyPoint * maxP = rect->getMaxPoint();
-		printf("Punto Min: (%g : %g)\nPunto Max: (%g : %g)\n",minP->getX(),minP->getY(),maxP->getX(),maxP->getY());
+		//printf("Punto Min: (%g : %g)\nPunto Max: (%g : %g)\n",minP->getX(),minP->getY(),maxP->getX(),maxP->getY());
 
 		utils::ArenaGridSlot * minSlot = this->ag->getSlotAt(minP);
 		utils::ArenaGridSlot * maxSlot = this->ag->getSlotAt(maxP);
-		int minI = this->ag->getSlotXIdx(minSlot);
-		int maxI = this->ag->getSlotXIdx(maxSlot);
-		int minJ = this->ag->getSlotZIdx(minSlot);
-		int maxJ = this->ag->getSlotZIdx(maxSlot);
-
+		int minI = minSlot->getI();
+		int maxI = maxSlot->getI();
+		int minJ = minSlot->getJ();
+		int maxJ = maxSlot->getJ();
+		//printf("minI : %d, maxI : %d, minJ : %d, maxJ : %d\n",minI,maxI,minJ,maxJ);
 		for( int i = minI ; i < maxI ; i++ ){
 			for( int j = minJ ; j < maxJ ; j++ ){
 				utils::ArenaGridSlot * current = this->ag->getSlotAt(i,j);
@@ -148,8 +158,7 @@ namespace webts {
 					if ( rect->containsPoint(cp) ){
 						out.push_back(current);
 					}
-					else
-						delete cp;
+					delete cp;
 				}
 			}
 		}
@@ -160,6 +169,8 @@ namespace webts {
 		return out;
 	}
 
-
+	void WebotsRobot::setGC(GarbageCleaner * gc){
+		this->gc = gc;
+	}
 } /* End of namespace robotapi::webts */
 } /* End of namespace robotapi */
