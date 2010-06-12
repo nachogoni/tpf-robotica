@@ -10,20 +10,53 @@ En \'esta secci\'on de \emph{Comportamientos} se van
 a detallar las acciones que deber\'a hacer el robot y c\'omo organizar las mismas
 para cumplir la meta de recolectar basura y ser aut\'onomo, es decir, decidir por
 s\'i mismo las acciones a realizar en cada momento y ser capaz de mantenerse cargado
-para poder continuar recolectando. En la secci\'on \ref{inv_prev} se
+para poder continuar recolectando.
+
+En la secci\'on \ref{inv_prev} se analizar\'an
+papers relacionados con este desarrollo, desde la forma de organizar los comportamientos,
+la definici\'on y composici\'on de los mismos, hasta su implementaci\'on. En la secci\'on
+\ref{arq_prop} se detallar\'a la arquitectura elegida para llevar a cabo y organizar los
+comportamientos elegidos, y las ventajas y desventajas de usar la misma. La secci\'on
+\ref{comportamientos} detalla uno por uno los comportamientos elegidos que tendr\'a el
+robot, y sus correspondientes implementaciones en pseudoc\'odigo. En la secci\'on
+\ref{odometry} se explicar\'a que es la odometr\'ia, para qu\'e sirve y qu\'e ventajas y desventajas
+tiene usarla. Tambi\'en se detallar\'a el test utilizado para mejorar la eficiencia de la misma.
+La secci\'on \ref{interfaces} se describir\'a c\'omo se estructur\'o el controlador del robot
+para que se pueda ir desarrollando y probando el mismo con un simulador y minimizar el trabajo
+al pasarlo a el robot f\'isico. Los resultados obtenidos de performance y eficiencia del controlador
+desarrollado se obtuvieron de la simulaci\'on, y se pueden ver en la secci\'on \ref{results}. Finalmente,
+en la secci\'on \ref{comp_conclusion} se sacan conclusiones de los resultados obtenidos y las dificultades
+encontradas a lo largo del desarrollo de \'este trabajo pr\'actico final.
+
+\newpage
 
 \subsection{Investigaciones previas}
 \label{inv_prev}
-Intro de comportamientos
 
+\subsubsection{Desarrollo de comportamientos no triviales en robots reales : Robot recolector de basura - Stefano Nolfi}
+
+\subsubsection{Arquitectura de control para un Robot Aut\'onomo M\'ovil - Neves And Oliveira}
+
+\subsubsection{El uso de l\'ogica difusa en la navegaci\'on de un robot aut\'onomo - Alessandro Saffiotti}
+
+\subsubsection{Path Planning usando Algoritmos Gen\'eticos - Salvatore Candido}
+
+\subsubsection{Navegaci\'on predictiva de un robot aut\'onomo - Foka And Trahanias}
+
+\subsubsection{Algoritmo de navegaci\'on y evitamiento de obst\'aculos en un entorno desconocido - Clark Et. al}
+
+\newpage
 \subsection{Arquitectura propuesta}
 \label{arq_prop}
 
+\newpage
 \input{comportamientos.tex}
 
+\newpage
 \subsection{Odometr\'ia}
 \label{odometry}
 
+\newpage
 \subsection{Interfaces con hardware y m\'odulo de reconocimiento de objetos}
 \label{interfaces}
 
@@ -31,20 +64,21 @@ Intro de comportamientos
 
 \subsubsection{Interfaz con m\'odulo de reconocimiento de objetos}
 
+\newpage
 \subsection{Resultados obtenidos}
 \label{results}
 
-\subsubsection{Tiempo promedio en recolectar N basuras en puntos arbitrarios}
+\subsubsection{Tiempo promedio en recolectar basura}
 %Calcular t min, con un escenario donde las basuras las pongo apenas sale de la base
 %Calcular t max, con un escenario donde las basuras estan lo m\'as lejos de la base posible
 
 \subsubsection{Tiempo promedio de wandering}
 %(Tiempo en que est\'a activo el wandering)/(Tiempo total de simulaci\'on)
 
-\subsubsection{Distribuci\'on de tiempos}
+\subsubsection{Distribuci\'on de tiempos entre los diferentes comportamientos}
 %(tiempo de comportamiento i)/(Tiempo total de simulaci\'on)
 
-\subsubsection{Relaci\'on loca 1}
+\subsubsection{Relaci\'on (t\_cargando + t\_ir a base) / tiempo total}
 %T busqueda basura/ ( t a base + tiempo carga bateria + t salir base )
 
 \subsubsection{Porcentaje de espacio cubierto}
@@ -52,6 +86,8 @@ Intro de comportamientos
 
 \subsubsection{Tiempo cubrir toda la arena}
 
+\newpage
 \subsection{Conclusi\'on}
+\label{comp_conclusion}
 Conclusi\'on de comportamientos
 
