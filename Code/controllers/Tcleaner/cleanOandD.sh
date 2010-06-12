@@ -1,0 +1,19 @@
+
+rm *.d
+rm *.o
+rm behaviours/*.d
+rm behaviours/*.o
+rm robotapi/*.d
+rm robotapi/*.o
+rm robotapi/real/*.d
+rm robotapi/real/*.o
+rm robotapi/webts/*.d
+rm robotapi/webts/*.o
+rm utils/*.d
+rm utils/*.o
+rm protocol/*.d
+rm protocol/*.o
+rm protocol/handlers/*.d
+rm protocol/handlers/*.o
+rm protocol/packets/*.d
+rm protocol/packets/*.o

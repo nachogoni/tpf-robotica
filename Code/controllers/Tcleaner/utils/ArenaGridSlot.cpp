@@ -6,10 +6,12 @@
 namespace utils {
 
 // class constructor
-ArenaGridSlot::ArenaGridSlot(double x, double z, time_t timestamp)
+ArenaGridSlot::ArenaGridSlot(double x, double z, int i, int j, time_t timestamp)
 {
 	this->x = x;
 	this->z = z;
+	this->i = i;
+	this->j = j;
 	this->timestamp = timestamp;
 }
 
@@ -24,12 +26,14 @@ time_t ArenaGridSlot::getTimeStamp(){
 	return this->timestamp;
 }
 
-void ArenaGridSlot::setTimeStamp(){
-	this->setTimeStamp(time(NULL));
+time_t ArenaGridSlot::setTimeStamp(){
+	return this->setTimeStamp(time(NULL));
 }
 
-void ArenaGridSlot::setTimeStamp(time_t timestamp){
+time_t ArenaGridSlot::setTimeStamp(time_t timestamp){
+	time_t last = this->timestamp;
 	this->timestamp = timestamp;
+	return last;
 }
 
 double ArenaGridSlot::getX(){
@@ -38,6 +42,14 @@ double ArenaGridSlot::getX(){
 
 double ArenaGridSlot::getZ(){
 	return this->z;
+}
+
+int ArenaGridSlot::getI(){
+	return this->i;
+}
+
+int ArenaGridSlot::getJ(){
+	return this->j;
 }
 
 int ArenaGridSlot::getDir(){

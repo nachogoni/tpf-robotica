@@ -27,6 +27,8 @@ class RealRobot : virtual public robotapi::IRobot {
 
 		int getMode();
 
+    	void setGC(GarbageCleaner * gc);
+
 		bool getSynchronization();
 
 		double getBasicTimeStep();

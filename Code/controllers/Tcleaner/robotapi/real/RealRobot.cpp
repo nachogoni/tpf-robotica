@@ -168,5 +168,8 @@ void RealRobot::step(int ms){
 	return;
 }
 
+void RealRobot::setGC(GarbageCleaner * gc){
+}
+
 } /* End of namespace robotapi::real */
 } /* End of namespace robotapi */
