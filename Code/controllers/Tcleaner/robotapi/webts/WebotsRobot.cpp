@@ -90,10 +90,10 @@ namespace webts {
 		robot->step(ms);
 		df->computeOdometry();
 		utils::ArenaGridSlot * currentSlot = this->ag->getSlotAt(df->getPosition());
-		printf("STEPPING");
+//		printf("STEPPING");
 		if ( currentSlot != NULL ){
-			std::list<utils::ArenaGridSlot *> seenSlots = this->getSlotsSeen(df->getPosition(), df->getOrientation(), currentSlot);
 			printf("Current Slot: %g - %g --> Timestamp: %ld\n",currentSlot->getX(),currentSlot->getZ(),currentSlot->getTimeStamp());
+			std::list<utils::ArenaGridSlot *> seenSlots = this->getSlotsSeen(df->getPosition(), df->getOrientation(), currentSlot);
 			this->saveChanges(seenSlots);
 		}
 /*
@@ -137,18 +137,18 @@ namespace webts {
 										this->wi->getMaximumDistance(),
 										angle, this->wi->getCameraFOVH());
 
+		if ( rect == NULL )
+			return out;
+
 		//printf("Pos act: (%g,%g)",position->getX(),position->getY());
 		//printf("Angle: %g",angle);
 		utils::MyPoint * minP = rect->getMinPoint();
 		utils::MyPoint * maxP = rect->getMaxPoint();
-		//printf("Punto Min: (%g : %g)\nPunto Max: (%g : %g)\n",minP->getX(),minP->getY(),maxP->getX(),maxP->getY());
 
-		utils::ArenaGridSlot * minSlot = this->ag->getSlotAt(minP);
-		utils::ArenaGridSlot * maxSlot = this->ag->getSlotAt(maxP);
-		int minI = minSlot->getI();
-		int maxI = maxSlot->getI();
-		int minJ = minSlot->getJ();
-		int maxJ = maxSlot->getJ();
+		int minI = this->ag->getIForPoint(minP);
+		int maxI = this->ag->getIForPoint(maxP);
+		int minJ = this->ag->getJForPoint(minP);
+		int maxJ = this->ag->getJForPoint(maxP);
 		//printf("minI : %d, maxI : %d, minJ : %d, maxJ : %d\n",minI,maxI,minJ,maxJ);
 		for( int i = minI ; i < maxI ; i++ ){
 			for( int j = minJ ; j < maxJ ; j++ ){
@@ -162,6 +162,7 @@ namespace webts {
 				}
 			}
 		}
+
 		if ( minP != NULL )
 			delete minP;
 		if ( maxP != NULL )

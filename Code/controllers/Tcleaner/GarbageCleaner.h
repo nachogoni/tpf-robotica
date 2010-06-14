@@ -11,6 +11,8 @@
 #define FLOOR_SENSORS 3
 #define TIME_STEP 32
 
+#define MAX_BEHAVIOURS 32
+
 class GarbageCleaner {
 
  public:
@@ -31,7 +33,7 @@ class GarbageCleaner {
  private:
 	void initializeBehaviours(WorldInfo * wi);
 	void initializeSensors();
-	int stats [20];
+	int stats [MAX_BEHAVIOURS];
 
 };
 

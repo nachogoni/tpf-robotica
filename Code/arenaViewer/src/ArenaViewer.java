@@ -17,6 +17,7 @@ public class ArenaViewer {
 
 	protected static final int SCALE = 3;
 	public static void main(String[] args) throws IOException {
+		new File("../controllers/Tcleaner/changes.tmp").delete();
 		File worldInfo = new File("../controllers/Tcleaner/worldInfo.cfg");
 		final Dimension d = getArenaDimension(worldInfo);
 		
@@ -45,9 +46,17 @@ public class ArenaViewer {
 					if ( line != null && !line.isEmpty() ){
 						Matcher m = cellPattern.matcher(line);
 						iter++;
+						boolean first = true;
 						while( m.find() ){
 //							Color color = new Color(255-((iter*5)%255),255-((iter*10)%255),255-((iter*20)%255));
-							Color color = new Color(255,255,255);
+							Color color;
+							
+							if ( first ){
+								color = new Color(255,0,0);
+								first = false;
+							}
+							else
+								color = new Color(255,255,255);
 							setPixelColor(image,d.height-1-Integer.valueOf(m.group(2)), Integer.valueOf(m.group(1)), color.getRGB());
 						}
 						contentPane.repaint();
