@@ -24,10 +24,19 @@ class ArenaGrid
 
 		utils::ArenaGridSlot * getSlotAt(utils::MyPoint * p);
 		utils::ArenaGridSlot * getSlotAt(int i, int j);
+
 		std::vector<utils::ArenaGridSlot *> getNeighboursAt(utils::MyPoint * p, double orientation);
+
 		int getSlotXIdx(utils::ArenaGridSlot * ags);
 		int getSlotZIdx(utils::ArenaGridSlot * ags);
+
 		time_t getInitialTimeStamp();
+		int getMaxI();
+		int getMaxJ();
+
+		int getIForPoint(utils::MyPoint * p);
+		int getJForPoint(utils::MyPoint * p);
+
 		void setSlotVisited(utils::ArenaGridSlot * ags);
 /*
 		std::vector<utils::ArenaGridSlot *> getNeighboursAt(utils::MyPoint * p);

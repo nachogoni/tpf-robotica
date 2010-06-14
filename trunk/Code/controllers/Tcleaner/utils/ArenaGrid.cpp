@@ -174,5 +174,30 @@ void ArenaGrid::setSlotVisited(utils::ArenaGridSlot * ags){
 	}
 }
 
+int ArenaGrid::getMaxI(){
+	return this->maxI;
+}
+
+int ArenaGrid::getMaxJ(){
+	return this->maxJ;
+}
+
+int ArenaGrid::getIForPoint(utils::MyPoint * p){
+	int i = this->getI(p->getX());
+	if ( i < 0 )
+		return 0;
+	if ( i >= this->maxI )
+		return this->maxI - 1;
+	return i;
+}
+
+int ArenaGrid::getJForPoint(utils::MyPoint * p){
+	int j = this->getJ(p->getY());
+	if ( j < 0 )
+		return 0;
+	if ( j >= this->maxJ )
+		return this->maxJ - 1;
+	return j;
+}
 
 }
