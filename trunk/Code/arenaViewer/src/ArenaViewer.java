@@ -48,7 +48,6 @@ public class ArenaViewer {
 						iter++;
 						boolean first = true;
 						while( m.find() ){
-//							Color color = new Color(255-((iter*5)%255),255-((iter*10)%255),255-((iter*20)%255));
 							Color color;
 							
 							if ( first ){
