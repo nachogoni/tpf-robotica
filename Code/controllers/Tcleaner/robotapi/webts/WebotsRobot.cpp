@@ -167,6 +167,8 @@ namespace webts {
 			delete minP;
 		if ( maxP != NULL )
 			delete maxP;
+		delete rect;
+
 		return out;
 	}
 
