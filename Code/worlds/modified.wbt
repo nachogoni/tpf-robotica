@@ -10,7 +10,7 @@ WorldInfo {
 Viewpoint {
   fieldOfView 1.6454
   orientation -0.542194 0.635449 0.549755 2.02195
-  position -0.0204334 0.899571 -0.377416
+  position -0.0255343 0.901012 -0.0313121
 }
 PointLight {
   intensity 0.5
