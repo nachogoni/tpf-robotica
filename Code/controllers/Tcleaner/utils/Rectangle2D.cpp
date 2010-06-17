@@ -24,11 +24,16 @@ Rectangle2D::Rectangle2D(utils::MyPoint * p, double shortDistance, double longDi
 	this->d = p->plusVector(dpp,angle-Dangle);
 
 	this->u = this->b->subNew(this->a);
-
 	this->v = this->c->subNew(this->a);
 	this->w = this->d->subNew(this->a);
-	//printf("A: (%g : %g)\nB: (%g : %g)\nC: (%g : %g)\nD: (%g : %g)\n",a->getX(),a->getY(),b->getX(),b->getY(),c->getX(),c->getY(),d->getX(),d->getY());
 
+	this->uu = this->u->dot(this->u);
+	this->uv = this->u->dot(this->v);
+	this->vv = this->v->dot(this->v);
+	this->vw = this->v->dot(this->w);
+	this->ww = this->w->dot(this->w);
+	//printf("A: (%g : %g)\nB: (%g : %g)\nC: (%g : %g)\nD: (%g : %g)\n",a->getX(),a->getY(),b->getX(),b->getY(),c->getX(),c->getY(),d->getX(),d->getY());
+ 
 	//printf("[%g,%g,%g,%g,%g]\n[%g,%g,%g,%g,%g]\n",a->getX(),b->getX(),c->getX(),d->getX(),p->getX(),a->getY(),b->getY(),c->getY(),d->getY(),p->getY());
 
 	//printf("w: %g, h: %g\n",2*an, longDistance - shortDistance);
@@ -78,13 +83,13 @@ double Rectangle2D::max(double a1, double a2, double a3, double a4){
 
 bool Rectangle2D::containsPoint(utils::MyPoint * p){
 	return this->triangleContainsPoint(u,v,p->subNew(this->a),uu,uv,vv) || 
-			this->triangleContainsPoint(u,w,p->subNew(this->a),uu,uw,ww);
+			this->triangleContainsPoint(v,w,p->subNew(this->a),vv,vw,ww);
 }
 
 bool Rectangle2D::triangleContainsPoint(utils::MyPoint * tFirstVector, utils::MyPoint * tSecondVector, utils::MyPoint * vectorTriangleToPoint, double uu, double uv, double vv){
 	double awu = vectorTriangleToPoint->dot(tFirstVector);
 	double awv = vectorTriangleToPoint->dot(tSecondVector);
-
+	
 	double D = uv * uv - uu * vv;
 
 	double s = (uv * awv - vv * awu) / D;

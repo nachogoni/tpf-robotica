@@ -186,6 +186,7 @@ DEF short_rock_5 Solid {
 }
 DEF E_PUCK DifferentialWheels {
   translation -0.0015 0 -0.4
+  rotation 0 1 0 0.785398
   children [
     Servo {
       translation 0 0.0412 0.03

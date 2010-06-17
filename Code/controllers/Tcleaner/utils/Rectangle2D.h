@@ -39,7 +39,7 @@ class Rectangle2D {
 		double uu;
 		double uv;
 		double vv;
-		double uw;
+		double vw;
 		double ww;
 
 };

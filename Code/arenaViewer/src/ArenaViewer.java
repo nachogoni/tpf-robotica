@@ -15,7 +15,7 @@ import javax.swing.JScrollPane;
 
 public class ArenaViewer {
 
-	protected static final int SCALE = 3;
+	protected static final int SCALE = 6;
 	public static void main(String[] args) throws IOException {
 		new File("../controllers/Tcleaner/changes.tmp").delete();
 		File worldInfo = new File("../controllers/Tcleaner/worldInfo.cfg");
