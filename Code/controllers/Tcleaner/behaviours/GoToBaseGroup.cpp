@@ -8,6 +8,11 @@
 #define TOLE 0.2
 #define BASE_POSITION (BASE_X+TOLE)
 
+#define PASSAGE_BEGIN_X -0.6
+#define PASSAGE_LINE_Z 0.100174
+
+#define LINE_MARK_X -0.626685
+
 namespace behaviours {
 
 // class constructor
@@ -45,17 +50,19 @@ void GoToBaseGroup::sense(){
 	if ( this->robotBattery->isEmpty() || this->pcBattery->isEmpty() )
 		this->setStimulusPresent();
 
-/*
+
         for (int j = 0; j < FLOOR_SENSORS; j++){
 			printf("Floor sensor %d: %d\n", j, (*this->fss).at(j)->getValue() );
 		}
- */
+
 }
 
 int following = 0;
+bool beenOnMark = false;
 
 void GoToBaseGroup::action(){
 	if ( ! following ){
+		beenOnMark = false;
 		if ( !this->inLine() ){
 		    this->myBehaviours[0]->action();
 	    	printf("Going to line\n");
@@ -67,7 +74,6 @@ void GoToBaseGroup::action(){
 	    	printf("On Line, Positioning...\n");
 		    return;
 		}
-
 	}
 	following = 1;
 //	if ( !this->inLine() && fabs( this->wheels->getOrientation() - PI/2 ) < ORIENTATION_TOLE ){
@@ -77,10 +83,22 @@ void GoToBaseGroup::action(){
 		this->myBehaviours[3]->action();
 		following = 0;
 	}else{
+		if( xpos < PASSAGE_BEGIN_X && this->onMark() && ! beenOnMark ){
+			printf("On Mark!");
+			beenOnMark = true;
+			system("pause");
+			this->wheels->setPosition(new utils::MyPoint(LINE_MARK_X,PASSAGE_LINE_Z));
+		}
 	    this->myBehaviours[2]->action();
 	    printf("Following Line\n");
 	}
     return;
+}
+
+bool GoToBaseGroup::onMark(){
+	return (*this->fss).at(0)->getValue() < LINE_THRESHOLD &&
+			(*this->fss).at(1)->getValue() < LINE_THRESHOLD &&
+			(*this->fss).at(2)->getValue() < LINE_THRESHOLD;
 }
 
 bool GoToBaseGroup::inLine(){
