@@ -96,8 +96,9 @@ namespace webts {
 			std::list<utils::ArenaGridSlot *> seenSlots = this->getSlotsSeen(df->getPosition(), df->getOrientation(), currentSlot);
 			this->saveChanges(seenSlots);
 		}
-/*
+
 		printf("Current Position : %g %g %g\n",df->getPosition()->getX(),df->getPosition()->getY(),df->getOrientation());
+/*
 		printf("Robot Battery : %g - PC Battery : %g\n",robotBattery->getValue(),pcBattery->getValue());
 		printf("Current Touch Sensor value : %d\n",this->tb->getValue());
 		*/

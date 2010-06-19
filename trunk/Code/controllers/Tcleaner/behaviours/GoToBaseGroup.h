@@ -32,6 +32,8 @@ class GoToBaseGroup : public AbstractBehaviour {
 	    void action();
 
 	private:
+		bool onMark();
+
 		bool inLine();
 
 		bool inPosition();

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
@@ -61,6 +62,7 @@ public class ArenaViewer {
 						contentPane.repaint();
 						jsp.repaint();
 						f.repaint();
+						ImageIO.write(image, "png", new File(System.currentTimeMillis()+".png"));
 					}
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();

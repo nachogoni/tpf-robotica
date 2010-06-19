@@ -43,11 +43,17 @@ namespace behaviours {
 		for( int i = 0 ; i < FORWARD_STEPS ; i ++ ){
 			this->robot->step(TIME_STEP);
 		}
-
+/*
+		printf("HOLA\n");
+		system("pause");
+*/
 		bool leftOnLine = (*this->fss).at(0)->getValue() < LINE_THRESHOLD;
 		bool middleOnLine = (*this->fss).at(1)->getValue() < LINE_THRESHOLD;
 		bool rightOnLine = (*this->fss).at(2)->getValue() < LINE_THRESHOLD;
-
+/*
+		printf("HOLA1\n");
+		system("pause");
+*/
 		// Turn till the middle sensor is on the line
 		this->wheels->setSpeed(BASE_SPD,-BASE_SPD);
 		while( leftOnLine || !middleOnLine || rightOnLine ){
@@ -60,7 +66,10 @@ namespace behaviours {
 			middleOnLine = (*this->fss).at(1)->getValue() < LINE_THRESHOLD;
 			rightOnLine = (*this->fss).at(2)->getValue() < LINE_THRESHOLD;
 		}
-
+/*
+		printf("HOLA2\n");
+		system("pause");
+*/
 		int steps = 0;
 		// Continue turning till the middle sensor out of the line. Count Steps
 		while( middleOnLine ){
@@ -73,30 +82,40 @@ namespace behaviours {
 			middleOnLine = (*this->fss).at(1)->getValue() < LINE_THRESHOLD;
 			steps++;
 		}
-
+/*
+		printf("HOLA3\n");
+		system("pause");
+*/
 		// Now, turn steps/2 in the other direction, middle sensor should be in the middle of the line
 		this->wheels->setSpeed(-BASE_SPD,BASE_SPD);
-		for( int i = 0 ; i < steps/2 ; i++ ){
+		for( int i = 0 ; i < (int)(ceil(steps/2.0)) ; i++ ){
             for (int j = 0; j < FLOOR_SENSORS; j++){
 				printf("Floor sensor %d: %d\n", j, (*this->fss).at(j)->getValue() );
 			}
 
 			this->robot->step(TIME_STEP);
 		}
-
+/*
+		printf("HOLA4\n");
+		system("pause");
+*/
 		// Go back a little bit till the sensor is not on the line anymore
    		this->wheels->setSpeed(-BACKWARD_SPD,-BACKWARD_SPD);
 		while( (*this->fss).at(1)->getValue() < LINE_THRESHOLD){
+			printf("ACA\n");
 			this->robot->step(TIME_STEP);
 		}
 		
 		for( int i = 0 ; i < BACKWARD_STEPS; i ++ ){
+			printf("ACA2\n");
 			this->robot->step(TIME_STEP);
 		}
 
 		this->wheels->setSpeed(0,0);
-		while( !this->robotBattery->isFull() || !this->pcBattery->isFull() )
+		while( !this->robotBattery->isFull() || !this->pcBattery->isFull() ){
+			printf("ACA3\n");
 			this->robot->step(TIME_STEP);
+		}
 
 //		ME ESTA ESTALLANDO... PORQUE????
 
