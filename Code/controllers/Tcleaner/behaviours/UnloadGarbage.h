@@ -17,6 +17,12 @@ class UnloadGarbage : public AbstractBehaviour {
 	    void action();
 
 	private:
+		void positionSelf();
+		void goDistance(double distance);
+		void alignWithLine();
+		void followLine(bool backwards, double distance);
+    	void followLineSpd(bool backwards);
+
 		robotapi::IServo * gate;
 		robotapi::ITrashBin * trashbin;
 		robotapi::IRobot * robot;

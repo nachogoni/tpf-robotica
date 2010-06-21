@@ -16,8 +16,18 @@ class Recharge : public AbstractBehaviour {
 		void sense();
 		
 		void action();
-		
+	
 	private:
+		void positionSelf();
+		void alignWithLine();
+		void followLine(bool backwards, double distance);
+    	void followLineSpd(bool backwards);
+		void goDistance(double distance);
+
+		bool isCharging();
+
+		double lastRobotValue;
+		double lastPCValue;
 	    robotapi::IBattery * robotBattery;
 		robotapi::IBattery * pcBattery;
 		robotapi::IRobot * robot;

@@ -72,12 +72,13 @@ void GoToDisposal::action(){
 	followingLine = true;
 //	if ( !this->inLine() && fabs( this->wheels->getOrientation() - PI/2 ) < ORIENTATION_TOLE ){
 	double xpos = this->wheels->getPosition()->getX();
-	if ( !this->inLine() && xpos < BASE_POSITION ){
-	    printf("Unloading Garbage\n");
-		this->disposalBehaviours[3]->action();
+	if ( !this->inLine() ){
+		if ( xpos < BASE_POSITION ){
+	    	printf("Unloading Garbage\n");
+			this->disposalBehaviours[3]->action();
+		}
 		followingLine = false;
-	}
-	else{
+	}else{
 	    this->disposalBehaviours[2]->action();
 	    printf("Following Line\n");
 	}

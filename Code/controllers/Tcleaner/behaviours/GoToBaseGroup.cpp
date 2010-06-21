@@ -57,7 +57,7 @@ void GoToBaseGroup::sense(){
 
 }
 
-int following = 0;
+int following = false;
 bool beenOnMark = false;
 
 void GoToBaseGroup::action(){
@@ -75,13 +75,15 @@ void GoToBaseGroup::action(){
 		    return;
 		}
 	}
-	following = 1;
+	following = true;
 //	if ( !this->inLine() && fabs( this->wheels->getOrientation() - PI/2 ) < ORIENTATION_TOLE ){
 	double xpos = this->wheels->getPosition()->getX();
-	if ( !this->inLine() && xpos < BASE_POSITION ){
-	    printf("Recharging\n");
-		this->myBehaviours[3]->action();
-		following = 0;
+	if ( !this->inLine() ){
+		if ( xpos < BASE_POSITION ){
+	    	printf("Recharging\n");
+			this->myBehaviours[3]->action();
+		}
+		following = false;
 	}else{
 		if( xpos < PASSAGE_BEGIN_X && this->onMark() && ! beenOnMark ){
 			printf("On Mark!");
