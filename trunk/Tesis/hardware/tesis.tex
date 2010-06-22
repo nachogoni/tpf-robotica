@@ -82,48 +82,142 @@ Los encoders los explicamos m\'as en detalle en la secci\'on \ref{h_sensado_enco
 \subsubsection{Circuito de control}
 \label{h_actuadores_motorDC_circuito}
 
-explicar: puente H, diodos, conexion con el micro, pwm, salida del encoder al micro, timer/counter, circuito minimo (diagrama)
+Para alimentar y poder controlar los motores elegimos el driver \emph{L298} de la marca ST \footnote{http://www.st.com}.
+Internamente tiene dos puentes H puenteables y puede soportar hasta $4 A$. Ideal para estos motores u otros que se elijan en el futuro.
 
-\subsubsection{Diagrama de conexi\'on}
-\label{h_actuadores_motorDC_diagrama}
+La principal funci\'on del driver era proveer de la corriente y voltaje necesarios para el funcionamiento del motor, pero la configuraci\'on
+del puente H nos dio la posibilidad de, con una l\'ogica simple, determinar el sentido de la corriente y potencia que recib\'ia el motor.
 
-asignacion de pines
+Este integrado admite el puenteo de la salida aumentando as\'i la corriente que pueda circular por \'el.
+Para hacer esto, conectamos las salidas \emph{Out1} y \emph{Out4} por un lado y por el otro las salidas \emph{Out2} y \emph{Out3}.
+De igual forma los pines de habilitaci\'on \emph{EnA} y \emph{EnB}, luego la entrada \emph{In1} con la \emph{In4} por un lado y
+por el otro la \emph{In2} con la \emph{In3}.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=0.40]{L298.png}
+	\caption{Diagrama interno del driver L298.}
+	\label{hF_l298}
+\end{figure}
+
+De esta forma, se controla con s\'olo $3$ cables, uno de habilitaci\'on y otros $2$ de \emph{Input} que determinan
+la polarizaci\'on de los transistores internos y por ende, el sentido de giro del motor.
+En la tabla \ref{hT_l298} mostramos la tabla de verdad para los pines de control.
+En la figura \ref{hF_l298} mostramos el diagrama interno del integrado.
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			Enable & Input $1$ & Input $2$ & Funci\'on \\
+			\hline
+			H & H & L & Sentido horario \\
+			H & L & H & Sentido anti-horario \\
+			H & L & L & Motor frenado \\
+			H & H & H & Motor frenado \\
+			L & X & X & Motor libre \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Tabla de verdad para el control del driver \emph{L298}. Donde H es estado algo, L estado bajo y X cualquier estado.}
+	\label{hT_l298}
+\end{table}
+
+Para determinar la potencia que recibir\'ia el motor usamos el m\'odulo de \emph{PWM} del microcontrolador, que explicamos m\'as en detalle en la
+secci\'on \ref{h_controlador_micro_modulos}.
+Variando el ancho del pulso sobre el pin de habilitaci\'on del driver determinamos la cantidad de tiempo que el motor recibe tensi\'on, lo cual
+se traduce en la potencia que este tiene para realizar el movimiento.
+Cuanto mayor es el tiempo en estado alto del pulso, mayor la potencia.
+
+Para contrarrestar la corriente negativa en las salidas del driver usamos los diodos \emph{FR304} que cumplen con las especificaciones del driver
+con $150$ns de tiempo de recuperaci\'on y una corriente de $3 A$.
+
+El consumo del motor lo medimos mediante el pin de sensado en el driver, conectado a masa por una resistencia y al m\'odulo de \emph{ADC} del
+microcontrolador, que explicamos en la secci\'on \ref{h_controlador_micro_modulos}.
+Conociendo el valor de la resistencia y el valor leido por el m\'odulo de \emph{ADC}, pudimos determinar cuanta corriente que circulaba por la
+resistencia y por ende la corriente consumida por el motor.
+
+Para controlar la velocidad del motor usamos 1 de los 2 encoders que trae.
+Conectados como entrada para el m\'odulo de \emph{Timer} del microcontrolador, en configuraci\'on de contador, que explicamos m\'as en detalle en la
+secci\'on \ref{h_controlador_micro_modulos}.
+Usando otro \emph{Timer} para tener una base de tiempo fija y con el valor del contador pudimos determinar y controlar la velocidad de las ruedas.
+
+En la secci\'on \ref{h_placas_motorDC} explicamos el desarrollo de la placa controladora de estos motores.
 
 \subsubsection{Rutinas de control}
 \label{h_actuadores_motorDC_rutinas}
 
-codigo de control de velocidad (explicacion)
+Desde el punto de vista del c\'odigo, tuvimos que desarrollar las rutinas necesarias para el manejo de los motores seg\'un las intrucciones del
+controlador principal.
+
+Configuramos a uno de los timers internos del microcontrolador para que genere una interrupci\'on cada $6.25$ms, la cual usamos para realizar
+chequeos y ejercer control sobre el motor.
+Verificamos el consumo del motor para evitar sobrecargar el circuito y los motores ante un posible atasco de las ruedas.
+Tambi\'en actualizamos el acumulado de vueltas realizadas por el motor para la odometr\'ia.
+
+Cada $200$ms, o sea $32$ interrupciones, tomamos la cantidad de cuentas del encoder, correjimos la velocidad de giro del motor ajustando el
+ancho del pulso generado por el PWM.
+Luego borramos el contador y esperamos otros $200$ms.
 
 \subsection{Servo motores}
 \label{h_actuadores_servo}
 
-principio de funcionamiento, caracteristicas principales (generales), torque!
-
 Para el movimiento de las partes del m\'odulo de recolecci\'on. una c\'amara con paneo y giro o un senor de ultrasonido colocado
 en la parte superior haciendo las veces de radar, pensamos en el uso de servo motores.
+La principal caracter\'istica de estos actuadores es que nosotros s\'olo debemos indicar el \'angulo al que queremos que este
+el eje del motor y este se coloca autom\'aticamente.
+El \'angulo de trabajo va desde $0^{\circ}$ a $180^{\circ}$ y algunos llegan hasta los $200^{\circ}$.
 
-aunque no fueron implementados tenemos hecho el disenio de las placas y el codigo
+Aunque no fue implementado el ning\'un mecanismo que requiriera el uso de estos motores, explicamos en este apartado el trabajo realizado
+en torno a este tipo de actuadores.
+En la secci\'on \ref{h_placas_servos} explicamos el dise\~no de las placas que los controlan.
 
-La inclinaci\'on del robot requer\'ia una carrera corta y un gran toque para poder elevar parte del robot.
-Pensamos nuevamente en un motor de cont\'inua pero con un tornillo sin fin para realizar este movimiento.
+El servo de prueba que utilizamos para el desarrollo es el modelo \emph{HX5010} de la marca Hextronik \footnote{www.hextronik.com/}
+con caracteristicas que expresamos en la tabla \ref{hT_hx5010}
 
-aunque no fue implementado nada de esto
-
+\begin{table}
+	\begin{center}
+		\begin{tabular}{|c|c|c|}
+			\hline
+			Caracter\'istica & Unidad & Valor \\
+			\hline
+			Torque & kg & $6.5$ \\
+			Velocidad & segundos/grado & $\frac{0.16}{60}$ \\
+			Voltaje & V & $4.8$ a $6$ \\
+			Delay m\'aximo & $\mu s$ & $4$ \\
+			Dimensiones & $mm$ & 40x20x38 \\
+			Peso & $g$ & $39$ \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Caracter\'isticas del servo HX5010.}
+	\label{hT_hx5010}
+\end{table}
 
 \subsubsection{Circuito de control}
 \label{h_actuadores_servo_circuito}
 
-alimentaci\'on, consumo, conexion con el micro, pwm, frecuencia de control, rosamiento libre, circuito minimo (diagrama)
+La alimentaci\'on y consumo depende del modelo espec\'ifico, variando tambi\'en el torque que posee el servo.
 
-\subsubsection{Diagrama de conexi\'on}
-\label{h_actuadores_servo_diagrama}
+No es necesario el uso de un driver para manejarlos, simplemente con la alimentaci\'on y una se\~nal con el \'angulo es suficiente.
+La forma de comunicar el \'angulo var\'ia entre los distintos servos y fabricantes.
+Hay servos anal\'ogicos y servos digitales.
+En los primeros la posici\'on se determina mediante un voltaje que varia seg\'un cierto rango y si es digital, se setea mediante el ancho de
+un pulso que tiene un tiempo m\'inimo y m\'aximo para mapear los \'angulos m\'inimo y m\'aximo respectivamente.
 
-asignacion de pines
+Dentro del modo de uso, podemos hacer que queden sueltos o que se queden fijos en cierta posici\'on indicando, de forma cont\'inua, el valor
+del \'angulo requerido.
+La frecuencia a la que se debe setear la posici\'on depende el modelo.
 
 \subsubsection{Rutinas de control}
 \label{h_actuadores_servo_rutinas}
 
-codigo de control de posicion (explicacion)
+Debido a que pensamos usar motores digitales y por lo menos \'ibamos a necesitar $3$ servos, necesitabamos contar con varios m\'odulos de PWM.
+Como s\'olo dispon\'iamos de 1, decidimos realizar la misma funci\'on pero por software.
+
+Usamos el timer de $16$bits del microcontrolador configurado con el clock interno de $20$MHz como medida del tiempo para crear $5$ salidas con
+pulsos que var\'ian el ancho en forma independiente cada una.
+Definimos un ancho m\'inimo y m\'aximo, pudiendo configurar pasos intermedios de $1^{\circ}$ (aproximadamente $69.4\mu s$).
 
 \section{Sensado}
 \label{h_sensado}
