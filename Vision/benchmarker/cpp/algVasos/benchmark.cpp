@@ -190,8 +190,8 @@ void drawCompare(std::list<Cobject*> objects,std::list<Cobject*> objectsXml){
 	for (std::list<Cobject*>::iterator itVid = objects.begin(); itVid != objects.end(); itVid++){
 		boundingRect=(*itVid);
 		cvRectangle(compareImg,cvPoint(boundingRect->x,boundingRect->y),
-								cvPoint(boundingRect->x+boundingRect->h,
-								boundingRect->y+boundingRect->w),
+								cvPoint(boundingRect->x+boundingRect->w,
+								boundingRect->y+boundingRect->h),
 								_RED,1,8,0);
 		std::vector<int> centroid=(*itVid)->getCentroid();
 		

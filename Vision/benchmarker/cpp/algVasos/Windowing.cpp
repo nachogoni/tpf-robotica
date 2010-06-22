@@ -32,10 +32,11 @@ namespace utils{
 		MinimalBoundingRectangle * mbr= focusGarbage->garbage->boundingBox();
 		int factor=(focusGarbage->age - focusGarbage->lastAppeareance);
 		
-		int w=100;//mbr->width;
-		int h=100;//mbr->height;
+		int w=(mbr->width*1.2)<100?100:(mbr->width*1.2);
+		int h=(mbr->height*1.2)<100?100:(mbr->height*1.2);
 		int x=mbr->x;
 		int y=mbr->y;
+		//~ printf("height %d  h:%d\n",mbr->height,h);
 		
 
 		this->window=cvRect(x,y,w,h);
@@ -93,7 +94,7 @@ namespace utils{
 				return NULL;
 		}
 		
-		printf("new window (%d,%d) %d %d \n",this->window.x,this->window.y,this->window.width,this->window.height);
+		//~ printf("new window (%d,%d) %d %d \n",this->window.x,this->window.y,this->window.width,this->window.height);
 
 		
 		//~ bk=cvCreateImage(cvSize(this->window.height,this->window.width),8,3);
