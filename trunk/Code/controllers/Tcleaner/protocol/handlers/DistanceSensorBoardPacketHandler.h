@@ -29,6 +29,8 @@ class DistanceSensorBoardPacketHandler : public protocol::BoardPacketHandler
 		
 		int getValue(int dsIds);
 		
+		int getValue(int* dsIds, int count);
+		
 		int getOneValue(int dsIds);
 		
 		void setMask(int dsId);

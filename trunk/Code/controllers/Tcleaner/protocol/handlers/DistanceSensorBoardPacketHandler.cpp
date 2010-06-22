@@ -131,6 +131,30 @@ int DistanceSensorBoardPacketHandler::getValue(int dsId){
 	return value;
 }
 
+int DistanceSensorBoardPacketHandler::getValue(int* dsId, int count){
+	// TODO Put timestamps to prevent flooding
+   	packets::DistanceSensorPacket * p = new packets::DistanceSensorPacket(groupid,boardid);
+	p->getValue((char)0x0000003F);
+	p->prepareToSend();
+	this->ps->sendPacket(p);
+	
+	// Lock Mutex
+	#ifdef LINUX
+	this->dsValueMutex->enterMutex();
+	#endif
+
+	for (int i = 0; i < count; i++) {
+		 dsId[i] = this->dsValue[i];
+	}
+
+	// Release Mutex
+	#ifdef LINUX
+	this->dsValueMutex->leaveMutex();
+	#endif
+	
+	return count;
+}
+
 int DistanceSensorBoardPacketHandler::getOneValue(int dsId){
 	// TODO Put timestamps to prevent flooding
    	packets::DistanceSensorPacket * p = new packets::DistanceSensorPacket(groupid,boardid);
