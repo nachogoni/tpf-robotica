@@ -108,20 +108,21 @@ GarbageRecognition::getGarbageList(IplImage * src)
 			src_window=src;
 		}
 		
+		//get garbages from vision system
 		garbages = this->garbageList(src_window,model);
 		
 		if(this->focused){
 			garbages=this->window->correctGarbages(garbages);
 		}
 		
-		//prediction
+		//Feed retrieved garbages to prediction system
 		if(this->doPrediction)
 			garbagePrediction= this->prediction->getPrediction(garbages);
 		else
 			garbagePrediction=garbages;
 		
 		//start  windowing
-		if(!(this->frameNumber % NUMBER_OF_FRAMES_TO_FOCUS) && this->focused==false && this->doWindowing){
+		if(this->doWindowing && (this->frameNumber % NUMBER_OF_FRAMES_TO_FOCUS) && this->focused==false ){
 			
 			GarbageHistoric * focusedGarbage=prediction->focusGarbage();
 			if(focusedGarbage!=NULL){

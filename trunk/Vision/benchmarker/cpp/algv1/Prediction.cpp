@@ -82,7 +82,7 @@ namespace utils{
 		
 		//foreach existing garbageHistoric	
 		for(itHist = (garHist).begin(); itHist != (garHist).end(); itHist++)
-		{
+		{	
 			bool updated=false;
 			//check if it match any garbage detected in this frame
 			for (itGar = gar.begin(); itGar != gar.end(); itGar++)

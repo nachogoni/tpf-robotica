@@ -10,6 +10,15 @@
 
 using namespace benchmark;
 
+typedef struct{
+	int predicted;
+	int visualized;
+	int predictedAndHit;
+	int visionAndHit;
+	int predictedAndVisualized;
+	int predictedAndVisualizedAndHit;
+} PredictionStats;
+
 
 Result *
 compareFrameXmlWithFrame(IplImage* frame,Frame* frameXml);
@@ -23,6 +32,11 @@ getFrameResults(IplImage * frame);
 void
 drawCompare(std::list<Cobject*>,std::list<Cobject*>);
 
+void 
+initializePredictionStats(PredictionStats * stats);
+
+void calcPredStats(Cobject* obj,bool found);
+
 
 GarbageAdapter * ga;
 
@@ -34,6 +48,8 @@ typedef struct {
 	int falseDetections;
 	int nObjects;
 } stats;
+
+
 
 //frame from video
 IplImage * videoFrameImg;
