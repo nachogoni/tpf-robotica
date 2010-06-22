@@ -108,42 +108,42 @@ presentaci\'on y armado f\'isico del prototipo.
 \subsection{Actuadores}
 \label{Hactuadores}
 
-Los actuadores son la principal forma en que el robot puede interactuar en forma activa con el medio que lo rodea. Hay distintas partes que necesitan
-este tipo de dispositivos, la tracci\'on principal de las ruedas, el movimiento del m\'odulo de recolecci\'on y de otras partes como podr\'ian ser una
-c\'amara con paneo y giro o un senor de ultrasonido colocado en la parte superior haciendo las veces de radar.
-Estas cuestiones se analizan en este apartado.
+	Los actuadores son la principal forma en que el robot puede interactuar en forma activa con el medio que lo rodea. Hay distintas partes que necesitan
+	este tipo de dispositivos, la tracci\'on principal de las ruedas, el movimiento del m\'odulo de recolecci\'on y de otras partes como podr\'ian ser una
+	c\'amara con paneo y giro o un senor de ultrasonido colocado en la parte superior haciendo las veces de radar.
+	Estas cuestiones se analizan en este apartado.
 
 \subsubsection{Motores principales}
 \label{HmotoresP}
 
-Eran parte de los requerimientos el poder garantizar una velocidad determinada en los motores para la tracci\'on de las ruedas, poder mantener
-un control de la cantidad de movimiento independiente en cada rueda, conocer las vueltas dadas por cada una de las ruedas y era deseable
-la posibilidaded de poder especificar la cantidad de vueltas a realizar para luego detenerse sin intervenci\'on del controlador principal.
-
-Para este trabajo elegimos motores de corriente cont\'inua ya que pod\'iamos satisfacer todas las necesidades con simplicidad para su control. Los motores
-elegidos son de la marca Ignis \footnote{http://www.ignis.com.ar} modelo \emph{MR-2FA} que esta provisto de una caja reductora con caracter\'isticas
-expresadas en la tabla \ref{HTmotorDC}, tambi\'en poseen un encoder de $4$ estados por vuelta en el eje del motor y un sensor de revoluci\'on completa a la salida de
-la caja reductora. En la secci\'on \ref{HSencodersConsumo} explicamos detalladamente el funcionamiento de los encoders y medici\'on del consumo del motor.
-
-\begin{table}
-	\begin{center}
-		\begin{tabular}{|l|c|c|c|c|}
-			\hline
-			Caracter\'istica & Unidad & M\'inimo & Nominal & M\'aximo \\
-			\hline
-			Tensi\'on & V & 8 & 9 & 12 \\
-			Corriente & A & 0.6 & 1.2 & 2.4 \\
-			Velocidad & RPM & 1 & 60 & 60 \\
-			Aceleraci\'on & $1/s^{2}$ & 0.1 & 0.1 & 0.5 \\
-			Torque & kgf*cm & 0 & 1.2 & 6.4 \\
-			\hline
-		\end{tabular}
-	\end{center}
-	\caption{Caracter\'isticas del motor Ignis MR-2FA.}
-	\label{HTmotorDC}
-\end{table}
-
-En la secci\'on \ref{HAPmotorDC} explicamos detalladamente la construcci\'on y principios de funcionamiento de la placa controladora para estos motores.
+	Eran parte de los requerimientos el poder garantizar una velocidad determinada en los motores para la tracci\'on de las ruedas, poder mantener
+	un control de la cantidad de movimiento independiente en cada rueda, conocer las vueltas dadas por cada una de las ruedas y era deseable
+	la posibilidaded de poder especificar la cantidad de vueltas a realizar para luego detenerse sin intervenci\'on del controlador principal.
+	
+	Para este trabajo elegimos motores de corriente cont\'inua ya que pod\'iamos satisfacer todas las necesidades con simplicidad para su control. Los motores
+	elegidos son de la marca Ignis \footnote{http://www.ignis.com.ar} modelo \emph{MR-2FA} que esta provisto de una caja reductora con caracter\'isticas
+	expresadas en la tabla \ref{HTmotorDC}, tambi\'en poseen un encoder de $4$ estados por vuelta en el eje del motor y un sensor de revoluci\'on completa a la salida de
+	la caja reductora. En la secci\'on \ref{HSencodersConsumo} explicamos detalladamente el funcionamiento de los encoders y medici\'on del consumo del motor.
+	
+	\begin{table}
+		\begin{center}
+			\begin{tabular}{|l|c|c|c|c|}
+				\hline
+				Caracter\'istica & Unidad & M\'inimo & Nominal & M\'aximo \\
+				\hline
+				Tensi\'on & V & 8 & 9 & 12 \\
+				Corriente & A & 0.6 & 1.2 & 2.4 \\
+				Velocidad & RPM & 1 & 60 & 60 \\
+				Aceleraci\'on & $1/s^{2}$ & 0.1 & 0.1 & 0.5 \\
+				Torque & kgf*cm & 0 & 1.2 & 6.4 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		\caption{Caracter\'isticas del motor Ignis MR-2FA.}
+		\label{HTmotorDC}
+	\end{table}
+	
+	En la secci\'on \ref{HAPmotorDC} explicamos detalladamente la construcci\'on y principios de funcionamiento de la placa controladora para estos motores.
 
 \subsubsection{Actuadores de uso m\'ultiple}
 \label{HactuadoresVarios}
