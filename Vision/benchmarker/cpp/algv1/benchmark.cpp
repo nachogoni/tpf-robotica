@@ -6,13 +6,14 @@
 
 using namespace benchmark;
 
+PredictionStats predStats;
 
 int main(int argc, char** argv)
 {	    
 	CvCapture* capture;
 	cvNamedWindow("compare",CV_WINDOW_AUTOSIZE);
 	
-	
+	initializePredictionStats(&predStats);
 	
 	if (argc < 3) {
         fprintf(stderr, "Usage: %s filename.xml\n video", argv[0]);
@@ -110,8 +111,9 @@ compareFrameXmlWithFrame(IplImage* frame,Frame* frameXml)
 	
 	for (std::list<Cobject*>::iterator itXml = objectsXml.begin(); itXml != objectsXml.end(); itXml++){
 		found=false;
-		for (std::list<Cobject*>::iterator itVid = objects.begin(); itVid != objects.end(); itVid++){
-			if( (*itVid)->isSimilar(*itXml)){
+		for (std::list<Cobject*>::iterator itVid = objects.begin(); itVid != objects.end(); itVid++){		
+			if((*itVid)->isSimilar(*itXml)){
+				calcPredStats((*itVid),true);
 				if(!found){
 					//~ printf("found object %d index %d\n",(*itXml)->index,(*itVid)->index);
 					aResult->addFound((*itXml)->index);
@@ -121,6 +123,7 @@ compareFrameXmlWithFrame(IplImage* frame,Frame* frameXml)
 					//then it would be proper to keep the one which is more similar
 				}
 			}else{
+					calcPredStats((*itVid),false);
 					//printf("%d no le pego a %d\n",(*itVid)->index,(*itXml)->index);
 					missCount[(*itVid)->index]++;
 			}
@@ -151,12 +154,20 @@ makeGlobalResults(list<Result*>  resultList){
 	allFramesStats.falseDetections=0;
 	allFramesStats.hit=0;
 	
+	
 	for (std::list<Result*>::iterator itRes = resultList.begin(); itRes != resultList.end(); itRes++){
 		allFramesStats.hit+=(*itRes)->detectedObjects();
 		allFramesStats.falseDetections+=(*itRes)->falsePositives;
 		allFramesStats.nObjects+=(*itRes)->nObjects;
 	}
-	
+	printf("--Prediction stats-- \n");
+	printf("Number of objects predicted: %d\n",predStats.predicted);
+	printf("Number of objects predicted and hit: %d\n",predStats.predictedAndHit);
+	printf("Number of objects found by vision system: %d\n",predStats.visualized);
+	printf("Number of objects found by vision system and hit: %d\n",predStats.visionAndHit);
+	printf("Number of objects found by vision system and predicted: %d\n",predStats.predictedAndVisualized);
+	printf("Number of objects found by vision system and predicted and hit: %d\n",predStats.predictedAndVisualizedAndHit);
+	printf("--Detection stats-- \n");
 	printf(" Total number of objects to be recognized %d\n",allFramesStats.nObjects);
 	printf(" number of hits %d\n",allFramesStats.hit);
 	printf(" number of detected objects that didn't exist %d\n",allFramesStats.falseDetections);
@@ -190,5 +201,42 @@ void drawCompare(std::list<Cobject*> objects,std::list<Cobject*> objectsXml){
 	}
 	cvShowImage("compare",compareImg);
 	cvWaitKey(1000/20);
-	//~ cvWaitKey(0);
+	// cvWaitKey(0);
+}
+
+void initializePredictionStats(PredictionStats  * stats){
+	stats->predicted=0;
+	stats->visualized=0;
+	stats->predictedAndHit=0;
+	stats->visionAndHit=0;
+	stats->predictedAndVisualizedAndHit=0;
+	stats->predictedAndVisualized=0;
+}
+void calcPredStats(Cobject* obj,bool found){
+	if(found){
+		if(obj->isPredicted() && !obj->isVisualized()){
+			predStats.predicted++;
+			predStats.predictedAndHit++;
+		}
+		if(obj->isVisualized() && !obj->isPredicted()){
+			predStats.visualized++;
+			predStats.visionAndHit++;
+		}
+		if(obj->isPredicted() && obj->isVisualized()){
+			predStats.predictedAndVisualized++;
+			predStats.predictedAndVisualizedAndHit++;
+		}
+	}else{
+		if(obj->isPredicted() && !obj->isVisualized()){
+			predStats.predicted++;
+		}
+		if(obj->isVisualized() && !obj->isPredicted()){
+			predStats.visualized++;
+		}
+		if(obj->isPredicted() && obj->isVisualized()){
+			predStats.predictedAndVisualized++;
+		}
+		
+	}
+		
 }

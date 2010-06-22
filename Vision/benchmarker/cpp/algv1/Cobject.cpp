@@ -42,10 +42,10 @@ Cobject::Cobject(int x,int y,int w,int h)
 
 Cobject::~Cobject()
 {
-	this->x=x;
-	this->y=y;
-	this->w=w;
-	this->h=h;
+	//~ this->x=x;
+	//~ this->y=y;
+	//~ this->w=w;
+	//~ this->h=h;
 }
 
 void 
@@ -99,6 +99,25 @@ bool Cobject::contains(Cobject * other){
 			return true;
 	return false;
 }
+
+	void Cobject::setPredicted(bool val){
+		this->predicted=val;
+	}
+	void Cobject::setVisualized(bool val){
+		this->visualized=val;
+	}
+	bool Cobject::isPredicted(){
+		return predicted;
+	}
+	bool Cobject::isVisualized(){
+		return visualized;
+	}
+	void Cobject::setFocused(bool val){
+		this->focused=val;
+	}
+	bool Cobject::isFocused(){
+		return focused;
+	}
 
 
 }
