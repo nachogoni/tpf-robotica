@@ -212,7 +212,7 @@ La frecuencia a la que se debe setear la posici\'on depende el modelo.
 \subsubsection{Rutinas de control}
 \label{h_actuadores_servo_rutinas}
 
-Debido a que pensamos usar motores digitales y por lo menos \'ibamos a necesitar $3$ servos, necesitabamos contar con varios m\'odulos de PWM.
+Debido a que pensamos usar servos digitales y por lo menos \'ibamos a necesitar $3$ servos, necesitabamos contar con varios m\'odulos de PWM.
 Como s\'olo dispon\'iamos de 1, decidimos realizar la misma funci\'on pero por software.
 
 Usamos el timer de $16$bits del microcontrolador configurado con el clock interno de $20$MHz como medida del tiempo para crear $5$ salidas con
@@ -222,57 +222,195 @@ Definimos un ancho m\'inimo y m\'aximo, pudiendo configurar pasos intermedios de
 \section{Sensado}
 \label{h_sensado}
 
-tipos de sensores elegidos y por que los elegimos
+En este apartado explicamos detalladamente cada uno de los sensores que utilizamos para realizar tanto las mediciones externas como las internas al robot.
+Analizamos las ventajas de cada uno, problemas que encontramos y sus soluciones.
+
+En la secci\'on \ref{h_placas_sensado} explicamos el dise\~no y construcci\'on de las placas que controlan todos los sensores del robot.
 
 \subsection{Tel\'emetros infrarrojos}
 \label{h_sensado_telemetros}
 
-principio de funcionamiento
+El principio de funcionamiento de estos sensores es mediante un haz de luz infrarroja que es emitido hacia el objetivo, el cual
+es reflejado y captado a traves de un lente por un sensor de posici\'on relativa en el interior del sensor.
+En base a esta medici\'on se calcula la distancia entre el sensor y el objeto reflectivo que se encuentra frente a \'el.
 
 \subsubsection{Caracter\'isticas}
 \label{h_sensado_telemetros_caracteristicas}
 
-modelo, marca, medidas, alimentacion, consumo, tiempo de muestreo, tipo de salida, rangos de distancia, rangos de voltaje, distancia vs voltaje
+medidas, tiempo de muestreo, tipo de salida, rangos de distancia, rangos de voltaje, distancia vs voltaje
+
+Los tel\'emetros infrarrojos que elegimos son de la marca Sharp \footnote{http://sharp-world.com/products/device}, modelo \emph{GP2D120}.
+En la tabla \ref{hT_gp2d120} detallamos los valores caracter\'isticos del modelo.
+
+Este tipo de sensores tienen un retardo de aproximadamente $43.1ms$ durante el cual la lectura que se realiza no es confiable y luego
+las nuevas lecturas se hacen en ventanas de aproximadamente el mismo tiempo.
+En la figura \ref{hF_gp2d120_pulse} mostramos el diagrama de tiempos.
+
+\begin{table}[ht]
+	\begin{center}
+		\begin{tabular}{|l|c|c|}
+			\hline
+			Caracter\'istica & Unidad & Valor\\
+			\hline
+			Rango m\'aximo & $cm$ & 30 \\
+			Rango m\'inimo & $cm$ & 4 \\
+			Tensi\'on para la m\'axima distancia & $V$ & 1.95 \\
+			Tensi\'on para la m\'inima distancia & $V$ & 2.55 \\
+			Tensi\'on de alimentaci\'on & $V$ & 5 \\
+			Consumo m\'aximo & $mA$ & 50 \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Caracter\'isticas del sensor de distancia por ultrasonido SRF05.}
+	\label{hT_gp2d120}
+\end{table}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=0.25]{gp2d120_pulse.png}
+	\caption{Diagrama de tiempos del sensor GP2D120.}
+	\label{hF_gp2d120_pulse}
+\end{figure}
 
 \subsubsection{Circuito de control}
 \label{h_sensado_telemetros_circuito}
 
 alimentacion, conmutacion (transistor, estado de habilitacion: 0), conexion con el micro, salida del sensor, modulo ADC, muestreo, capacitor para alimentacion, circuito minimo (diagrama)
 
-\subsubsection{Diagrama de conexi\'on}
-\label{h_sensado_telemetros_diagrama}
+No necesit\'abamos un driver para manejar los tel\'emetros, pero decidimos usar un transistor para poder habilitarlos o no,
+de otra manera el sensor estaba tomando mediciones continuamente provocando un consumo de bater\'ia innecesario.
+De esta forma s\'olo se enciende cuando se va a utilizar.
 
-asignacion de pines
+El transistor que utilizamos es un conmutador y amplificador de uso general, el \emph{BC327} y por ser de tipo PNP se
+exita con un estado bajo, por lo que la l\'ogica de conmitaci\'on est\'a negada.
+
+El tipo de salida de este modelo de tel\'emetros es anal\'ogica y est\'an conectadas al m\'odulo \emph{ADC} del microcontrolador.
+En la figura \ref{hF_gp2d120_distancia} mostramos la tabla de conversi\'on entre voltaje de salida y distancia al objeto, y en la figura
+\ref{hF_gp2d120_apertura} mostramos el \'angulo de apertura de la zona de detecci\'on seg\'un la distancia al objetivo.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=0.35]{tel-VxL.png}
+	\caption{Voltaje de salida seg\'un la distancia al objeto del tel\'emetro GP2D120.}
+	\label{hF_gp2d120_distancia}
+\end{figure}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=0.35]{tel-VxX.png}
+	\caption{\'Angulo de apertura seg\'un la distancia del tel\'emetro GP2D120.}
+	\label{hF_gp2d120_apertura}
+\end{figure}
 
 \subsubsection{Rutinas de control}
 \label{h_sensado_telemetros_rutinas}
 
-codigo de lectura de distancia (explicacion)
+Controlar los tel\'emetros es relativamente sencillo.
+Usamos el timer de $16$bits del microcontrolador configurado con el clock interno de $20$MHz para determinar el tiempo en el cual
+deb\'iamos tomar las muestras con el ADC y simplemente realizamos un promedio entre ellas para obtener la distancia al objetivo.
+
+Para hacer esto desarrollamos una peque\~na m\'aquina de estados que controla y maneja los tiempos para tomar las muestras que
+explicamos m\'as en detalle en la secci\'on \ref{h_placas_sensado_codigo}.
 
 \subsection{Sensor de distancia por ultrasonido}
 \label{h_sensado_ultrasonido}
 
-principio de funcionamiento
+Estos sensores de distancia se basan en la velocidad del sonido para calcular la distancia al objetivo.
+Genera un tren de $8$ pulsos ultras\'onicos y luego se espera como respuesta, el mismo tren de pulsos que deber\'ia haber rebotado contra el objetivo.
+En base a la diferencia de tiempo entre la emisi\'on del tren de pulsos y la respuesta, se calcula la distancia a la que se encuentra el objetivo.
 
 \subsubsection{Caracter\'isticas}
 \label{h_sensado_ultrasonido_caracteristicas}
 
-modelo, marca, medidas, alimentacion, consumo, tiempo/frecuencia de muestreo, tipo de salida, rangos de distancia, rango de ancho de pulso, distancia vs ancho del pulso
+El sensor de distancia por ultrasonido que elegimos es el modelo \emph{SRF05} de la marca Devantech Ltd \footnote{http://www.robot-electronics.co.uk/}.
+Esta versi\'on mejorada del modelo \emph{SRF04}, aumenta el rango de detecci\'on y mejora el modo de control y lectura de los datos, permitiendo
+hacerlo mediante un \'unico pin.
+
+La distancia medida mediante el tren de pulsos es codificada linealmente en el ancho de un pulso que var\'ia de $100\mu s$ a $25 ms$.
+Si dentro del rango de detecci\'on no se encuentra ning\'un objeto, el pulso tendr\'a un ancho de $30ms$.
+
+En la tabla \ref{hT_srf05} detallamos las caracter\'sticas del sensor \emph{SRF05} y en la figura \ref{hF_srf05} mostramos el haz ultras\'onico
+del sensor.
+
+\begin{table}[ht]
+	\begin{center}
+		\begin{tabular}{|l|c|c|}
+			\hline
+			Caracter\'istica & Unidad & Valor\\
+			\hline
+			Tensi\'on de alimentaci\'on & $V$ & 5 \\
+			Corriente & $mA$ & 4 \\
+			Frecuencia de trabajo & $KHz$ & 40 \\
+			Rango m\'aximo & $cm$ & 400 \\
+			Rango m\'inimo & $cm$ & 1.7 \\
+			Duraci\'on m\'inima del pulso de disparo & $\mu s$ & 10 \\
+			Duraci\'on del pulso eco de salida & $\mu s$& 100 - 25000 \\
+			Tiempo m\'inimo de espera entre mediciones & $m s$ & 50 \\
+			Dimensiones & $mm$ & 43x23x40 \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Caracter\'isticas del sensor SRF05.}
+	\label{hT_srf05}
+\end{table}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=0.5]{srf05_beam.png}
+	\caption{Haz ultras\'onico del sensor SRF05.}
+	\label{hF_srf05}
+\end{figure}
+
+% \begin{figure}[ht]
+% 	\begin{minipage}[b]{0.5\linewidth}
+% 		\centering
+% 		\includegraphics[scale=0.45]{srf05_beam.png}
+% 		\caption{Haz ultras\'onico del sensor SRF05.}
+% 		\label{hF_srf05}
+% 	\end{minipage}
+% 	\hspace{0.5cm}
+% 	\begin{minipage}[b]{0.5\linewidth}
+% 		\centering
+% 		\includegraphics[scale=0.45]{srf05_beam.png}
+% 		\caption{Haz ultras\'onico del sensor SRF05.}
+% 		\label{hF_srf05}
+% 	\end{minipage}
+% \end{figure}
 
 \subsubsection{Circuito de control}
 \label{h_sensado_ultrasonido_circuito}
 
-alimentacion, conmutacion (transistor, estado de habilitacion: 0), conexion con el micro, salida del sensor, modulo ADC, muestreo, capacitor para alimentacion, circuito minimo (diagrama)
+No necesitamos de un driver para manejar al sensor ya que lo conectamos directo a los $5v$ de la placa.
+El pin de \emph{Mode} lo dejamos en estado bajo para indicar que debe funcionar bajo el nuevo modo y no en compatibilidad con el \emph{SRF04}.
 
-\subsubsection{Diagrama de conexi\'on}
-\label{h_sensado_ultrasonido_diagrama}
+En el pin de \emph{TRIGGER} s\'olo generamos un pulso de al menos $10\mu s$ para desencadenar en la lectura de la distancia al objetivo.
+El sensor nos asegura que no generar\'a el pulso de respuesta hasta pasados los $700\mu s$ desde pasado el pulso de trigger.
+En la figura \ref{hF_srf05_pulse} mostramos el diagrama de tiempos.
 
-asignacion de pines
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=0.25]{srf05_pulse.png}
+	\caption{Diagrama de tiempos del sensor SRF05.}
+	\label{hF_srf05_pulse}
+\end{figure}
+
+Para evitar que el rebote de otros sensores o sensados anteriores influya en la lectura, se debe esperar un m\'inimo de $50ms$ antes de
+generar otro medici\'on.
 
 \subsubsection{Rutinas de control}
 \label{h_sensado_ultrasonido_rutinas}
 
-codigo de lectura de distancia (explicacion)
+Usamos uno de los pines con interrupci\'on externa en el que conectamos el pin de \emph{TRIGGER} y el timer de $16$bits del microcontrolador
+configurado con el clock interno de $20$MHz
+
+Para realizar la medici\'on, generamos un pulso de $15\mu s$ para asegurarnos el disparo del sensor y cambiamos el modo del pin a entrada con
+interrupci\'on ante un flanco ascendente.
+Cuando salta la interrupci\'on significa que comienza al pulso con la distancia codificada en su ancho, por lo que tomamos una muestra del
+timer y configuramos al pin para que genere ahora una interrupci\'on ante un flanco descendente.
+Cuando salte la pr\'oxima vez la interrupci\'on, ser\'a porque termino el pulso con la medici\'on, por lo que s\'olo debemos hacer la resta
+entre el valor actual del timer y la muestra que tomamos al principio para conocer la distancia a la que se encuentra el objetivo.
+
+Si el tiempo tomado mayor a los $25ms$ indica que no se detect\'o ning\'un objeto dentro del rango de detecci\'on.
 
 \subsection{Sensor reflectivo de piso}
 \label{h_sensado_piso}
