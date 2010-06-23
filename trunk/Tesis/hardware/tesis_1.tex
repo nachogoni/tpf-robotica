@@ -160,100 +160,100 @@ explicadas en la secci\'on \ref{HAPmotorDC} con las modificaciones que requiera 
 \subsection{Sensores}
 \label{Hsensores}
 
-En este apartado explicamos detalladamente cada uno de los tipos de sensores que utilizamos para realizar tanto las mediciones externars como las
-internas al al robot. Analizamos las ventajas de cada uno, los posibles problemas que pueden surgir y las soluciones a los mismos.
-En la secci\'on \ref{HAPsensores} explicamos el dise\~no y construcci\'on de las placas que controlan todos los sensores del robot.
+	En este apartado explicamos detalladamente cada uno de los tipos de sensores que utilizamos para realizar tanto las mediciones externars como las
+	internas al al robot. Analizamos las ventajas de cada uno, los posibles problemas que pueden surgir y las soluciones a los mismos.
+	En la secci\'on \ref{HAPsensores} explicamos el dise\~no y construcci\'on de las placas que controlan todos los sensores del robot.
 
 \subsubsection{Sensores de distancia por ultrasonido}
 \label{HSultrasonido}
 
-El sensor de distancia por ultrasonido que elegimos es el modelo \emph{SRF05} de la marca Devantech Ltd \footnote{http://www.robot-electronics.co.uk/}.
-Es la versi\'on mejorada del modelo \emph{SRF04}, la cual aumenta el rango de detecci\'on y mejora el modo de control y lectura de los datos, permitiendo
-hacerlo mediante un \'unico pin.
-
-El principio de funcionamiento es relativamente sencillo, mediante un peque\~no pulso en el pin de \emph{TRIGGER}, se genera un tren de $8$ pulsos
-ultras\'onicos y luego se espera como respuesta, el mismo tren de pulsos que deber\'ia haber rebotado contra el objetivo. En base a la diferencia de tiempo
-entre la emisi\'on del tren de pulsos y la respuesta, se calcula la distancia a la que se encuentra el objetivo. La distancia es codificada en el ancho
-de un pulso que var\'ia de $100\mu s$ a $25 ms$. Si dentro del rango de detecci\'on no se encuentra ning\'un objeto, el pulso tendr\'a un ancho
-de $30$ milisengundos.
-
-En la tabla \ref{HTultrasonido} detallamos las caracter\'sticas del sensor \emph{SRF05} y en la figura \ref{HFultrasonido} mostramos el haz ultras\'onico
-del sensor.
-
-\begin{table}[ht]
-	\begin{center}
-		\begin{tabular}{|l|c|c|}
-			\hline
-			Caracter\'istica & Unidad & Valor\\
-			\hline
-			Tensi\'on de alimentaci\'on & $V$ & 5 \\
-			Frecuencia de trabajo & $KHz$ & 40 \\
-			Rango m\'aximo & $cm$ & 400 \\
-			Rango m\'inimo & $cm$ & 1.7 \\
-			Duración m\'inima del pulso de disparo & $\mu s$ & 10 \\
-			Duración del pulso eco de salida & $\mu s$& 100 - 25000 \\
-			Tiempo m\'inimo de espera entre mediciones & $m s$ & 20 \\
-			\hline
-		\end{tabular}
-	\end{center}
-	\caption{Caracter\'isticas del sensor de distancia por ultrasonido SRF05.}
-	\label{HTultrasonido}
-\end{table}
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[scale=0.5]{us-beam.png}
-	\caption{Haz ultras\'onico del sensor de distancia por ultrasonido SRF05.}
-	\label{HFultrasonido}
-\end{figure}
+	El sensor de distancia por ultrasonido que elegimos es el modelo \emph{SRF05} de la marca Devantech Ltd \footnote{http://www.robot-electronics.co.uk/}.
+	Es la versi\'on mejorada del modelo \emph{SRF04}, la cual aumenta el rango de detecci\'on y mejora el modo de control y lectura de los datos, permitiendo
+	hacerlo mediante un \'unico pin.
+	
+	El principio de funcionamiento es relativamente sencillo, mediante un peque\~no pulso en el pin de \emph{TRIGGER}, se genera un tren de $8$ pulsos
+	ultras\'onicos y luego se espera como respuesta, el mismo tren de pulsos que deber\'ia haber rebotado contra el objetivo. En base a la diferencia de tiempo
+	entre la emisi\'on del tren de pulsos y la respuesta, se calcula la distancia a la que se encuentra el objetivo. La distancia es codificada en el ancho
+	de un pulso que var\'ia de $100\mu s$ a $25 ms$. Si dentro del rango de detecci\'on no se encuentra ning\'un objeto, el pulso tendr\'a un ancho
+	de $30$ milisengundos.
+	
+	En la tabla \ref{HTultrasonido} detallamos las caracter\'sticas del sensor \emph{SRF05} y en la figura \ref{HFultrasonido} mostramos el haz ultras\'onico
+	del sensor.
+	
+	\begin{table}[ht]
+		\begin{center}
+			\begin{tabular}{|l|c|c|}
+				\hline
+				Caracter\'istica & Unidad & Valor\\
+				\hline
+				Tensi\'on de alimentaci\'on & $V$ & 5 \\
+				Frecuencia de trabajo & $KHz$ & 40 \\
+				Rango m\'aximo & $cm$ & 400 \\
+				Rango m\'inimo & $cm$ & 1.7 \\
+				Duración m\'inima del pulso de disparo & $\mu s$ & 10 \\
+				Duración del pulso eco de salida & $\mu s$& 100 - 25000 \\
+				Tiempo m\'inimo de espera entre mediciones & $m s$ & 20 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		\caption{Caracter\'isticas del sensor de distancia por ultrasonido SRF05.}
+		\label{HTultrasonido}
+	\end{table}
+	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[scale=0.5]{us-beam.png}
+		\caption{Haz ultras\'onico del sensor de distancia por ultrasonido SRF05.}
+		\label{HFultrasonido}
+	\end{figure}
 
 \subsubsection{Tel\'emetros infrarrojos}
 \label{HStelemetros}
-
-Los tel\'emetros por infrarrojo que elegimos son el modelo \emph{GP2D120} de Sharp \footnote{http://sharp-world.com/products/device}.
-
-El principio de funcionamiento de este tipo de sensores es mediante un haz de luz infrarroja que es emitido hacia el objetivo, el cual
-es reflejado y captado a traves de un lente por un sensor de posici\'on relativa en el interior del sensor. En base a esta medici\'on
-se calcula la distancia entre el sensor y el objeto reflectivo que se encuentra frente a \'el. La salida es anal\'ogica para este
-modelo espec\'ifico.
-
-\begin{table}[ht]
-	\begin{center}
-		\begin{tabular}{|l|c|c|}
-			\hline
-			Caracter\'istica & Unidad & Valor\\
-			\hline
-			Rango m\'aximo & $cm$ & 30 \\
-			Rango m\'inimo & $cm$ & 4 \\
-			Tensi\'on para la m\'axima distancia & $V$ & 1.95 \\
-			Tensi\'on para la m\'inima distancia & $V$ & 2.55 \\
-			Tensi\'on de alimentaci\'on & $V$ & 5 \\
-			Consumo m\'aximo & $mA$ & 50 \\
-			\hline
-		\end{tabular}
-	\end{center}
-	\caption{Caracter\'isticas del sensor de distancia por ultrasonido SRF05.}
-	\label{HTtel}
-\end{table}
-
-En la tabla \ref{HTtel} detallamos los valores caracter\'isticos del modelo. En la figura \ref{HFteldistancia} mostramos la tabla de
-conversi\'on entre voltaje de salida y distancia al objeto, y en la figura \ref{HFtelapertura} mostramos el \'angulo de apertura de
-la zona de detecci\'on seg\'un la distancia al objetivo.
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[scale=0.35]{tel-VxL.png}
-	\caption{Voltaje de salida seg\'un la distancia al objeto del tel\'emetro GP2D120.}
-	\label{HFteldistancia}
-\end{figure}
-
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[scale=0.35]{tel-VxX.png}
-	\caption{\'Angulo de apertura seg\'un la distancia del tel\'emetro GP2D120.}
-	\label{HFtelapertura}
-\end{figure}
+	
+	Los tel\'emetros por infrarrojo que elegimos son el modelo \emph{GP2D120} de Sharp \footnote{http://sharp-world.com/products/device}.
+	
+	El principio de funcionamiento de este tipo de sensores es mediante un haz de luz infrarroja que es emitido hacia el objetivo, el cual
+	es reflejado y captado a traves de un lente por un sensor de posici\'on relativa en el interior del sensor. En base a esta medici\'on
+	se calcula la distancia entre el sensor y el objeto reflectivo que se encuentra frente a \'el. La salida es anal\'ogica para este
+	modelo espec\'ifico.
+	
+	\begin{table}[ht]
+		\begin{center}
+			\begin{tabular}{|l|c|c|}
+				\hline
+				Caracter\'istica & Unidad & Valor\\
+				\hline
+				Rango m\'aximo & $cm$ & 30 \\
+				Rango m\'inimo & $cm$ & 4 \\
+				Tensi\'on para la m\'axima distancia & $V$ & 1.95 \\
+				Tensi\'on para la m\'inima distancia & $V$ & 2.55 \\
+				Tensi\'on de alimentaci\'on & $V$ & 5 \\
+				Consumo m\'aximo & $mA$ & 50 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		\caption{Caracter\'isticas del sensor de distancia por ultrasonido SRF05.}
+		\label{HTtel}
+	\end{table}
+	
+	En la tabla \ref{HTtel} detallamos los valores caracter\'isticos del modelo. En la figura \ref{HFteldistancia} mostramos la tabla de
+	conversi\'on entre voltaje de salida y distancia al objeto, y en la figura \ref{HFtelapertura} mostramos el \'angulo de apertura de
+	la zona de detecci\'on seg\'un la distancia al objetivo.
+	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[scale=0.35]{tel-VxL.png}
+		\caption{Voltaje de salida seg\'un la distancia al objeto del tel\'emetro GP2D120.}
+		\label{HFteldistancia}
+	\end{figure}
+	
+	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[scale=0.35]{tel-VxX.png}
+		\caption{\'Angulo de apertura seg\'un la distancia del tel\'emetro GP2D120.}
+		\label{HFtelapertura}
+	\end{figure}
 
 \subsubsection{Sensores reflectivos de piso}
 \label{Hpiso}
