@@ -155,6 +155,11 @@ namespace utils{
 		MinimalBoundingRectangle * mbr= new MinimalBoundingRectangle(x+deltax,y+deltay,h,w);
 		Garbage * newGarbage=new  Garbage(mbr,newCentroid);
 		
+		newGarbage->isFocused=this->garbage->isFocused;
+		newGarbage->isPredicted=this->garbage->isPredicted;
+		newGarbage->isVisualized=this->garbage->isVisualized;
+		
+		
 		return newGarbage;
 	}
 	

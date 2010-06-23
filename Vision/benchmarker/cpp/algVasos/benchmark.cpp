@@ -3,6 +3,9 @@
 #include "benchmark.h"
 #include <vector>
 
+int focusedFrames;
+int guesses;
+int guessNot;
 
 using namespace benchmark;
 
@@ -88,6 +91,7 @@ getFrameResults(IplImage * frame)
 	
 	for (std::list<Cobject*>::iterator it = objects.begin(); it != objects.end(); it++){
 		res->addMiss((*it));
+		calcPredStats((*it),false);
 	}
 	
 	return res;
@@ -108,12 +112,10 @@ compareFrameXmlWithFrame(IplImage* frame,Frame* frameXml)
 	
 	
 	printf("(%d vid-%d xml)\n",objects.size(),objectsXml.size());
-	
 	for (std::list<Cobject*>::iterator itXml = objectsXml.begin(); itXml != objectsXml.end(); itXml++){
 		found=false;
 		for (std::list<Cobject*>::iterator itVid = objects.begin(); itVid != objects.end(); itVid++){		
 			if((*itVid)->isSimilar(*itXml)){
-				calcPredStats((*itVid),true);
 				if(!found){
 					//~ printf("found object %d index %d\n",(*itXml)->index,(*itVid)->index);
 					aResult->addFound((*itXml)->index);
@@ -123,11 +125,11 @@ compareFrameXmlWithFrame(IplImage* frame,Frame* frameXml)
 					//then it would be proper to keep the one which is more similar
 				}
 			}else{
-					calcPredStats((*itVid),false);
 					//printf("%d no le pego a %d\n",(*itVid)->index,(*itXml)->index);
 					missCount[(*itVid)->index]++;
 			}
 		}
+		
 	}
 	
 	for (std::list<Cobject*>::iterator itVid = objects.begin(); itVid != objects.end(); itVid++)
@@ -136,7 +138,10 @@ compareFrameXmlWithFrame(IplImage* frame,Frame* frameXml)
 			//~ printf("index %d, no encontro nada \n",(*itVid)->index);
 			aResult->addMiss((*itVid));
 			miss++;
+			calcPredStats((*itVid),false);
 		}
+		else
+			calcPredStats((*itVid),true);
 	}
 	
 	printf("	hits:%d, miss:%d\n",hit,miss);
@@ -161,12 +166,16 @@ makeGlobalResults(list<Result*>  resultList){
 		allFramesStats.nObjects+=(*itRes)->nObjects;
 	}
 	printf("--Prediction stats-- \n");
-	printf("Number of objects predicted: %d\n",predStats.predicted);
-	printf("Number of objects predicted and hit: %d\n",predStats.predictedAndHit);
+	printf("Number of objects guessed: %d\n",predStats.predicted);
+	printf("Number of objects guessed and hit: %d\n",predStats.predictedAndHit);
 	printf("Number of objects found by vision system: %d\n",predStats.visualized);
 	printf("Number of objects found by vision system and hit: %d\n",predStats.visionAndHit);
-	printf("Number of objects found by vision system and predicted: %d\n",predStats.predictedAndVisualized);
-	printf("Number of objects found by vision system and predicted and hit: %d\n",predStats.predictedAndVisualizedAndHit);
+	printf("--Windowing stats -- \n");
+	printf("Number of objects focused: %d\n",predStats.focused);
+	printf("Number of objects focused and hit: %d\n",predStats.focusedAndHit);
+	printf("Number of not focused objects: %d\n",predStats.notFocused);
+	printf("Number of not focused objects and hit: %d\n",predStats.notFocusedAndHit);
+	printf("Number of focused frames: %d\n",focusedFrames);
 	printf("--Detection stats-- \n");
 	printf(" Total number of objects to be recognized %d\n",allFramesStats.nObjects);
 	printf(" number of hits %d\n",allFramesStats.hit);
@@ -205,38 +214,77 @@ void drawCompare(std::list<Cobject*> objects,std::list<Cobject*> objectsXml){
 }
 
 void initializePredictionStats(PredictionStats  * stats){
+
+	guessNot=0;
+	guesses=0;
+	focusedFrames=0;
 	stats->predicted=0;
 	stats->visualized=0;
 	stats->predictedAndHit=0;
 	stats->visionAndHit=0;
 	stats->predictedAndVisualizedAndHit=0;
 	stats->predictedAndVisualized=0;
+	stats->focused=0;
+	stats->focusedAndHit=0;
+	stats->notFocused=0;
+	stats->notFocusedAndHit=0;
 }
 void calcPredStats(Cobject* obj,bool found){
-	if(found){
-		if(obj->isPredicted() && !obj->isVisualized()){
+	if(obj->isPredicted()){
 			predStats.predicted++;
+		}
+	if(found && obj->isPredicted() && !obj->isVisualized()){
 			predStats.predictedAndHit++;
 		}
-		if(obj->isVisualized() && !obj->isPredicted()){
-			predStats.visualized++;
-			predStats.visionAndHit++;
-		}
-		if(obj->isPredicted() && obj->isVisualized()){
-			predStats.predictedAndVisualized++;
-			predStats.predictedAndVisualizedAndHit++;
-		}
-	}else{
-		if(obj->isPredicted() && !obj->isVisualized()){
-			predStats.predicted++;
-		}
-		if(obj->isVisualized() && !obj->isPredicted()){
-			predStats.visualized++;
-		}
-		if(obj->isPredicted() && obj->isVisualized()){
-			predStats.predictedAndVisualized++;
-		}
-		
+	if(!obj->isPredicted() && obj->isVisualized())
+		predStats.visualized++;
+	
+	if(found && !obj->isPredicted() && obj->isVisualized())
+		predStats.visionAndHit++;
+	
+	if(obj->isVisualized() && obj->isPredicted()){
+		predStats.predictedAndVisualized++;
 	}
+	if(obj->isFocused())
+		predStats.focused++;
+	if(obj->isFocused() && found)
+		predStats.focusedAndHit++;
+	if(!obj->isFocused())
+		predStats.notFocused++;
+	if(!obj->isFocused() && found)
+		predStats.notFocusedAndHit++;
+		
+	//~ if(found){
+		//~ if(obj->isPredicted() && !obj->isVisualized()){
+			//~ predStats.predicted++;
+			//~ predStats.predictedAndHit++;
+		//~ }
+		//~ if(obj->isVisualized() && !obj->isPredicted()){
+			//~ predStats.visualized++;
+			//~ predStats.visionAndHit++;
+		//~ }
+		//~ if(obj->isPredicted() && obj->isVisualized()){
+			//~ predStats.predictedAndVisualized++;
+			//~ predStats.predictedAndVisualizedAndHit++;
+		//~ }
+		//~ if(obj->isFocused()){
+			//~ predStats.focused++;
+			//~ predStats.focusedAndHit++;
+		//~ }
+	//~ }else{
+		//~ if(obj->isPredicted() && !obj->isVisualized()){
+			//~ predStats.predicted++;
+		//~ }
+		//~ if(obj->isVisualized() && !obj->isPredicted()){
+			//~ predStats.visualized++;
+		//~ }
+		//~ if(obj->isPredicted() && obj->isVisualized()){
+			//~ predStats.predictedAndVisualized++;
+		//~ }
+		//~ if(obj->isFocused()){
+			//~ predStats.focused++;
+		//~ }
+		//~ 
+	//~ }
 		
 }

@@ -1,6 +1,7 @@
 #include "GarbageRecognition.h"
 #include "Prediction.h"
 
+//~ #define BENCHMARK_H
 #include <highgui.h>
 #include <cv.h>
 #include <vector>
@@ -37,7 +38,9 @@
 
 #define ENABLE_WINDOWING true
 
-
+#ifdef BENCHMARK_H
+	extern int focusedFrames;
+#endif
 
 /*
 int main(void)
@@ -74,7 +77,7 @@ GarbageRecognition::~GarbageRecognition(){};
 std::list<Garbage*> 
 GarbageRecognition::getGarbageList(IplImage * src)
 {
-		IplImage * model = cvLoadImage("./colilla-sinBlanco.png",1);
+		//~ IplImage * model = cvLoadImage("./colilla-sinBlanco.png",1);
 		IplImage * copy;
 		//windowing
 		if(this->focused){
@@ -109,10 +112,13 @@ GarbageRecognition::getGarbageList(IplImage * src)
 		}
 		
 		//get garbages from vision system
-		garbages = this->garbageList(src_window,model);
+		garbages = this->garbageList(src_window,NULL);
 		
 		if(this->focused){
 			garbages=this->window->correctGarbages(garbages);
+			#ifdef BENCHMARK_H
+				focusedFrames++;
+			#endif
 		}
 		
 		//Feed retrieved garbages to prediction system
@@ -134,7 +140,7 @@ GarbageRecognition::getGarbageList(IplImage * src)
 		
 		drawPrediction(src,garbagePrediction);
 		
-		cvReleaseImage(&model);
+		//~ cvReleaseImage(&model);
 		this->frameNumber++;
 		
 	//return garbages;
@@ -148,8 +154,8 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	std::list<Garbage*> garbageList;
 	std::vector<int> centroid(2);
 	
-	utils::Histogram * h = new Histogram(HIST_H_BINS,HIST_S_BINS);
-	CvHistogram * testImageHistogram = h->getHShistogramFromRGB(model);
+	//~ utils::Histogram * h = new Histogram(HIST_H_BINS,HIST_S_BINS);
+	//~ CvHistogram * testImageHistogram = h->getHShistogramFromRGB(model);
 
 	//gets a frame for setting  image size
 	CvSize srcSize = cvGetSize(src);
@@ -217,7 +223,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	//~ cvAnd(h_plane, v_plane, andImage);
 	
 	cvShowImage("Hue plane",h_plane);
-	cvShowImage("And",andImage);
+	//~ cvShowImage("And",andImage);
 	
 	
 	//apply morphologic operations
@@ -273,11 +279,9 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 				//if passed filters
 				ct->printContour(3,cvScalar(127,127,0,0),
 					contourImage);
-				
-				
+								
 				centroid=ct->getCentroid();
-
-					
+				
 				//build garbage List
 				utils::MinimalBoundingRectangle * r = new utils::MinimalBoundingRectangle(boundingRect.x,
 					boundingRect.y,boundingRect.width,boundingRect.height);
@@ -285,6 +289,8 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 				utils::Garbage * aGarbage = new utils::Garbage(r,centroid,ct);
 				//benchmark purposes
 				aGarbage->isVisualized=true;
+				aGarbage->isPredicted=false;
+				aGarbage->isFocused=false;
 				
 				//test
 				//traversePoints(ct->getContour(),src);
@@ -302,12 +308,12 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 
     cvShowImage("drawContours",contourImage);
 
-	delete h;
+	//~ delete h;
 	
 	if(contoursCopy!=NULL)
 		cvReleaseMemStorage( &contoursCopy->storage );
 	
-	cvReleaseHist(&testImageHistogram);
+	//~ cvReleaseHist(&testImageHistogram);
 	cvReleaseImage(&threshImage);
 	cvReleaseImage(&morphImage);
 	cvReleaseImage(&contourImage);
