@@ -37,8 +37,8 @@ Estas cuestiones son las que analizamos en este apartado.
 
 Para la tracci\'on principal de las ruedas necesitabamos motores que tuvieran el torque necesario para mover el robot, pero que pudieramos medir y
 controlar la velocidad era la principal necesidad. Para esta tarea utilizamos motores de cont\'inua con caja reductora y encoder.
-Con dos de estos estos motores logramos poder garantizar una velocidad determinada en las ruedas, controlar de la cantidad de movimiento en forma
-independiente en cada rueda y conocer la cantidad de las vueltas dadas por cada una de las ruedas entre otras cosas.
+Con dos de estos motores logramos poder garantizar una velocidad determinada en las ruedas, controlar de la cantidad de movimiento en forma
+independiente en cada rueda y entre otras cosas conocer la cantidad de las vueltas dadas por cada una de las ruedas.
 
 \subsubsection{Caracter\'isticas}
 \label{h_actuadores_motorDC_caracteristicas}
@@ -132,7 +132,7 @@ Cuanto mayor es el tiempo en estado alto del pulso, mayor la potencia.
 Para contrarrestar la corriente negativa en las salidas del driver usamos los diodos \emph{FR304} que cumplen con las especificaciones del driver
 con $150$ns de tiempo de recuperaci\'on y una corriente de $3 A$.
 
-El consumo del motor lo medimos mediante el pin de sensado en el driver, conectado a masa por una resistencia y al m\'odulo de \emph{ADC} del
+El consumo del motor lo medimos mediante los pines de sensado en el driver, conectado a masa por una resistencia y al m\'odulo de \emph{ADC} del
 microcontrolador, que explicamos en la secci\'on \ref{h_controlador_micro_modulos}.
 Conociendo el valor de la resistencia y el valor leido por el m\'odulo de \emph{ADC}, pudimos determinar cuanta corriente que circulaba por la
 resistencia y por ende la corriente consumida por el motor.
@@ -215,7 +215,7 @@ La frecuencia a la que se debe setear la posici\'on depende el modelo.
 Debido a que pensamos usar servos digitales y por lo menos \'ibamos a necesitar $3$ servos, necesitabamos contar con varios m\'odulos de PWM.
 Como s\'olo dispon\'iamos de 1, decidimos realizar la misma funci\'on pero por software.
 
-Usamos el timer de $16$bits del microcontrolador configurado con el clock interno de $20$MHz como medida del tiempo para crear $5$ salidas con
+Usamos el timer de $16$bits del microcontrolador configurado con el clock interno como medida del tiempo para crear $5$ salidas con
 pulsos que var\'ian el ancho en forma independiente cada una.
 Definimos un ancho m\'inimo y m\'aximo, pudiendo configurar pasos intermedios de $1^{\circ}$ (aproximadamente $69.4\mu s$).
 
@@ -289,24 +289,25 @@ En la figura \ref{hF_gp2d120_distancia} mostramos la tabla de conversi\'on entre
 \ref{hF_gp2d120_apertura} mostramos el \'angulo de apertura de la zona de detecci\'on seg\'un la distancia al objetivo.
 
 \begin{figure}[ht]
-	\centering
-	\includegraphics[scale=0.35]{tel-VxL.png}
-	\caption{Voltaje de salida seg\'un la distancia al objeto del tel\'emetro GP2D120.}
-	\label{hF_gp2d120_distancia}
-\end{figure}
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[scale=0.35]{tel-VxX.png}
-	\caption{\'Angulo de apertura seg\'un la distancia del tel\'emetro GP2D120.}
-	\label{hF_gp2d120_apertura}
+	\begin{minipage}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[scale=0.25]{tel-VxL.png}
+		\caption{Voltaje de salida seg\'un la distancia al objeto del tel\'emetro GP2D120.}
+		\label{hF_gp2d120_distancia}
+	\end{minipage}
+	\begin{minipage}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[scale=0.25]{tel-VxX.png}
+		\caption{\'Angulo de apertura seg\'un la distancia del tel\'emetro GP2D120.}
+		\label{hF_gp2d120_apertura}
+	\end{minipage}
 \end{figure}
 
 \subsubsection{Rutinas de control}
 \label{h_sensado_telemetros_rutinas}
 
 Controlar los tel\'emetros es relativamente sencillo.
-Usamos el timer de $16$bits del microcontrolador configurado con el clock interno de $20$MHz para determinar el tiempo en el cual
+Usamos el timer de $16$bits del microcontrolador configurado con el clock interno para determinar el tiempo en el cual
 deb\'iamos tomar las muestras con el ADC y simplemente realizamos un promedio entre ellas para obtener la distancia al objetivo.
 
 Para hacer esto desarrollamos una peque\~na m\'aquina de estados que controla y maneja los tiempos para tomar las muestras que
@@ -401,7 +402,7 @@ generar otro medici\'on.
 \label{h_sensado_ultrasonido_rutinas}
 
 Usamos uno de los pines con interrupci\'on externa en el que conectamos el pin de \emph{TRIGGER} y el timer de $16$bits del microcontrolador
-configurado con el clock interno de $20$MHz
+configurado con el clock interno.
 
 Para realizar la medici\'on, generamos un pulso de $15\mu s$ para asegurarnos el disparo del sensor y cambiamos el modo del pin a entrada con
 interrupci\'on ante un flanco ascendente.
