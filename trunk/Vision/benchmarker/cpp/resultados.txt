@@ -1,0 +1,164 @@
+
+
+CON PREDICCIon
+
+	VASOS1
+	--Prediction stats-- 
+	Number of objects guessed: 245
+	Number of objects guessed and hit: 142
+	Number of objects found by vision system: 4772
+	Number of objects found by vision system and hit: 4757
+	--Windowing stats -- 
+	Number of objects focused: 0
+	Number of objects focused and hit: 0
+	Number of not focused objects: 5017
+	Number of not focused objects and hit: 4899
+	Number of focused frames: 0
+	--Detection stats-- 
+	 Total number of objects to be recognized 5050
+	 number of hits 4888
+	 number of detected objects that didn't exist 118
+	 False negative detection  0.0320792
+	 False positive detection  0.0235717
+
+
+	VASOS3
+	--Prediction stats-- 
+	Number of objects guessed: 121
+	Number of objects guessed and hit: 60
+	Number of objects found by vision system: 1652
+	Number of objects found by vision system and hit: 1647
+	--Windowing stats -- 
+	Number of objects focused: 0
+	Number of objects focused and hit: 0
+	Number of not focused objects: 1773
+	Number of not focused objects and hit: 1707
+	Number of focused frames: 0
+	--Detection stats-- 
+	 Total number of objects to be recognized 1777
+	 number of hits 1707
+	 number of detected objects that didn't exist 66
+	 False negative detection  0.0393922
+	 False positive detection  0.037225
+
+	VASOS 4
+	Number of objects guessed: 536
+	Number of objects guessed and hit: 373
+	Number of objects found by vision system: 5167
+	Number of objects found by vision system and hit: 5090
+	--Windowing stats -- 
+	Number of objects focused: 0
+	Number of objects focused and hit: 0
+	Number of not focused objects: 5703
+	Number of not focused objects and hit: 5463
+	Number of focused frames: 0
+	--Detection stats-- 
+	 Total number of objects to be recognized 6196
+	 number of hits 5459
+	 number of detected objects that didn't exist 240
+	 False negative detection  0.118948
+	 False positive detection  0.0421127
+
+
+WITHOUT PREDICTION
+	VASOS1
+	--Prediction stats-- 
+	Number of objects guessed: 0
+	Number of objects guessed and hit: 0
+	Number of objects found by vision system: 4880
+	Number of objects found by vision system and hit: 4849
+	--Windowing stats -- 
+	Number of objects focused: 0
+	Number of objects focused and hit: 0
+	Number of not focused objects: 4880
+	Number of not focused objects and hit: 4849
+	Number of focused frames: 0
+	--Detection stats-- 
+	 Total number of objects to be recognized 5050
+	 number of hits 4849
+	 number of detected objects that didn't exist 31
+	 False negative detection  0.039802
+	 False positive detection  0.00635246
+
+
+	VASOS3
+
+	--Prediction stats-- 
+	Number of objects guessed: 0
+	Number of objects guessed and hit: 0
+	Number of objects found by vision system: 1708
+	Number of objects found by vision system and hit: 1696
+	--Windowing stats -- 
+	Number of objects focused: 0
+	Number of objects focused and hit: 0
+	Number of not focused objects: 1708
+	Number of not focused objects and hit: 1696
+	Number of focused frames: 0
+	--Detection stats-- 
+	 Total number of objects to be recognized 1777
+	 number of hits 1696
+	 number of detected objects that didn't exist 12
+	 False negative detection  0.0455824
+	 False positive detection  0.00702576
+	
+	VASOS4
+	--Prediction stats-- 
+	Number of objects guessed: 0
+	Number of objects guessed and hit: 0
+	Number of objects found by vision system: 5354
+	Number of objects found by vision system and hit: 5251
+	--Windowing stats -- 
+	Number of objects focused: 0
+	Number of objects focused and hit: 0
+	Number of not focused objects: 5354
+	Number of not focused objects and hit: 5251
+	Number of focused frames: 0
+	--Detection stats-- 
+	 Total number of objects to be recognized 6196
+	 number of hits 5251
+	 number of detected objects that didn't exist 103
+	 False negative detection  0.152518
+	 False positive detection  0.019238
+
+
+
+parametros prediccion
+
+//distance in px 
+#define PREDICTION_DELTA 20
+//number of frames for a garbage to be considered by the prediction system
+#define PREDICTION_MIN_AGE 3
+//default number of frames that a garbage can not be recognized until prediction system erase it
+#define PREDICTION_DEFAULT_FRAMES_NOAPPEAR 5
+//number of frames for focusing system to select a garbage
+#define NUMBER_OF_FRAMES_TO_FOCUS 20
+//period to refresh maxFramesNoAppear
+#define PREDICTION_REFRESH_AGE 10
+
+parametros vision
+
+// image preprocessing values
+#define THRESHOLD_VALUE 240
+#define MORPH_KERNEL_SIZE 1
+#define MORPH_DILATE_ITER 2
+#define MORPH_ERODE_ITER 1
+
+#define _RED  cvScalar (0, 0, 255, 0)
+#define _GREEN cvScalar (0, 255, 0, 0)
+
+//contour filters constants
+#define MINCONTOUR_AREA 1000
+#define MAXCONTOUR_AREA 10000
+#define BOXFILTER_TOLERANCE 0.7
+#define MINCONTOUR_PERIMETER 2
+#define MAXCONTOUR_PERIMETER 1000
+#define CONTOUR_RECTANGULAR_MIN_RATIO 1.2
+#define CONTOUR_RECTANGULAR_MAX_RATIO 3.0
+#define HIST_S_BINS 8 
+#define HIST_H_BINS 8
+#define HIST_MIN 0.7
+#define TIME_THRESHOLD 15 //seconds
+
+
+
+
