@@ -1,0 +1,105 @@
+sin prediccion
+colillas-2010
+
+--Prediction stats-- 
+Number of objects guessed: 0
+Number of objects guessed and hit: 0
+Number of objects found by vision system: 1648
+Number of objects found by vision system and hit: 1281
+--Windowing stats -- 
+Number of objects focused: 0
+Number of objects focused and hit: 0
+Number of not focused objects: 1648
+Number of not focused objects and hit: 1281
+--Detection stats-- 
+ Total number of objects to be recognized 1645
+ number of hits 1282
+ number of detected objects that didn't exist 367
+ False negative detection  0.220669
+ False positive detection  0.222559
+
+
+colilla-vaso-ruedita
+
+--Prediction stats-- 
+Number of objects guessed: 0
+Number of objects guessed and hit: 0
+Number of objects found by vision system: 1045
+Number of objects found by vision system and hit: 636
+--Windowing stats -- 
+Number of objects focused: 0
+Number of objects focused and hit: 0
+Number of not focused objects: 1045
+Number of not focused objects and hit: 636
+--Detection stats-- 
+ Total number of objects to be recognized 891
+ number of hits 636
+ number of detected objects that didn't exist 409
+ False negative detection  0.286195
+ False positive detection  0.391388
+
+
+
+
+con prediccion
+
+primerpaneo
+--Prediction stats-- 
+Number of objects guessed: 516
+Number of objects guessed and hit: 320
+Number of objects found by vision system: 2039
+Number of objects found by vision system and hit: 1981
+--Windowing stats -- 
+Number of objects focused: 0
+Number of objects focused and hit: 0
+Number of not focused objects: 2555
+Number of not focused objects and hit: 2301
+--Detection stats-- 
+ Total number of objects to be recognized 2708
+ number of hits 2242
+ number of detected objects that didn't exist 254
+ False negative detection  0.172083
+ False positive detection  0.101763
+
+
+
+colillas-2010
+--Prediction stats-- 
+Number of objects guessed: 296
+Number of objects guessed and hit: 229
+Number of objects found by vision system: 1148
+Number of objects found by vision system and hit: 1117
+--Windowing stats -- 
+Number of objects focused: 0
+Number of objects focused and hit: 0
+Number of not focused objects: 1444
+Number of not focused objects and hit: 1346
+--Detection stats-- 
+ Total number of objects to be recognized 1645
+ number of hits 1330
+ number of detected objects that didn't exist 98
+ False negative detection  0.191489
+ False positive detection  0.0686275
+
+
+
+--Prediction stats-- 
+Number of objects guessed: 127
+Number of objects guessed and hit: 57
+Number of objects found by vision system: 560
+Number of objects found by vision system and hit: 535
+--Windowing stats -- 
+Number of objects focused: 0
+Number of objects focused and hit: 0
+Number of not focused objects: 687
+Number of not focused objects and hit: 592
+--Detection stats-- 
+ Total number of objects to be recognized 891
+ number of hits 586
+ number of detected objects that didn't exist 95
+ False negative detection  0.342312
+ False positive detection  0.139501
+
+
+
+
