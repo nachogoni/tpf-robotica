@@ -136,6 +136,8 @@ namespace utils{
 			movedGarbage->area=(*itGar)->area;
 			movedGarbage->perimeter=(*itGar)->perimeter;
 			movedGarbage->isFocused=true;
+			movedGarbage->isPredicted=(*itGar)->isPredicted;
+			movedGarbage->isVisualized=(*itGar)->isVisualized;
 			newGarbageList.push_back(movedGarbage);
 			
 			//delete old garbage & mbr

@@ -1,3 +1,6 @@
+#ifndef BENCHMARK_H
+#define BENCHMARK_H
+
 #include <iostream>
 #include <cv.h>
 #include <vector>
@@ -17,6 +20,10 @@ typedef struct{
 	int visionAndHit;
 	int predictedAndVisualized;
 	int predictedAndVisualizedAndHit;
+	int focused;
+	int focusedAndHit;
+	int notFocused;
+	int notFocusedAndHit;
 } PredictionStats;
 
 
@@ -54,3 +61,5 @@ typedef struct {
 //frame from video
 IplImage * videoFrameImg;
 IplImage * compareImg;
+
+#endif
