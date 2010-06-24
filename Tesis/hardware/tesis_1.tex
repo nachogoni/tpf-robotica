@@ -258,84 +258,84 @@ explicadas en la secci\'on \ref{HAPmotorDC} con las modificaciones que requiera 
 \subsubsection{Sensores reflectivos de piso}
 \label{Hpiso}
 
-Los sensores que elegimos para sensar la l\'inea reflectiva en el piso son el modelo \emph{CNY70} de la marca Vishay Semiconductor
-\footnote{http://www.vishay.com/}.
-
-Son sensores opticos reflectivos que captan el nivel de luz emitida por el mismo sensor y reflejada sobre la superf\'icie a sensar
-como se muestra en la figura \ref{HFpiso}. En la figura \ref{HFpisoID} mostramos la corriente que circula por el colector del
-fototransistor en base a la distancia al objeto medido.
-
-El rango efectivo de sensado ronda los $3 mm$ de distancia, aunque con un incremento en la corriente que circula por el emisor de luz
-se puede llegar a una distancia mayor que permita un uso m\'as acorde al proyecto.
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[scale=0.15]{piso.png}
-	\caption{Principio de funcionamiento del sensor reflectivo CNY70.}
-	\label{HFpiso}
-\end{figure}
-
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[scale=0.35]{piso-IxD.png}
-	\caption{Corriente en el colector seg\'un la distancia del sensor CNY70.}
-	\label{HFpisoID}
-\end{figure}
+	Los sensores que elegimos para sensar la l\'inea reflectiva en el piso son el modelo \emph{CNY70} de la marca Vishay Semiconductor
+	\footnote{http://www.vishay.com/}.
+	
+	Son sensores opticos reflectivos que captan el nivel de luz emitida por el mismo sensor y reflejada sobre la superf\'icie a sensar
+	como se muestra en la figura \ref{HFpiso}. En la figura \ref{HFpisoID} mostramos la corriente que circula por el colector del
+	fototransistor en base a la distancia al objeto medido.
+	
+	El rango efectivo de sensado ronda los $3 mm$ de distancia, aunque con un incremento en la corriente que circula por el emisor de luz
+	se puede llegar a una distancia mayor que permita un uso m\'as acorde al proyecto.
+	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[scale=0.15]{piso.png}
+		\caption{Principio de funcionamiento del sensor reflectivo CNY70.}
+		\label{HFpiso}
+	\end{figure}
+	
+	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[scale=0.35]{piso-IxD.png}
+		\caption{Corriente en el colector seg\'un la distancia del sensor CNY70.}
+		\label{HFpisoID}
+	\end{figure}
 
 \subsubsection{Sensado de nivel de bateria}
 \label{HSnivelBateria}
 
-El sensado del nivel de tensi\'on en la bater\'ia lo hacemos mediante un divisor de tensi\'on entre los polos de la bater\'ia.
-La salida es sensada de igual forma que los otros sensores. En la secci\'on \ref{HAPsensores} explicamos mas en detalle la conexi\'on.
-En la figura \ref{HFbateria} mostramos el diagrama del divisor de tensi\'on.
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[scale=0.35]{bateria.png}
-	\caption{Divisor de tensi\'on para el sensado de la bater\'ia.}
-	\label{HFbateria}
-\end{figure}
-
-En la tabla \ref{HTdivT} mostramos las posibles tensiones en la bater\'ia y la tensi\'on de salida en el divisor. Tambi\'en incluimos el
-valor aproximado para un conversor anal\'ogico digital con tensi\'on de referencia a $5V$ que leer\'ia la salida del divisor. El rango de
-voltajes que analizamos tiene en cuenta la posibilidad de efectuar mediciones durante la carga de la bater\'ia y sabiendo que con una
-tensi\'on menor a $5 V$ la l\'ogica del prototipo construido comenzar\'ia a fallar.
-
-\begin{table}[ht]
-	\begin{center}
-		\begin{tabular}{|c|c|c|c|}
-			\hline
-			Bater\'ia ($V$) & Salida ($V$) & Valor en el ADC ($5V$) \\
-			\hline
-			16 & 4.327 & 886 \\
-			15 & 4.057 & 831 \\
-			14 & 3.786 & 776 \\
-			13 & 3.516 & 720 \\
-			12 & 3.245 & 665 \\
-			11 & 2.975 & 609 \\
-			10 & 2.704 & 554 \\
-			 9 & 2.434 & 499 \\
-			 8 & 2.163 & 443 \\
-			 7 & 1.893 & 388 \\
-			 6 & 1.623 & 332 \\
-			 5 & 1.352 & 277 \\
-			\hline
-		\end{tabular}
-	\end{center}
-	\caption{Tensi\'on de la bater\'ia y la tensi\'on de salida en el divisor.}
-	\label{HTdivT}
-\end{table}
+	El sensado del nivel de tensi\'on en la bater\'ia lo hacemos mediante un divisor de tensi\'on entre los polos de la bater\'ia.
+	La salida es sensada de igual forma que los otros sensores. En la secci\'on \ref{HAPsensores} explicamos mas en detalle la conexi\'on.
+	En la figura \ref{HFbateria} mostramos el diagrama del divisor de tensi\'on.
+	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[scale=0.35]{bateria.png}
+		\caption{Divisor de tensi\'on para el sensado de la bater\'ia.}
+		\label{HFbateria}
+	\end{figure}
+	
+	En la tabla \ref{HTdivT} mostramos las posibles tensiones en la bater\'ia y la tensi\'on de salida en el divisor. Tambi\'en incluimos el
+	valor aproximado para un conversor anal\'ogico digital con tensi\'on de referencia a $5V$ que leer\'ia la salida del divisor. El rango de
+	voltajes que analizamos tiene en cuenta la posibilidad de efectuar mediciones durante la carga de la bater\'ia y sabiendo que con una
+	tensi\'on menor a $5 V$ la l\'ogica del prototipo construido comenzar\'ia a fallar.
+	
+	\begin{table}[ht]
+		\begin{center}
+			\begin{tabular}{|c|c|c|c|}
+				\hline
+				Bater\'ia ($V$) & Salida ($V$) & Valor en el ADC ($5V$) \\
+				\hline
+				16 & 4.327 & 886 \\
+				15 & 4.057 & 831 \\
+				14 & 3.786 & 776 \\
+				13 & 3.516 & 720 \\
+				12 & 3.245 & 665 \\
+				11 & 2.975 & 609 \\
+				10 & 2.704 & 554 \\
+				9 & 2.434 & 499 \\
+				8 & 2.163 & 443 \\
+				7 & 1.893 & 388 \\
+				6 & 1.623 & 332 \\
+				5 & 1.352 & 277 \\
+				\hline
+			\end{tabular}
+		\end{center}
+		\caption{Tensi\'on de la bater\'ia y la tensi\'on de salida en el divisor.}
+		\label{HTdivT}
+	\end{table}
 
 \subsubsection{Encoders y consumo de los motores}
 \label{HSencodersConsumo}
 
-Los motores \emph{MR-2FA} tienen encoders de cuadratura conectados al eje, previo a la caja reductora. Estos encoders son
-de tipo fotoel\'ectricos, estan dispuestos a $135^{\circ}$ uno del otro y marcan $4$ estados por cada vuelta del motor.
-Los utilizamos para medir y controlar la velocidad de los motores tomando la cantidad de vueltas por escala de tiempo.
-
-El consumo de los motores, lo medimos leyendo el pin de sensado que se encuentra en el puente H que alimenta al motor, como
-explicamos en la secci\'on \ref{HAPmotorDC}.
+	Los motores \emph{MR-2FA} tienen encoders de cuadratura conectados al eje, previo a la caja reductora. Estos encoders son
+	de tipo fotoel\'ectricos, estan dispuestos a $135^{\circ}$ uno del otro y marcan $4$ estados por cada vuelta del motor.
+	Los utilizamos para medir y controlar la velocidad de los motores tomando la cantidad de vueltas por escala de tiempo.
+	
+	El consumo de los motores, lo medimos leyendo el pin de sensado que se encuentra en el puente H que alimenta al motor, como
+	explicamos en la secci\'on \ref{HAPmotorDC}.
 
 \subsection{Comunicaci\'on entre m\'odulos}
 \label{Hcomm}

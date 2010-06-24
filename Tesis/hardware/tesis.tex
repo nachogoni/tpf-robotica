@@ -72,7 +72,7 @@ En la figura \ref{hF_motorDC} mostramos las dimensiones exteriores del motor.
 \begin{figure}[ht]
 	\centering
 	\includegraphics[scale=1]{MR2-FA.png}
-	\caption{Vista lateral y frontal del motor Ignis MR-2FA. Escala $1:2$.}
+	\caption{Vista lateral y frontal del motor Ignis MR-2FA.}
 	\label{hF_motorDC}
 \end{figure}
 
@@ -362,22 +362,6 @@ del sensor.
 	\label{hF_srf05}
 \end{figure}
 
-% \begin{figure}[ht]
-% 	\begin{minipage}[b]{0.5\linewidth}
-% 		\centering
-% 		\includegraphics[scale=0.45]{srf05_beam.png}
-% 		\caption{Haz ultras\'onico del sensor SRF05.}
-% 		\label{hF_srf05}
-% 	\end{minipage}
-% 	\hspace{0.5cm}
-% 	\begin{minipage}[b]{0.5\linewidth}
-% 		\centering
-% 		\includegraphics[scale=0.45]{srf05_beam.png}
-% 		\caption{Haz ultras\'onico del sensor SRF05.}
-% 		\label{hF_srf05}
-% 	\end{minipage}
-% \end{figure}
-
 \subsubsection{Circuito de control}
 \label{h_sensado_ultrasonido_circuito}
 
@@ -411,58 +395,103 @@ timer y configuramos al pin para que genere ahora una interrupci\'on ante un fla
 Cuando salte la pr\'oxima vez la interrupci\'on, ser\'a porque termino el pulso con la medici\'on, por lo que s\'olo debemos hacer la resta
 entre el valor actual del timer y la muestra que tomamos al principio para conocer la distancia a la que se encuentra el objetivo.
 
-Si el tiempo tomado mayor a los $25ms$ indica que no se detect\'o ning\'un objeto dentro del rango de detecci\'on.
+Un tiempo obtenido mayor a los $25ms$ indica que no se detect\'o ning\'un objeto dentro del rango del sensor.
 
 \subsection{Sensor reflectivo de piso}
 \label{h_sensado_piso}
 
-principio de funcionamiento
+Estos sensores opticos reflectivos emiten luz infrarroja y captan el nivel de luz reflejada sobre la superf\'icie a sensar como muestramos
+en la figura \ref{hF_cny70_diagrama}.
+En la figura \ref{hF_cny70_dim} mostramos las dimensiones del sensor.
+La intensidad de luz captada depende de la distancia al objetivo y del color y nivel de reflectividad de la superficie.
+Es por esto que usamos estos sensores para identificar una l\'inea en el piso.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=0.25]{cny70_dim.png}
+	\caption{Medidas en mil\'imetros del sensor CNY70.}
+	\label{hF_cny70_dim}
+\end{figure}
 
 \subsubsection{Caracter\'isticas}
 \label{h_sensado_piso_caracteristicas}
 
-modelo, marca, medidas, alimentacion, consumo, tiempo/frecuencia de muestreo, tipo de salida, distancia optima, rangos de voltaje, distancia vs voltaje
+Los sensores que elegimos para son del modelo \emph{CNY70} de la marca Vishay Semiconductor \footnote{http://www.vishay.com/}.
+
+El rango efectivo de sensado ronda los $3 mm$ de distancia aunque, con un incremento en la corriente que circula por el emisor
+se puede llegar a una distancia mayor a la recomendada por el fabricante y que nos permita un uso m\'as acorde al proyecto.
+El emisor soporta un pulso de hasta $3 A$ por un tiempo menor o igual a $10\mu s$.
+
+En la figura \ref{hF_cny70_ID} mostramos la corriente que circula por el colector del fototransistor en base a la distancia al objeto medido.
+
+\begin{figure}[ht]
+	\begin{minipage}[b]{0.45\linewidth}
+		\centering
+		\includegraphics[scale=0.25]{cny70_diagrama.png}
+		\caption{Principio de funcionamiento reflectivo del sensor CNY70.}
+		\label{hF_cny70_diagrama}
+	\end{minipage}
+	\hspace{0.5cm}
+	\begin{minipage}[b]{0.45\linewidth}
+		\centering
+		\includegraphics[scale=0.25]{cny70_IxD.png}
+		\caption{Corriente en el colector seg\'un la distancia del sensor CNY70.}
+		\label{hF_cny70_ID}
+	\end{minipage}
+\end{figure}
 
 \subsubsection{Circuito de control}
 \label{h_sensado_piso_circuito}
 
-alimentacion, resistencias elegidas, conmutacion (transistor, estado de habilitacion: 0), conexion con el micro, salida del sensor, modulo ADC, muestreo, capacitor para alimentacion, circuito minimo (diagrama)
+conexion con el micro, salida del sensor, modulo ADC, muestreo, capacitor para alimentacion, circuito minimo (diagrama)
 
-\subsubsection{Diagrama de conexi\'on}
-\label{h_sensado_piso_diagrama}
+De igual forma que en los tel\'emetros utilizamos un transistor como habilitaci\'on de la tensi\'on de alimentaci\'on en el sensor.
+Esto nos dio la posibilidad de encenderlo y apagarlo a la hora de tomar las muestras de la luz reflejada por piso o la l\'inea.
+Nuevamente la l\'ogica de habilitaci\'on es invertida por tratarse de un transistor \emph{BC327}.
 
-asignacion de pines
+Agragamos una resistencia para limitar la corriente que circulaba por el emisor y otra como pull-up en el emisor del fototransistor
+que a su vez, conectamos al m\'odulo de \emph{ADC} del microcontrolador para efectuar las mediciones.
 
 \subsubsection{Rutinas de control}
 \label{h_sensado_piso_rutinas}
 
-codigo de lectura de nivel de reflexion (explicacion)
+El c\'odigo que desarrollamos para obtener las muestras de estos sensores es sencillo, simplemente debemos habilitar el
+transistor que alimenta al sensor con un estado l\'ogico bajo, tomar al menos $4$ muestras y promediarlas para tener un
+valor adecuado del nivel de luz reflejado por la superficie.
+Deshabilitamos el sensor y enviamos el valor.
+
+Debido al circuito que armamos con un nivel alto de reflexi\'on leemos un valor bajo en el conversor anal\'ogico digital y
+con un nivel bajo de luz, un valor alto.
 
 \subsection{Encoders}
 \label{h_sensado_encoder}
 
-principio de funcionamiento
-
-estamos usando solo uno de los sensores del encoder
+Los encoders son sensores que convierten una posici\'on lineal o angular en se\~nal el\'ectrica o pulsos.
+Pueden determinar una posici\'on de forma absoluta o simplemente informar que hubo un movimiento.
+El m\'etodo de sensado y la resoluci\'on del \'angulo de giro que detectan var\'ia seg\'un el modelo.
 
 \subsubsection{Caracter\'isticas}
 \label{h_sensado_encoder_caracteristicas}
 
-tipo de encoders, cuentas x vuelta de eje de motor, velocidad maxima y minima recomendable
+Los motores \emph{MR-2FA} tienen encoders de cuadratura conectados al eje, previo a la caja reductora.
+Estos encoders son de tipo fotoel\'ectricos, estan dispuestos a $135^{\circ}$ uno del otro y marcan $4$ estados por
+cada vuelta del motor.
+Estan colocados as\'i para poder conocer el sentido de giro midiendo la secuencia de estados de cada encoder.
 
-relacion de caja 94:1
-max recomendable: 300 cuentas x segundo
-min recomendable: 60 - 70 cuentas x segundo
+Nosotros como conocemos el sentido de giro del motor, pues lo determinamos con el puente H, necesitamos s\'olo
+uno de los dos encoders para conocer y controlar la velocidad a la que gira el rotor del motor.
+
+A la tensi\'on m\'axima los motores llegan a las 300 cuentas por segundo y el m\'inimo recomendable son aproximadamente
+entre $60$ y $70$ cuentas por segundo para que podamos mantener un giro constante.
+Estos c\'alculos son usando uno de los dos fototransistores del encoder.
+
+Dependiendo el tama\~no de las ruedas ser\'a la velocidad de final del robot.
+La relacio\'on de caja de $94:1$ del motor.
 
 \subsubsection{Circuito de control}
 \label{h_sensado_encoder_circuito}
 
 alimentacion, conexionado, circuito, resistencias pull-up, swtch selector, timer/counter
-
-\subsubsection{Diagrama de conexi\'on}
-\label{h_sensado_encoder_diagrama}
-
-asignacion de pines
 
 \subsubsection{Rutinas de control}
 \label{h_sensado_encoder_rutinas}
@@ -472,62 +501,104 @@ codigo de lectura y correcion de la velocidad del motor (explicacion)
 \subsection{Sensado de la bateria}
 \label{h_sensado_bateria}
 
-principio de funcionamiento
+El sensado del nivel de tensi\'on en la bater\'ia lo hacemos mediante un divisor de tensi\'on entre los polos de la bater\'ia.
+La salida del divisor es sensada de igual forma que los otros sensores, mediante el m\'odulo de \emph{ADC} del microcontrolador.
+En la figura \ref{hF_bateria_diagrama} mostramos el diagrama del divisor de tensi\'on.
 
-\subsubsection{Caracter\'isticas}
-\label{h_sensado_bateria_caracteristicas}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=0.35]{bateria.png}
+	\caption{Divisor de tensi\'on para el sensado de la bater\'ia.}
+	\label{hF_bateria_diagrama}
+\end{figure}
 
-grafico/tabla de voltaje bateria vs salida
+En la tabla \ref{hT_bateria_divT} mostramos las posibles tensiones en la bater\'ia y la tensi\'on de salida en el divisor.
+Tambi\'en incluimos el valor aproximado para el ADC con tensi\'on de referencia a $5V$ que leer\'ia la salida del divisor.
+El rango de voltajes que analizamos es tienendo en cuenta la posibilidad de efectuar mediciones durante la carga de la bater\'ia
+y sabiendo que con una tensi\'on menor a $5 V$ la l\'ogica del prototipo que construimos comenzar\'ia a fallar.
 
-\subsubsection{Circuito de control}
-\label{h_sensado_bateria_circuito}
+\begin{table}[ht]
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			Bater\'ia ($V$) & Salida ($V$) & Valor en el ADC \\
+			\hline
+			16 & 4.327 & 886 \\
+			15 & 4.057 & 831 \\
+			14 & 3.786 & 776 \\
+			13 & 3.516 & 720 \\
+			12 & 3.245 & 665 \\
+			11 & 2.975 & 609 \\
+			10 & 2.704 & 554 \\
+			 9 & 2.434 & 499 \\
+			 8 & 2.163 & 443 \\
+			 7 & 1.893 & 388 \\
+			 6 & 1.623 & 332 \\
+			 5 & 1.352 & 277 \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Tensi\'on de la bater\'ia y la tensi\'on de salida en el divisor.}
+	\label{hT_bateria_divT}
+\end{table}
 
-conexionado, circuito, modulo ADC, muestreo
-
-\subsubsection{Rutinas de control}
-\label{h_sensado_bateria_rutina}
-
-codigo de lectura de nivel de tension en la bateria (explicacion)
+La conexi\'on es simple, los cables de entrada del divisor los conectamos a los polos de la bater\'ia y la salida al ADC.
+Luego s\'olo debemos realizar las lecturas en el ADC y promediarlas para poder realizar los c\'alculos de la tensi\'on en la bater\'ia.
 
 \subsection{Consumo del motor}
 \label{h_sensado_consumo}
 
-principio de funcionamiento
+El consumo de los motores de corriente cont\'inua lo medimos leyendo el pin de sensado que se encuentra en el puente H que alimenta al motor.
+Lo que medimos con el m\'odulo de \emph{ADC} del microcontrolador es la tensi\'on en este pin.
+Esta depende de la ca\'ida de tensi\'on en la resistencia conectada a masa y de la corriente que circula por el motor.
+Conociendo el valor de la resistencia podemos calcular el consumo del motor.
+En la tabla \ref{hT_consumo} comparamos el consumo en el motor, el voltaje sensado y la lectura en el ADC.
 
-\subsubsection{Caracter\'isticas}
-\label{h_sensado_consumo_caracteristicas}
-
-grafico/tabla de corriente consumida vs voltaje, caracteristicas del puente H, valores maximos y minimos, mensajes de consumo alto
-
-\subsubsection{Circuito de control}
-\label{h_sensado_consumo_circuito}
-
-valor de la resistencia, circuito, modulo ADC, muestreo, vref en el micro
-
-\subsubsection{Rutinas de control}
-\label{h_sensado_consumo_rutinas}
-
-codigo de lectura de nivel de tension en la bateria (explicacion)
+\begin{table}[ht]
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			Tensi\'on ($V$) & Consumo ($A$) & Valor en el ADC \\
+			\hline
+			$0$ & $0$ & $0$ \\
+			$0.09$ & $0.19$ & $18$ \\
+			$0.18$ & $0.38$ & $36$ \\
+			$0.27$ & $0.57$ & $55$ \\
+			$0.36$ & $0.76$ & $73$ \\
+			$0.45$ & $0.95$ & $92$ \\
+			$0.54$ & $1.14$ & $110$ \\
+			$0.63$ & $1.34$ & $129$ \\
+			$0.72$ & $1.53$ & $147$ \\
+			$0.81$ & $1.72$ & $165$ \\
+			$0.90$ & $1.91$ & $184$ \\
+			$0.99$ & $2.10$ & $202$ \\
+			$1.08$ & $2.29$ & $221$ \\
+			$1.17$ & $2.48$ & $239$ \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Tabla comparativa para el consumo del motor.}
+	\label{hT_consumo}
+\end{table}
 
 \subsubsection{Pulsador u otro dispositivo disparador}
 \label{h_sensado_pulsador}
 
-posibilidad de poner un pulsador o cualquier otro dispositivo que genere un cambio de estado y lo detecte como trigger
+Ademas de los sensores que describimos, pensamos que nos podr\'ian hacer falta pulsadores para controlar funciones
+simples por ejemplo saber cuando una parte de alg\'un mecanismo llega a cierto punto o detectar finales de carrera
+de un servo o sin fin.
+Tambi\'en pueden ser otro tipo de sensores que generen un cambio de estado en el pin de sensado que se conecta al
+microcontrolador.
 
-\subsubsection{Caracter\'isticas}
-\label{h_sensado_pulsador_caracteristicas}
-
-como deberia ser el boton o algun otro dispositivo que vayamos a poner ahi
-
-\subsubsection{Circuito de control}
-\label{h_sensado_pulsador_circuito}
-
-alimentacion, consumo, circuito, interrupciones
+Agregamos la posibilidad de usarlos en las distintas placas como explicamos en detalle en las secciones
+\ref{h_placas_sensado} y \ref{h_placas_servos}.
 
 \subsubsection{Rutinas de control}
 \label{h_sensado_pulsador_rutinas}
 
-codigo de lectura de cambio de estado en el pin de trigger (explicacion)
+La lectura en el estado de los pulsadores puede ser bajo demanda con solo leer el estado del pin en el que estan
+conectados o puede ser ante una interrupci\'on por cambio de estado.
+Estas cuestiones las tuvimos en cuenta a la hora de dise\~nar las placas.
 
 \section{Controladores}
 \label{h_controlador}
