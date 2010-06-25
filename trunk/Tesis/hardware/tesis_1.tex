@@ -402,21 +402,21 @@ El listado de grupos y comandos correspondientes a cada grupo de controladores s
 \subsection{El microcontrolador}
 \label{Hmicro}
 
-El microcontrolador que elegimos para realizar las tareas de control, configucari\'on y comunicaci\'on a bajo nivel es el \emph{PIC16F88} de
-Microchip \footnote{http://www.microchip.com/}. Cuenta con una memoria \emph{FLASH} para 4096 instrucciones de programa, una memoria
-\emph{RAM} de 368 bytes y una memoria \emph{EEPROM} de 256 bytes. Tiene un set de instrucciones b\'asicas reducido, todas con el mismo
-tiempo de ejecuci\'on. En este apartado nombramos algunos de los principales perif\'ericos incluidos en el microcontrolador y la utilidad
-dentro del proyecto que encontramos para ellos. Utilizamos con un cristal externo de 20MHz como clock.
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[scale=0.20]{pic16f88.png}
-	\caption{Diagrama del microcontrolador PIC16F88.}
-	\label{HFpic16f88}
-\end{figure}
-
-El microcontrolador tiene 2 puertos de 8 entradas y salidas cada uno de tipo TTL y CMOS.
-Como mostramos en la figura \ref{HFpic16f88} cada pin se encuentra multiplexado con uno o m\'as perif\'ericos internos.
+	El microcontrolador que elegimos para realizar las tareas de control, configucari\'on y comunicaci\'on a bajo nivel es el \emph{PIC16F88} de
+	Microchip \footnote{http://www.microchip.com/}. Cuenta con una memoria \emph{FLASH} para 4096 instrucciones de programa, una memoria
+	\emph{RAM} de 368 bytes y una memoria \emph{EEPROM} de 256 bytes. Tiene un set de instrucciones b\'asicas reducido, todas con el mismo
+	tiempo de ejecuci\'on. En este apartado nombramos algunos de los principales perif\'ericos incluidos en el microcontrolador y la utilidad
+	dentro del proyecto que encontramos para ellos. Utilizamos con un cristal externo de 20MHz como clock.
+	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[scale=0.20]{pic16f88.png}
+		\caption{Diagrama del microcontrolador PIC16F88.}
+		\label{HFpic16f88}
+	\end{figure}
+	
+	El microcontrolador tiene 2 puertos de 8 entradas y salidas cada uno de tipo TTL y CMOS.
+	Como mostramos en la figura \ref{HFpic16f88} cada pin se encuentra multiplexado con uno o m\'as perif\'ericos internos.
 
 \subsubsection{AUSART}
 \label{HMrs232}
