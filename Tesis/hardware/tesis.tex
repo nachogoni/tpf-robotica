@@ -443,8 +443,6 @@ En la figura \ref{hF_cny70_ID} mostramos la corriente que circula por el colecto
 \subsubsection{Circuito de control}
 \label{h_sensado_piso_circuito}
 
-conexion con el micro, salida del sensor, modulo ADC, muestreo, capacitor para alimentacion, circuito minimo (diagrama)
-
 De igual forma que en los tel\'emetros utilizamos un transistor como habilitaci\'on de la tensi\'on de alimentaci\'on en el sensor.
 Esto nos dio la posibilidad de encenderlo y apagarlo a la hora de tomar las muestras de la luz reflejada por piso o la l\'inea.
 Nuevamente la l\'ogica de habilitaci\'on es invertida por tratarse de un transistor \emph{BC327}.
@@ -477,12 +475,14 @@ Los motores \emph{MR-2FA} tienen encoders de cuadratura conectados al eje, previ
 Estos encoders son de tipo fotoel\'ectricos, estan dispuestos a $135^{\circ}$ uno del otro y marcan $4$ estados por
 cada vuelta del motor.
 Estan colocados as\'i para poder conocer el sentido de giro midiendo la secuencia de estados de cada encoder.
+Adicionalmente el motor cuenta con un sensor de efecto Hall el cual nos permite detectar una revoluci\'on completa
+en el eje de salida de la caja reductora.
 
 Nosotros como conocemos el sentido de giro del motor, pues lo determinamos con el puente H, necesitamos s\'olo
 uno de los dos encoders para conocer y controlar la velocidad a la que gira el rotor del motor.
 
-A la tensi\'on m\'axima los motores llegan a las 300 cuentas por segundo y el m\'inimo recomendable son aproximadamente
-entre $60$ y $70$ cuentas por segundo para que podamos mantener un giro constante.
+A la tensi\'on m\'axima los motores superan a las 320 cuentas por segundo, el m\'inimo y m\'aximo recomendables
+son, para que podamos mantener un giro constante, $60$ y $300$ cuentas por segundo respectivamente.
 Estos c\'alculos son usando uno de los dos fototransistores del encoder.
 
 Dependiendo el tama\~no de las ruedas ser\'a la velocidad de final del robot.
@@ -491,12 +491,22 @@ La relacio\'on de caja de $94:1$ del motor.
 \subsubsection{Circuito de control}
 \label{h_sensado_encoder_circuito}
 
-alimentacion, conexionado, circuito, resistencias pull-up, swtch selector, timer/counter
+Conectamos una resistencia pull-up a $5V$ para la salida de sensado de los fototransistores y del sensor de efecto
+Hall.
+Tambi\'en incluimos un switch doble inversor para elegir cu\'al de los dos encoders usar.
+El punto com\'un del switch est\'a conectado al pin de entrada de clock externo de uno de los Timers del
+microcontrolador.
+
+La alimentaci\'on de los encoders es directa y permanecen encendidos en todo momento.
 
 \subsubsection{Rutinas de control}
 \label{h_sensado_encoder_rutinas}
 
-codigo de lectura y correcion de la velocidad del motor (explicacion)
+Como explicamos en la secci\'on \ref{h_actuadores_motorDC_rutinas}, en cada interrupci\'on del actualizamos
+el hist\'orico de cuentas del motor adicionando o restando el \'ultimo valor del contador.
+
+Tambi\'en comparamos contra las cuentas esperadas por intervalo de tiempo que fueron determinadas desde el controlador
+principal para poder determinar si debemos incrementar o disminuir la potencia del motor y por ende la velocidad de las ruedas.
 
 \subsection{Sensado de la bateria}
 \label{h_sensado_bateria}
@@ -603,6 +613,10 @@ Estas cuestiones las tuvimos en cuenta a la hora de dise\~nar las placas.
 \section{Controladores}
 \label{h_controlador}
 
+Todas las funciones del robot las deb\'iamos controlar mediante alg\'un tipo de dispositivo.
+Decidimos utilizar una netbook y microcontroladores para esta tarea.
+Estas cuestiones son las que explicamos en este cap\'itulo.
+
 \subsection{Netbook}
 \label{h_controlador_netbook}
 
@@ -611,22 +625,93 @@ modelo, marca, caracteristicas, para que se usa, sistema operativo y lenguaje de
 \subsection{Microcontrolador}
 \label{h_controlador_micro}
 
-para que vamos a usar el micro y sus funciones principales
+Para el control de la velocidad de los motores, lectura de los encoders y los sensores de distancia usamos un
+microcontrolador.
+Nuestro dise\~no contempl\'o la existancia de varios m\'odulos con una o pocas funciones simples que se comunicaran
+entre ellos y con el controlador principal, en nuestro prototipo la netbook.
+La raz\'on por la cual lo armamos as\'i fue para simplificar cada placa controladora a nivel software y hardware.
+
+Explicamos la comunicaci\'on entre los distintos controladores en la secci\'on \ref{h_comm}.
 
 \subsubsection{Caracter\'isticas}
 \label{h_controlador_micro_caracteristicas}
 
-modelo, marca, familia, memorias, etc
+El microcontrolador que elegimos para realizar las tareas de control, configucari\'on y comunicaci\'on a bajo nivel
+es el \emph{PIC16F88} de Microchip \footnote{http://www.microchip.com/}.
+Cuenta con una arquitectura de memoria del tipo Hardvard, con una memoria \emph{FLASH} para 4096 instrucciones de
+programa, una memoria \emph{RAM} de 368 bytes y una memoria \emph{EEPROM} de 256 bytes.
+Tiene un set de instrucciones b\'asicas reducido y todas con el mismo tiempo de ejecuci\'on.
+En este apartado nombramos algunos de los principales perif\'ericos incluidos en el microcontrolador y la utilidad
+dentro del proyecto que encontramos para ellos.
+Utilizamos con un cristal externo de 20MHz como clock.
 
-\subsubsection{Diagrama del microcontrolador}
-\label{h_controlador_micro_diagrama}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=0.20]{pic16f88.png}
+	\caption{Diagrama del microcontrolador PIC16F88.}
+	\label{hF_pic16f88_diagrama}
+\end{figure}
 
-grafico y asignacion de pines x modulo
+El microcontrolador tiene 2 puertos de 8 entradas y salidas cada uno de tipo TTL y CMOS.
+Como mostramos en la figura \ref{hF_pic16f88_diagrama} cada pin se encuentra multiplexado con uno o m\'as perif\'ericos internos.
 
 \subsubsection{M\'odulos internos}
 \label{h_controlador_micro_modulos}
 
-listado de modulos que tiene y caracteristicas de cada uno
+Internamente el microcontrolador tiene una serie de perif\'ericos que proveen de funciones extras y que utilizamos para lograr
+cumplir con las necesidades de nuestro proyecto.
+En la figura \ref{hF_pic16f88_modulos} mostramos los distintos m\'odulos internos del microcontrolador.
+
+\begin{figure}[b]
+	\centering
+	\includegraphics[scale=0.35]{pic16f88_modulos.png}
+	\caption{M\'odulos internos del microcontrolador PIC16F88.}
+	\label{hF_pic16f88_modulos}
+\end{figure}
+
+Cuenta con $3$ timers, $2$ de $8$bits (\emph{TIMER0} y \emph{TIMER2}) y $1$ de $16$bits (\emph{TIMER1}).
+Podemos configurarlos para que tomen al clock del microcontrolador o que tomen una fuente externa de clock.
+Tambi\'en podemos aplicarles demultiplicadores que generan un clock de menor frecuencia al que se usa como entrada.
+Pueden ser etapas previas o posteriores al timer y nos dan gran flexibilidad de uso.
+
+El \emph{TIMER0} lo utilizamos para hacer control del tiempo en nuestros c\'odigos.
+Conectados con el clock principal y configurados para que generen una interrupci\'on al hacer overflow,
+obtenemos una buena medida del paso del tiempo.
+
+El \emph{TIMER1} configurado como fuente externa a la salida del encoder, lo usamos como contador de pasos para medir la
+velocidad del motor.
+Tambi\'en lo usamos como medici\'on del tiempo para hacer las lecturas de los sensores.
+Elegimos a este timer ya que al ser de $16$bits posee un mayor rango de valores y por lo tanto, pod\'iamos medir un mayor lapso
+de tiempo o cuentas del encoder en cada caso.
+
+El \emph{TIMER2} lo usamos en conjunto con el m\'odulo de \emph{PWM} para determinar el ancho del pulso que habilita al puente H
+que provee de energ\'ia a los motores.
+
+El m\'odulo conversor anal\'ogico digital nos dio la posibilidad de medir tensiones anal\'ogicas como por ejemplo
+las salidas de los sensores, tensi\'on en la bateria o el consumo de los motores.
+Tiene $7$ canales o pines distintos y podemos configurarlo para que genere un valor de $8$ o $10$bits.
+Tambi\'en podemos determinar si se debe usar el valor de \emph{Vcc} y \emph{GND} como referencia o podemos proveer
+de forma externa de los voltajes de referencia para generar un rango de voltajes diferente y aumentar o disminuir
+as\'i la resoluci\'on del conversor.
+
+El m\'odulo de \emph{PWM} nos provee la posibilidad de generar pulsos cont\'inuos de un ancho determinado.
+En nuestro proyecto lo utilizamos como habilitaci\'on del puente H que alimenta a los motores variando as\'i la
+potencia y por lo tanto, la velocidad final de las ruedas.
+Se utiliza en conjunto con el \emph{TIMER2} seteando el prescaler y postscaler para determinar el ancho del
+estado alto y del estado bajo de los pulsos.
+
+Gracias al m\'odulo de \emph{AUSART} podemos realizar la comuinicaci\'on entre los distintos microcontroladores por hardware.
+Este perif\'erico nos provee una conmunicaci\'on sincr\'onica o asincr\'onica dependiendo de la configuraci\'on.
+Creamos la red de \emph{Daisy Chain} sobre el protocolo de RS-232.
+
+GIO
+EEPROM
+CCP
+SSP
+
+
+
+
 
 \subsubsection{Programaci\'on del firmware}
 \label{h_controlador_micro_programacion}
