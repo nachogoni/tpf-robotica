@@ -169,9 +169,23 @@ void ArenaGrid::setSlotVisited(utils::ArenaGridSlot * ags){
 		this->visitedSlots = this->visitedSlots + 1;
 		int left = this->totalSlots - this->excludeSlots - this->visitedSlots;
 		printf("Slots left %d\n",left);
+/*
 		if ( left <= 0 )
 			system("pause");
+*/
 	}
+}
+
+int ArenaGrid::getSlotsLeft(){
+	return this->totalSlots - this->excludeSlots - this->visitedSlots;
+}
+
+int ArenaGrid::getSlotsLeftWOExcluded(){
+	return this->totalSlots - this->visitedSlots;
+}
+
+int ArenaGrid::getSlotsVisited(){
+	return this->visitedSlots;
 }
 
 int ArenaGrid::getMaxI(){

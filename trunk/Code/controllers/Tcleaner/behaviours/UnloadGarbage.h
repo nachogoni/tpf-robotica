@@ -28,6 +28,7 @@ class UnloadGarbage : public AbstractBehaviour {
 		robotapi::IRobot * robot;
 		robotapi::IDifferentialWheels * wheels;
 		std::vector<robotapi::IDistanceSensor*> * fss;
+		int timesEntered;
 	};
 
 } /* End of namespace behaviours */

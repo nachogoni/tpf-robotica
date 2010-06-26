@@ -50,17 +50,23 @@ void GoToBaseGroup::sense(){
 	if ( this->robotBattery->isEmpty() || this->pcBattery->isEmpty() )
 		this->setStimulusPresent();
 
-
+/*
         for (int j = 0; j < FLOOR_SENSORS; j++){
 			printf("Floor sensor %d: %d\n", j, (*this->fss).at(j)->getValue() );
 		}
-
+*/
 }
 
 int following = false;
 bool beenOnMark = false;
 
 void GoToBaseGroup::action(){
+	if ( fabs( this->wheels->getOrientation() - 3*(PI/2)) < ORIENTATION_TOLE ){
+		this->myBehaviours[3]->action();
+		following = false;
+		return;
+	}
+
 	if ( ! following ){
 		beenOnMark = false;
 		if ( !this->inLine() ){
@@ -88,7 +94,6 @@ void GoToBaseGroup::action(){
 		if( xpos < PASSAGE_BEGIN_X && this->onMark() && ! beenOnMark ){
 			printf("On Mark!");
 			beenOnMark = true;
-			system("pause");
 			this->wheels->setPosition(new utils::MyPoint(LINE_MARK_X,PASSAGE_LINE_Z));
 		}
 	    this->myBehaviours[2]->action();

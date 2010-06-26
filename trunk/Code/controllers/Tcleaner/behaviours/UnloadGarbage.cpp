@@ -31,6 +31,7 @@ namespace behaviours {
 		this->robot = robot;
 		this->wheels = wheels;
 		this->fss = &fss;
+		this->timesEntered = 0;
 	}
 
 	UnloadGarbage::~UnloadGarbage(){}
@@ -48,6 +49,8 @@ namespace behaviours {
 		// and close the trashbin's gate
 	
 		this->positionSelf();
+		this->timesEntered = this->timesEntered + 1;
+    	printf("Unloading Garbage - Times Entered: %d\n", this->timesEntered);
 
 		// Open Gate!
 		this->wheels->setSpeed(0,0);

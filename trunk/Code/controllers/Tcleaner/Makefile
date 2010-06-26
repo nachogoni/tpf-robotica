@@ -58,7 +58,7 @@ ifeq ($(OSTYPE),linux)
 OPENCVCFLAGS = $(shell $(CVHEADFLAGSCOMMAND) )
 LIBRARIES= -lCppController -lccext2 $(OPENCVLFLAGS)
 else
-LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/Program Files/OpenCV/lib"
+LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/OpenCV2.0/lib"
 endif
 
 #
@@ -72,7 +72,7 @@ ifeq ($(OSTYPE),linux)
 OPENCVLFLAGS = $(shell $(CVLIBFLAGSCOMMAND) )
 CFLAGS= -g -Wall -I"$(HOME)/tpf-robotica/Code/controllers/Tcleaner" $(OPENCVCFLAGS) -std=c++0x
 else
-CFLAGS= -g -Wall -I"C:\projects\tpf-robotica\Code\controllers\Tcleaner" -I"C:/Program Files/OpenCV/include/opencv" 
+CFLAGS= -g -Wall -I"C:\projects\tpf-robotica\Code\controllers\Tcleaner" -I"C:/OpenCV2.0/include/opencv" 
 endif
 
 #-L"C:/Program Files/OpenCV/lib" -lcxcore -lcv -lcvaux -lhighgui -lml -g3

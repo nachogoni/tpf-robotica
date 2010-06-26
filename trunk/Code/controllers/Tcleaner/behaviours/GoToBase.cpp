@@ -2,7 +2,7 @@
 #include "GoToBaseGroup.h"
 #include "GarbageCleaner.h"
 
-#define BASE_SPD 50.0
+#define BASE_SPD 100.0
 #define SPD_FACTOR 0.7
 
 namespace behaviours {
