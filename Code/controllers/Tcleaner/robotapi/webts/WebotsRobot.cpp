@@ -92,14 +92,15 @@ namespace webts {
 		utils::ArenaGridSlot * currentSlot = this->ag->getSlotAt(df->getPosition());
 //		printf("STEPPING");
 		if ( currentSlot != NULL ){
-			printf("Current Slot: %g - %g --> Timestamp: %ld\n",currentSlot->getX(),currentSlot->getZ(),currentSlot->getTimeStamp());
+			//printf("Current Slot: %g - %g --> Timestamp: %ld\n",currentSlot->getX(),currentSlot->getZ(),currentSlot->getTimeStamp());
 			std::list<utils::ArenaGridSlot *> seenSlots = this->getSlotsSeen(df->getPosition(), df->getOrientation(), currentSlot);
 			this->saveChanges(seenSlots);
 		}
 
 		printf("Current Position : %g %g %g\n",df->getPosition()->getX(),df->getPosition()->getY(),df->getOrientation());
-/*
+		printf("Slots Left: %d - Really Left: %d - Visited : %d\n",this->ag->getSlotsLeft(),this->ag->getSlotsLeftWOExcluded(),this->ag->getSlotsVisited());
 		printf("Robot Battery : %g - PC Battery : %g\n",robotBattery->getValue(),pcBattery->getValue());
+/*
 		printf("Current Touch Sensor value : %d\n",this->tb->getValue());
 		*/
 

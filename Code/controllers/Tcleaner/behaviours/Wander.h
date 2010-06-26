@@ -6,7 +6,7 @@
 #include <utils/ArenaGridSlot.h>
 #include "WorldInfo.h"
 
-#define WANDER_SPD 75.0
+#define WANDER_SPD 100.0
 
 namespace behaviours {
 

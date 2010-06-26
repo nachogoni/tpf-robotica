@@ -8,6 +8,16 @@
 #define TOLE 0.2
 #define BASE_POSITION (BASE_X+TOLE)
 
+#define AFTER_ALIGN_ORIENTATION -1.59682 //-1.59917
+
+/*
+4,686365307179586476925286766559
+4.68252
+
+-1.59917
+4.6825
+*/
+
 namespace behaviours {
 
 // class constructor
@@ -55,6 +65,14 @@ void GoToDisposal::sense(){
 bool followingLine = false;
 
 void GoToDisposal::action(){
+	double xpos = this->wheels->getPosition()->getX();
+
+	if ( xpos < BASE_POSITION && fabs( this->wheels->getOrientation() - 3*(PI/2)) < ORIENTATION_TOLE ){
+		this->disposalBehaviours[3]->action();
+		followingLine = false;
+		return;
+	}
+
 	if ( ! followingLine ){
 		if ( !this->inLine() ){
 		    this->disposalBehaviours[0]->action();
@@ -71,10 +89,9 @@ void GoToDisposal::action(){
 	}
 	followingLine = true;
 //	if ( !this->inLine() && fabs( this->wheels->getOrientation() - PI/2 ) < ORIENTATION_TOLE ){
-	double xpos = this->wheels->getPosition()->getX();
+
 	if ( !this->inLine() ){
 		if ( xpos < BASE_POSITION ){
-	    	printf("Unloading Garbage\n");
 			this->disposalBehaviours[3]->action();
 		}
 		followingLine = false;

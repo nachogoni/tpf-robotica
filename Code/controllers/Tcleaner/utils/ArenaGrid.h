@@ -38,6 +38,9 @@ class ArenaGrid
 		int getJForPoint(utils::MyPoint * p);
 
 		void setSlotVisited(utils::ArenaGridSlot * ags);
+		int getSlotsVisited();
+		int getSlotsLeft();
+		int getSlotsLeftWOExcluded();
 /*
 		std::vector<utils::ArenaGridSlot *> getNeighboursAt(utils::MyPoint * p);
 */

@@ -1,7 +1,7 @@
 #include "Wander.h"
 #include <utils/MyPoint.h>
 
-#define TURN_FACTOR 1
+#define TURN_FACTOR 0.75
 
 namespace behaviours {
 

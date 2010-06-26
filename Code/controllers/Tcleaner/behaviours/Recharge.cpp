@@ -53,27 +53,24 @@ namespace behaviours {
 		// Go back a little bit till the sensor is not on the line anymore
    		this->wheels->setSpeed(-BACKWARD_SPD,-BACKWARD_SPD);
 		while( (*this->fss).at(1)->getValue() < LINE_THRESHOLD){
-			printf("ACA\n");
 			this->robot->step(TIME_STEP);
 		}
 		
 		while ( !this->isCharging() ){
-			printf("ACA2\n");
 			this->robot->step(TIME_STEP);
 		}
 
 		this->wheels->setSpeed(0,0);
 		while( !this->robotBattery->isFull() || !this->pcBattery->isFull() ){
-			printf("ACA3\n");
 			this->robot->step(TIME_STEP);
 		}
 
 		// Go forward till the sensor is on the line again
    		this->wheels->setSpeed(FORWARD_SPD,FORWARD_SPD);
 		while( (*this->fss).at(1)->getValue() < LINE_THRESHOLD){
-			printf("ACA4\n");
 			this->robot->step(TIME_STEP);
 		}
+
 	}
 
 	bool Recharge::isCharging(){
@@ -134,6 +131,7 @@ namespace behaviours {
 		}
 
 		this->alignWithLine();
+
 	}
 
 	void Recharge::alignWithLine(){

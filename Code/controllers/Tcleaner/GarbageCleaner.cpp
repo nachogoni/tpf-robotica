@@ -167,6 +167,7 @@ void GarbageCleaner::cleanGarbage()
 		steps++;
 
 		this->printStats();
+		printf("-----------                                   -----------\n");
 	}
 
 }
@@ -188,12 +189,12 @@ void GarbageCleaner::stepWasDone(){
 }
 
 void GarbageCleaner::printStats(){
-/*
+
 	for( int i = 0 ; i < myAbstractBehaviours.size() ; i ++ ){
 		printf(" %d ",(this->stats)[i]);
 	}
 	putchar('\n');
-	*/
+
 }
 
 // section -64--88-1-100--1230920c:125cb7ecd6f:-8000:0000000000000DBA end
