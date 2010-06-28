@@ -43,7 +43,7 @@ independiente en cada rueda y entre otras cosas conocer la cantidad de las vuelt
 \subsubsection{Caracter\'isticas}
 \label{h_actuadores_motorDC_caracteristicas}
 
-Los motores que elegimos son de la marca Ignis \footnote{http://www.ignis.com.ar} modelo \emph{MR-2FA} con caracter\'isticas expresadas en la tabla
+Los motores que elegimos son de la marca Ignis\footnote{http://www.ignis.com.ar} modelo \emph{MR-2FA} con caracter\'isticas expresadas en la tabla
 \ref{hT_motorDC}, est\'an provistos de una caja reductora, poseen un encoder de $4$ estados por vuelta en el eje del motor y un sensor de de efecto
 de campo para determinar una vuelta en la salida de la caja reductora.
 
@@ -82,7 +82,7 @@ Los encoders los explicamos m\'as en detalle en la secci\'on \ref{h_sensado_enco
 \subsubsection{Circuito de control}
 \label{h_actuadores_motorDC_circuito}
 
-Para alimentar y poder controlar los motores elegimos el driver \emph{L298} de la marca ST \footnote{http://www.st.com}.
+Para alimentar y poder controlar los motores elegimos el driver \emph{L298} de la marca ST\footnote{http://www.st.com}.
 Internamente tiene dos puentes H puenteables y puede soportar hasta $4 A$. Ideal para estos motores u otros que se elijan en el futuro.
 
 La principal funci\'on del driver era proveer de la corriente y voltaje necesarios para el funcionamiento del motor, pero la configuraci\'on
@@ -102,7 +102,7 @@ por el otro la \emph{In2} con la \emph{In3}.
 
 De esta forma, se controla con s\'olo $3$ cables, uno de habilitaci\'on y otros $2$ de \emph{Input} que determinan
 la polarizaci\'on de los transistores internos y por ende, el sentido de giro del motor.
-En la tabla \ref{hT_l298} mostramos la tabla de verdad para los pines de control.
+En la tabla \ref{hT_l298} mostramos la tabla de verdad para los pines de control, donde H es estado algo, L estado bajo y X cualquier estado.
 En la figura \ref{hF_l298} mostramos el diagrama interno del integrado.
 
 \begin{table}
@@ -119,7 +119,7 @@ En la figura \ref{hF_l298} mostramos el diagrama interno del integrado.
 			\hline
 		\end{tabular}
 	\end{center}
-	\caption{Tabla de verdad para el control del driver \emph{L298}. Donde H es estado algo, L estado bajo y X cualquier estado.}
+	\caption{Tabla de verdad para el control del driver \emph{L298}.}
 	\label{hT_l298}
 \end{table}
 
@@ -172,7 +172,7 @@ Aunque no fue implementado el ning\'un mecanismo que requiriera el uso de estos 
 en torno a este tipo de actuadores.
 En la secci\'on \ref{h_placas_servos} explicamos el dise\~no de las placas que los controlan.
 
-El servo de prueba que utilizamos para el desarrollo es el modelo \emph{HX5010} de la marca Hextronik \footnote{www.hextronik.com/}
+El servo de prueba que utilizamos para el desarrollo es el modelo \emph{HX5010} de la marca Hextronik\footnote{www.hextronik.com/}
 con caracteristicas que expresamos en la tabla \ref{hT_hx5010}
 
 \begin{table}
@@ -239,7 +239,7 @@ En base a esta medici\'on se calcula la distancia entre el sensor y el objeto re
 
 medidas, tiempo de muestreo, tipo de salida, rangos de distancia, rangos de voltaje, distancia vs voltaje
 
-Los tel\'emetros infrarrojos que elegimos son de la marca Sharp \footnote{http://sharp-world.com/products/device}, modelo \emph{GP2D120}.
+Los tel\'emetros infrarrojos que elegimos son de la marca Sharp\footnote{http://sharp-world.com/products/device}, modelo \emph{GP2D120}.
 En la tabla \ref{hT_gp2d120} detallamos los valores caracter\'isticos del modelo.
 
 Este tipo de sensores tienen un retardo de aproximadamente $43.1ms$ durante el cual la lectura que se realiza no es confiable y luego
@@ -323,7 +323,7 @@ En base a la diferencia de tiempo entre la emisi\'on del tren de pulsos y la res
 \subsubsection{Caracter\'isticas}
 \label{h_sensado_ultrasonido_caracteristicas}
 
-El sensor de distancia por ultrasonido que elegimos es el modelo \emph{SRF05} de la marca Devantech Ltd \footnote{http://www.robot-electronics.co.uk/}.
+El sensor de distancia por ultrasonido que elegimos es el modelo \emph{SRF05} de la marca Devantech Ltd\footnote{http://www.robot-electronics.co.uk/}.
 Esta versi\'on mejorada del modelo \emph{SRF04}, aumenta el rango de detecci\'on y mejora el modo de control y lectura de los datos, permitiendo
 hacerlo mediante un \'unico pin.
 
@@ -416,7 +416,7 @@ Es por esto que usamos estos sensores para identificar una l\'inea en el piso.
 \subsubsection{Caracter\'isticas}
 \label{h_sensado_piso_caracteristicas}
 
-Los sensores que elegimos para son del modelo \emph{CNY70} de la marca Vishay Semiconductor \footnote{http://www.vishay.com/}.
+Los sensores que elegimos para son del modelo \emph{CNY70} de la marca Vishay Semiconductor\footnote{http://www.vishay.com/}.
 
 El rango efectivo de sensado ronda los $3 mm$ de distancia aunque, con un incremento en la corriente que circula por el emisor
 se puede llegar a una distancia mayor a la recomendada por el fabricante y que nos permita un uso m\'as acorde al proyecto.
@@ -620,7 +620,14 @@ Estas cuestiones son las que explicamos en este cap\'itulo.
 \subsection{Netbook}
 \label{h_controlador_netbook}
 
-modelo, marca, caracteristicas, para que se usa, sistema operativo y lenguaje de programacion
+Elegimos como controlador principal la netbook \emph{EeePC 1005-HA} de la marca Asus\footnote{www.asus.com}.
+Como caracter\'isticas principales cuenta con un procesador Intel\footnote{www.intel.com} Atom N280 1.66 GHz, 1GB DDR-2, un disco de
+250GB, una pantalla de 10 pulgadas y una bater\'ia de 48Wh que nos da una autonom\'ia de aproximadamente 8 horas.
+Cuenta con una c\'amara integrada de 0.3MP, placa de red inal\'ambrica y ethernet, placa de sonido y 3 puertos USB.
+Pesa aproximadamente 1.27Kg y sus dimensiones son $26.2$ x $17.8$ x $3.7$ cent\'imetros.
+
+Usamos Ubuntu\footnote{http://www.ubuntu.com/} como sistema operativo y programamos tanto la l\'ogica de comportamientos
+como la captura y an\'alisis de im\'agenes en C/C++.
 
 \subsection{Microcontrolador}
 \label{h_controlador_micro}
@@ -637,7 +644,7 @@ Explicamos la comunicaci\'on entre los distintos controladores en la secci\'on \
 \label{h_controlador_micro_caracteristicas}
 
 El microcontrolador que elegimos para realizar las tareas de control, configucari\'on y comunicaci\'on a bajo nivel
-es el \emph{PIC16F88} de Microchip \footnote{http://www.microchip.com/}.
+es el \emph{PIC16F88} de Microchip\footnote{http://www.microchip.com/}.
 Cuenta con una arquitectura de memoria del tipo Hardvard, con una memoria \emph{FLASH} para 4096 instrucciones de
 programa, una memoria \emph{RAM} de 368 bytes y una memoria \emph{EEPROM} de 256 bytes.
 Tiene un set de instrucciones b\'asicas reducido y todas con el mismo tiempo de ejecuci\'on.
@@ -704,49 +711,981 @@ Gracias al m\'odulo de \emph{AUSART} podemos realizar la comuinicaci\'on entre l
 Este perif\'erico nos provee una conmunicaci\'on sincr\'onica o asincr\'onica dependiendo de la configuraci\'on.
 Creamos la red de \emph{Daisy Chain} sobre el protocolo de RS-232.
 
-GIO
-EEPROM
-CCP
-SSP
-
-
-
-
+El microcontrolador dispone de otros perif\'ericos como un comparador \emph{CCP} y comunicaci\'on sincr\'onica \emph{SPI}.
+Utilizamos los pines de uso general para realizar otras funciones como habilitaci\'on, conmutaci\'on o las se\~nales de
+\emph{PWM} por software para determinar la posici\'on de los servo motores, por ejemplo.
 
 \subsubsection{Programaci\'on del firmware}
 \label{h_controlador_micro_programacion}
 
-pines de programacion, icd2, IDE, lenguaje, version
+El firmware de cada microcontrolador lo escribimos en C y usamos la IDE de programaci\'on 
+\emph{Microchip MPLAB}\footnote{http://www.microchip.com/} con el compilador \emph{CCS PCM V4.023}\footnote{http://www.ccsinfo.com/}.
+Usamos el programador \emph{ICD2} de la empresa \emph{Microchip} para descargar c\'odigo compilado al microcontrolador.
+El cual nos dio la posibilidad de debuguear el c\'odigo en m\'as de una oportunidad.
 
 \section{Comunicaci\'on}
 \label{h_comm}
 
-porque necesitamos comunicar los modulos, que necesidades hay, nivel de uso
+La comunicaci\'on interna entre los controladores de cada perif\'erico y el controlador principal, donde concentramos
+la l\'ogica de los comportamientos era vital.
+Para poder tomar las decisiones adecuadas la telemetr\'ia deb\'ia tener toda la informaci\'on requerida, la frecuencia
+suficiente para que las reacciones sean lo m\'as din\'amicas y r\'apidas posibles y poseer la menor cantidad de errores
+para evitar retransmisiones.
+
+En esta secci\'on analizamos todo lo referente al medio de transmisi\'on, protocolo y comandos que forman parte de la
+comunicaci\'on interna del proyecto.
 
 \subsection{Conectividad entre m\'odulos}
 \label{h_comm_conectividad}
 
-daisy chain, diagrama, montado sobre rs232, control de errores
+Para establecer el canal de comunicaciones decidimos emplear una configuraci\'on basada en el m\'etodo 
+\emph{Daisy-Chain}\footnote{Patente US20090316836A1} entre los controladores.
+Creando un anillo donde cada nodo de la cadena se comunica con su vecino retransmitiendo cada paquete hacia adenlante 
+hasta su destinatario como mostramos en la figura \ref{hF_comm_daisychain}.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=.40]{daisychain_diagram.png}
+	\caption{Diagrama general del m\'etodo daisy chain}
+	\label{hF_comm_daisychain}
+\end{figure}
+
+La configuraci\'on que elegimos para realizar la comunicaci\'on fue una velocidad de $115200$ baudios, $8$ bits, con $1$ bit de parada,
+sin bit de paridad y sin control de flujo.
+Logramos una gran velocidad de respuesta a los comandos de esta forma.
+
+En las tablas \ref{hT_comm_conexionLink} y \ref{hT_comm_conexionRS232} especificamos el conexionado entre las placas
+y contra el controlador principal.
+
+\begin{table}[ht]
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			Funci\'on & Conector RJ11 & Conector RJ11 & Funci\'on\\
+			\hline
+			Serial RX & 2 & 2 & Serial TX \\
+			\hline
+			Serial TX & 3 & 3 & Serial RX \\
+			\hline
+			No conectado & 4 & 4 & No conectado \\
+			\hline
+			GND & 5 & 5 &  GND\\
+			\hline
+		\end{tabular}
+		\caption{Conexionado entre placas en modo Link}
+		\label{hT_comm_conexionLink}
+	\end{center}
+\end{table}
+
+\begin{table}[ht]
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			Funci\'on & Conector RJ11 & Conector DB9 & Funci\'on\\
+			\hline
+			Serial RX & 2 & 3 & Serial TX \\
+			\hline
+			Serial TX & 3 & 2 & Serial RX \\
+			\hline
+			No conectado & 4 & 4 & Shield \\
+			\hline
+			GND & 5 & 5 &  GND\\
+			\hline
+		\end{tabular}
+		\caption{Conexionado entre placa y la PC}
+		\label{hT_comm_conexionRS232}
+	\end{center}
+\end{table}
+
+Como terminaci\'on de la cadena, debemos o colocar una ficha nula que interconecte \emph{TX} con \emph{RX} o
+cambiar el switch de configuraci\'on de \emph{LINK} a \emph{LAST}.
 
 \subsection{Protocolo de comunicaci\'on}
 \label{h_comm_protocolo}
 
-caracteristicas necesarias en el protocolo, porque es importante, cosas que tuvimos en cuenta y decisiones, control de errores
+El protocolo de comuncaci\'on est\'a formado por paquetes que tienen un formato espec\'ifico y representan un pedido de
+informaci\'on o comando que debe ser ejecutado en el destino.
 
-\subsubsection{Caracter\'isticas b\'asicas}
-\label{h_comm_protocolo_caracteristicas}
+El paquete consta de un header com\'un con datos que identifican al emisor y receptor del paquete, el comando a enviar y
+posibles datos extras que sean requeridos.
+Todos los paquetes tienen una respuesta obligatoria de confirmaci\'on de recepci\'on.
+Cuando el paquete requiere una respuesta con datos, la confirmaci\'on va acompa\~nada de la informaci\'on requerida.
+En el cuadro \ref{hF_comm_paquete_tabla} mostramos la estructura interna de un paquete t\'ipico.
 
-formado por paquetes, formato basico del paquete (header), control de errores
+\begin{table}[ht]
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			LARGO & DESTINO & ORIGEN & COMANDO & DATO & CRC \\
+			\hline
+		\end{tabular}
+	\caption{Formato y header del paquete de datos}
+	\label{hF_comm_paquete_tabla}
+	\end{center}
+\end{table}
+
+Tanto los paquetes de env\'io de datos como los de respuesta tienen el mismo formato y comparten el valor en el campo de comando.
+
+El campo \emph{LARGO} indica el tama\~no en bytes del paquete que viene detras, consta de 1 byte.
+Necesario porque el campo \emph{DATO} es de longitud variable, si la longitud del campo \emph{DATO} es cero, es 0x04.
+
+El campo \emph{DESTINO} identifica al destinatario del paquete y consta de 1 byte.
+Los 4 bits m\'as significativos indican el grupo y los 4 bits menos significativos, el n\'umero de $ID$ de la placa de destino.
+Si el $ID$ de placa es F, entonces el paquete es broadcast a todos los $ID$s del grupo indicado y si el valor es 0xFF, el paquete
+es broadcast a todas las placas de todos los grupos.
+
+De igual forma \emph{ORIGEN} determina el emisor del paquete para la respuesta y es de 1 byte.
+Los 4 bits m\'as significativos indican el grupo y los 4 bits menos significativos, el n\'umero de $ID$ de la placa de origen.
+Los valores permitidos son del $0$ al E, ya que F indica broadcast y no es v\'alida una respuesta broadcast.
+
+El campo \emph{COMANDO} informa al destinatario la tarea a realizar o determina un pedido de informaci\'on que puede o no
+tener par\'ametros.
+Ocupa 1 byte.
+
+El campo \emph{DATO} contiene los par\'ametros o datos extras que puedan ser necesarios para el comando enviado.
+En el caso que el comando no los requiera, el campo debe ser nulo y el campo \emph{LARGO} ser\'a 0x04.
+
+El control de errores lo realizamos mediante un checksum calculado, haciendo un \emph{XOR} con cada byte del contenido del paquete
+y colocandolo en el campo \emph{CRC}.
+Cuando un paquete se encuentre con errores o est\'e mal formado, el destinarario deber\'ia pedir la retrasmisi\'on.
+De igual forma, creimos necesaria la creaci\'on de un control adicional por medio de una lista de paquetes no confirmados mantenida
+por el controlador principal para evitar la p\'erdida de comandos.
 
 \subsubsection{Comandos comunes}
 \label{h_comm_protocolo_comandosComunes}
 
-contelo o listado de comandos comunes (en detalle o se van a un apendice) - son pocos.
+Creamos comandos que son comunes a cualquier placa sea cual sea su grupo.
+La intenci\'on de esto fue poder tener un espacio de comunicaci\'on com\'un para poder intercambiar comandos
+de inicializaci\'on, identificaci\'on de controladores, versionado o alg\'una otra necesidad gen\'erica que
+se desarrolle en un futuro y deba ser incluida en el protocolo.
+El controlador principal deber\'ia ser quien env\'ia este tipo de comandos, pero no creamos restricciones al respecto.
+
+En la tabla \ref{hT_comm_comandos_comunes} listamos y explicamos brevemente los comandos comunes del protocolo.
+
+\begin{table}[ht]
+	\begin{center}
+		\begin{tabular}{|l|}
+			\hline
+			Comando: \emph{INIT}. Sincroniza el inicio de todas las placas en la cadena. \\
+			\hline
+			\begin{tabular}{c|l}
+				0x01 & Vac\'io \\
+			\end{tabular}
+			\\
+			\hline
+			Respuesta \\
+			\hline
+			\begin{tabular}{c|l}
+				0x81 & Descripci\'on de la placa en texto plano. \\
+			\end{tabular}
+			\\
+
+			\hline\hline
+			Comando: \emph{RESET}. Pide el reset de la tarjeta. \\
+			\hline
+			\begin{tabular}{c|l}
+				0x02 & Vac\'io \\
+			\end{tabular}
+			\\
+			\hline
+			Respuesta \\
+			\hline
+			\begin{tabular}{c|l}
+				0x82 & Descripci\'on de la placa en texto plano. \\
+			\end{tabular}
+			\\
+
+			\hline\hline
+			Comando: \emph{PING}. Envia un ping a la placa. \\
+			\hline
+			\begin{tabular}{c|l}
+				0x03 & Vac\'io \\
+			\end{tabular}
+			\\
+			\hline
+			Respuesta \\
+			\hline
+			\begin{tabular}{c|l}
+				0x83 & Vac\'io \\
+			\end{tabular}
+			\\
+
+			\hline\hline
+			Comando: \emph{ERROR}. Informa que ha habido un error. \\
+			\hline
+			\begin{tabular}{c|l}
+				0x04 & C\'odigo de error. \\
+			\end{tabular}
+			\\
+			\hline
+			Respuesta \\
+			\hline
+			\begin{tabular}{c|l}
+				0x00 & \'Unico comando sin respuesta directa. Paquete original. \\
+			\end{tabular}
+			\\
+
+			\hline
+		\end{tabular}
+		\caption{Comandos comunes a todos los controladores. }
+		\label{hT_comm_comandos_comunes}
+	\end{center}
+\end{table}
 
 \subsubsection{Comandos espec\'ificos}
 \label{h_comm_protocolo_comandosEspecificos}
 
 contelo o listado de comandos especificos segun el tipo de placa (referencia a un apendice con cada uno explicado)
+
+Cada grupo de placas tiene comandos propios y espec\'ificos dependiendo de la funci\'on que deban desempe\~nar en el sistema.
+Existen grupos con comandos predefinidos cada uno se trata en las secciones como se detalla en el listado.
+Los comandos espec\'ificos para cada grupo deben ser desde 0x40 hasta el valor 0x7E.
+
+El \emph{MAIN CONTROLLER} no posee por ahora ning\'un comando escpec\'ifico pero le reservamos el espacio en el protocolo.
+En las tablas \ref{hT_comm_comandos_motordc_a} y \ref{hT_comm_comandos_motordc_b} enumeramos los comandos para el
+controlador \emph{DC MOTOR}.
+El controlador \emph{SERVO MOTOR} responde a los comandos de las tablas \label{hT_comm_comandos_servo_a}
+y \label{hT_comm_comandos_servo_b}
+En la tabla \ref{hT_comm_comandos_distance} listamos los comandos del controlador \emph{DISTANCE SENSOR}.
+De igual forma, aunque no esten implementados reservamos y especificamos los comandos para \emph{BATTERY CONTROLLER} y
+\emph{TRASH BIN} en las tablas \ref{hT_comm_comandos_bateria} y \ref{hT_comm_comandos_basura} respectivamente.
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{l}
+			\begin{tabular}{|l|}
+				\hline
+				\emph{SET DIRECTION}. Seteo del sentido de giro del motor. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x40 & Sentido de giro. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC0 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{SET DC SPEED}. Seteo de la velocidad del motor. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x01 & Sentido de giro y velocidad en cuentas por segundos.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC1 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{SET ENCODER}. Seteo de las cuentas hist\'oricas del encoder. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x42 & Valor para setear en el hist\'orico del encoder.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC2 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{GET ENCODER}. Obtener las cuentas hist\'oricas del encoder. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x43 & Vac\'io. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC3 & Valor hist\'orico del encoder.\\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{RESET ENCODER}. Resetear las cuentas hist\'oricas a cero. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x44 & Vac\'io. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC4 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{SET ENCODER TO STOP}. Seteo de cuantas cuentas para detenerse. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x45 & Cuentas del encoder restantes para que el motor se detenga. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC5 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{GET ENCODER TO STOP}. Obtener la cuentas restantes hasta detenerse. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x46 & Vac\'io.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC6 & Cuentas del encoder restantes para que el motor se detenga. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{DONT STOP}. Deshabilita el conteo de cuentas para frenar. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x47 & Vac\'io.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC7 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{MOTOR CONSUMPTION}. Consulta sobre el consumo actual del motor. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x48 & Vac\'io.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC8 & Consumo promedio del \'ultimo segundo. \\
+				\end{tabular}
+				\\
+	
+				\hline
+			\end{tabular}
+		\\
+		\end{tabular}
+		\caption{Comandos espec\'ificos al \emph{DC MOTOR} parte A. }
+		\label{hT_comm_comandos_motordc_a}
+	\end{center}
+\end{table}
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{l}
+			\begin{tabular}{|l|}
+				\hline
+				\emph{MOTOR STRESS ALARM}. Alarma sobre un consumo extremo en el motor. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x49 & Consumo ante el cu\'al sono la alarma. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC9 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{MOTOR SHUT DOWN ALARM}. Alarma, el motor ha sido apagado. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x4A & Consumo ante el que sono la alarma. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xCA & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{GET DC SPEED}. Obtiene la velocidad en cuentas del encoder por segundo. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x4B & Vac\'io.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xCB & Sentido y velocidad de giro del motor. \\
+				\end{tabular}
+				\\
+	
+				\hline
+			\end{tabular}
+		\\
+		\end{tabular}
+		\caption{Comandos espec\'ificos al \emph{DC MOTOR} parte B. }
+		\label{hT_comm_comandos_motordc_b}
+	\end{center}
+\end{table}
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{l}
+			\begin{tabular}{|l|}
+				\hline
+				\emph{SET POSITION}. Determina la posici\'on del servo motor indicado. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x40 & $ID$ del servo y la posici\'on del eje. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC0 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{SET ALL POSITIONS}. Setea las posiciones de cada uno de los servomotores. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x01 & La posici\'on para cada uno de los $5$ servos.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC1 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{GET POSITION}. Obtiene la \'ultima posici\'on del servomotor indicado. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x42 & $ID$ del servo del que se quiere la posici\'on. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC2 & $ID$ del servo y la posici\'on del eje. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{GET ALL POSITIONS}. Obtiene todas las \'ultimas posiciones de los servomotor. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x43 & Vac\'io. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC3 & La posici\'on para cada uno de los $5$ servos.\\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{SET SERVO SPEED}. Setea la velocidad para el servomotor indicado. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x44 & $ID$ del servo y la velocidad a setear. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC4 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{SET ALL SPEEDS}. Setea la velocidad para cada servomotor. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x45 & Velocidad a setear para cada uno de los servos. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC5 & Vac\'io. \\
+				\end{tabular}
+				\\
+
+				\hline\hline
+				\emph{GET SERVO SPEED}. Obtiene la velocidad para el servomotor indicado. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x46 & $ID$ del servo.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC6 & $ID$ y velocidad del servo. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{GET ALL SPEEDS}. Obtiene las velocidades de cada uno de los servomotores. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x47 & Vac\'io.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC7 & Velocidad de cada uno de los servomotores. \\
+				\end{tabular}
+				\\
+
+				\hline\hline
+				\emph{FREE SERVO}. Deja de aplicar fuerza sobre el servo indicado. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x48 & $ID$ del servo a liberar.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC8 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{FREE ALL SERVOS}. Deja de aplicar fuerza sobre cada uno de los servomotores. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x49 & Vac\'io. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC9 & Vac\'io. \\
+				\end{tabular}
+				\\
+
+				\hline
+			\end{tabular}
+		\\
+		\end{tabular}
+		\caption{Comandos espec\'ificos al \emph{SERVO MOTOR} parte A. }
+		\label{hT_comm_comandos_servo_a}
+	\end{center}
+\end{table}
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{l}
+			\begin{tabular}{|l|}
+	
+				\hline
+				\emph{GET STATUS}. Obtiene el estado de cada uno de los switches. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x4A & Vac\'io. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xCA & 1 byte con el estado de cada switch. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{ALARM ON STATE}. Establece si se desea recibir alarmas por cambio de estado. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x4B & $ID$ y tipo de cambio en el switch .\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xCB & Vac\'io. \\
+				\end{tabular}
+				\\
+
+				\hline\hline
+				\emph{SWITCH ALARM}. Alarma ante un cambio de estado programado. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x4C & $ID$ y estado del switch que provoc\'o el comando. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xCC & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline
+			\end{tabular}
+		\\
+		\end{tabular}
+		\caption{Comandos espec\'ificos al \emph{SERVO MOTOR} parte B. }
+		\label{hT_comm_comandos_servo_b}
+	\end{center}
+\end{table}
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{l}
+			\begin{tabular}{|l|}
+				\hline
+				\emph{ON DISTANCE SENSOR}. Enciende el sensor de distancia indicado. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x40 & $ID$ del sensor a encender. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC0 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{OFF DISTANCE SENSOR}. Apaga el sensor de distancia indicado.. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x01 & $ID$ del sensor a apagar.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC1 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{SET DISTANCE SENSORS MASK}. Habilita o no los sensores para lecturas. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x42 & 1 byte con cada $ID$ del sensor a habilitar o deshabilitar.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC2 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{GET DISTANCE SENSORS MASK}. Obtiene la m\'ascara de lectura. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x43 & Vac\'io. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC3 & 1 byte con cada $ID$ del sensor.\\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{GET VALUE}. Obtiene el valor promedio de la entrada de los sensores indicados. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x44 & 1 byte con cada $ID$ del sensor. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC4 & 1 byte con cada $ID$ y los valores de lectura promedio de cada sensor. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{GET ONE VALUE}. Obtiene el valor de la entrada del sensor indicado. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x45 & 1 byte con cada $ID$ del sensor. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC5 & 1 byte con cada $ID$ y los valores de lectura de cada sensor. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{ALARM ON STATE}. Setea el tipo de cambio de estado del switch para la alarma. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x46 & Tipo de cambio de estado.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC6 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{SWITCH ALARM}. Alarma informando que fue satisfecha la condici\'on. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x47 & Tipo de cambio y estado actual del switch.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC7 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline
+			\end{tabular}
+		\\
+		\end{tabular}
+		\caption{Comandos espec\'ificos al \emph{DISTANCE SENSOR}. }
+		\label{hT_comm_comandos_distance}
+	\end{center}
+\end{table}
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{l}
+			\begin{tabular}{|l|}
+				\hline
+				\emph{ENABLE}. Habilita la alimentaci\'on del robot mediante la bater\'ia. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x40 & Vac\'io. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC0 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{DISABLE}. Deshabilita la alimentaci\'on del robot mediante la bater\'ia. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x01 & Vac\'io.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC1 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{GET BATTERY VALUE}. Obtiene el valor de la entrada de la bater\'ia. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x42 & Vac\'io.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC2 & Lectura de la tensi\'on en la bater\'ia. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{BATTERY FULL ALARM}. Mensaje informando que se completado la carga. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x43 & Vac\'io. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC3 & Vac\'io.\\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{SET BATTERY EMPTY VALUE}. Valor de la bater\'ia cr\'itico. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x44 & Lectura de los voltios de la bater\'ia. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC4 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{BATTERY EMPTY ALARM}. El voltaje lleg\'o a un valor cr\'itico. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x45 & Lectura de los voltios de la bater\'ia. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC5 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{SET FULL BATTERY VALUE}. Establece el valor para la carga completa. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x46 & Lectura de la tensi\'on en la bater\'ia. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC6 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline
+			\end{tabular}
+		\\
+		\end{tabular}
+		\caption{Comandos espec\'ificos al \emph{BATTERY CONTROLLER}. }
+		\label{hT_comm_comandos_bateria}
+	\end{center}
+\end{table}
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{l}
+			\begin{tabular}{|l|}
+				\hline
+				\emph{GET TRASH BIN VALUE}. Consulta que tan lleno est\'a el cesto de basura. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x40 & Vac\'io. \\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC0 & Valor que representa que tan lleno est\'a el cesto interno de basura. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{BIN FULL ALARM}. El cesto de basura se ha completado y debe ser descargado. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x01 & Vac\'io.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC1 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline\hline
+				\emph{SET FULL BIN VALUE}. Setea el valor para determinar que el cesto esta lleno. \\
+				\hline
+				\begin{tabular}{c|l}
+					0x42 & Valor que especifica que lecura se debe tomar como cesto lleno.\\
+				\end{tabular}
+				\\
+				\hline
+				Respuesta \\
+				\hline
+				\begin{tabular}{c|l}
+					0xC2 & Vac\'io. \\
+				\end{tabular}
+				\\
+	
+				\hline
+			\end{tabular}
+		\\
+		\end{tabular}
+		\caption{Comandos espec\'ificos al \emph{TRASH BIN}. }
+		\label{hT_comm_comandos_basura}
+	\end{center}
+\end{table}
 
 \subsubsection{Estad\'isticas}
 \label{h_comm_protocolo_estadisticas}

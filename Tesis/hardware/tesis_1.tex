@@ -340,29 +340,29 @@ explicadas en la secci\'on \ref{HAPmotorDC} con las modificaciones que requiera 
 \subsection{Comunicaci\'on entre m\'odulos}
 \label{Hcomm}
 
-La comunicaci\'on entre los distintos componentes del robot es imprescindible para su correcto funcionamiento. Todos los comandos
-originados en el controlador principal viajan por este este medio de comuncaciones y debemos asegurarnos que llegan de forma correcta
-y a tiempo para realizar las distintas tareas que se necesiten.
+	La comunicaci\'on entre los distintos componentes del robot es imprescindible para su correcto funcionamiento. Todos los comandos
+	originados en el controlador principal viajan por este este medio de comuncaciones y debemos asegurarnos que llegan de forma correcta
+	y a tiempo para realizar las distintas tareas que se necesiten.
 
 En este apartado explicamos en detalle las decisiones que tomamos para crear una comunicaci\'on acorde a nuestras necesidades.
 
 \subsubsection{Conectividad entre los m\'odulos de control}
 \label{HCconectividad}
 
-Para establecer el canal de comunicaciones decidimos emplear una configuraci\'on basada en el m\'etodo \emph{Daisy-Chain}
-\footnote{Patente US20090316836A1} entre las distintas placas controladoras creando un anillo donde cada nodo de la cadena se
-comunica con su vecino retransmitiendo cada paquete hacia adenlante hasta su destinatario como mostramos en la figura
-\ref{daisychain_diagram}.
-
-\begin{figure}[ht]
-	\centering
-	\includegraphics[scale=.40]{daisychain_diagram.png}
-	\caption{Diagrama general del m\'etodo daisy chain}
-	\label{daisychain_diagram}
-\end{figure}
-
-La configuraci\'on que elegimos para realizar la comunicaci\'on fue una velocidad de $115200$ baudios, $8$ bits, con $1$ bit de parada,
-sin bit de paridad y sin control de flujo. Logramos una gran velocidad de respuesta a los comandos de esta forma.
+	Para establecer el canal de comunicaciones decidimos emplear una configuraci\'on basada en el m\'etodo \emph{Daisy-Chain}
+	\footnote{Patente US20090316836A1} entre las distintas placas controladoras creando un anillo donde cada nodo de la cadena se
+	comunica con su vecino retransmitiendo cada paquete hacia adenlante hasta su destinatario como mostramos en la figura
+	\ref{daisychain_diagram}.
+	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[scale=.40]{daisychain_diagram.png}
+		\caption{Diagrama general del m\'etodo daisy chain}
+		\label{daisychain_diagram}
+	\end{figure}
+	
+	La configuraci\'on que elegimos para realizar la comunicaci\'on fue una velocidad de $115200$ baudios, $8$ bits, con $1$ bit de parada,
+	sin bit de paridad y sin control de flujo. Logramos una gran velocidad de respuesta a los comandos de esta forma.
 
 \subsubsection{Protocolo de comunicaci\'on}
 \label{HCprotocolo}
