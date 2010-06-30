@@ -935,8 +935,6 @@ En la tabla \ref{hT_comm_comandos_comunes} listamos y explicamos brevemente los 
 \subsubsection{Comandos espec\'ificos}
 \label{h_comm_protocolo_comandosEspecificos}
 
-contelo o listado de comandos especificos segun el tipo de placa (referencia a un apendice con cada uno explicado)
-
 Cada grupo de placas tiene comandos propios y espec\'ificos dependiendo de la funci\'on que deban desempe\~nar en el sistema.
 Existen grupos con comandos predefinidos cada uno se trata en las secciones como se detalla en el listado.
 Los comandos espec\'ificos para cada grupo deben ser desde 0x40 hasta el valor 0x7E.
@@ -1697,50 +1695,190 @@ analisis de paquetes por segundo, bytes de datos vs bytes de header, retransmisi
 
 porque tuvimos que diseñar nuestras propias placas, cosas que tuvimos en cuenta y decisiones tomadas, codigos fuente a los apendices
 
+
+Las funciones y requerimientos de nuestro proyecto ten\'ian partes que eran comunes a otros trabajos en rob\'otica o quiz\'as
+de electr\'onica general.
+Pero ten\'ian peculiaridades y aspectos que no pudimos satisfacer con placas prefabricadas.
+Por ejemplo, un protocolo de comunicaci\'on unificado entre todos los m\'odulos era, de entrada, una barrera que acotaba
+las posibilidades.
+Y mantener distintos modos y protocolos dentro del proyecto generaba una carga de l\'ogica que podiamos evitar.
+
+Analizando las posibilidades y entendiendo que una de las principales razones de nuestro trabajo era generar las bases
+de conocimiento y el punto de partida a futuro de un proyecto m\'as grande, decidimos producir nuestra propia versi\'on
+de placas controladoras.
+
+Aunque iban a tener un uso bien definido dentro de nuestro trabajo, tambi\'en cre\'imos necesario que tuvieran un nivel
+de generalidada suficiente como para poder utilizarlas en otros proyectos con m\'inimos cambios, adelantando as\'i mucho
+trabajo a futuro.
+
+La modularizaci\'on fue un factor importante y muy presente durante todo el desarrollo.
+En este apartado explicamos el dise\~no, desarrollo, programaci\'on y especificaciones de las distintas placas que creamos
+durante nuestro proyecto.
+
 \subsection{Placa gen\'erica}
 \label{h_placas_generica}
 
-funcion de una placa generica, porque fue armada, para que sirve
+Durante el dise\~no nos surgi\'o la necesidad de establecer un m\'odulo com\'un de comunicaci\'on y una base de prueba para
+los testeos con los distintos sensores y perif\'ericos que utilizar\'iamos en el robot.
+Es por esto que luego de pruebas aisladas, creamos una placa para estas cuestiones.
+Nos ayud\'o y aceler\'o en gran medida el dise\~no de las placas definitivas y nos di\'o la posibilidad de dise\~nar futuras
+actualizaciones a nuestro proyecto.
 
 \subsubsection{Caracter\'isticas principales}
 \label{h_placas_generica_caracteristicas}
 
-testeo de nuevos modulos, testeo de la programacion, snifear la comunicacion, futuras expansiones
+Las caracter\'isticas principales eran proveer de una interfaz com\'un entre todas las placas para la comunicaci\'on y exportar
+todos los pines y perif\'ericos del microcontrolador que elegimos para placas con las conexiones a los sensores o motores.
+Todo esto nos serv\'ia realizar pruebas de concepto para la conexi\'on con los sensores, valores de componente pasivos ideales,
+comportamiento e interacci\'on entre placas, para optimizar el c\'odigo del firmware o crear nuevas expansiones.
 
 \subsubsection{M\'odulo de comunicaci\'on}
 \label{h_placas_generica_comm}
 
-explicacion de la comunicacion, igual en todas, switch de configuracion, pines, fichas, nodos en la cadena, cables pc-placa y placa-placa, max232
+Como explicamos en la secci\'on \ref{h_comm} para la comunicaci\'on nos basamos en el modelo de \emph{daisy chain} sobre una
+capa de transporte de \emph{RS232}.
+
+Los conectores y configuraci\'on son comunes y utilizamos dos tipos de conectores para realizar la interconexi\'on entre las placas.
+Como mostramos en la figura \ref{hF_placa_gen_comm} usamos conectores \emph{RJ11} para generar el lazo entre nodos de la cadena y el
+conector \emph{DB9} para la conexi\'on con la PC.
+En las tablas \ref{hT_comm_conexionLink} y \ref{hT_comm_conexionRS232} explicamos, respectivamente, el conexionado para cada caso.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=.25]{rj11_db9.png}
+	\caption{Conectores RJ11 (6P4C) y DB9.}
+	\label{hF_placa_gen_comm}
+\end{figure}
+
+Para determinar si la placa es un nodo m\'as dentro de la cadena o es la terminaci\'on, colocamos una llave de dos posiciones
+que setea la configuraci\'on.
+En la posici\'on \emph{LINK} la placa act\'ua como nodo intermedio y en la posici\'on \emph{LAST} como terminaci\'on.
+
+Es de vital importancia colocar en forma la correcta esta llave porque podemos dejar sin conexi\'on al resto de las placas o mismo
+perder todos los paquetes transmitidos al no cerrar la cadena en el final de la misma.
 
 \subsubsection{Alimentaci\'on de la placa}
 \label{h_placas_generica_alimentacion}
 
-tension para la alimentacion, circuito de la fuente, consumo maximo, voltaje minimo de alimentacion, alimentacion de 5V directos
+La alimentaci\'on principal de la placa es 7 a 20 voltios, con la posibilidad de alimentarla directamente con 5 voltios
+por uno de los pines del conector.
+En la figura \ref{hF_placa_gen_borneras} mostramos la bornera y en el cuadro \ref{hT_placa_gen_alimentacion} el pinout.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale=.3]{bornera3.png}
+	\caption{Bornera de alimentaci\'on.}
+	\label{hF_placa_gen_borneras}
+\end{figure}
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{|c|c|}
+			\hline
+			Pin & Voltaje \\
+			\hline
+			1 & GND \\
+			\hline
+			2 & 5v \\
+			\hline
+			3 & 7v a 12v \\
+			\hline
+		\end{tabular}
+		\caption{Alimentaci\'on de la l\'ogica}
+		\label{hT_placa_gen_alimentacion}
+	\end{center}
+\end{table}
+
+La regulaci\'on interna de voltaje realiza por medio de un regulador 7805 corriente m\'axima de 1A.
 
 \subsubsection{Configuraci\'on}
 \label{h_placas_generica_config}
 
-configuracion minima de la placa, leds, comunicacion, header de programacion
+La fila de pines \emph{P2} exporta todos los pines con funciones dentro del microcontrolador, para realizar
+conexiones con perif\'ericos de prueba o nuevas extensiones.
+Los headers \emph{P3} y \emph{P4} son jumpers que vinculan los pines \emph{RA1} y \emph{RA4} del
+microcontrolador los leds 1 y 2 respectivamente.
+
+El header de programaci\'on \emph{P1} lo utilizamos para conectar la placa con el programador y debuguear
+de c\'odigo \emph{ICD2} como explicamos en en apartado \ref{h_controlador_micro_programacion}.
+El switch \emph{S2} lo usamos para asociar los pines del microcontrolador con los canales de clock
+y data del header de programaci\'on (modo \emph{ICD2}) o con los pines del header \emph{P2}.
 
 \subsubsection{Esquem\'atico}
 \label{h_placas_generica_esquematicos}
 
-esquematicos de la placa
+En la figura \ref{hF_placa_gen_schema1} mostramos el esquem\'atico del microcontrolador y el conexionado
+con los headers, el m\'odulo de comunicaci\'on y conectores para conformar la cadena \emph{Daisy chain}
+la figura \ref{hF_placa_gen_schema2}.
+En la figura \ref{hF_placa_gen_schema3} mostramos el diagrama de la fuente de alimentaci\'on y bornera.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=.3]{gen_schemaMicro.png}
+	\includegraphics[scale=.3]{gen_schemaHeaders.png}
+	\caption{Microcontrolador y headers}
+	\label{hF_placa_gen_schema1}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=.3]{gen_schemaComm1.png}
+	\includegraphics[scale=.3]{gen_schemaComm2.png}
+	\includegraphics[scale=.3]{gen_schemaComm3.png}
+	\caption{Comunicaci\'on, switch de modo y conectores de entrada y salida}
+	\label{hF_placa_gen_schema2}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=.3]{gen_schemaFuente.png}
+	\caption{Fuente de alimentaci\'on}
+	\label{hF_placa_gen_schema3}
+\end{figure}
 
 \subsubsection{Circuito}
 \label{h_placas_generica_circuito}
 
-circuito de la placa
+En la figura \ref{hF_placa_gen_componentes} mostramos la m\'ascara de componentes de la placa y en
+la figura \ref{hF_placa_gen_capas} ambas capas de la placa.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=.2]{gen_componentes.png}
+	\caption{M\'ascara de componentes.}
+	\label{hF_placa_gen_componentes}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=.2]{gen_top.png}
+	\includegraphics[scale=.2]{gen_bottom.png}
+	\caption{Capas superior e inferior de la placa.}
+	\label{hF_placa_gen_capas}
+\end{figure}
 
 \subsubsection{C\'odigo b\'asico}
 \label{h_placas_generica_codigo}
 
-explicacion de lo minimo que deberia tener para ser parte de la cadena de comunicacion
+Seg\'un el uso que le fuimos dando a las placas gen\'ericas fuimos cambiando el c\'odigo del firmware que le
+\'ibamos cargando, pero siempre manten\'iamos partes b\'asicas que nos ayudaban.
+
+Principalmente la configuraci\'on de flags de configuraci\'on base del microcontrolador, desde la velocidad
+del clock para los c\'alculos de tiempos hasta determinar que pines eran mapeados a las funciones de RX y TX
+para la comunicaci\'on serial.
+
+Para hacer pruebas sobre la comunicaci\'on RS232 o del protocolo, armamos maquetas para las funciones que
+atienden a los comandos espec\'ificos y funciones de control del protocolo comunes para todas las placas.
+Tambi\'en generamos un modelo general del programa, con un loop principal y llamadas incializadoras.
+De esta s\'olo nos concentr\'abamos en la prueba que est\'abamos realizando.
 
 \subsubsection{Posibles extensiones}
 \label{h_placas_generica_extensiones}
 
-posibles extensiones a futuro de la placa - nuevos modulos de testeo o control o lectura muy basica de señales, pasar a montaje superficial los componentes, hacerla mas chica
+Son varias las extensiones que se podr\'ian realizar a estas placas pero teniendo en cuenta que deb\'ian ser
+lo m\'as gen\'ericas posibles como para probar nuevas funcionalidades o componentes, creemos que aportan mucho
+valor en la fase de testeo.
+Aunque usar componentes de montaje superficial nos permitir\'ian tener una placa mas compacta.
 
 \subsection{Placa controladora de motores DC}
 \label{h_placas_motorDC}
