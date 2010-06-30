@@ -4,12 +4,30 @@
 Intro de visi\'on
 
 \subsection{Trabajos previos}
+	\subsubsection{Mobile Field Robot with Vision-Based Detection of Volunteer Potato Plants in a Corn Crop - FRITS K. VAN EVERT}
+	\cite{potato}
 	\subsubsection{Review of shape representation and description techinques - Dengsheng Zhang}
 	\subsubsection{Sidewalk Following Using Color Histograms - John S. Seng}
 	\subsubsection{Skin Detection using HSV color space - V. A. Oliveira, A. Conci}
+	En este artículo se trabajó sobre la detección de piel en imágenes utilizando el espacio de color HSV. El algoritmo propuesto 
+por el autor consiste en el filtrado de los pixels en base al valor del canal de tonalidad ( canal H ). Los rangos de valores utilizados para 
+representar el color de la piel fueron obtenidos de otros articulos relacionados. Luego, con el objetivo de eliminar ruido, se aplican filtros morfologicos y de suavizado, estos son (en este orden) dilatación, erosión y un filtro de mediana. Para los filtros morfologicos se utilizaron nucleos de 5x5 pixels mientras que para el filtro de mediana se usaron nucleos de 3x3 pixels. Finalmente, el autor midió la performance de su algoritmo utilizando imágenes de prueba en donde se aprecian distintas zonas con piel aisladas. A partir de estas imagenes, se obtuvieron las coordenadas de los pixels que se corresponden con piel y se las contrastó con aquellas que identificó el algoritmo. Los resultados presentados para 4 imágenes son satisfactorios obteniendo en promedio un porcentaje de falsos negativos cercano al 1\% y de falsos positivos menor al 6\%.
+
+	\subsubsection{Line Detection and Lane Following for an Autonomous Mobile Robot - Andrew Reed Bacha}
+	En este artículo se describió el software utilizado para uno de los robots ganadores de la competencia "Intelligent Ground Vehicle Competition" (IGVC) en donde se requiere que los robots naveguen  a traves de un camino delimitado por lineas pintadas sobre cesped en un ambiente al aire libre en donde se pueden presentar obstáculos. El robot utilizaba una única cámara para el sistema de visión y su objetivo era detectar las lineas pintadas 
+para determinar la dirección de movimiento del robot. El algoritmo descripto por el autor cuenta con una etapa de pre-procesamiento y otra de detección de lineas. En la etapa de pre-procesamiento se comienza por convertir la imágen a escala de grises utilizando una transformación en la que la intensidad de cada pixel es determinada usando $2*B(i,j) - G(i,j)$ con el argumento que el canal verde contiene ruido provocado por la exposición de luz en el pasto y de esta mánera se lo elimina. Luego el autor propone utilizar un ajuste de brillo argumentando que los pixels de la zona mas alta se encuentran mas expuestos a la luz por la perspectiva de la camara, para esto sustrae una máscara que compensa este efecto. Además, el autor elimina la proyección del robot mismo sobre la cámara. En la etapa de detección se procedió realizando un threshold para obtener los pixels mas brillantes. Luego, la salida del threshold se utilizó como entrada para un detector de lineas basado en el algoritmo de hough. Finalmente, según la orientación de las lineas detectadas se determina la dirección del robot. El algoritmo se consideró exitoso ya que el robot propuesto fue el ganador de la competencia.
+
+
 	
-\subsection{Algoritmo propuesto}
+\subsection{Algoritmo de detección}
+\subsubsection{Estructura}
+El algoritmo que propusimos comienza por tomar una imágen fresca de la cámara, las imágenes capturadas poseen el formato 24-bit RGB. A su vez, esta imagen puede ser descompuesta en 3 imágenes o canales de 8 bits , una para cada color ( rojo ,verde y azul). Con el objetivo de minimizar el impacto producido por cambios en la iluminación se convierte la imagen al formato HSV (tono, saturación y brillo). Luego utilizamos el canal H de esta nueva imágen para establecer que pixels se corresponden con el color buscado, filtrando aquellos pixeles que no coinciden con el rango deseado. A su vez, usamos la información brindada por los  canales de saturación y/o brillo para obtener mas precisión sobre el color de los pixeles.
+	\indent Trasladamos esta información al canal de saturación realizando un and bit a bit con la imagen filtrada.  En la siguiente etapa, se utilizan filtros morfológicos cuyo objetivo es la eliminación de ruido. El resultado de aplicar estos filtros resulta en la expansión de las areas donde hay mucha presencia de pixeles de interés, produciendo un área de intensidad homogénea mientras que elimina la aparición de pixeles de interés aislados productos del ruido. El paso siguiente consiste en la aplicación de un umbral. El umbral filtra aquellos pixeles que no se encuentren por encima de un valor mínimo de intensidad marcandolos con valor cero y conserva únicamente los pixeles que si lo hacen estableciendoles un valor predeterminado ( mayor a cero) a estos. 
+	\indent Hasta aquí el pre-procesamiento de la imágen, al llegar a esta etapa del algoritmo deseamos tener solo pixeles de los potenciales objetos de interés. Vale notar que, como consecuencia del filtro umbral, la imagen se encuentra binarizada, es decir, los pixels solo pueden tener dos posibles valores: cero (negro) si no es un pixel de interés o mayor a cero en el caso contrario. Es entonces que automáticamente quedan delimitadas las áreas que contienen pixeles de interés, el próximo paso del algoritmo se encarga de obtener los contornos de estas áreas. Para esto utilizamos el algoritmo de suzuki 
+\cite{suzuki85} que recorre los bordes de estas zonas y crea secuencias de puntos $(x,y)$ que definen el contorno de las mismas. Las secuencias de puntos son luego aproximadas para generar polígonos cerrados mediante el algoritmo de Douglas-Pecker \cite{dp74}. Tomando estos polígonos definimos distintos parámetros tales como el área, perimetro o la forma que posee que nos permiten discernir si se trata de un objeto a reconocer o no.
+
 	\subsubsection{Detecci\'on de color}
+Usando esta representación, la identificación de un color en la imagen se ve dificultada ya que un cambio en la iluminación afecta a los 3 canales por igual, por este motivo se convierte la imagen al espacio de color HSV.
 	\subsubsection{Threshold}
 	\subsubsection{Operaciones morfologicas}
 		\subsubsection*{Dilataci\'on}
