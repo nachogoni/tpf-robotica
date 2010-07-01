@@ -4,6 +4,10 @@
 #include "AbstractBehaviour.h"
 #include <utils/GarbageRecognition.h>
 
+#define GO_TO_GARBAGE_ANGLE_TOLE 0.1
+#define GO_TO_GARBAGE_MAX_SPD 100
+#define GO_TO_GARBAGE_MIN_SPD 10
+
 namespace behaviours {
 
 class GoToGarbage : public AbstractBehaviour

@@ -2,9 +2,6 @@
 #include "GarbageCleaner.h"
 #include <math.h>
 
-#define ANGLE_TOLE 0.07
-#define BASE_SPD 50
-
 namespace behaviours {
 
 	FindLine::FindLine(WorldInfo * wi, robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & fss) : AbstractBehaviour("Find Line"){
@@ -23,23 +20,17 @@ namespace behaviours {
 
 		double currentOrientation = wheels->getOrientation();
 		double destinyAngle = PI/2;
+		double lspd = FIND_LINE_BASE_SPD;
+		double rspd = FIND_LINE_BASE_SPD;
 		
-		if ( fabs(destinyAngle - currentOrientation) < ANGLE_TOLE )
-		    wheels->setSpeed(BASE_SPD,BASE_SPD);
-		else{
-			if ( currentOrientation > HALF_PI && currentOrientation < THREE_HALF_PI )
-			    wheels->setSpeed(BASE_SPD,-BASE_SPD);
-			else
-			    wheels->setSpeed(-BASE_SPD,BASE_SPD);
+		if ( fabs(destinyAngle - currentOrientation) >= FIND_LINE_ANGLE_TOLE ){
+			if ( currentOrientation > HALF_PI && currentOrientation < THREE_HALF_PI ){
+			    rspd *= -1;
+			}else{
+			    lspd *= -1;
+			}
 		}
-		/*
-		utils::MyPoint * linepos = new utils::MyPoint(l->getX(),l->getY());
-
-		utils::MyVector * direction = new utils::MyVector(wheels->getOrientation());
-		utils::MyVector * vectorToLine = new utils::MyVector(wheels->getPosition(),linepos);
-		printf("line position: ( %g ; %g )\n",l->getX(),l->getY());
-		printf("angle to line: %g\n",wheels->getOrientation()+direction->angleTo(vectorToLine));
-		*/
+	    wheels->setSpeed(lspd,rspd);
 	}
 
 } /* End of namespace behaviours */

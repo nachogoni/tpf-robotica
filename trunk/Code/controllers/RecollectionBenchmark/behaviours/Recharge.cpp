@@ -3,24 +3,6 @@
 #include <math.h>
 #include "GarbageCleaner.h"
 
-#define TIME_STEP 32
-#define BASE_SPD 20.0
-#define R_ORIENTATION_TOLE 0.1
-
-#define BACKWARD_STEPS 40
-#define BACKWARD_SPD 100.0
-
-#define FORWARD_SPD 100.0
-
-#define BASE_X -0.847015
-#define BASE_Z 0.102655
-#define BASE_ANGLE (3.0*PI/2.0)
-
-#define BASE_SPD 50.0
-#define SPD_FACTOR 0.7
-#define E_PUCK_DIAMETER 0.052
-
-
 namespace behaviours {
 
 	Recharge::Recharge(robotapi::IRobot * robot, robotapi::IDifferentialWheels * wheels, robotapi::IBattery * robotBatt, robotapi::IBattery * pcBatt, std::vector<robotapi::IDistanceSensor*> & fss) : AbstractBehaviour("Recharge"){
@@ -51,24 +33,24 @@ namespace behaviours {
 		this->lastPCValue = this->pcBattery->getValue();
 
 		// Go back a little bit till the sensor is not on the line anymore
-   		this->wheels->setSpeed(-BACKWARD_SPD,-BACKWARD_SPD);
+   		this->wheels->setSpeed(-RECHARGE_BACKWARD_SPD,-RECHARGE_BACKWARD_SPD);
 		while( (*this->fss).at(1)->getValue() < LINE_THRESHOLD){
-			this->robot->step(TIME_STEP);
+			this->robot->step(RECHARGE_TIME_STEP);
 		}
 		
 		while ( !this->isCharging() ){
-			this->robot->step(TIME_STEP);
+			this->robot->step(RECHARGE_TIME_STEP);
 		}
 
 		this->wheels->setSpeed(0,0);
 		while( !this->robotBattery->isFull() || !this->pcBattery->isFull() ){
-			this->robot->step(TIME_STEP);
+			this->robot->step(RECHARGE_TIME_STEP);
 		}
 
 		// Go forward till the sensor is on the line again
-   		this->wheels->setSpeed(FORWARD_SPD,FORWARD_SPD);
+   		this->wheels->setSpeed(RECHARGE_FORWARD_SPD,RECHARGE_FORWARD_SPD);
 		while( (*this->fss).at(1)->getValue() < LINE_THRESHOLD){
-			this->robot->step(TIME_STEP);
+			this->robot->step(RECHARGE_TIME_STEP);
 		}
 
 	}
@@ -87,20 +69,20 @@ namespace behaviours {
 		if ( ! ( currentAngle > 0 && currentAngle < PI ) )
 			return;
 
-   		this->wheels->setSpeed(FORWARD_SPD,FORWARD_SPD);
-		this->goDistance(E_PUCK_DIAMETER/2.0);
+   		this->wheels->setSpeed(RECHARGE_FORWARD_SPD,RECHARGE_FORWARD_SPD);
+		this->goDistance(RECHARGE_E_PUCK_DIAMETER/2.0);
 		
 		bool leftOnLine = (*this->fss).at(0)->getValue() < LINE_THRESHOLD;
 		bool middleOnLine = (*this->fss).at(1)->getValue() < LINE_THRESHOLD;
 		bool rightOnLine = (*this->fss).at(2)->getValue() < LINE_THRESHOLD;
 		
 		// Turn till the middle sensor is on the line
-		this->wheels->setSpeed(BASE_SPD,-BASE_SPD);
+		this->wheels->setSpeed(RECHARGE_BASE_SPD,-RECHARGE_BASE_SPD);
 		while( leftOnLine || !middleOnLine || rightOnLine ){
 	        for (int j = 0; j < FLOOR_SENSORS; j++){
 				printf("Floor sensor %d: %d\n", j, (*this->fss).at(j)->getValue() );
 			}
-			this->robot->step(TIME_STEP);
+			this->robot->step(RECHARGE_TIME_STEP);
 			//currentAngle = this->wheels->getOrientation();
 			leftOnLine = (*this->fss).at(0)->getValue() < LINE_THRESHOLD;
 			middleOnLine = (*this->fss).at(1)->getValue() < LINE_THRESHOLD;
@@ -114,20 +96,20 @@ namespace behaviours {
 				printf("Floor sensor %d: %d\n", j, (*this->fss).at(j)->getValue() );
 			}
 
-			this->robot->step(TIME_STEP);
+			this->robot->step(RECHARGE_TIME_STEP);
 			//currentAngle = this->wheels->getOrientation();
 			middleOnLine = (*this->fss).at(1)->getValue() < LINE_THRESHOLD;
 			steps++;
 		}
 		
 		// Now, turn steps/2 in the other direction, middle sensor should be in the middle of the line
-		this->wheels->setSpeed(-BASE_SPD,BASE_SPD);
+		this->wheels->setSpeed(-RECHARGE_BASE_SPD,RECHARGE_BASE_SPD);
 		for( int i = 0 ; i < (int)(ceil(steps/2.0)) ; i++ ){
             for (int j = 0; j < FLOOR_SENSORS; j++){
 				printf("Floor sensor %d: %d\n", j, (*this->fss).at(j)->getValue() );
 			}
 
-			this->robot->step(TIME_STEP);
+			this->robot->step(RECHARGE_TIME_STEP);
 		}
 
 		this->alignWithLine();
@@ -135,8 +117,8 @@ namespace behaviours {
 	}
 
 	void Recharge::alignWithLine(){
-		this->followLine(false,E_PUCK_DIAMETER);
-		this->followLine(true,E_PUCK_DIAMETER);
+		this->followLine(false,RECHARGE_E_PUCK_DIAMETER);
+		this->followLine(true,RECHARGE_E_PUCK_DIAMETER);
     }
 
 	void Recharge::followLine(bool backwards, double distance){
@@ -150,7 +132,7 @@ namespace behaviours {
 		utils::MyPoint * currentPosition;
 		while ( distanceCovered < distance ){
     		this->followLineSpd(backwards);
-			this->robot->step(TIME_STEP);
+			this->robot->step(RECHARGE_TIME_STEP);
 			currentPosition = this->wheels->getPosition();
 			currentX = currentPosition->getX();
 			currentY = currentPosition->getY();
@@ -159,8 +141,8 @@ namespace behaviours {
 	}
 
     void Recharge::followLineSpd(bool backwards){
-		double lspd = BASE_SPD;
-		double rspd = BASE_SPD;
+		double lspd = RECHARGE_BASE_SPD;
+		double rspd = RECHARGE_BASE_SPD;
 		
 		if ( backwards ){
 			lspd = -1 * lspd;
@@ -169,13 +151,13 @@ namespace behaviours {
 
 		// Left sensor is on line?
 		if ( (*this->fss).at(0)->getValue() < LINE_THRESHOLD ){
-			lspd = lspd * ( 1 - SPD_FACTOR );
-			rspd = rspd * ( 1 + SPD_FACTOR );
+			lspd = lspd * ( 1 - RECHARGE_SPD_FACTOR );
+			rspd = rspd * ( 1 + RECHARGE_SPD_FACTOR );
 		}
 		// Right sensor is on line?
 		if ( (*this->fss).at(2)->getValue() < LINE_THRESHOLD ){
-			lspd = lspd * ( 1 + SPD_FACTOR );
-			rspd = rspd * ( 1 - SPD_FACTOR );
+			lspd = lspd * ( 1 + RECHARGE_SPD_FACTOR );
+			rspd = rspd * ( 1 - RECHARGE_SPD_FACTOR );
 		}
 		this->wheels->setSpeed(lspd,rspd);
 	}
@@ -190,7 +172,7 @@ namespace behaviours {
 		double currentX, currentY;
 		utils::MyPoint * currentPosition;
 		while ( distanceCovered < distance ){
-			this->robot->step(TIME_STEP);
+			this->robot->step(RECHARGE_TIME_STEP);
 			currentPosition = this->wheels->getPosition();
 			currentX = currentPosition->getX();
 			currentY = currentPosition->getY();

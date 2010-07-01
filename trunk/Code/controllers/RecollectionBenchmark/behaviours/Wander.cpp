@@ -1,8 +1,6 @@
 #include "Wander.h"
 #include <utils/MyPoint.h>
 
-#define TURN_FACTOR 0.15
-
 namespace behaviours {
 
 	Wander::Wander(WorldInfo * wi, robotapi::IDifferentialWheels * wheels) : AbstractBehaviour("Wander"){
@@ -26,10 +24,10 @@ namespace behaviours {
 			utils::ArenaGridSlot * oldestSlot = this->getOldestSlot(nb);
 			int dir = oldestSlot->getDir();
 			if ( dir < 0 )
-				rightSpeed *= (1-TURN_FACTOR);
+				rightSpeed *= (1-WANDER_TURN_FACTOR);
 	
 			if ( dir > 0 )
-				leftSpeed *= (1-TURN_FACTOR);
+				leftSpeed *= (1-WANDER_TURN_FACTOR);
 		}
 		this->wheels->setSpeed(leftSpeed,rightSpeed);
 	}

@@ -4,37 +4,6 @@
 #include "GarbageCleaner.h"
 #include <math.h>
 
-#define BASE_X -0.874047
-#define TOLE 0.2
-#define BASE_POSITION (BASE_X+TOLE)
-
-#define AFTER_ALIGN_ORIENTATION -1.59682 //-1.59917
-
-/*
-4,686365307179586476925286766559
-4.68252
-
--1.59917
-4.6825
-*/
-
-#define PASSAGE_BEGIN_X -0.6
-#define PASSAGE_LINE_Z 0.100174
-
-#define LINE_MARK_X -0.626685
-
-#define LINE_ORIENTATION_CORRECTION (3.142375307)
-
-// FROM Z TO 1
-#define FROM_Z_LEFT (0.382857)
-
-#define X_CORRECTION_LINE (-0.447202)
-
-// FROM Z TO -1
-#define FROM_Z_RIGHT (-0.207086)
-
-
-
 namespace behaviours {
 
 // class constructor
@@ -129,7 +98,6 @@ void GoToDisposal::action(){
 
 void GoToDisposal::correctOrientation(){
 	double z = this->wheels->getPosition()->getY();
-	double x = this->wheels->getPosition()->getX();
 
 	if ( this->wheels->getPosition()->getY() > FROM_Z_LEFT ){
 		this->wheels->setOrientation(0);

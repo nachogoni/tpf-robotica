@@ -270,14 +270,11 @@ double GarbageRecognition::distanceTo(utils::Garbage * g)
 {
     if ( g == NULL )
 	    return 10000;
-	int centerX = g->boundingBox()->getTopX() + g->boundingBox()->getWidth()/2;
+
 	int centerY = g->boundingBox()->getTopY() + g->boundingBox()->getHeight()/2;
 
-	int transformedX = centerX - this->wi->getCameraImageWidth()/2;
 	int transformedY = this->wi->getCameraImageHeight() - centerY;
 
-	double minDist = this->getMinimumDistance();
-	double maxDist = this->getMaximumDistance();
 	double vAngleToGarbage = this->wi->getCameraFOVV()*transformedY/this->wi->getCameraImageHeight();
 	double distanceToGarbage = this->getDistance(vAngleToGarbage);
 

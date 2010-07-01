@@ -2,20 +2,6 @@
 #include <utils/MyPoint.h>
 #include <list>
 
-#define BOTTOM_SERVO_ANGLE 0.73
-#define TIME_STEP 32
-#define BASE_SPD 50.0
-
-#define WAIT_STEPS 80
-#define WAIT_STEPS_A_LAST 30
-#define WAIT_STEPS_LAST 10
-
-#define ANGLE_TOLE 0.1
-
-// Experimental
-#define DISTANCE_TOLE 0.0581187
-
-#define SHOVEL_ANGLE -0.1
 namespace behaviours {
 
 	int getStepsToGarbage(double distanceInMeters,double speed);
@@ -45,7 +31,7 @@ namespace behaviours {
 
 		// If there is garbage and the distance to the garbage is less than the
 		// bias, then the behaviour is present
-        if ( fabs(angleToGarbage) < ANGLE_TOLE && distanceToGarbage < DISTANCE_TOLE )
+        if ( fabs(angleToGarbage) < COLLECT_ANGLE_TOLE && distanceToGarbage < DISTANCE_TOLE )
 	        setStimulusPresent();
 
 	}
@@ -53,7 +39,7 @@ namespace behaviours {
     void CollectGarbage::action(){
 		this->wheels->setSpeed(0,0);
 		printf("COLLECTING\n");
-		this->robot->step(TIME_STEP);
+		this->robot->step(COLLECT_TIME_STEP);
 
 		printf("COLLECTING\n");
 		// Get distance to the garbage
@@ -61,11 +47,11 @@ namespace behaviours {
 
 		// Lift up the Shovel
 		this->shovel->setPosition(1.57);
-		for ( int i = 0 ; i < WAIT_STEPS_A_LAST ; i ++ ){
-			this->robot->step(TIME_STEP);
+		for ( int i = 0 ; i < COLLECT_WAIT_STEPS_A_LAST ; i ++ ){
+			this->robot->step(COLLECT_TIME_STEP);
 		}
 
-		this->wheels->setSpeed(BASE_SPD,BASE_SPD);
+		this->wheels->setSpeed(COLLECT_BASE_SPD,COLLECT_BASE_SPD);
 
 		/*
 		int numberOfStepsToGarbage = getStepsToGarbage(0,BASE_SPD);
@@ -82,7 +68,7 @@ namespace behaviours {
 		double currentX, currentY;
 		utils::MyPoint * currentPosition;
 		while ( distanceCovered < distanceToGarbage ){
-			this->robot->step(TIME_STEP);
+			this->robot->step(COLLECT_TIME_STEP);
 			currentPosition = this->wheels->getPosition();
 			currentX = currentPosition->getX();
 			currentY = currentPosition->getY();
@@ -93,13 +79,13 @@ namespace behaviours {
 		this->shovel->setPosition(SHOVEL_ANGLE);
 		this->wheels->setSpeed(0,0);
 
-		for ( int i = 0 ; i < WAIT_STEPS_A_LAST ; i ++ ){
-			this->robot->step(TIME_STEP);
+		for ( int i = 0 ; i < COLLECT_WAIT_STEPS_A_LAST ; i ++ ){
+			this->robot->step(COLLECT_TIME_STEP);
 		}
 
 		this->shovel->setPosition(0);
-		for ( int i = 0 ; i < WAIT_STEPS_LAST ; i ++ ){
-			this->robot->step(TIME_STEP);
+		for ( int i = 0 ; i < COLLECT_WAIT_STEPS_LAST ; i ++ ){
+			this->robot->step(COLLECT_TIME_STEP);
 		}
 
 /*
@@ -120,11 +106,6 @@ namespace behaviours {
 */
 		// Make Garbage Recognition take a new image
 		this->gr->stepDone();
-	}
-
-	int getStepsToGarbage(double distanceInMeters,double speed){
-		// TODO
-		return 100;
 	}
 
 } /* End of namespace behaviours */

@@ -4,9 +4,6 @@
 #include <utils/MyAngle.h>
 #include <stdio.h>
 
-#define BASE_SPD 100
-#define MIN_SPD 1
-
 namespace behaviours {
 
 	FocusGarbage::FocusGarbage(utils::GarbageRecognition * gr, robotapi::IDifferentialWheels * wheels) : AbstractBehaviour("Focus Garbage"){
@@ -35,7 +32,7 @@ namespace behaviours {
 //        printf("Angle To Garbage: %g\n",angleToGarbage);
 		double module = fabs(angleToGarbage);
 
-		double leftSpeed = BASE_SPD * ( module / (PI/2) ) + MIN_SPD;
+		double leftSpeed = FOCUS_GARBAGE_BASE_SPD * ( module / (PI/2) ) + FOCUS_GARBAGE_MIN_SPD;
 		double rightSpeed = leftSpeed;
 
 		// Turn as long as the angle to the garbage is greater than zero

@@ -7,6 +7,8 @@
 #include "WorldInfo.h"
 
 #define WANDER_SPD 100.0
+#define WANDER_TURN_FACTOR 0.15
+
 
 namespace behaviours {
 

@@ -3,10 +3,6 @@
 #include <behaviours/PositionInLine.h> // class's header file
 #include <behaviours/GoToBaseGroup.h>
 
-#define POSITIONING_BASE_SPD 20.0
-
-#define POSITION_TURN_FACTOR 2
-
 namespace behaviours{
 
 // class constructor
