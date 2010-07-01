@@ -1,7 +1,7 @@
 #include "Wander.h"
 #include <utils/MyPoint.h>
 
-#define TURN_FACTOR 0.75
+#define TURN_FACTOR 0.15
 
 namespace behaviours {
 
@@ -26,10 +26,10 @@ namespace behaviours {
 			utils::ArenaGridSlot * oldestSlot = this->getOldestSlot(nb);
 			int dir = oldestSlot->getDir();
 			if ( dir < 0 )
-				rightSpeed *= TURN_FACTOR;
+				rightSpeed *= (1-TURN_FACTOR);
 	
 			if ( dir > 0 )
-				leftSpeed *= TURN_FACTOR;
+				leftSpeed *= (1-TURN_FACTOR);
 		}
 		this->wheels->setSpeed(leftSpeed,rightSpeed);
 	}

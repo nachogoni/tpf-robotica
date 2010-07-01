@@ -20,7 +20,7 @@ namespace behaviours {
 	}
 
     void FindLine::action(){
-//		utils::MyLine * l = wi->getCurrentLine();
+
 		double currentOrientation = wheels->getOrientation();
 		double destinyAngle = PI/2;
 		

@@ -4,7 +4,7 @@
 #include "AbstractBehaviour.h"
 #include <vector>
 
-#define THRESHOLD_OBSTACLE 143
+#define THRESHOLD_OBSTACLE 400
 
 namespace behaviours {
 

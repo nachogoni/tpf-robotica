@@ -3,8 +3,9 @@
 #include <behaviours/PositionInLine.h> // class's header file
 #include <behaviours/GoToBaseGroup.h>
 
-#define POSITIONING_BASE_SPD 15.0
+#define POSITIONING_BASE_SPD 20.0
 
+#define POSITION_TURN_FACTOR 2
 
 namespace behaviours{
 
@@ -38,14 +39,14 @@ void PositionInLine::action(){
 			printf("Above the top right line\n");
        	  	rspd = rspd * ( 1 - currentAngle/(PI/2) );
 	   	  	if ( (*this->fss).at(1)->getValue() > LINE_THRESHOLD )
-	  		    lspd = lspd * 2;
+	  		    lspd = lspd * POSITION_TURN_FACTOR;
 			printf("Turning right\n");
 		}else{
 			// It is below the line
    			printf("Below the top right line\n");
 		  	lspd = lspd * ( currentAngle/(PI/2) - 1 );
 		  	if ( (*this->fss).at(1)->getValue() > LINE_THRESHOLD )
-	  		    rspd = rspd * 2;
+	  		    rspd = rspd * POSITION_TURN_FACTOR;
 			printf("Turning left\n");
 		}
 	}else if ( this->wheels->getPosition()->getY() > 0.15 ){
@@ -56,14 +57,14 @@ void PositionInLine::action(){
 			printf("Above the top left line\n");
 		  	lspd = lspd * ( currentAngle/(PI/2) - 1 );
 		  	if ( (*this->fss).at(1)->getValue() > LINE_THRESHOLD )
-	  		    rspd = rspd * 2;
+	  		    rspd = rspd * POSITION_TURN_FACTOR;
 			printf("Turning left\n");
         }else{
 			// It is below the line
    			printf("Below the top left line\n");
 	   	  	rspd = rspd * ( 1 - currentAngle/(PI/2) );
    		  	if ( (*this->fss).at(1)->getValue() > LINE_THRESHOLD )
-	  		    lspd = lspd * 2;
+	  		    lspd = lspd * POSITION_TURN_FACTOR;
 			printf("Turning right\n");
 		}
 	}

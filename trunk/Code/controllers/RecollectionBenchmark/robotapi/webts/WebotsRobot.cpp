@@ -114,9 +114,12 @@ namespace webts {
 	void WebotsRobot::saveChanges(std::list<utils::ArenaGridSlot *> ags){
 		std::list<utils::ArenaGridSlot *>::iterator it;
 		time_t ts = time(NULL);
+
+		#ifdef SAVE_CHANGED
 		FILE * pFile;
 		pFile = fopen ("changes.tmp","w");
 		if (pFile!=NULL){
+		#endif
 			time_t ts0 = this->ag->getInitialTimeStamp();
 			for ( it=ags.begin() ; it != ags.end() ; it++ ){
 				if ( (*it)->setTimeStamp(ts) <= ts0 )
@@ -127,9 +130,10 @@ namespace webts {
 				#endif
 //				printf("(%d,%d)\n",(*it)->getI(),(*it)->getJ());
 			}
+		#ifdef SAVE_CHANGED
 		}
 		fclose (pFile);
-
+		#endif
 		return;
 	}
 
