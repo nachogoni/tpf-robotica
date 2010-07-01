@@ -1990,7 +1990,7 @@ DEF E_PUCK DifferentialWheels {
     density -1
     mass 0.15
   }
-  controller "Tcleaner"
+  controller "RecollectionBenchmark"
   battery [
     11000, 18000, 600
   ]
