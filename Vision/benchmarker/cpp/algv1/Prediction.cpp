@@ -49,14 +49,15 @@ namespace utils{
 
 			//collect
 			if((*itHist)->state==SHOW){
-				factor=(*itHist)->lastAppeareance - (*itHist)->age;
+				factor=(*itHist)->age - (*itHist)->lastAppeareance ;
 				if( factor!=1){
 					//make a guess
 					guess=(*itHist)->guessPosition();
-					guess->isPredicted=true;
+						guess->isPredicted=true;
+					guess->isVisualized=false;
 					newGarbageList.push_back(guess);
 				}else{
-					guess->isPredicted=true;
+					(*itHist)->garbage->isPredicted=false;
 					newGarbageList.push_back((*itHist)->garbage);
 				}
 			}
