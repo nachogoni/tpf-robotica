@@ -114,6 +114,7 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 	ab = new behaviours::Wander(wi, wheels);
 	myAbstractBehaviours.push_back(ab);
 
+	#ifdef FOCUS_GOTO_COLLECT_DISPOSE_GARBAGE
 	ab = new behaviours::FocusGarbage( gr, wheels );
 	myAbstractBehaviours.push_back(ab);
 
@@ -125,9 +126,12 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 
 	ab = new behaviours::GoToDisposal( wi, &myIRobot, trashBin , wheels, fss , servoRear );
 	myAbstractBehaviours.push_back(ab);
+	#endif
 
+	#ifdef GO_TO_RECHARGE
 	ab = new behaviours::GoToBaseGroup( wi, &myIRobot, robotBattery , pcBattery , wheels, fss );
 	myAbstractBehaviours.push_back(ab);
+	#endif
 
 	ab = new behaviours::AvoidObstacle(wheels,dss);
 	myAbstractBehaviours.push_back(ab);
@@ -190,7 +194,7 @@ void GarbageCleaner::stepWasDone(){
 
 void GarbageCleaner::printStats(){
 
-	for( int i = 0 ; i < myAbstractBehaviours.size() ; i ++ ){
+	for( unsigned int i = 0 ; i < myAbstractBehaviours.size() ; i ++ ){
 		printf(" %d ",(this->stats)[i]);
 	}
 	putchar('\n');

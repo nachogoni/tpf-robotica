@@ -4,26 +4,6 @@
 #include "GarbageCleaner.h"
 #include <math.h>
 
-#define BASE_X -0.874047
-#define TOLE 0.2
-#define BASE_POSITION (BASE_X+TOLE)
-
-#define PASSAGE_BEGIN_X -0.6
-#define PASSAGE_LINE_Z 0.100174
-
-#define LINE_MARK_X -0.626685
-
-#define LINE_ORIENTATION_CORRECTION (3.142375307)
-
-// FROM Z TO 1
-#define FROM_Z_LEFT (0.382857)
-
-#define X_CORRECTION_LINE (-0.447202)
-
-// FROM Z TO -1
-#define FROM_Z_RIGHT (-0.207086)
-
-
 namespace behaviours {
 
 // class constructor
@@ -35,8 +15,8 @@ GoToBaseGroup::GoToBaseGroup(WorldInfo * wi,robotapi::IRobot * robot, robotapi::
 	this->fss = &fss;
 	this->wheels = wheels;
 	
-	this->robotBattery->setEmptyBias(5500);
-	this->robotBattery->setFullBias(15000);
+	this->robotBattery->setEmptyBias(GO_TO_BASE_EMPTY_BIAS);
+	this->robotBattery->setFullBias(GO_TO_BASE_FULL_BIAS);
 	behaviours::AbstractBehaviour * ab = new behaviours::FindLine( wi, wheels, fss );
 	myBehaviours[0] = ab;
 
@@ -75,7 +55,7 @@ void GoToBaseGroup::action(){
 	
 	double xpos = this->wheels->getPosition()->getX();
 
-	if ( xpos < BASE_POSITION && fabs( this->wheels->getOrientation() - 3*(PI/2)) < BASE_FIX_ORIENTATION_TOLE ){
+	if ( xpos < GO_TO_BASE_BASE_POSITION && fabs( this->wheels->getOrientation() - 3*(PI/2)) < GO_TO_BASE_BASE_FIX_ORIENTATION_TOLE ){
 		this->myBehaviours[3]->action();
 		following = false;
 		return;
@@ -98,16 +78,16 @@ void GoToBaseGroup::action(){
 	following = true;
 
 	if ( !this->inLine() ){
-		if ( xpos < BASE_POSITION ){
+		if ( xpos < GO_TO_BASE_BASE_POSITION ){
 	    	printf("Recharging\n");
 			this->myBehaviours[3]->action();
 		}
 		following = false;
 	}else{
-		if( xpos < PASSAGE_BEGIN_X && this->onMark() && ! beenOnMark ){
+		if( xpos < GO_TO_BASE_PASSAGE_BEGIN_X && this->onMark() && ! beenOnMark ){
 			printf("On Mark!");
 			beenOnMark = true;
-			this->wheels->setPosition(LINE_MARK_X,PASSAGE_LINE_Z,true);
+			this->wheels->setPosition(GO_TO_BASE_LINE_MARK_X,GO_TO_BASE_PASSAGE_LINE_Z,true);
 		}
 	    this->myBehaviours[2]->action();
 		this->correctOrientation();
@@ -118,17 +98,16 @@ void GoToBaseGroup::action(){
 
 void GoToBaseGroup::correctOrientation(){
 	double z = this->wheels->getPosition()->getY();
-	double x = this->wheels->getPosition()->getX();
 
-	if ( this->wheels->getPosition()->getY() > FROM_Z_LEFT ){
+	if ( this->wheels->getPosition()->getY() > GO_TO_BASE_FROM_Z_LEFT ){
 		this->wheels->setOrientation(0);
-		this->wheels->setPosition(X_CORRECTION_LINE,z,true);
+		this->wheels->setPosition(GO_TO_BASE_X_CORRECTION_LINE,z,true);
 		printf("correcting left\n");
 	}
 
-	if ( this->wheels->getPosition()->getY() < FROM_Z_RIGHT ){
-		this->wheels->setOrientation(LINE_ORIENTATION_CORRECTION);
-		this->wheels->setPosition(X_CORRECTION_LINE,z,true);
+	if ( this->wheels->getPosition()->getY() < GO_TO_BASE_FROM_Z_RIGHT ){
+		this->wheels->setOrientation(GO_TO_BASE_LINE_ORIENTATION_CORRECTION);
+		this->wheels->setPosition(GO_TO_BASE_X_CORRECTION_LINE,z,true);
 		printf("correcting right\n");
 	}
 }

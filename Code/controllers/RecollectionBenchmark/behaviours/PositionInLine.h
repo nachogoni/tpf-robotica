@@ -7,6 +7,10 @@
 #include "WorldInfo.h"
 #include <vector>
 
+#define POSITIONING_BASE_SPD 20.0
+
+#define POSITION_TURN_FACTOR 2
+
 namespace behaviours {
 
 /**

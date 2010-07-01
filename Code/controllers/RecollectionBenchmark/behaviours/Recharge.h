@@ -5,6 +5,22 @@
 #include "WorldInfo.h"
 #include <vector>
 
+#define RECHARGE_TIME_STEP 32
+#define RECHARGE_ORIENTATION_TOLE 0.1
+
+#define RECHARGE_BACKWARD_STEPS 40
+#define RECHARGE_BACKWARD_SPD 100.0
+
+#define RECHARGE_FORWARD_SPD 100.0
+
+#define RECHARGE_BASE_X -0.847015
+#define RECHARGE_BASE_Z 0.102655
+#define RECHARGE_BASE_ANGLE (3.0*PI/2.0)
+
+#define RECHARGE_BASE_SPD 50.0
+#define RECHARGE_SPD_FACTOR 0.7
+#define RECHARGE_E_PUCK_DIAMETER 0.052
+
 namespace behaviours {
 
 class Recharge : public AbstractBehaviour {

@@ -1,10 +1,6 @@
 #include "GoToGarbage.h" // class's header file
 #include <list>
 
-#define ANGLE_TOLE 0.1
-#define MAX_SPD 100
-#define MIN_SPD 10
-
 namespace behaviours {
 
 	// class constructor
@@ -31,7 +27,7 @@ namespace behaviours {
         this->currentGarbage = this->gr->getClosestGarbage(gs);
         double angleToGarbage = this->gr->angleTo(currentGarbage);
         
-        if ( fabs(angleToGarbage) < ANGLE_TOLE )
+        if ( fabs(angleToGarbage) < GO_TO_GARBAGE_ANGLE_TOLE )
 	        setStimulusPresent();
 	}
 
@@ -46,7 +42,7 @@ namespace behaviours {
 
 	double GoToGarbage::calculateSpeed(double distanceToGarbage){
 		double coeff = distanceToGarbage/(this->gr->getMaximumDistance() - this->gr->getMinimumDistance());
-		return MIN_SPD * ( 1 - coeff ) + coeff * MAX_SPD;
+		return GO_TO_GARBAGE_MIN_SPD * ( 1 - coeff ) + coeff * GO_TO_GARBAGE_MAX_SPD;
 	}
 
 }

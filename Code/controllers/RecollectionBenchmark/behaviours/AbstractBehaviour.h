@@ -4,6 +4,7 @@
 #include <string>
 #include <robotapi/IRobot.h>
 
+#define LINE_THRESHOLD 350
 
 class GarbageCleaner;
 
