@@ -27,7 +27,7 @@ namespace behaviours {
 		if ( fabs(destinyAngle - currentOrientation) < ANGLE_TOLE )
 		    wheels->setSpeed(BASE_SPD,BASE_SPD);
 		else{
-			if ( currentOrientation > 90 && currentOrientation < 270 )
+			if ( currentOrientation > HALF_PI && currentOrientation < THREE_HALF_PI )
 			    wheels->setSpeed(BASE_SPD,-BASE_SPD);
 			else
 			    wheels->setSpeed(-BASE_SPD,BASE_SPD);

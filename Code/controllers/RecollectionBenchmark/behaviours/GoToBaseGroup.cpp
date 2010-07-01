@@ -35,7 +35,7 @@ GoToBaseGroup::GoToBaseGroup(WorldInfo * wi,robotapi::IRobot * robot, robotapi::
 	this->fss = &fss;
 	this->wheels = wheels;
 	
-	this->robotBattery->setEmptyBias(3500);
+	this->robotBattery->setEmptyBias(5500);
 	this->robotBattery->setFullBias(15000);
 	behaviours::AbstractBehaviour * ab = new behaviours::FindLine( wi, wheels, fss );
 	myBehaviours[0] = ab;
@@ -72,9 +72,10 @@ int following = false;
 bool beenOnMark = false;
 
 void GoToBaseGroup::action(){
+	
 	double xpos = this->wheels->getPosition()->getX();
 
-	if ( xpos < BASE_POSITION && fabs( this->wheels->getOrientation() - 3*(PI/2)) < ORIENTATION_TOLE ){
+	if ( xpos < BASE_POSITION && fabs( this->wheels->getOrientation() - 3*(PI/2)) < BASE_FIX_ORIENTATION_TOLE ){
 		this->myBehaviours[3]->action();
 		following = false;
 		return;
@@ -151,7 +152,7 @@ bool GoToBaseGroup::inPosition(){
 	else if ( this->wheels->getPosition()->getY() > 0.15 )
 	   	targetAngle = 0;
 
-	return fabs( this->wheels->getOrientation() - targetAngle ) < ORIENTATION_TOLE;
+	return fabs( this->wheels->getOrientation() - targetAngle ) < GO_TO_BASE_ORIENTATION_TOLE;
 }
 
 } /* End of namespace behaviours */

@@ -13,7 +13,8 @@
 
 //#define LINE_THRESHOLD 420
 #define LINE_THRESHOLD 350
-#define ORIENTATION_TOLE 0.3
+#define GO_TO_BASE_ORIENTATION_TOLE (PI/4)
+#define BASE_FIX_ORIENTATION_TOLE 0.3
 
 namespace behaviours {
 
