@@ -1883,12 +1883,28 @@ Aunque usar componentes de montaje superficial nos permitir\'ian tener una placa
 \subsection{Placa controladora de motores DC}
 \label{h_placas_motorDC}
 
-funcion de una placa controladora de motorDC, porque fue armada, para que sirve, porque hay 2, porque no esta en una sola
+Nuestro proyecto implicaba, entre otras cosas, el dise\~no y construcci\'on de un robot movil y como principal necesidad
+ten\'ia que poder movilizarse por el terreno.
+Y debido a que el desplazamiento iba a ser mediante ruedas, el control de los motores que las impulran era cr\'itico.
+
+Creamos una placa especializada para esta tarea sobredimensionando los requerimientos para no tener acotadas las opciones
+a futuro sobre qu\'e modelo de motores usar\'iamos.
+
+En este apartado explicamos los aspectos que tuvimos en cuenta para dise\~nar y crear la placa controladora de motores
+de corriente continua para el robot.
 
 \subsubsection{Caracter\'isticas principales}
 \label{h_placas_motorDC_caracteristicas}
 
 principio de funcionamiento, como logra controlar la velocidad, como logra ser parte de la cadena, como logra sensar el consumo, controlar el motor, puente H, diodos, leds, VREF
+
+La funci\'on principal es mantener una velocidad estable en el motor de cont\'inua, pero tambi\'en poder sensar la cantidad
+y sentido del movimiento que realiz\'o la rueda, informar el consumo y poder determinar el desplazamiento a realizar entre otros.
+Este \'ultimo requerimiento era de vital importancia si quer\'iamos tener precisi\'on en el movimiento que realizar\'ia la rueda
+ya que el control de alta resoluci\'on hubiera sido imposible hacerlo desde el controlador principal.
+
+Como explicamos en la secci\'on \ref{h_actuadores_motorDC_circuito}.......................
+
 
 \subsubsection{M\'odulo de comunicaci\'on}
 \label{h_placas_motorDC_comm}
@@ -1923,6 +1939,7 @@ explicacion de lo minimo que deberia tener para ser parte de la cadena de comuni
 \subsubsection{Posibles extensiones}
 \label{h_placas_motorDC_extensiones}
 
+porque hay 2, porque no esta en una sola
 unificar en una placa el control de mas de un motor, pasar a montaje superficial los componentes, hacerla mas chica
 
 \subsection{Placas de sensado}
