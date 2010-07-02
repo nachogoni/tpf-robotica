@@ -54,8 +54,8 @@ public:
     ~WebotsRobot() { }
     
 	private:
-    	GarbageCleaner * gc;
-        WorldInfo * wi;
+		GarbageCleaner * gc;
+		WorldInfo * wi;
 		IDifferentialWheels * df;
 		IBattery * robotBattery;
 		IBattery * pcBattery;

@@ -9,13 +9,17 @@
 #include <robotapi/webts/WebotsTrashBin.h>
 #include <webots/Camera.hpp>
 #include <webots/Robot.hpp>
+#include <webots/GPS.hpp>
 #include <utils/Rectangle2D.h>
 #include <GarbageCleaner.h>
+#include <math.h>
 
 namespace robotapi {
 namespace webts {
 
-	webots::Robot * robot;
+		webots::Robot * robot;
+		webots::GPS * gps;
+		double lastGPSX, lastGPSZ;
 
     WebotsRobot::WebotsRobot( WorldInfo * wi, webots::DifferentialWheels & dw){
 		robot = &dw;
@@ -26,6 +30,12 @@ namespace webts {
 		this->pcBattery = new WebotsPCBattery(s,*wdt);
 		this->robotBattery = new WebotsBattery(*robot,s,*wdt);
 		this->ag = this->wi->getArenaGrid();
+		gps = robot->getGPS("gps");
+		if ( gps != NULL ){
+			gps->enable(32);
+			lastGPSX = this->wi->getInitialPosition()->getX();
+			lastGPSZ = this->wi->getInitialPosition()->getY();
+		}
 	}
 
     std::string WebotsRobot::getName(){
@@ -98,6 +108,29 @@ namespace webts {
 		}
 
 		printf("Current Position : %g %g %g\n",df->getPosition()->getX(),df->getPosition()->getY(),df->getOrientation());
+		
+		if ( gps != NULL ){
+			const double * values = gps->getValues();
+			double difX = values[0] - lastGPSX;
+			double difZ = values[2] - lastGPSZ;
+			double angle = atan2(-difX,-difZ);
+			printf("GPS Position : %g %g %g\n",values[0],values[2],angle);
+			lastGPSX = values[0];
+			lastGPSZ = values[2];
+			FILE * pFile;
+			pFile = fopen ("odometryError.txt","a+");
+			if (pFile!=NULL){
+				fprintf(pFile,"%g %g %g %g %g %g\n",df->getPosition()->getX(),
+													values[0],
+													df->getPosition()->getY(),
+													values[2],
+													df->getOrientation(),
+													angle);
+			}
+			fclose(pFile);
+		}
+		
+		
 		printf("Slots Left: %d - Really Left: %d - Visited : %d\n",this->ag->getSlotsLeft(),this->ag->getSlotsLeftWOExcluded(),this->ag->getSlotsVisited());
 		printf("Robot Battery : %g - PC Battery : %g\n",robotBattery->getValue(),pcBattery->getValue());
 /*
