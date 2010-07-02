@@ -10,7 +10,7 @@ WorldInfo {
 Viewpoint {
   fieldOfView 1.6454
   orientation -0.562402 0.614378 0.553392 2.02529
-  position -0.0194552 1.09778 -0.291477
+  position -0.052718 0.599248 -0.718068
 }
 PointLight {
   intensity 0.5
@@ -94,7 +94,7 @@ DEF short_rock_1 Solid {
 }
 DEF garbage_geom Solid {
   translation 0.263419 0.00199947 -0.375354
-  rotation 1.3216e-006 1 8.48912e-006 1
+  rotation 1.3216e-006 1 8.48913e-006 1
   children [
     Shape {
       appearance Appearance {
@@ -115,7 +115,7 @@ DEF garbage_geom Solid {
 }
 DEF short_rock_3 Solid {
   translation 0.142776 0.0491985 0.119999
-  rotation 0.00130211 0.999999 -0.000553811 -0.868798
+  rotation 0.00130219 0.999999 -0.000553894 -0.868731
   children [
     Shape {
       appearance Appearance {
@@ -187,9 +187,6 @@ DEF short_rock_5 Solid {
 DEF E_PUCK DifferentialWheels {
   translation -0.0015 0 -0.4
   children [
-    GPS {
-      resolution 1e-007
-    }
     Servo {
       translation 0 0.0412 0.03
       rotation 1 0 0 0
@@ -261,6 +258,7 @@ DEF E_PUCK DifferentialWheels {
       }
       maxVelocity 0.5
       maxForce 100
+      position 2.98023e-008
     }
     DEF EPUCK_LEFT_WHEEL Solid {
       translation -0.026 0.02 0
@@ -2011,8 +2009,10 @@ DEF E_PUCK DifferentialWheels {
   }
   controller "RecollectionBenchmark"
   battery [
-    11000, 18000, 600
+    10660.7, 18000, 600
   ]
+  cpuConsumption 10
+  motorConsumption 20
   axleLength 0.052
   wheelRadius 0.0205
   maxSpeed 6.28022
@@ -2031,7 +2031,7 @@ Charger {
           appearance Appearance {
             material Material {
               diffuseColor 0 1 0
-              emissiveColor 1 0 0
+              emissiveColor 0.347111 0.652889 0
               specularColor 0.564706 0.933333 0.564706
               transparency 0.2
             }
@@ -2047,7 +2047,7 @@ Charger {
   ]
   name "charger0"
   battery [
-    1000, 18000, 600
+    11752, 18000, 600
   ]
   radius 0.05
 }
@@ -2232,4 +2232,40 @@ DEF n_Wall Solid {
     }
   ]
   boundingObject USE n_WALL_SHAPE
+}
+DEF garbage Solid {
+  translation -0.0430671 0.00175358 -0.670485
+  rotation 0.819232 -2.60135e-010 0.573462 1.57006
+  children [
+    DEF garbage_shape Shape {
+      appearance Appearance {
+        material Material {
+          ambientIntensity 1
+          diffuseColor 1 1 1
+          emissiveColor 1 1 1
+          shininess 1
+          specularColor 1 1 1
+        }
+        texture ImageTexture {
+          url [
+            "colilla-sinBlanco.png"
+          ]
+        }
+      }
+      geometry Cylinder {
+        height 0.01
+        radius 0.00175
+        subdivision 6
+      }
+    }
+  ]
+  boundingObject Sphere {
+    radius 0.0071
+  }
+  physics Physics {
+    density 1
+    mass 0.01
+    bounce 0.7
+    coulombFriction 10000
+  }
 }
