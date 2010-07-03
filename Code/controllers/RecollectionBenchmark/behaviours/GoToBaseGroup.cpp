@@ -63,7 +63,7 @@ void GoToBaseGroup::action(){
 
 	if ( ! following ){
 		beenOnMark = false;
-		if ( !this->inLine() ){
+		if ( !this->inLine() || xpos > GO_TO_BASE_LINE_X_POSITION_THRESHOLD ){
 		    this->myBehaviours[0]->action();
 	    	printf("Going to line\n");
 		    return;

@@ -65,7 +65,7 @@ void GoToDisposal::action(){
 
 	if ( ! followingLine ){
 		dBeenOnMark = false;
-		if ( !this->inLine() ){
+		if ( !this->inLine() || xpos > GO_TO_D_LINE_X_POSITION_THRESHOLD ){
 		    this->disposalBehaviours[0]->action();
 	    	printf("Going to line\n");
 		    return;

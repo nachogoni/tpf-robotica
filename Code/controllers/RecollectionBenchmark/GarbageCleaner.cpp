@@ -5,6 +5,7 @@
 #include <behaviours/GoToBaseGroup.h>
 #include <behaviours/GoToDisposal.h>
 #include <behaviours/GoToGarbage.h>
+#include <behaviours/Recalibrate.h>
 #include <behaviours/Recharge.h>
 #include <behaviours/UnloadGarbage.h>
 #include <behaviours/Wander.h>
@@ -130,6 +131,9 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 	ab = new behaviours::GoToDisposal( wi, &myIRobot, trashBin , wheels, fss , servoRear, servoContainer );
 	myAbstractBehaviours.push_back(ab);
 	#endif
+
+	ab = new behaviours::Recalibrate ( );
+	myAbstractBehaviours.push_back(ab);
 
 	#ifdef GO_TO_RECHARGE
 	ab = new behaviours::GoToBaseGroup( wi, &myIRobot, robotBattery , pcBattery , wheels, fss );
