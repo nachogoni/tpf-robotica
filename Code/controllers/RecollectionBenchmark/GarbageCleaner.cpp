@@ -32,6 +32,7 @@ robotapi::IServo* servoFront;
 robotapi::IServo* servoBottom;
 robotapi::IServo* servoRear;
 robotapi::IServo* servoInside;
+robotapi::IServo* servoContainer;
 robotapi::ITrashBin* trashBin;
 robotapi::IDifferentialWheels* wheels;
 robotapi::IBattery* robotBattery;
@@ -89,6 +90,8 @@ void GarbageCleaner::initializeSensors(){
 	servoRear = &myIRobot.getServo("servo1");
 	servoRear->enablePosition(TIME_STEP);
 
+	servoContainer = &myIRobot.getServo("servo3");
+	servoContainer->enablePosition(TIME_STEP);
 
 	trashBin = &myIRobot.getTrashBin("ts0");
 	trashBin->enable(TIME_STEP);
@@ -124,7 +127,7 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 	ab = new behaviours::CollectGarbage( gr, &myIRobot, trashBin, wheels, wi, servoFront );
 	myAbstractBehaviours.push_back(ab);
 
-	ab = new behaviours::GoToDisposal( wi, &myIRobot, trashBin , wheels, fss , servoRear );
+	ab = new behaviours::GoToDisposal( wi, &myIRobot, trashBin , wheels, fss , servoRear, servoContainer );
 	myAbstractBehaviours.push_back(ab);
 	#endif
 
