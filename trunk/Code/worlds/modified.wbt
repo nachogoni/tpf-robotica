@@ -9,8 +9,8 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 1.6454
-  orientation -0.542194 0.635449 0.549755 2.02195
-  position -0.0255343 0.901012 -0.0313121
+  orientation -0.549216 0.637427 0.540416 1.99194
+  position -0.266731 1.34961 0.0920386
 }
 PointLight {
   intensity 0.5
@@ -185,8 +185,7 @@ DEF short_rock_5 Solid {
   boundingObject USE short_brick_1_geometry
 }
 DEF E_PUCK DifferentialWheels {
-  translation -0.0015 0 -0.4
-  rotation 0 1 0 0.785398
+  translation -0.301837 0 0.726871
   children [
     Servo {
       translation 0 0.0412 0.03
@@ -1993,7 +1992,7 @@ DEF E_PUCK DifferentialWheels {
   }
   controller "Tcleaner"
   battery [
-    11000, 18000, 600
+    4500, 18000, 600
   ]
   cpuConsumption 10
   motorConsumption 20
@@ -2258,7 +2257,7 @@ DEF garbage_uno Solid {
   }
 }
 DEF garbage_dos Solid {
-  translation -0.298607 0.005 -0.327048
+  translation -0.312214 0.005 0.499181
   rotation 0.819232 0 0.573462 1.57
   children [
     USE garbage_shape

@@ -37,6 +37,8 @@
 #define GO_TO_BASE_EMPTY_BIAS 5500
 #define GO_TO_BASE_FULL_BIAS 15000
 
+#define GO_TO_BASE_LINE_X_POSITION_THRESHOLD -0.34
+
 namespace behaviours {
 
 /**
