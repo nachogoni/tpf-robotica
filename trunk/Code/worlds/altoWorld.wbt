@@ -10,7 +10,7 @@ WorldInfo {
 Viewpoint {
   fieldOfView 1.6454
   orientation -0.562402 0.614378 0.553392 2.02529
-  position -0.322805 0.625708 0.361712
+  position -0.131214 0.606956 -0.415296
 }
 PointLight {
   intensity 0.5
@@ -185,8 +185,7 @@ DEF short_rock_5 Solid {
   boundingObject USE short_brick_1_geometry
 }
 DEF E_PUCK DifferentialWheels {
-  translation -0.497166 0.000443304 0.880089
-  rotation 0.0143515 0.999869 0.00747835 -0.959053
+  translation -0.0015 0 -0.4
   children [
     Servo {
       translation 0 0.0412 0.03
@@ -2009,7 +2008,7 @@ DEF E_PUCK DifferentialWheels {
   }
   controller "RecollectionBenchmark"
   battery [
-    0, 18000, 600
+    11000, 18000, 600
   ]
   cpuConsumption 10
   motorConsumption 20
@@ -2234,8 +2233,8 @@ DEF n_Wall Solid {
   boundingObject USE n_WALL_SHAPE
 }
 DEF garbage Solid {
-  translation -0.216649 0.0071 -0.0459215
-  rotation 0.534152 0.817029 -0.217129 1.88115
+  translation -0.043067 0.005 -0.670485
+  rotation 0.819232 0 0.573462 1.57
   children [
     DEF garbage_shape Shape {
       appearance Appearance {
