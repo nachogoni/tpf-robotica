@@ -113,15 +113,15 @@ void GoToDisposal::correctOrientation(){
 }
 
 bool GoToDisposal::onMark(){
-	return (*this->fss).at(0)->getValue() < LINE_THRESHOLD &&
-			(*this->fss).at(1)->getValue() < LINE_THRESHOLD &&
-			(*this->fss).at(2)->getValue() < LINE_THRESHOLD;
+	return AbstractBehaviour::inLine((*this->fss).at(0)->getValue()) &&
+			AbstractBehaviour::inLine((*this->fss).at(1)->getValue()) &&
+			AbstractBehaviour::inLine((*this->fss).at(2)->getValue());
 }
 
 bool GoToDisposal::inLine(){
-	return (*this->fss).at(0)->getValue() < LINE_THRESHOLD ||
-			(*this->fss).at(1)->getValue() < LINE_THRESHOLD ||
-			(*this->fss).at(2)->getValue() < LINE_THRESHOLD;
+	return AbstractBehaviour::inLine((*this->fss).at(0)->getValue()) ||
+			AbstractBehaviour::inLine((*this->fss).at(1)->getValue()) ||
+			AbstractBehaviour::inLine((*this->fss).at(2)->getValue());
 }
 
 bool GoToDisposal::inPosition(){

@@ -34,14 +34,14 @@ void PositionInLine::action(){
 			// It is above the line
 			printf("Above the top right line\n");
        	  	rspd = rspd * ( 1 - currentAngle/(PI/2) );
-	   	  	if ( (*this->fss).at(1)->getValue() > LINE_THRESHOLD )
+	   	  	if ( this->inLine((*this->fss).at(1)->getValue()) )
 	  		    lspd = lspd * POSITION_TURN_FACTOR;
 			printf("Turning right\n");
 		}else{
 			// It is below the line
    			printf("Below the top right line\n");
 		  	lspd = lspd * ( currentAngle/(PI/2) - 1 );
-		  	if ( (*this->fss).at(1)->getValue() > LINE_THRESHOLD )
+		  	if ( this->inLine((*this->fss).at(1)->getValue()) )
 	  		    rspd = rspd * POSITION_TURN_FACTOR;
 			printf("Turning left\n");
 		}
@@ -52,14 +52,14 @@ void PositionInLine::action(){
 			// It is above the line
 			printf("Above the top left line\n");
 		  	lspd = lspd * ( currentAngle/(PI/2) - 1 );
-		  	if ( (*this->fss).at(1)->getValue() > LINE_THRESHOLD )
+		  	if ( this->inLine((*this->fss).at(1)->getValue()) )
 	  		    rspd = rspd * POSITION_TURN_FACTOR;
 			printf("Turning left\n");
         }else{
 			// It is below the line
    			printf("Below the top left line\n");
 	   	  	rspd = rspd * ( 1 - currentAngle/(PI/2) );
-   		  	if ( (*this->fss).at(1)->getValue() > LINE_THRESHOLD )
+   		  	if ( this->inLine((*this->fss).at(1)->getValue()) )
 	  		    lspd = lspd * POSITION_TURN_FACTOR;
 			printf("Turning right\n");
 		}

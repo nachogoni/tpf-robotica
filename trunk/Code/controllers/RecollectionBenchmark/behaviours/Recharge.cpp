@@ -34,7 +34,7 @@ namespace behaviours {
 
 		// Go back a little bit till the sensor is not on the line anymore
    		this->wheels->setSpeed(-RECHARGE_BACKWARD_SPD,-RECHARGE_BACKWARD_SPD);
-		while( (*this->fss).at(1)->getValue() < LINE_THRESHOLD){
+		while( this->inLine((*this->fss).at(1)->getValue()) ){
 			this->robot->step(RECHARGE_TIME_STEP);
 		}
 		
@@ -49,7 +49,7 @@ namespace behaviours {
 
 		// Go forward till the sensor is on the line again
    		this->wheels->setSpeed(RECHARGE_FORWARD_SPD,RECHARGE_FORWARD_SPD);
-		while( (*this->fss).at(1)->getValue() < LINE_THRESHOLD){
+		while( !this->inLine((*this->fss).at(1)->getValue()) ){
 			this->robot->step(RECHARGE_TIME_STEP);
 		}
 
@@ -72,9 +72,9 @@ namespace behaviours {
    		this->wheels->setSpeed(RECHARGE_FORWARD_SPD,RECHARGE_FORWARD_SPD);
 		this->goDistance(RECHARGE_E_PUCK_DIAMETER/2.0);
 		
-		bool leftOnLine = (*this->fss).at(0)->getValue() < LINE_THRESHOLD;
-		bool middleOnLine = (*this->fss).at(1)->getValue() < LINE_THRESHOLD;
-		bool rightOnLine = (*this->fss).at(2)->getValue() < LINE_THRESHOLD;
+		bool leftOnLine = this->inLine((*this->fss).at(0)->getValue());
+		bool middleOnLine = this->inLine((*this->fss).at(1)->getValue());
+		bool rightOnLine = this->inLine((*this->fss).at(2)->getValue());
 		
 		// Turn till the middle sensor is on the line
 		this->wheels->setSpeed(RECHARGE_BASE_SPD,-RECHARGE_BASE_SPD);
@@ -84,9 +84,9 @@ namespace behaviours {
 			}
 			this->robot->step(RECHARGE_TIME_STEP);
 			//currentAngle = this->wheels->getOrientation();
-			leftOnLine = (*this->fss).at(0)->getValue() < LINE_THRESHOLD;
-			middleOnLine = (*this->fss).at(1)->getValue() < LINE_THRESHOLD;
-			rightOnLine = (*this->fss).at(2)->getValue() < LINE_THRESHOLD;
+			leftOnLine = this->inLine((*this->fss).at(0)->getValue());
+			middleOnLine = this->inLine((*this->fss).at(1)->getValue());
+			rightOnLine = this->inLine((*this->fss).at(2)->getValue());
 		}
 		
 		int steps = 0;
@@ -98,7 +98,7 @@ namespace behaviours {
 
 			this->robot->step(RECHARGE_TIME_STEP);
 			//currentAngle = this->wheels->getOrientation();
-			middleOnLine = (*this->fss).at(1)->getValue() < LINE_THRESHOLD;
+			middleOnLine = this->inLine((*this->fss).at(1)->getValue());
 			steps++;
 		}
 		
@@ -150,12 +150,12 @@ namespace behaviours {
 		}
 
 		// Left sensor is on line?
-		if ( (*this->fss).at(0)->getValue() < LINE_THRESHOLD ){
+		if ( this->inLine((*this->fss).at(0)->getValue()) ){
 			lspd = lspd * ( 1 - RECHARGE_SPD_FACTOR );
 			rspd = rspd * ( 1 + RECHARGE_SPD_FACTOR );
 		}
 		// Right sensor is on line?
-		if ( (*this->fss).at(2)->getValue() < LINE_THRESHOLD ){
+		if ( this->inLine((*this->fss).at(2)->getValue()) ){
 			lspd = lspd * ( 1 + RECHARGE_SPD_FACTOR );
 			rspd = rspd * ( 1 - RECHARGE_SPD_FACTOR );
 		}

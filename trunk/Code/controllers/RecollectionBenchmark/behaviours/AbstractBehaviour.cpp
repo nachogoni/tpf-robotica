@@ -76,4 +76,8 @@ namespace behaviours {
 		if ( myGarbageCleaner == NULL )
             myGarbageCleaner = garbageCleaner;
 	}
+
+	bool AbstractBehaviour::inLine(double value){
+		return value > LINE_DOWN_THRESHOLD && value < LINE_UP_THRESHOLD;
+	}
 } /* End of namespace behaviours */

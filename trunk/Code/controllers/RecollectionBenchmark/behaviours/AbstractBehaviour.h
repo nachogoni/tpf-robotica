@@ -4,7 +4,8 @@
 #include <string>
 #include <robotapi/IRobot.h>
 
-#define LINE_THRESHOLD 350
+#define LINE_UP_THRESHOLD 350
+#define LINE_DOWN_THRESHOLD 175
 
 class GarbageCleaner;
 
@@ -31,6 +32,8 @@ class AbstractBehaviour {
 	void setStimulusPresent();
 
 	static void resetStimulusPresent();
+
+	bool inLine(double value);
  public:
     int behaviour_id;
    	std::string s;
