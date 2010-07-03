@@ -63,9 +63,9 @@ namespace behaviours {
    		this->wheels->setSpeed(UNLOAD_FORWARD_SPD,UNLOAD_FORWARD_SPD);
 		this->goDistance(UNLOAD_E_PUCK_DIAMETER/2.0);
 		
-		bool leftOnLine = (*this->fss).at(0)->getValue() < LINE_THRESHOLD;
-		bool middleOnLine = (*this->fss).at(1)->getValue() < LINE_THRESHOLD;
-		bool rightOnLine = (*this->fss).at(2)->getValue() < LINE_THRESHOLD;
+		bool leftOnLine = this->inLine((*this->fss).at(0)->getValue());
+		bool middleOnLine = this->inLine((*this->fss).at(1)->getValue());
+		bool rightOnLine = this->inLine((*this->fss).at(2)->getValue());
 		
 		// Turn till the middle sensor is on the line
 		this->wheels->setSpeed(UNLOAD_BASE_SPD,-UNLOAD_BASE_SPD);
@@ -75,9 +75,9 @@ namespace behaviours {
 			}
 			this->robot->step(UNLOAD_TIME_STEP);
 			//currentAngle = this->wheels->getOrientation();
-			leftOnLine = (*this->fss).at(0)->getValue() < LINE_THRESHOLD;
-			middleOnLine = (*this->fss).at(1)->getValue() < LINE_THRESHOLD;
-			rightOnLine = (*this->fss).at(2)->getValue() < LINE_THRESHOLD;
+			leftOnLine = this->inLine((*this->fss).at(0)->getValue());
+			middleOnLine = this->inLine((*this->fss).at(1)->getValue());
+			rightOnLine = this->inLine((*this->fss).at(2)->getValue());
 		}
 		
 		int steps = 0;
@@ -89,7 +89,7 @@ namespace behaviours {
 
 			this->robot->step(UNLOAD_TIME_STEP);
 			//currentAngle = this->wheels->getOrientation();
-			middleOnLine = (*this->fss).at(1)->getValue() < LINE_THRESHOLD;
+			middleOnLine = this->inLine((*this->fss).at(1)->getValue());
 			steps++;
 		}
 		
@@ -140,12 +140,12 @@ namespace behaviours {
 		}
 
 		// Left sensor is on line?
-		if ( (*this->fss).at(0)->getValue() < LINE_THRESHOLD ){
+		if ( this->inLine((*this->fss).at(0)->getValue()) ){
 			lspd = lspd * ( 1 - UNLOAD_SPD_FACTOR );
 			rspd = rspd * ( 1 + UNLOAD_SPD_FACTOR );
 		}
 		// Right sensor is on line?
-		if ( (*this->fss).at(2)->getValue() < LINE_THRESHOLD ){
+		if ( this->inLine((*this->fss).at(2)->getValue()) ){
 			lspd = lspd * ( 1 + UNLOAD_SPD_FACTOR );
 			rspd = rspd * ( 1 - UNLOAD_SPD_FACTOR );
 		}
