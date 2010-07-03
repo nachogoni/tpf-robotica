@@ -19,7 +19,7 @@ namespace behaviours {
     void FindLine::action(){
 
 		double currentOrientation = wheels->getOrientation();
-		double destinyAngle = PI/2;
+		double destinyAngle = HALF_PI;
 		double lspd = FIND_LINE_BASE_SPD;
 		double rspd = FIND_LINE_BASE_SPD;
 		
@@ -29,6 +29,9 @@ namespace behaviours {
 			}else{
 			    lspd *= -1;
 			}
+		}else{
+			rspd *= 2;
+			lspd *= 2;
 		}
 	    wheels->setSpeed(lspd,rspd);
 	}

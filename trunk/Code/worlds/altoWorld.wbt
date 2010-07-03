@@ -9,8 +9,8 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 1.6454
-  orientation -0.562402 0.614378 0.553392 2.02529
-  position -0.131214 0.606956 -0.415296
+  orientation -0.549704 0.642553 0.533808 1.97251
+  position -0.0798639 0.676093 -0.333661
 }
 PointLight {
   intensity 0.5
@@ -187,7 +187,7 @@ DEF short_rock_5 Solid {
 DEF E_PUCK DifferentialWheels {
   translation -0.0015 0 -0.4
   children [
-    Servo {
+    DEF BACK_SERVO Servo {
       translation 0 0.0412 0.03
       rotation 1 0 0 0
       children [
@@ -231,7 +231,7 @@ DEF E_PUCK DifferentialWheels {
         orientation 0 1 0 0
       }
     }
-    Servo {
+    DEF FRONT_SERVO Servo {
       translation 0 0.035 -0.035
       rotation 1 0 0 0
       children [
@@ -254,6 +254,33 @@ DEF E_PUCK DifferentialWheels {
       physics Physics {
         density -1
         mass 0.005
+        orientation 0 1 0 0
+      }
+      maxVelocity 0.5
+      maxForce 100
+    }
+    DEF CONTAINER_SERVO Servo {
+      translation 0 0.015 0.018
+      rotation 1 0 0 -1.57
+      children [
+        Solid {
+          children [
+            Shape {
+              appearance Appearance {
+              }
+              geometry DEF CSBOX Box {
+                size 0.02 0.02 0.0005
+              }
+            }
+          ]
+          boundingObject USE CSBOX
+        }
+      ]
+      name "servo3"
+      boundingObject USE CSBOX
+      physics Physics {
+        density -1
+        mass 0.0005
         orientation 0 1 0 0
       }
       maxVelocity 0.5
@@ -2259,7 +2286,7 @@ DEF garbage Solid {
     }
   ]
   boundingObject Sphere {
-    radius 0.0071
+    radius 0.007
   }
   physics Physics {
     density 1

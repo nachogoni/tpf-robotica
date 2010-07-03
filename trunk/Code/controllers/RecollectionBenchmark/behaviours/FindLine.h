@@ -6,7 +6,7 @@
 #include <vector>
 
 #define FIND_LINE_ANGLE_TOLE 0.07
-#define FIND_LINE_BASE_SPD 50
+#define FIND_LINE_BASE_SPD 25
 
 namespace behaviours {
 

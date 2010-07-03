@@ -22,8 +22,10 @@ namespace webts {
 	}
 
 	int WebotsTrashBin::getValue(){
+
 		if ( this->currentValue >= 1 )
 		    return this->currentValue;
+
         this->currentValue = this->myts->getValue();
 		return (int)ceil(this->currentValue);
 	}

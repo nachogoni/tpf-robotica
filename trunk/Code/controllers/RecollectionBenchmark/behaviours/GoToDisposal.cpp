@@ -7,12 +7,13 @@
 namespace behaviours {
 
 // class constructor
-GoToDisposal::GoToDisposal(WorldInfo * wi, robotapi::IRobot * robot, robotapi::ITrashBin * tb, robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & fss, robotapi::IServo * gate) : AbstractBehaviour("Go To Disposal")
+GoToDisposal::GoToDisposal(WorldInfo * wi, robotapi::IRobot * robot, robotapi::ITrashBin * tb, robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & fss, robotapi::IServo * gate, robotapi::IServo * cont) : AbstractBehaviour("Go To Disposal")
 {
 	this->trashbin = tb;
 	this->wi = wi;
 	this->fss = &fss;
 	this->wheels = wheels;
+	this->cont = cont;
 
 	this->trashbin->setFullBias(1);
 
@@ -38,8 +39,10 @@ GoToDisposal::~GoToDisposal()
 
 void GoToDisposal::sense(){
 
-	if ( this->trashbin->isFull() )
+	if ( this->trashbin->isFull() ){
 		this->setStimulusPresent();
+		this->cont->setPosition(-1.1);
+	}
 
 	/*
 	for (int j = 0; j < FLOOR_SENSORS; j++){
@@ -54,7 +57,7 @@ bool dBeenOnMark = false;
 void GoToDisposal::action(){
 	double xpos = this->wheels->getPosition()->getX();
 
-	if ( xpos < BASE_POSITION && fabs( this->wheels->getOrientation() - 3*(PI/2)) < ORIENTATION_TOLE ){
+	if ( xpos < BASE_POSITION && fabs( this->wheels->getOrientation() - 3*(PI/2)) < GO_TO_D_ORIENTATION_TOLE ){
 		this->disposalBehaviours[3]->action();
 		followingLine = false;
 		return;
@@ -81,6 +84,7 @@ void GoToDisposal::action(){
 		if ( xpos < BASE_POSITION ){
 			printf("Unloading\n");
 			this->disposalBehaviours[3]->action();
+			this->cont->setPosition(0);
 		}
 		followingLine = false;
 	}else{
@@ -125,13 +129,13 @@ bool GoToDisposal::inLine(){
 }
 
 bool GoToDisposal::inPosition(){
-	double targetAngle = PI/2;
+	double targetAngle = HALF_PI;
 	if ( this->wheels->getPosition()->getY() < 0.06 )
 	    targetAngle = PI;
 	else if ( this->wheels->getPosition()->getY() > 0.15 )
 	   	targetAngle = 0;
 
-	return fabs( this->wheels->getOrientation() - targetAngle ) < ORIENTATION_TOLE;
+	return fabs( this->wheels->getOrientation() - targetAngle ) < GO_TO_D_ORIENTATION_TOLE;
 }
 
 

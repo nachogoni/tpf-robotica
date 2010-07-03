@@ -11,9 +11,7 @@
 #include <behaviours/PositionInLine.h>
 #include <behaviours/GoToBase.h>
 
-//#define LINE_THRESHOLD 420
-#define LINE_THRESHOLD 350
-#define ORIENTATION_TOLE 0.3
+#define GO_TO_D_ORIENTATION_TOLE 0.3
 
 
 #define BASE_X -0.874047
@@ -53,7 +51,7 @@ namespace behaviours {
 class GoToDisposal : public AbstractBehaviour {
 
 	public:
-		GoToDisposal(WorldInfo * wi, robotapi::IRobot * robot, robotapi::ITrashBin * tb, robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & fss, robotapi::IServo * gate);
+		GoToDisposal(WorldInfo * wi, robotapi::IRobot * robot, robotapi::ITrashBin * tb, robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & fss, robotapi::IServo * gate, robotapi::IServo * cont);
 
 		~GoToDisposal();
 
@@ -72,6 +70,7 @@ class GoToDisposal : public AbstractBehaviour {
 
 	    behaviours::AbstractBehaviour * disposalBehaviours [4];
 		robotapi::IDifferentialWheels * wheels;
+		robotapi::IServo * cont;
 		robotapi::ITrashBin * trashbin;
 		std::vector<robotapi::IDistanceSensor*> * fss;
 		WorldInfo * wi;
