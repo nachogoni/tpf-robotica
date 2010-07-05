@@ -7,6 +7,7 @@ Intro de visi\'on
 	\subsubsection{Mobile Field Robot with Vision-Based Detection of Volunteer Potato Plants in a Corn Crop - FRITS K. VAN EVERT}
 	\cite{potato}
 	\subsubsection{Review of shape representation and description techinques - Dengsheng Zhang}
+El objetivo de este trabajo es realizar un resumen de las tecnicas mas importantes en cuanto a la representación y descripción de formas.
 	\subsubsection{Sidewalk Following Using Color Histograms - John S. Seng}
 	\subsubsection{Skin Detection using HSV color space - V. A. Oliveira, A. Conci}
 	En este artículo se trabajó sobre la detección de piel en imágenes utilizando el espacio de color HSV. El algoritmo propuesto 
@@ -21,23 +22,147 @@ para determinar la dirección de movimiento del robot. El algoritmo descripto po
 	
 \subsection{Algoritmo de detección}
 \subsubsection{Estructura}
-El algoritmo que propusimos comienza por tomar una imágen fresca de la cámara, las imágenes capturadas poseen el formato 24-bit RGB. A su vez, esta imagen puede ser descompuesta en 3 imágenes o canales de 8 bits , una para cada color ( rojo ,verde y azul). Con el objetivo de minimizar el impacto producido por cambios en la iluminación se convierte la imagen al formato HSV (tono, saturación y brillo). Luego utilizamos el canal H de esta nueva imágen para establecer que pixels se corresponden con el color buscado, filtrando aquellos pixeles que no coinciden con el rango deseado. A su vez, usamos la información brindada por los  canales de saturación y/o brillo para obtener mas precisión sobre el color de los pixeles.
-	\indent Trasladamos esta información al canal de saturación realizando un and bit a bit con la imagen filtrada.  En la siguiente etapa, se utilizan filtros morfológicos cuyo objetivo es la eliminación de ruido. El resultado de aplicar estos filtros resulta en la expansión de las areas donde hay mucha presencia de pixeles de interés, produciendo un área de intensidad homogénea mientras que elimina la aparición de pixeles de interés aislados productos del ruido. El paso siguiente consiste en la aplicación de un umbral. El umbral filtra aquellos pixeles que no se encuentren por encima de un valor mínimo de intensidad marcandolos con valor cero y conserva únicamente los pixeles que si lo hacen estableciendoles un valor predeterminado ( mayor a cero) a estos. 
-	\indent Hasta aquí el pre-procesamiento de la imágen, al llegar a esta etapa del algoritmo deseamos tener solo pixeles de los potenciales objetos de interés. Vale notar que, como consecuencia del filtro umbral, la imagen se encuentra binarizada, es decir, los pixels solo pueden tener dos posibles valores: cero (negro) si no es un pixel de interés o mayor a cero en el caso contrario. Es entonces que automáticamente quedan delimitadas las áreas que contienen pixeles de interés, el próximo paso del algoritmo se encarga de obtener los contornos de estas áreas. Para esto utilizamos el algoritmo de suzuki 
-\cite{suzuki85} que recorre los bordes de estas zonas y crea secuencias de puntos $(x,y)$ que definen el contorno de las mismas. Las secuencias de puntos son luego aproximadas para generar polígonos cerrados mediante el algoritmo de Douglas-Pecker \cite{dp74}. Tomando estos polígonos definimos distintos parámetros tales como el área, perimetro o la forma que posee que nos permiten discernir si se trata de un objeto a reconocer o no.
+La figura \ref{fig:alg_steps} ilustra las etapas del algoritmo. Este fue programado utilizando el lenguaje C++ y la librería de visión computacional openCv.
+El algoritmo comienza por tomar una imágen fresca de la cámara, las imágenes capturadas poseen el formato 24-bit RGB. A su vez, esta imagen puede ser descompuesta en 3 imágenes o canales de 8 bits , una para cada color ( rojo ,verde y azul). Con el objetivo de minimizar el impacto producido por cambios en la iluminación se convierte la imagen al formato HSV (tono, saturación y brillo). Luego utilizamos el canal H de esta nueva imágen para establecer que pixels se corresponden con el color buscado, filtrando aquellos pixeles que no coinciden con el rango deseado. A su vez, usamos la información brindada por los  canales de saturación y/o brillo para obtener mas precisión sobre el color de los pixeles.\\
+	\indent Descartamos los pixels filtrados en el canal de saturación realizando un and bit a bit con la imagen filtrada.  En la siguiente etapa, se utilizan filtros morfológicos cuyo objetivo es la eliminación de ruido. El resultado de aplicar estos filtros resulta en la expansión de las areas donde hay mucha presencia de pixeles de interés, produciendo un área de intensidad homogénea mientras que elimina la aparición aislada de estos producto del ruido. El paso siguiente consiste en la aplicación de un umbral. El umbral filtra aquellos pixeles que no se encuentren por encima de un valor mínimo de intensidad marcandolos con valor cero y conserva únicamente los pixeles que si lo hacen estableciendoles un valor predeterminado ( mayor a cero). \\
+	\indent Hasta aquí el pre-procesamiento de la imágen, al llegar a esta etapa del algoritmo deseamos tener solo pixeles de los potenciales objetos de interés. Vale notar que, como consecuencia de aplicar un filtro umbral, la imagen se encuentra binarizada, es decir, los pixels solo pueden tener dos posibles valores: cero (negro) si no es un pixel de interés o mayor a cero en el caso contrario. Es entonces que automáticamente quedan delimitadas las áreas que contienen pixeles de interés, el próximo paso del algoritmo se encarga de obtener los contornos de estas áreas. Para esto utilizamos el algoritmo de suzuki \cite{suzuki85} que recorre los bordes de estas zonas y crea secuencias de puntos $(x,y)$ que definen el contorno de las mismas. Las secuencias de puntos son luego aproximadas para generar polígonos cerrados mediante el algoritmo de Douglas-Pecker \cite{dp74}. Tomando estos polígonos definimos distintos parámetros tales como el área, perimetro o figura que nos permiten discernir si se trata de un objeto a reconocer o no.
 
-	\subsubsection{Detecci\'on de color}
-Usando esta representación, la identificación de un color en la imagen se ve dificultada ya que un cambio en la iluminación afecta a los 3 canales por igual, por este motivo se convierte la imagen al espacio de color HSV.
+
+\begin{figure}[tpb]
+\begin{center}
+  \includegraphics[scale=0.6]{figuras/vision-flow.png}
+\end{center}
+  \caption{Etapas del algoritmo de visión }
+  \label{fig:alg_steps}
+\end{figure}
+
+
+\subsubsection{Detecci\'on de color}
+El problema de decidir si un pixel determinado se corresponde con un color particular resulta mucho mas sencillo de resolver en el espacio de color HSV. En el espacio RGB, de haber un cambio en el brillo o iluminación de la imagen, los tres canales se ven afectados de igual manera mientras que en el espacio HSV el canal H, que codifica la información sobre el tono del color, se ve mucho menos influenciado que los otros dos canales ( saturación y valor). De esta manera, podemos caracterizar el color de un pixel determinado observando su valor en dicho canal sin importar las condiciones de brillo o iluminación al cual se encuentra expuesto.
+\\ \indent Entonces, realizamos la detección de color verificando los valores correspondientes al canal H ( tono) de la representación HSV de la imagen. Para esto realizamos la conversión de la imagen obtenida por la cámara  de formato RGB a HSV usando el algoritmo expuesto en la fígura \ref{code:hsv}.
+\begin{figure}[tpb]
+\begin{verbatim}
+V=max(R,G,B)
+S=(V-min(R,G,B))*255/V   if V!=0, 0 otherwise
+
+       (G - B)*60/S,  if V=R
+H= 180+(B - R)*60/S,  if V=G
+   240+(R - G)*60/S,  if V=B
+
+if H<0 then H=H+360
+\end{verbatim}
+\label{code:hsv}
+\caption{pseudo-código de la conversión RGB-HSV}
+\end{figure}
+
+Obteniendo el canal H, nos fijamos que los valores de los pixeles esten dentro de cierto rango correspondiente al color que buscamos. Como podemos observar en la figura \ref{fig:hsv_space} En el espacio de color HSV los colores se encuentran dispuestos a lo largo de una circunferencia , donde cada tonalidad representa un ángulo en la misma. Por ejemplo, si queremos abarcar las distintas tonalidades del azul podemos elegir el rango que va de 200$^\circ$ a 260$^\circ$. Cuando buscamos un color en particular  es preciso elegir este rango cuidadosamente ya que de ser un rango muy restrictivo podemos despreciar pixeles de interés arruinando la forma del contorno del objeto a buscar y si elegimos un rango más abarcativo podemos tomar pixeles de colores distintos al buscado, introduciendo ruido en las formas de los contornos. Experimentalmente se comprueban los resultados de un filtro de color con distintos rangos, como se muestra  en la fígura \ref{fig:hue_range}.
+\begin{figure}[tpb]
+\begin{center}
+  \includegraphics[scale=0.4]{figuras/hsv_triangle.png}
+\end{center}
+  \caption{\small Espacio de color HSV. Los distintos tonos de colores se encuentran dispuestos a lo largo de la circunferencia.}
+  \label{fig:hsv_space}
+\end{figure}
+
+\begin{figure}[tpb]
+\begin{center}
+  \includegraphics[scale=0.8]{figuras/hue.png}
+\end{center}
+  \caption{\small Resultados de aplicar un filtro de color utilizando distintos rangos. (a) Captura original . (b) Resultado de aplicar el filtro $35\le h \le45$, se pierden algunos pixeles. (c) Resultado de aplicar el filtro $20\le h \le40$. (d) Resultado de aplicar el filtro $10 \le h \le 50$, se introducen pixeles extra.} 
+  \label{fig:hue_range}
+\end{figure}
+
 	\subsubsection{Threshold}
+Threshold o umbral es una operación que nos permite pasar de una imagen en escala de grises a una imagen binaria. El proceso de thresholding consiste en distinguir los pixeles que se encuentran por encima de un cierto valor de los que estan por debajo del mismo. Con este objetivo, se crea una imagen binaria asignandoles valores 1 o 0 según su condición respecto del valor. El algortmo de thresholding nos puede servir para distinguir un objeto determinado de un contexto o fondo siempre y cuando el objeto posea un mayor brillo que el fondo en el que se encuentra. Esto significa que los pixeles correspondientes a un objeto se encontrarán por encima de cierto valor caracteristico, determinado por el fondo. Podemos apreciar un ejemplo de threshold en la figura \ref{fig:threshold}. \\
+\indent Existen diversas variantes de threshold, los parametros utilizados son $V$ para indicar el valor umbral y $M$ que indica el valor a setear en los pixeles.
+\begin{itemize}
+\item{ Threshold binario:  Si un pixel se encuentra por encima de $V$, se le asigna un valor $M$, de otro modo se le asigna $0$.}
+\item{ Threshold binario invertido:  Si un pixel se encuentra por encima de $V$, se le asigna 0, de otro modo se le asigna $M$.}
+\item{ Threshold truncado:  Si un pixel se encuentra por encima de $V$, se le asigna $V$, de otro modo conserva su valor.}
+\item{ Threshold a cero invertido : Si un pixel se encuentra por encima de $V$ se le asigna $0$, de otro modo, conserva su valor.}
+\item{ Threshold a cero invertido : Si un pixel se encuentra por encima de $V$ conserva su valor, de otro modo se lee asigna $0$.}
+\end{itemize}
+El problema con esta familia de algoritmos es que en todos los casos el valor $V$ permanece constante para toda la imagen haciendolo propenso a errores cuando la imagen presenta diferentes niveles de iluminación. Una manera de solucionar esto es pre-computando el valor $V$ para distintas zonas de la imágen. Como solución a este problema, destacamos la tecnica de thresholding adaptativo que computa el valor de $V$ a medida que recorre la imagen, usando para esto, una ventana cuyo tamaño es definido por el usuario. Siguiendo esta lógica, se utilizan los valores de los pixeles locales a esta ventana para definir un valor de $V$ (por ejemplo calculando el promedio) y luego se aplica alguna de las tecnicas de thresholding simples mencionadas utilizando este mismo valor. Sin embargo, este algoritmo es mas costos y puede provocar efectos indeseados.ACA PODRIA IR UNA FOTO DE THRESHOLD ADAPTATIVO\\
+\indent En nuestro caso, utilizamos thresholding no para distinguir los objetos del fondo ( esto es trábajo del filtro de color), sino como metodo de eliminación de ruido. Cuando se combina el canal de saturación con el resultado del filtro de color, se obtiene una imagen de escala de grises que esta segmentada en un conjunto de areas con distintos valores de intensidad. Luego de aplicar dilatación y erosión, los niveles de intensidad de cada área se vuelven homogeneos ( ya que se toma el máximo o mínimo local) y es entonces donde podemos diferenciar las zonas de intensidad alta de las zonas de intensidad baja, motivo por el cual utilizamos la operación de threshold. COMPLETAR AQUI \ref{fig:threshold_ruido} \ref{fig:threshold}. 
+
+\begin{figure}[tpb]
+\begin{center}
+  \includegraphics[scale=0.8]{figuras/threshold-ruido.png}
+\end{center}
+ \caption{\small Resultados de aplicar thresholding binario. (a) Captura original . (b) Salida del detector de color, se observan algunos pixeles extra cerca de la línea de brea. (c) Salida de la operación de dilatación-erosión. (d) Salida de la operación de thresholding binario con un umbral de $100$. La baja intensidad de los pixeles extra en la línea de brea no supera el umbral propuesto y por lo tanto son descartados. El contorno del objeto de interés se conserva aislado.} 
+  \label{fig:threshold_ruido}
+\end{figure}
+
+\begin{figure}[tpb]
+\begin{center}
+  \includegraphics[scale=0.8]{figuras/threshold.png}
+\end{center}
+  \caption{\small Resultados de aplicar thresholding. (a) Captura original . (b) Salida del detector de color, se observan algunos pixeles extra debajo del objeto de interés. (c) Salida de la operación de dilatación-erosión, los pixeles extra se combinaron con los pixeles del objeto.(d) Salida de la operación de thresholding binario con un umbral de $100$. La baja intensidad de los pixeles extra en la zona debajo del objeto no supera el umbral propuesto y por lo tanto son descartados. El contorno del objeto de interés se conserva aislado.} 
+  \label{fig:threshold}
+\end{figure}
+
 	\subsubsection{Operaciones morfologicas}
-		\subsubsection*{Dilataci\'on}
-		\subsubsection*{Erosi\'on}
+Sombras, luces y otros efectos pueden alterar el resultado del filtro de color introduciendo ruido en los objetos a detectar. Este ruido puede surgir tanto de la omisión de pixeles de interés como por la inclusión de pixeles extra. Para subsanar esto, utilizamos las operaciones morfológicas de dilatación y erosión. Ambas se basan en la utilización de un elemento estructural, esto es, una fígura de cualquier tamaño y forma que tiene definido un punto principal y que recorre la imágen solapandose pixel a pixel. De acuerdo a operaciones locales a este elemento, el pixel que coincide con el punto principal se ve modificado. Usualmente se utilizan como elementos estructurales , pequeños discos o cuadrados, donde el punto principal se encuentra en el centro del mismo. El efecto generado se entiende mejor observandolo en imágenes binarias. En el caso de la dilatación, la idea intuitiva es remplazar cada pixel no vacío con una copia del elemento estructural cuyo punto principal se encuentra en esa posición. Para la erosión, la idea intuitiva es quedarse con aquellos pixeles tal que podamos hacer caber un elemento estructural cuyo punto principal se encuentra en esa posición y dicho elemento solo cubra pixeles no vacíos.
+Ilustramos esto en las figuras \ref{fig:erode-sample} y \ref{fig:dilate-sample}.
+
+%aca va la imagen que explica como funciona dilate y erode en binario
+
+\begin{figure}[tpb]
+\begin{center}
+  \includegraphics[scale=0.4]{figuras/dilate-sample.png}
+\end{center}
+  \caption{\small Operación de dilatación en imágenes binarias. Se reemplazan los pixeles no vacíos por una copia del elemento estructural con punto principal en esa posición. La cruz indica la posición del punto principal dentro del elemento estructural (ee). Imagen obtenida del curso de visión artificial de la Universidad Politécnica de Madrid.}
+  \label{fig:dilate-sample}
+\end{figure}
+
+\begin{figure}[tpb]
+\begin{center}
+  \includegraphics[scale=0.4]{figuras/erode-sample.png}
+\end{center}
+  \caption{\small Operación de erosión en imágenes binarias. Se persisten los pixeles no vacíos en donde cabe una copia del elemento estructural cuyo punto principal se encuentra en esa posición. La cruz indica la posición del punto principal dentro del elemento estructural (ee). Imagen obtenida del curso de visión artificial de la Universidad Politécnica de Madrid. } 
+  \label{fig:erode-sample}
+\end{figure}
+
+	\subsubsection*{Dilataci\'on}
+En imágenes no binarias, la operación de dilatación se define tomando el máximo local bajo el elemento estructural y poniendole ese valor al punto principal. El efecto producido es una reducción general en el brillo de la imagen y un probable aumento el tamaño de las fíguras \cite{nasa-dilate-erode}.  Cuando un área grande aparece, a causa del ruido, partida en varias componentes, el uso de la operación de dilatación provoca que  se combinen nuevamente en una sola. Un ejemplo de esto puede ser apreciado en la fígura \ref{fig:dilate}. Otro beneficio de utilizar dilatación es la eliminación del ruido espurio como se aprecia en la figura \ref{fig:dilate-ruido}.
+
+\begin{figure}[tpb]
+\begin{center}
+  \includegraphics[scale=0.8]{figuras/dilate1.png}
+\end{center}
+  \caption{\small Efecto de la operación de dilatación. (a)  Imagen original tomada de la cámara. (b) Imágen luego de aplicar dilatación a la imagen c con un elemento estuctural cuadrado de 3x3 pixels, con punto principal en el centro. (c) Salida del filtro de color combinado con el canal de saturación. La colilla de cigarrillo esta 'partida' en dos componentes conexas. } 
+  \label{fig:dilate}
+\end{figure}
+
+\begin{figure}[tpb]
+\begin{center}
+
+  \includegraphics[scale=0.6]{figuras/dilate-ruido.png}
+\end{center}
+  \caption{\small Eliminación de ruido mediante la operación de dilatación. (a) Imagen original tomada de la cámara. (b) Imágen luego de aplicar dilatación a la imagen c con un elemento estuctural cuadrado de 3x3 pixels, con punto principal en el centro. (c) Salida del filtro de color. Observamos áreas  oscuras en el interior del vaso. }
+  \label{fig:dilate-ruido}
+\end{figure}
+
+	\subsubsection*{Erosi\'on}
+En imágenes no binarias, la operación de erosión se define tomando el mínimo local bajo el elemento estructural y poniendole ese valor al punto principal. Contrario a la dilatación, este operador generalmente reduce el brillo de la imagen y disminuye el tamaño de las figuras \cite{nasa-dilate-erode}. Usamos la operación de erosión para eliminar las protuberancias que pueden surgir de aplicar la operación de dilatación. En la fígura \ref{fig:erode1} podemos apreciar el efecto de aplicar dilatación y luego erosión.
+
+\begin{figure}[tpb]
+\begin{center}
+  \includegraphics[scale=0.8]{figuras/erosion.png}
+\end{center}
+  \caption{\small Ejemplo de erosión. (a) Captura original. (b) Salida del filtro de color. Se observan fallas en la detección del objeto. (d) Se aplica la operación de dilatación a la imagen b. Se observa la producción de protuberancias en la figura del objeto. (c) Salida luego de aplicar erosión a c. La figura del objeto se corrige eliminando parte de las protuberancias. Sin embargo, no se observan fallas en la detección del objeto. }
+  \label{fig:erode}
+\end{figure}
+
 	\subsubsection{Detecci\'on de contornos}
 		\subsubsection*{Algoritmo}
 		\subsubsection*{Representaci\'on}
 	\subsubsection{Filtros}
 	\subsubsection{Sistema de predicci\'on}
 	\subsubsection{Ventaneo}
+
+
+
 	
 	
 \subsection{Resultados}
