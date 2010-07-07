@@ -39,7 +39,7 @@ El algoritmo comienza por tomar una imágen fresca de la cámara, las imágenes 
 
 \subsubsection{Detecci\'on de color}
 El problema de decidir si un pixel determinado se corresponde con un color particular resulta mucho mas sencillo de resolver en el espacio de color HSV. En el espacio RGB, de haber un cambio en el brillo o iluminación de la imagen, los tres canales se ven afectados de igual manera mientras que en el espacio HSV el canal H, que codifica la información sobre el tono del color, se ve mucho menos influenciado que los otros dos canales ( saturación y valor). De esta manera, podemos caracterizar el color de un pixel determinado observando su valor en dicho canal sin importar las condiciones de brillo o iluminación al cual se encuentra expuesto.
-\\ \indent Entonces, realizamos la detección de color verificando los valores correspondientes al canal H ( tono) de la representación HSV de la imagen. Para esto realizamos la conversión de la imagen obtenida por la cámara  de formato RGB a HSV usando el algoritmo expuesto en la fígura \ref{code:hsv}.
+\\ \indent Entonces, realizamos la detección de color verificando los valores correspondientes al canal H ( tono) de la representación HSV de la imagen. Para esto realizamos la conversión de la imagen obtenida por la cámara  de formato RGB a HSV usando el algoritmo expuesto en la figura \ref{code:hsv}.
 \begin{figure}[tpb]
 \begin{verbatim}
 V=max(R,G,B)
@@ -55,7 +55,7 @@ if H<0 then H=H+360
 \caption{pseudo-código de la conversión RGB-HSV}
 \end{figure}
 
-Obteniendo el canal H, nos fijamos que los valores de los pixeles esten dentro de cierto rango correspondiente al color que buscamos. Como podemos observar en la figura \ref{fig:hsv_space} En el espacio de color HSV los colores se encuentran dispuestos a lo largo de una circunferencia , donde cada tonalidad representa un ángulo en la misma. Por ejemplo, si queremos abarcar las distintas tonalidades del azul podemos elegir el rango que va de 200$^\circ$ a 260$^\circ$. Cuando buscamos un color en particular  es preciso elegir este rango cuidadosamente ya que de ser un rango muy restrictivo podemos despreciar pixeles de interés arruinando la forma del contorno del objeto a buscar y si elegimos un rango más abarcativo podemos tomar pixeles de colores distintos al buscado, introduciendo ruido en las formas de los contornos. Experimentalmente se comprueban los resultados de un filtro de color con distintos rangos, como se muestra  en la fígura \ref{fig:hue_range}.
+Obteniendo el canal H, nos fijamos que los valores de los pixeles esten dentro de cierto rango correspondiente al color que buscamos. Como podemos observar en la figura \ref{fig:hsv_space} En el espacio de color HSV los colores se encuentran dispuestos a lo largo de una circunferencia , donde cada tonalidad representa un ángulo en la misma. Por ejemplo, si queremos abarcar las distintas tonalidades del azul podemos elegir el rango que va de 200$^\circ$ a 260$^\circ$. Cuando buscamos un color en particular  es preciso elegir este rango cuidadosamente ya que de ser un rango muy restrictivo podemos despreciar pixeles de interés arruinando la forma del contorno del objeto a buscar y si elegimos un rango más abarcativo podemos tomar pixeles de colores distintos al buscado, introduciendo ruido en las formas de los contornos. Experimentalmente se comprueban los resultados de un filtro de color con distintos rangos, como se muestra  en la figura \ref{fig:hue_range}.
 \begin{figure}[tpb]
 \begin{center}
   \includegraphics[scale=0.4]{figuras/hsv_triangle.png}
@@ -73,7 +73,7 @@ Obteniendo el canal H, nos fijamos que los valores de los pixeles esten dentro d
 \end{figure}
 
 	\subsubsection{Threshold}
-Threshold o umbral es una operación que nos permite pasar de una imagen en escala de grises a una imagen binaria. El proceso de thresholding consiste en distinguir los pixeles que se encuentran por encima de un cierto valor de los que estan por debajo del mismo. Con este objetivo, se crea una imagen binaria asignandoles valores 1 o 0 según su condición respecto del valor. El algortmo de thresholding nos puede servir para distinguir un objeto determinado de un contexto o fondo siempre y cuando el objeto posea un mayor brillo que el fondo en el que se encuentra. Esto significa que los pixeles correspondientes a un objeto se encontrarán por encima de cierto valor caracteristico, determinado por el fondo. Podemos apreciar un ejemplo de threshold en la figura \ref{fig:threshold}. \\
+Threshold o umbral es una operación que nos permite pasar de una imagen en escala de grises a una imagen binaria. El proceso de thresholding consiste en distinguir los pixeles que se encuentran por encima de un cierto valor de los que estan por debajo del mismo. Con este objetivo, se crea una imagen binaria asignandoles valores 1 o 0 según su condición respecto del valor. El algortmo de thresholding nos puede servir para distinguir un objeto determinado de un contexto o fondo siempre y cuando el objeto posea un mayor brillo que el fondo en el que se encuentra. Esto significa que los pixeles correspondientes a un objeto se encontrarán por encima de cierto valor caracteristico, determinado por el fondo. En nuestro caso esto no sucede de esta forma ya que no siempre la intesidad / brillo de los objetos supera al fondo en el que se encuentra, por lo cual resulta difícil utilizar esta técnica. Podemos apreciar un ejemplo de este efecto en la figura \ref{fig:threshold}. \\
 \indent Existen diversas variantes de threshold, los parametros utilizados son $V$ para indicar el valor umbral y $M$ que indica el valor a setear en los pixeles.
 \begin{itemize}
 \item{ Threshold binario:  Si un pixel se encuentra por encima de $V$, se le asigna un valor $M$, de otro modo se le asigna $0$.}
@@ -82,7 +82,7 @@ Threshold o umbral es una operación que nos permite pasar de una imagen en esca
 \item{ Threshold a cero invertido : Si un pixel se encuentra por encima de $V$ se le asigna $0$, de otro modo, conserva su valor.}
 \item{ Threshold a cero invertido : Si un pixel se encuentra por encima de $V$ conserva su valor, de otro modo se lee asigna $0$.}
 \end{itemize}
-El problema con esta familia de algoritmos es que en todos los casos el valor $V$ permanece constante para toda la imagen haciendolo propenso a errores cuando la imagen presenta diferentes niveles de iluminación. Una manera de solucionar esto es pre-computando el valor $V$ para distintas zonas de la imágen. Como solución a este problema, destacamos la tecnica de thresholding adaptativo que computa el valor de $V$ a medida que recorre la imagen, usando para esto, una ventana cuyo tamaño es definido por el usuario. Siguiendo esta lógica, se utilizan los valores de los pixeles locales a esta ventana para definir un valor de $V$ (por ejemplo calculando el promedio) y luego se aplica alguna de las tecnicas de thresholding simples mencionadas utilizando este mismo valor. Sin embargo, este algoritmo es mas costos y puede provocar efectos indeseados.ACA PODRIA IR UNA FOTO DE THRESHOLD ADAPTATIVO\\
+El problema con esta familia de algoritmos es que en todos los casos el valor $V$ permanece constante para toda la imagen haciendolo propenso a errores cuando la imagen presenta diferentes niveles de iluminación. Una manera de solucionar esto es pre-computando el valor $V$ para distintas zonas de la imágen. Un ejemplo de esta solución es la técnica de thresholding adaptativo, que computa el valor de $V$ a medida que recorre la imagen, usando para esto, una ventana cuyo tamaño es definido por el usuario. Siguiendo esta lógica, se utilizan los valores de los pixeles locales a esta ventana para definir un valor de $V$ (por ejemplo calculando el promedio de intensidad) y luego se aplica alguna de las técnicas de thresholding simples mencionadas, utilizando este mismo valor. Sin embargo, este algoritmo es mas costoso y puede provocar efectos indeseados.ACA PODRIA IR UNA FOTO DE THRESHOLD ADAPTATIVO\\
 \indent En nuestro caso, utilizamos thresholding no para distinguir los objetos del fondo ( esto es trábajo del filtro de color), sino como metodo de eliminación de ruido. Cuando se combina el canal de saturación con el resultado del filtro de color, se obtiene una imagen de escala de grises que esta segmentada en un conjunto de areas con distintos valores de intensidad. Luego de aplicar dilatación y erosión, los niveles de intensidad de cada área se vuelven homogeneos ( ya que se toma el máximo o mínimo local) y es entonces donde podemos diferenciar las zonas de intensidad alta de las zonas de intensidad baja, motivo por el cual utilizamos la operación de threshold. COMPLETAR AQUI \ref{fig:threshold_ruido} \ref{fig:threshold}. 
 
 \begin{figure}[tpb]
@@ -101,11 +101,10 @@ El problema con esta familia de algoritmos es que en todos los casos el valor $V
   \label{fig:threshold}
 \end{figure}
 
-	\subsubsection{Operaciones morfologicas}
-Sombras, luces y otros efectos pueden alterar el resultado del filtro de color introduciendo ruido en los objetos a detectar. Este ruido puede surgir tanto de la omisión de pixeles de interés como por la inclusión de pixeles extra. Para subsanar esto, utilizamos las operaciones morfológicas de dilatación y erosión. Ambas se basan en la utilización de un elemento estructural, esto es, una fígura de cualquier tamaño y forma que tiene definido un punto principal y que recorre la imágen solapandose pixel a pixel. De acuerdo a operaciones locales a este elemento, el pixel que coincide con el punto principal se ve modificado. Usualmente se utilizan como elementos estructurales , pequeños discos o cuadrados, donde el punto principal se encuentra en el centro del mismo. El efecto generado se entiende mejor observandolo en imágenes binarias. En el caso de la dilatación, la idea intuitiva es remplazar cada pixel no vacío con una copia del elemento estructural cuyo punto principal se encuentra en esa posición. Para la erosión, la idea intuitiva es quedarse con aquellos pixeles tal que podamos hacer caber un elemento estructural cuyo punto principal se encuentra en esa posición y dicho elemento solo cubra pixeles no vacíos.
+	\subsubsection{Operaciones morfológicas}
+Sombras, luces y otros efectos pueden alterar el resultado del filtro de color introduciendo ruido en los objetos a detectar. Este ruido puede surgir tanto de la omisión de pixeles de interés como por la inclusión de pixeles extra. Para subsanar esto, utilizamos las operaciones morfológicas de dilatación y erosión. Ambas se basan en la utilización de un elemento estructural, esto es, una figura de cualquier tamaño y forma que tiene definido un punto principal y que recorre la imágen solapandose pixel a pixel. De acuerdo a operaciones locales a este elemento, el pixel que coincide con el punto principal se ve modificado. Usualmente se utilizan como elementos estructurales , pequeños discos o cuadrados, donde el punto principal se encuentra en el centro del mismo. El efecto generado se entiende mejor observandolo en imágenes binarias. En el caso de la dilatación, la idea intuitiva es remplazar cada pixel no vacío con una copia del elemento estructural cuyo punto principal se encuentra en esa posición. Para la erosión, la idea intuitiva es quedarse con aquellos pixeles tal que podamos hacer caber un elemento estructural cuyo punto principal se encuentra en esa posición y dicho elemento solo cubra pixeles no vacíos.
 Ilustramos esto en las figuras \ref{fig:erode-sample} y \ref{fig:dilate-sample}.
 
-%aca va la imagen que explica como funciona dilate y erode en binario
 
 \begin{figure}[tpb]
 \begin{center}
@@ -118,13 +117,13 @@ Ilustramos esto en las figuras \ref{fig:erode-sample} y \ref{fig:dilate-sample}.
 \begin{figure}[tpb]
 \begin{center}
   \includegraphics[scale=0.4]{figuras/erode-sample.png}
-\end{center}
+\end{center}Podemos apreciar un ejemplo de threshold en la figura \ref{fig:threshold}
   \caption{\small Operación de erosión en imágenes binarias. Se persisten los pixeles no vacíos en donde cabe una copia del elemento estructural cuyo punto principal se encuentra en esa posición. La cruz indica la posición del punto principal dentro del elemento estructural (ee). Imagen obtenida del curso de visión artificial de la Universidad Politécnica de Madrid. } 
   \label{fig:erode-sample}
 \end{figure}
 
 	\subsubsection*{Dilataci\'on}
-En imágenes no binarias, la operación de dilatación se define tomando el máximo local bajo el elemento estructural y poniendole ese valor al punto principal. El efecto producido es una reducción general en el brillo de la imagen y un probable aumento el tamaño de las fíguras \cite{nasa-dilate-erode}.  Cuando un área grande aparece, a causa del ruido, partida en varias componentes, el uso de la operación de dilatación provoca que  se combinen nuevamente en una sola. Un ejemplo de esto puede ser apreciado en la fígura \ref{fig:dilate}. Otro beneficio de utilizar dilatación es la eliminación del ruido espurio como se aprecia en la figura \ref{fig:dilate-ruido}.
+En imágenes no binarias, la operación de dilatación se define tomando el máximo local bajo el elemento estructural y poniendole ese valor al punto principal. El efecto producido es una reducción general en el brillo de la imagen y un probable aumento el tamaño de las fíguras \cite{nasa-dilate-erode}.  Cuando un área grande aparece, a causa del ruido, partida en varias componentes, el uso de la operación de dilatación provoca que  se combinen nuevamente en una sola. Un ejemplo de esto puede ser apreciado en la figura \ref{fig:dilate}. Otro beneficio de utilizar dilatación es la eliminación del ruido espurio como se aprecia en la figura \ref{fig:dilate-ruido}.
 
 \begin{figure}[tpb]
 \begin{center}
@@ -144,7 +143,7 @@ En imágenes no binarias, la operación de dilatación se define tomando el máx
 \end{figure}
 
 	\subsubsection*{Erosi\'on}
-En imágenes no binarias, la operación de erosión se define tomando el mínimo local bajo el elemento estructural y poniendole ese valor al punto principal. Contrario a la dilatación, este operador generalmente reduce el brillo de la imagen y disminuye el tamaño de las figuras \cite{nasa-dilate-erode}. Usamos la operación de erosión para eliminar las protuberancias que pueden surgir de aplicar la operación de dilatación. En la fígura \ref{fig:erode1} podemos apreciar el efecto de aplicar dilatación y luego erosión.
+En imágenes no binarias, la operación de erosión se define tomando el mínimo local bajo el elemento estructural y poniendole ese valor al punto principal. Contrario a la dilatación, este operador generalmente reduce el brillo de la imagen y disminuye el tamaño de las figuras \cite{nasa-dilate-erode}. Usamos la operación de erosión para eliminar las protuberancias que pueden surgir de aplicar la operación de dilatación. En la figura \ref{fig:erode} podemos apreciar el efecto de aplicar dilatación y luego erosión.
 
 \begin{figure}[tpb]
 \begin{center}
@@ -159,8 +158,37 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 		\subsubsection*{Representaci\'on}
 	\subsubsection{Filtros}
 	\subsubsection{Sistema de predicci\'on}
-	\subsubsection{Ventaneo}
+	El algoritmo de visión que hemos descripto hasta aquí funciona procesando la imagen correspondiente a un único cuadro. Sin embargo, el sistema de visión del robot debe permitir el reconocimiento de objetos a medida que esta se desplaza por su entorno y por lo tanto dicho sistema debe procesar imágenes secuenciales del entorno. Con esto queremos decir que existe cierta relación entre las imágenes que el sistema de visión debe procesar y podemos aprovechar esta caracteristica para reforzar la detección de objetos. El mecanismo por el cual buscamos lograr este objetivo es el del sistema de predicción.\\
+\indent 	El sistema de predicción realiza el seguimiento de objetos a lo largo de los cuadros. Para lograr esto realiza las siguientes asumpciones:
+\begin{itemize}
+\item{ Los objetos no realizaran grandes desplazamientos entre cuadros contiguos - esto se debe la proximidad temporal entre cuadros y que el robot no realiza movimientos bruscos.}
+\item{ Los objetos no sufriran grandes alteraciones en su forma, área o perímetro entre cuadros contiguos - con un razonamiento similar, la perspectiva no cambia lo suficiente como par alterar la figura,área o perimetro de los objetos.}
+\end{itemize} 
+Con estas premisas, dado un objeto $A$ reconocido en el cuadro $c_0$, con coordeandas (en la imagen) $(x_0,y_0)$, área $a$ y perimetro $p$, el sistema de predicción asume que si se encuentra un objeto $A'$ en el cuadro subsiguiente $c_1$ con coordeandas $(x_0 \pm \alpha , y_0 \pm \beta)$, área $a \pm \gamma$ y perímetro $p \pm \theta$ entonces $A=A'$, donde $\alpha$ , $\beta$ y $\gamma$ son parametros del sistema. Esta aseveración no solo vale para el cuadro subsiguiente $c_1$ sino también para los siguientes $c_2,c_3 ... c_{0+\tau}$ donde $\tau$ en este caso se computa según cada objeto. En estos casos, los valores de $\alpha$ y $\beta$ se ajustan. Con esta proposición, el sistema de predicción estima la posición de los objetos en el caso de que el sistema de visión no los reconozca. Para lograr esto, cuando un objeto es detectado a lo largo de varios cuadros se persiste la siguiente información:
+\begin{itemize}
+\item{ Última posición,área y perímetro - Se toman los datos sobre la detección mas reciente del sistema de visión .}
+\item{ Antiguedad del objeto - Cantidad de cuadros transcurridos desde que se comenzo a persistir el objeto en el sistema de predicción.}
+\item{ Cantidad de detecciones - Se mantiene la cantidad de cuadros en la cual el sistema de visión detectó al objeto.}
+\item{ Desplazamiento en la posición - Si el objeto es detectado más de una vez, se almacena el desplazamiento en la posición $(x_1 - x-0 , y_1 - y_0 )$.}
+\item{ Antiguedad de la última detección - Cantidad de cuadros que transcurrieron desde la última detección por parte del sistema de visión.}  
+\end{itemize}
+Esta información no solo nos permite corregir al sistema de visión cuando este no detecta un objeto sino que también podemos corregirlo cuando este detecta objetos de manera de falsa, es decir, que no se encuentran en la posición informada o no existen del todo. Para implementar este mecanismo se establecen las siguientes reglas:
+\begin{itemize}
+\item{}
+\item{}
+\end{itemize}
 
+	\subsubsection{Focalización}
+	Focalización es el mecanismo que busca que el sistema de visión se concentre en la detección de un único objeto a lo largo del tiempo. Esta situación es deseable cuando el sistema de visión ya detectó una basura y el robot se dirige a recolectarla. En esta circunstancia, no nos interesan otros objetos que puedan aparecer durante el trayecto y por lo tanto tratamos de evitar cualquier tipo de procesamiento innecesario sobre ellos. Con este objetivo, seleccionamos una sub-imagen a procesar en la cual suponemos que vamos a encontrar al objeto en cuestión. El mecanismo de focalización se encuentra muy ligado al sistema de predicción ya que debe persistir cierta información sobre un objeto a lo largo del tiempo.\\
+\indent El mecanismo de focalización puede separarse en dos etapas. En una primera etapa, utlizando la información brindada por el sistema de predicción, se selecciona un objeto a focalizar. Existen varios criterios de selección, algunos que consideramos mas relevantes son:
+\begin{itemize}
+\item{ Objeto mas cercano - Se estiman las distancias a los objetos y se selecciona aquel que se encuentre mas cercano al robot.}
+\item{ Objeto más detectado en los últimos 20 cuadros - Se selecciona al objeto que fue reconocido mas veces por el sistema de visión en las últimas 20 imágenes.}
+\item{ Objeto más antiguo - Se elige al objeto que persistio más cuadros según el sistema de predicción.}
+\item{ Combinación ponderada - Se utilizan los  criterios mencionados dandoles mayor o menor peso a cada uno y eligiendo al objeto que obtenga mayor puntuación.}
+\end{itemize}
+Pensamos todos los criterios con el objetivo de maximizar las chances de que el robot tenga exito en la recolección del objeto. El criterio de menor distancia implica un menor recorrido hacia el objeto y por lo tanto menos posibilidades de cometer error durante el recorrido. Si utilizamos el criterio de mayor detección en los últimos 20 cuadros estamos maximizando las chances de que el sistema de visión detecte al objeto durante el trayecto del robót hacia el mismo. Con un razonamiento similar, el criterio de mayor antiguedad maximiza las chances de que el sistema de visión detecte al objeto pero utilizando información mas general y no tan local como el resultado de los últimos 20 cuadros. Previo a la focalización es necesario alimentar al sistema de predicción ya que sin este, no es posible utilizar ninguno de los criterios mencionados.\\ 
+	\indent Una vez que seleccionamos el objeto, utilizamos el sistema de predicción para dar cuenta de la posición del mismo. Con esta información, tomamos sub-imágenes (ventanas) de la captura original que solo abarquen un entorno del objeto como se aprecia en la figura \ref{fig:ventaneo} . Esto provoca un aumento sustancial de la performance ya que solo se procesa una fracción de la captura completa. El tamaño de la ventana queda determinada por las dimensiones del contorno del objeto a focalizar. Si consideramos al sistema de visión como un sensor podríamos decir que este mecanismo incrementa la frecuencia de muestreo del mismo ya que permite tomar una mayor cantidad de muestras en menor tiempo. La focalización sobre un objeto finaliza únicamente cuando este objeto deja de ser reconocido por el sistema de predicción y entonces retornamos al  procesamiento de la imagen completa. 
 
 
 	
