@@ -132,7 +132,7 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 	myAbstractBehaviours.push_back(ab);
 	#endif
 
-	ab = new behaviours::Recalibrate ( );
+	ab = new behaviours::Recalibrate ( &myIRobot, wheels );
 	myAbstractBehaviours.push_back(ab);
 
 	#ifdef GO_TO_RECHARGE

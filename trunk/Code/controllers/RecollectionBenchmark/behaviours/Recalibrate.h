@@ -4,7 +4,9 @@
 #define behaviours_Recalibrate_h
 
 #include "AbstractBehaviour.h" // inheriting class's header file
+#include <utils/MyPoint.h>
 
+#define MIDDLE_LINE_X -0.293
 
 namespace behaviours {
 
@@ -15,7 +17,7 @@ class Recalibrate : public AbstractBehaviour
 {
 	public:
 		// class constructor
-		Recalibrate();
+		Recalibrate(robotapi::IRobot * robot, robotapi::IDifferentialWheels * wheels);
 
 		void sense();
 		
@@ -23,6 +25,12 @@ class Recalibrate : public AbstractBehaviour
 
 		// class destructor
 		~Recalibrate();
+	private:
+		robotapi::IRobot * robot;
+		robotapi::IDifferentialWheels * wheels;
+		utils::MyPoint * originalPos;
+
+		void turnToWhereItWas();
 };
 
 } /* End of namespace behaviours */
