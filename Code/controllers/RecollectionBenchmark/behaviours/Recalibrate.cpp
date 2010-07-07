@@ -4,12 +4,17 @@
 #include <math.h>
 #include "GarbageCleaner.h"
 
+double maxdistances [] = {0.0821545, 0.164367, 0.2734845, 0.383091,	0.4921115};
+double fromLeftZAdjustments [] = {0.874437, 0.822671, 0.712825, 0.494559, 0.166478, -0.271601, -0.817723};
+double fromRightZAdjustments [] = {0.814232, 0.759769, 0.650272, 0.431384, 0.103448, -0.334653, -0.879621};
+
 namespace behaviours {
 
 	// class constructor
-	Recalibrate::Recalibrate() : AbstractBehaviour("Recalibrate")
+	Recalibrate::Recalibrate(robotapi::IRobot * robot, robotapi::IDifferentialWheels * wheels) : AbstractBehaviour("Recalibrate")
 	{
-		// insert your code here
+		this->robot = robot;
+		this->wheels = wheels;
 	}
 	
 	// class destructor
@@ -20,11 +25,52 @@ namespace behaviours {
 
 	void Recalibrate::sense()
 	{
-		// insert your code here
+		/*
+		double coveredDistance = this->wheels->getDistanceCovered();
+		if ( coveredDistance > RECALIBRATE_MAX_DISTANCE ){
+	        setStimulusPresent();
+			this->originalPos = new utils::MyPoint(this->wheels->getPosition()->getX(),this->wheels->getPosition()->getY());
+		}
+		*/
 	}
 
 	void Recalibrate::action()
 	{
-		// insert your code here
+		/*
+		// GOTOLINE
+
+		// POSITION
+
+		// CORRECT X AND ANGLE
+		this->wheels->setPosition(MIDDLE_LINE_X,this->wheels->getPosition()->getY(),true);
+
+		// FOLLOW LINE TILL THE ROBOT REACHES A MARK
+
+		// IF NO MARK IS FOUND AND IT IS NO LONGER ON THE LINE, TURN PI AND START AGAIN
+
+		// IF A MARK IS REACHED, CONTINUE TILL NOT ON THE MARK AND 
+		// START COUNTING THE DISTANCE TO THE NEW MARK
+
+		// WITH THE DISTANCE BETWEEN MARKS AND THE ORIENTATION, GET THE CORRESPONDING Z
+
+		// ADJUST Z
+		this->wheels->setPosition(MIDDLE_LINE_X,zAdjustment,true);
+
+		// RESET DISTANCE COVERED
+		this->wheels->resetDistanceCovered();
+		
+		// Turn till robot is oriented to this->originalPos
+		this->turnToWhereItWas();
+		delete(this->originalPos);
+		*/
 	}
+
+	void Recalibrate::turnToWhereItWas(){
+		/*
+		utils::MyPoint * p = this->wheels->getPosition();
+		double angle = atan2(-(p->getX()-this->originalPos()->getX()),
+								-(p->getY()-this->originalPos()->getY());
+		*/
+	}
+
 } /* End of namespace behaviours */
