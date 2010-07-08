@@ -73,7 +73,7 @@ Obteniendo el canal H, nos fijamos que los valores de los pixeles esten dentro d
 \end{figure}
 
 	\subsubsection{Threshold}
-Threshold o umbral es una operación que nos permite pasar de una imagen en escala de grises a una imagen binaria. El proceso de thresholding consiste en distinguir los pixeles que se encuentran por encima de un cierto valor de los que estan por debajo del mismo. Con este objetivo, se crea una imagen binaria asignandoles valores 1 o 0 según su condición respecto del valor. El algortmo de thresholding nos puede servir para distinguir un objeto determinado de un contexto o fondo siempre y cuando el objeto posea un mayor brillo que el fondo en el que se encuentra. Esto significa que los pixeles correspondientes a un objeto se encontrarán por encima de cierto valor caracteristico, determinado por el fondo. En nuestro caso esto no sucede de esta forma ya que no siempre la intesidad / brillo de los objetos supera al fondo en el que se encuentra, por lo cual resulta difícil utilizar esta técnica. Podemos apreciar un ejemplo de este efecto en la figura \ref{fig:threshold}. \\
+Threshold o umbral es una operación que nos permite pasar de una imagen en escala de grises a una imagen binaria. El proceso de thresholding consiste en distinguir los pixeles que se encuentran por encima de un cierto valor de los que estan por debajo del mismo. Con este objetivo, se crea una imagen binaria asignandoles valores 1 o 0 según su condición respecto del valor. El algortmo de thresholding nos puede servir para distinguir un objeto determinado de un contexto o fondo siempre y cuando el objeto posea un mayor brillo que el fondo en el que se encuentra. Esto significa que los pixeles correspondientes a un objeto se encontrarán por encima de cierto valor caracteristico, determinado por el fondo. En nuestro caso esto no sucede de esta forma ya que no siempre la intesidad / brillo de los objetos supera al fondo en el que se encuentra, por lo cual resulta difícil utilizar esta técnica. Podemos apreciar un ejemplo de este efecto en la figura \ref{fig:thresh-dif}. \\
 \indent Existen diversas variantes de threshold, los parametros utilizados son $V$ para indicar el valor umbral y $M$ que indica el valor a setear en los pixeles.
 \begin{itemize}
 \item{ Threshold binario:  Si un pixel se encuentra por encima de $V$, se le asigna un valor $M$, de otro modo se le asigna $0$.}
@@ -84,6 +84,17 @@ Threshold o umbral es una operación que nos permite pasar de una imagen en esca
 \end{itemize}
 El problema con esta familia de algoritmos es que en todos los casos el valor $V$ permanece constante para toda la imagen haciendolo propenso a errores cuando la imagen presenta diferentes niveles de iluminación. Una manera de solucionar esto es pre-computando el valor $V$ para distintas zonas de la imágen. Un ejemplo de esta solución es la técnica de thresholding adaptativo, que computa el valor de $V$ a medida que recorre la imagen, usando para esto, una ventana cuyo tamaño es definido por el usuario. Siguiendo esta lógica, se utilizan los valores de los pixeles locales a esta ventana para definir un valor de $V$ (por ejemplo calculando el promedio de intensidad) y luego se aplica alguna de las técnicas de thresholding simples mencionadas, utilizando este mismo valor. Sin embargo, este algoritmo es mas costoso y puede provocar efectos indeseados.ACA PODRIA IR UNA FOTO DE THRESHOLD ADAPTATIVO\\
 \indent En nuestro caso, utilizamos thresholding no para distinguir los objetos del fondo ( esto es trábajo del filtro de color), sino como metodo de eliminación de ruido. Cuando se combina el canal de saturación con el resultado del filtro de color, se obtiene una imagen de escala de grises que esta segmentada en un conjunto de areas con distintos valores de intensidad. Luego de aplicar dilatación y erosión, los niveles de intensidad de cada área se vuelven homogeneos ( ya que se toma el máximo o mínimo local) y es entonces donde podemos diferenciar las zonas de intensidad alta de las zonas de intensidad baja, motivo por el cual utilizamos la operación de threshold. COMPLETAR AQUI \ref{fig:threshold_ruido} \ref{fig:threshold}. 
+\begin{figure}[tpb]
+\begin{center}
+  \includegraphics[scale=0.4]{figuras/threshold-dif.png}
+\end{center}
+  \caption{\small Distintos valores de umbral. (a) Captura original. 
+  (b) Threshold binario con umbral 120. Se observan pixeles extra en 
+  la detección. (c) Threshold binario con umbral 160. Se observa la 
+  ausencia de pixeles. }
+  \label{fig:thresh-dif}
+\end{figure}
+
 
 \begin{figure}[tpb]
 \begin{center}
@@ -183,7 +194,7 @@ cuyo centroide se encuentra en las coordeandas (en la imagen) $(x_0,y_0)$, área
 el sistema de predicción asume que si se encuentra un objeto $A'$ en 
 el cuadro siguiente $c_1$ con coordeandas $(x_1, y_1)$ tal que 
 $||(x_1,y_1) - (x_0,y_0)||\leq \alpha$, área $a'$ tal que $|a-a'| \leq 
-\gamma a$ y perímetro $p'$ tal que $|p-p'|\leq \theta p$ entonces $A 
+\gamma *a$ y perímetro $p'$ tal que $|p-p'|\leq \theta*p$ entonces $A 
 \simeq A'$, donde $\alpha$ , $\gamma$ y $\theta$ son parametros del 
 sistema. Esta aseveración no solo vale para el cuadro subsiguiente 
 $c_1$ sino también para los siguientes $c_2,c_3 ... c_{0+\eta}$ donde 
