@@ -157,34 +157,195 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 		\subsubsection*{Algoritmo}
 		\subsubsection*{Representaci\'on}
 	\subsubsection{Filtros}
-	\subsubsection{Sistema de predicci\'on}
-	El algoritmo de visión que hemos descripto hasta aquí funciona procesando la imagen correspondiente a un único cuadro. Sin embargo, el sistema de visión del robot debe permitir el reconocimiento de objetos a medida que esta se desplaza por su entorno y por lo tanto dicho sistema debe procesar imágenes secuenciales del entorno. Con esto queremos decir que existe cierta relación entre las imágenes que el sistema de visión debe procesar y podemos aprovechar esta caracteristica para reforzar la detección de objetos. El mecanismo por el cual buscamos lograr este objetivo es el del sistema de predicción.\\
-\indent 	El sistema de predicción realiza el seguimiento de objetos a lo largo de los cuadros. Para lograr esto realiza las siguientes asumpciones:
-\begin{itemize}
+	\subsection{Sistema de predicci\'on}
+	El algoritmo de visión que hemos descripto hasta aquí funciona 
+	procesando la imagen correspondiente a un único cuadro. Sin embargo, 
+	el sistema de visión del robot debe permitir el reconocimiento de 
+	objetos a medida que esta se desplaza por su entorno y por lo tanto 
+	dicho sistema debe procesar imágenes secuenciales del mismo. Con 
+	esto queremos decir que existe cierta relación entre las imágenes 
+	que el sistema de visión debe procesar y que podemos aprovechar esta 
+	caracteristica para reforzar la detección de objetos.  El mecanismo por el cual buscamos lograr este objetivo es el del sistema de predicción.\\
+\indent 	El sistema de predicción consume la información que el 
+sistema de visión le entrega en cada cuadro y, con ella, realiza el 
+seguimiento de objetos a lo largo del tiempo. Es a partir de este 
+seguimiento que el sistema de predicción toma decisiones sobre la 
+posición o existencia de los objetos que el sistema de visión 
+reconoce. Vale destacar que estos dos sistemas pueden encontrarse, a 
+menudo, en desacuerdo acerca de la ubicación o de la misma existencia 
+de un objeto.  El sistema de predicción se basa en las siguientes asumpciones:
+\begin{enumerate}
 \item{ Los objetos no realizaran grandes desplazamientos entre cuadros contiguos - esto se debe la proximidad temporal entre cuadros y que el robot no realiza movimientos bruscos.}
 \item{ Los objetos no sufriran grandes alteraciones en su forma, área o perímetro entre cuadros contiguos - con un razonamiento similar, la perspectiva no cambia lo suficiente como par alterar la figura,área o perimetro de los objetos.}
-\end{itemize} 
-Con estas premisas, dado un objeto $A$ reconocido en el cuadro $c_0$, con coordeandas (en la imagen) $(x_0,y_0)$, área $a$ y perimetro $p$, el sistema de predicción asume que si se encuentra un objeto $A'$ en el cuadro subsiguiente $c_1$ con coordeandas $(x_0 \pm \alpha , y_0 \pm \beta)$, área $a \pm \gamma$ y perímetro $p \pm \theta$ entonces $A=A'$, donde $\alpha$ , $\beta$ y $\gamma$ son parametros del sistema. Esta aseveración no solo vale para el cuadro subsiguiente $c_1$ sino también para los siguientes $c_2,c_3 ... c_{0+\tau}$ donde $\tau$ en este caso se computa según cada objeto. En estos casos, los valores de $\alpha$ y $\beta$ se ajustan. Con esta proposición, el sistema de predicción estima la posición de los objetos en el caso de que el sistema de visión no los reconozca. Para lograr esto, cuando un objeto es detectado a lo largo de varios cuadros se persiste la siguiente información:
+\end{enumerate} 
+Con estas premisas, dado un objeto $A$ reconocido en el cuadro $c_0$, 
+cuyo centroide se encuentra en las coordeandas (en la imagen) $(x_0,y_0)$, área $a$ y perimetro $p$, 
+el sistema de predicción asume que si se encuentra un objeto $A'$ en 
+el cuadro siguiente $c_1$ con coordeandas $(x_1, y_1)$ tal que 
+$||(x_1,y_1) - (x_0,y_0)||\leq \alpha$, área $a'$ tal que $|a-a'| \leq 
+\gamma a$ y perímetro $p'$ tal que $|p-p'|\leq \theta p$ entonces $A 
+\simeq A'$, donde $\alpha$ , $\gamma$ y $\theta$ son parametros del 
+sistema. Esta aseveración no solo vale para el cuadro subsiguiente 
+$c_1$ sino también para los siguientes $c_2,c_3 ... c_{0+\eta}$ donde 
+$\eta$,$\alpha$ y $\gamma$ se computan, para este caso, según el 
+historial de detección de cada objeto.  Con esta proposición, el 
+sistema de predicción estima la posición de los objetos en el caso de 
+que el sistema de visión no los reconozca. Con este fin, cuando un objeto es detectado a lo largo de varios cuadros se persiste la siguiente información:
 \begin{itemize}
-\item{ Última posición,área y perímetro - Se toman los datos sobre la detección mas reciente del sistema de visión .}
+\item{ Última posición,área y perímetro - Se toman los datos de la detección mas reciente del sistema de visión .}
 \item{ Antiguedad del objeto - Cantidad de cuadros transcurridos desde que se comenzo a persistir el objeto en el sistema de predicción.}
 \item{ Cantidad de detecciones - Se mantiene la cantidad de cuadros en la cual el sistema de visión detectó al objeto.}
-\item{ Desplazamiento en la posición - Si el objeto es detectado más de una vez, se almacena el desplazamiento en la posición $(x_1 - x-0 , y_1 - y_0 )$.}
+\item{ Desplazamiento en la posición - Si el objeto es detectado más 
+de una vez, se almacena el desplazamiento en la posición $(x_1 - x_0 , y_1 - y_0 )$.}
 \item{ Antiguedad de la última detección - Cantidad de cuadros que transcurrieron desde la última detección por parte del sistema de visión.}  
 \end{itemize}
-Esta información no solo nos permite corregir al sistema de visión cuando este no detecta un objeto sino que también podemos corregirlo cuando este detecta objetos de manera de falsa, es decir, que no se encuentran en la posición informada o no existen del todo. Para implementar este mecanismo se establecen las siguientes reglas:
-\begin{itemize}
-\item{}
-\item{}
-\end{itemize}
+Esta información no solo nos permite corregir al sistema de visión 
+cuando este no detecta un objeto sino que también podemos corregirlo 
+cuando este detecta objetos de manera falsa, es decir, que no se 
+encuentran en la posición informada o no existen del todo. Para 
+implementar estos mecanismos se establecen las siguientes reglas sobre 
+la persistencia de objetos:
+\begin{enumerate}
+\item{Un objeto debe ser detectado por el sistema de visión en $\delta$ 
+cuadros consecutivos para ser considerado como tal por el sistema de 
+predicción}
+\item{El sistema de predicción descarta un objeto considerado si el 
+sistema de visión no lo detecta en un número $\eta$ de cuadros 
+consecutivos.}
+\item{ $\eta$ se calcula cada $\lambda$ cuadros como 
+$\frac{antiguedad}{detecciones}*\rho$ donde $\rho$ es un parametro del 
+sistema}.
+\item{ Si un objeto es considerado por el sistema de predicción y este 
+no es detectado por el sistema de visión para algún cuadro entonces 
+el sistema de visión realiza una estimación de su posición de 
+acuerdo a la información obtenida de cuadros anteriores.}
+\end{enumerate}
 
-	\subsubsection{Focalización}
+Estas reglas, aunque parezcan complejas por el número de variables que 
+manejan, son realmente intuitivas. El sistema de predicción consume la 
+información que el sistema de visión le brinda y la manipula con 
+cierta desconfianza de acuerdo a su 
+conveniencia. En una primera instancia, los objetos deben ganarse la 
+confianza del sistema de predicción apareciendo regularmente en 
+cuadros contiguos, esto esta vinculado a la asumpción número 
+1. Por este motivo, utilizamos la regla 1 para eliminar aquellos objetos que 
+no cumplen dicha suposición. \\
+	Habiendose ganado la confianza del sistema de predicción, este 
+	último comienza a tener a estos objetos en consideración y veta por su 
+existencia aunque el sistema de visión no los detecte. El grado en que 
+el sistema cree en la existencia de estos objetos se va regulando de 
+acuerdo al historial de apariciones de los mismos. Si estos abusan de 
+la confianza otorgada entonces el sistema de predicción los descarta 
+como indica la regla 2. 
+Este grado de confianza o de libertad se traduce en cantidad de 
+cuadros que puede pasar un objeto sin ser detectado por el sistema de 
+visión y siendo considerado por el sistema de predicción. Dicho 
+número se determina periodicamente utilizando la fórmula de la regla 3.
+Finalmente, durante este lapso de confianza, el sistema de predicción 
+'adivina' la posición de los objetos si estos no son detectados por el 
+sistema de visión, como dice la regla 4. \\
+\indent La variable $\alpha$ determina la distancia máxima que puede 
+desplazarse un objeto entre cuadros para que el sistema de predicción lo considere 
+como el mismo. Las variables $\gamma$ y $\theta$ determinan el máximo 
+porcentaje de variación en el área y perímetro que puede soportar un 
+objeto entre cuadros para ser considerado como el mismo. Valores 
+tipicos para la detección de colillas y vasos son de 
+$0.1\leq\gamma\leq0.3$ y $0.1\leq\theta\leq0.3$. Para el caso de 
+$\alpha$ definimos un valor aproximado de 30 pixeles. Sin embargo, la 
+tolerancia en el desplazamiento varía según los cuadros transcurridos desde la última 
+detección. Si en el cuado anterior fue detectado entonces se utiliza 
+$\alpha$ , si fue detectado hace dos cuadros entonces $2*\alpha$,3 
+cuadros $3*\alpha$ y así. La variable $\delta$ establece el úmbral de 
+detección de un objeto por parte del sistema de visión para que el 
+sistema de predicción lo empieze  a considerar. Para la detección de 
+colillas se establecieron tres cuadros de úmbral mientras que para los 
+vasos 2 cuadros. $\rho$ estable , independientemente de su 
+regularidad, la cantidad máxima de cuadros que puede permanecer un 
+objeto sin ser detectado y mantenido por el sistema de predicción. En 
+ambos casos (colillas y vasos) establecimos 10 cuadros.\\ 
+\indent Es importante destacar que tanto $\rho$ como $\delta$ repercuten directamente en la 
+performance de detección. En el caso de la variable $\delta$, el 
+sistema de visión debe reconocer un objeto $\delta -1$ veces antes de que sea 
+tenido en cuenta por el sistema de predicción y, en este lapso, las 
+detecciones seran ignoradas. Sin embargo, las apariciones no sostenidas 
+(de hasta $\delta -1$ cuadros) de elementos que aparentan ser objetos 
+para el sistema de visión pero no lo son, son también ignoradas, 
+disminuyendo el porcentaje de falsos negativos.\\
+\indent La variable $\rho$, en cambio, establece otro tipo de balance. 
+	Siempre que un objeto deja de aparecer en la imagen (por 
+	desplazamiento del objeto o del robot), el sistema de 
+	predicción arriesga la posición de este un máximo de $\rho$ veces 
+	(según la regularidad de detección) y, en esta caso, las equivoca a 
+	todas ya que el objeto cesó de figurar en la imágen. El lado 
+	positivo es que cuando un objeto que tenía un historial de 
+	detección positivo es ocluido o alterado de tal forma que el 
+	sistema de visión no lo reconoce, el sistema de predicción 
+	arriesgará la posición (hasta $\rho$ veces) pudiendole acertar o no hasta que el objeto 
+	sea nuevamente detectado por el sistema de visión o sea descartado. 
+	Es en esta última situacion donde se obtienen nuevas detecciones que el sistema de visión 
+	nunca podría obtener por si solo.\\
+	\indent A partir de estas reflexiones surge la importancia de configurar 
+	estas variables de acuerdo al sistema de visión que estemos 
+	usando. Si tenemos un sistema de visión con alto porcentaje de 
+	falsos positivos y bajo porcentaje de falsos negativos entonces es 
+	probable que arriesgar más posiciones de objetos cuando estos no 
+	son detectados mejore la performance. En este caso debemos elegir 
+	valores de $\rho$,no muy pequeños, para afrontar el deficit de 
+	detección del sistema de visión  y valores de $delta$,mas bien 
+	pequeños, para no entorpecer la detección. Es importante remarcar 
+	que el bajo porcentaje de falsos positivos, en este caso, nos 
+	permite confiar en el sistema de visión en el sentido de que las cosas que 
+	este detecte tienen altas probabilidades de ser objetos. \\
+	\indent En el caso reciproco, un sistema de visión con alto 
+	porcentaje de falsos negativos y bajo porcentaje de falsos 
+	positivos quizas convenga tener un valor de $\delta$ alto, para 
+	filtrar la mayor cantidad de detecciones falsas. Al hacerlo, puede 
+	suceder que también filtremos detecciones positivas pero en ese 
+	caso habría que estudiar cuanto se gana y cuanto se pierde y 
+	buscar un balance.\\
+	\indent Otra posibilidad es que el sistema de visión sea muy 
+	confiable ( bajo porcentaje de falsos positivos/negativos). En 
+	esta situación conviene configurar al sistema de predicción para 
+	que haga más caso de lo que el sistema de visión le informa. Esto 
+	significa que cuando el sistema de visión no encuentra un objeto 
+	el sistema de predicción no debe arriesgar mucho ya que el objeto 
+	probablemente no se encuentre. Asimismo, unas pocas detecciones de 
+	un objeto bastan para que el sistema de predicción lo tenga 
+	en cuenta  ya que hay una alta probabilidad de que 
+	realmente se trate de un objeto. Esto se traduce en valores de 
+	$\delta$ y $\rho$ bajos.
+ 
+
+
+  %~ La regla 1 nos permite eliminar las detecciones 
+%~ espontáneas de objetos por parte del sistema de visión. Si observamos nuevamente la 
+%~ asumpción número 1, entonces no esta mal decir que un objeto que 
+%~ fue detectado en un cuadro determinado debería aparecer(con cierta 
+%~ probabilidad) en los subsiguientes. Bajo 
+%~ este criterio utilizamos la regla 1 para descartar a aquellos objetos 
+%~ que no cumplen con dicha proposición. En cambio, si el objeto es detectado de forma 
+%~ regular en un número de cuadros estipulados, entonces el sistema de 
+%~ predicción da fé de la existencia de ese objeto otorgandole la 
+%~ posibilidad de no ser detectado por el sistema de visión por un 
+%~ número determinado de cuadros. En este caso, el sistema de predicción 
+%~ veta por la existencia del objeto ya que dispone de una muestra 
+%~ suficiente para creer eso.  Esta creencia se mantiene por un número de 
+%~ cuadros que se calcula de acuerdo al grado de regularidad en el que fue 
+%~ detectado anteriormente. Para ejemplificar, un objeto que aparecio en 10 de los últimos 12 
+%~ cuadros podrá permanecer mas cuadros sin ser detectado por el sistema 
+%~ de visión y, sin ser descartado por el de predicción, que otro objeto 
+%~ que solo apareció en 5 de los últimos 12 cuadros. Cuando se agota la 
+%~ cantidad de cuadros que un objeto puede no ser detectado, el sistema 
+%~ de predicción lo descarta. 
+%~ . 
+
+	\subsection{Focalización}
 	Focalización es el mecanismo que busca que el sistema de visión se concentre en la detección de un único objeto a lo largo del tiempo. Esta situación es deseable cuando el sistema de visión ya detectó una basura y el robot se dirige a recolectarla. En esta circunstancia, no nos interesan otros objetos que puedan aparecer durante el trayecto y por lo tanto tratamos de evitar cualquier tipo de procesamiento innecesario sobre ellos. Con este objetivo, seleccionamos una sub-imagen a procesar en la cual suponemos que vamos a encontrar al objeto en cuestión. El mecanismo de focalización se encuentra muy ligado al sistema de predicción ya que debe persistir cierta información sobre un objeto a lo largo del tiempo.\\
 \indent El mecanismo de focalización puede separarse en dos etapas. En una primera etapa, utlizando la información brindada por el sistema de predicción, se selecciona un objeto a focalizar. Existen varios criterios de selección, algunos que consideramos mas relevantes son:
 \begin{itemize}
 \item{ Objeto mas cercano - Se estiman las distancias a los objetos y se selecciona aquel que se encuentre mas cercano al robot.}
 \item{ Objeto más detectado en los últimos 20 cuadros - Se selecciona al objeto que fue reconocido mas veces por el sistema de visión en las últimas 20 imágenes.}
-\item{ Objeto más antiguo - Se elige al objeto que persistio más cuadros según el sistema de predicción.}
+\item{ Objeto más antiguo - Se elige al objeto que persistió más cuadros según el sistema de predicción.}
 \item{ Combinación ponderada - Se utilizan los  criterios mencionados dandoles mayor o menor peso a cada uno y eligiendo al objeto que obtenga mayor puntuación.}
 \end{itemize}
 Pensamos todos los criterios con el objetivo de maximizar las chances de que el robot tenga exito en la recolección del objeto. El criterio de menor distancia implica un menor recorrido hacia el objeto y por lo tanto menos posibilidades de cometer error durante el recorrido. Si utilizamos el criterio de mayor detección en los últimos 20 cuadros estamos maximizando las chances de que el sistema de visión detecte al objeto durante el trayecto del robót hacia el mismo. Con un razonamiento similar, el criterio de mayor antiguedad maximiza las chances de que el sistema de visión detecte al objeto pero utilizando información mas general y no tan local como el resultado de los últimos 20 cuadros. Previo a la focalización es necesario alimentar al sistema de predicción ya que sin este, no es posible utilizar ninguno de los criterios mencionados.\\ 
