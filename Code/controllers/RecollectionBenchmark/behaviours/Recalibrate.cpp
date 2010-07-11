@@ -55,10 +55,10 @@ namespace behaviours {
 
 		// ADJUST Z
 		this->wheels->setPosition(MIDDLE_LINE_X,zAdjustment,true);
-
+		*/
 		// RESET DISTANCE COVERED
 		this->wheels->resetDistanceCovered();
-		
+		/*
 		// Turn till robot is oriented to this->originalPos
 		this->turnToWhereItWas();
 		delete(this->originalPos);
@@ -68,9 +68,49 @@ namespace behaviours {
 	void Recalibrate::turnToWhereItWas(){
 		/*
 		utils::MyPoint * p = this->wheels->getPosition();
-		double angle = atan2(-(p->getX()-this->originalPos()->getX()),
-								-(p->getY()-this->originalPos()->getY());
+		double angle = atan2( -( p->getX() - this->originalPos()->getX() ),
+								-( p->getY() - this->originalPos()->getY() ) + PI;
+		if ( goingLeft ){
+			while ( angle < currentAngle ){
+				// turn right
+				this->turnEqRight(RECALIBRATE_TURN_SPEED);
+				if ( ! ( angle < currentAngle ) )
+					return;
+			}
+			while ( angle > currentAngle ){
+				// turn left
+				this->turnEqLeft(RECALIBRATE_TURN_SPEED);
+				if ( ! ( angle > currentAngle ) )
+					return;
+			}
+		}
+		else{
+			while ( angle < currentAngle ){
+				// turn left
+				this->turnEqLeft(RECALIBRATE_TURN_SPEED);
+				if ( ! ( angle < currentAngle ) )
+					return;
+			}
+			while ( angle > currentAngle ){
+				// turn right
+				this->turnEqRight(RECALIBRATE_TURN_SPEED);
+				if ( ! ( angle > currentAngle ) )
+					return;
+			}
+		}
 		*/
 	}
 
+	void Recalibrate::turnEqLeft(double spd){
+		this->turn(-spd,spd);
+	}
+
+	void Recalibrate::turnEqRight(double spd){
+		this->turn(spd,-spd);
+	}
+
+	void Recalibrate::turn(double spd, double spd1){
+		this->wheels->setSpeed(spd,spd1);
+		//robot.step();
+	}
 } /* End of namespace behaviours */

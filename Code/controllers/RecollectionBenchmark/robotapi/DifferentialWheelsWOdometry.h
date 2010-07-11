@@ -26,7 +26,9 @@ class DifferentialWheelsWOdometry : public robotapi::IDifferentialWheels {
 			utils::MyPoint * getPosition();
 			void setOrientation(double angle);
 			void setPosition(double x, double z, bool s);
-	
+
+			double getDistanceCovered();
+			void resetDistanceCovered();
 		private:
         	void computePosition(double ldist, double rdist);
 	        double distanceBetweenWheels;
@@ -35,6 +37,7 @@ class DifferentialWheelsWOdometry : public robotapi::IDifferentialWheels {
 			double encoderResolution;
 			double lastLeftEncoder;
 			double lastRightEncoder;
+			double distanceCovered;
 			robotapi::IDifferentialWheels * wheels;
 			utils::MyPoint * lastPosition;
 			utils::MyAngle * lastAngle;

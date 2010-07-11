@@ -31,6 +31,9 @@ class Recalibrate : public AbstractBehaviour
 		utils::MyPoint * originalPos;
 
 		void turnToWhereItWas();
+		void turnEqLeft(double spd);
+		void turnEqRight(double spd);
+		void turn(double spd, double spd1);
 };
 
 } /* End of namespace behaviours */

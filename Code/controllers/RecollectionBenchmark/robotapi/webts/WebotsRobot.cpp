@@ -19,7 +19,9 @@ namespace webts {
 
 		webots::Robot * robot;
 		webots::GPS * gps;
+		double lastPosX, lastPosZ;
 		double lastGPSX, lastGPSZ;
+		double distanceCoveredOdometry, distanceCoveredGPS;
 
     WebotsRobot::WebotsRobot( WorldInfo * wi, webots::DifferentialWheels & dw){
 		robot = &dw;
@@ -36,6 +38,10 @@ namespace webts {
 			lastGPSX = this->wi->getInitialPosition()->getX();
 			lastGPSZ = this->wi->getInitialPosition()->getY();
 		}
+		lastPosX = this->wi->getInitialPosition()->getX();
+		lastPosZ = this->wi->getInitialPosition()->getY();
+		distanceCoveredOdometry = 0;
+		distanceCoveredGPS = 0;
 	}
 
     std::string WebotsRobot::getName(){
@@ -114,18 +120,27 @@ namespace webts {
 			double difX = values[0] - lastGPSX;
 			double difZ = values[2] - lastGPSZ;
 			double angle = atan2(-difX,-difZ);
-			printf("GPS Position : %g %g %g\n",values[0],values[2],angle);
+
+			distanceCoveredOdometry += sqrt( (df->getPosition()->getX() - lastPosX ) * (df->getPosition()->getX() - lastPosX ) + (df->getPosition()->getY() - lastPosZ ) * (df->getPosition()->getY() - lastPosZ ) );
+			distanceCoveredGPS += sqrt( difX * difX + difZ * difZ );
+
+			printf("GPS Position : %g %g %g\n",values[0],values[2],angle);//(new utils::MyAngle(angle))->getNormalizedValue());
 			lastGPSX = values[0];
 			lastGPSZ = values[2];
+			lastPosX = df->getPosition()->getX();
+			lastPosZ = df->getPosition()->getY();
+
 			FILE * pFile;
 			pFile = fopen ("odometryError.txt","a+");
 			if (pFile!=NULL){
-				fprintf(pFile,"%g %g %g %g %g %g\n",df->getPosition()->getX(),
+				fprintf(pFile,"%g %g %g %g %g %g %g %g\n",df->getPosition()->getX(),
 													values[0],
 													df->getPosition()->getY(),
 													values[2],
 													df->getOrientation(),
-													angle);
+													angle,
+													distanceCoveredOdometry,
+													distanceCoveredGPS);
 			}
 			fclose(pFile);
 		}

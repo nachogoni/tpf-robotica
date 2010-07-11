@@ -131,10 +131,10 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 	ab = new behaviours::GoToDisposal( wi, &myIRobot, trashBin , wheels, fss , servoRear, servoContainer );
 	myAbstractBehaviours.push_back(ab);
 	#endif
-
+/*
 	ab = new behaviours::Recalibrate ( &myIRobot, wheels );
 	myAbstractBehaviours.push_back(ab);
-
+*/
 	#ifdef GO_TO_RECHARGE
 	ab = new behaviours::GoToBaseGroup( wi, &myIRobot, robotBattery , pcBattery , wheels, fss );
 	myAbstractBehaviours.push_back(ab);
