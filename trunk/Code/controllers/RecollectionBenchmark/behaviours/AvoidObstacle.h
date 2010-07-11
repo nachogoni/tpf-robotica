@@ -5,6 +5,8 @@
 #include <vector>
 
 #define THRESHOLD_OBSTACLE 400
+#define FRONT_THRESHOLD_OBSTACLE 300
+#define SPEED_FACTOR 0.2
 
 namespace behaviours {
 

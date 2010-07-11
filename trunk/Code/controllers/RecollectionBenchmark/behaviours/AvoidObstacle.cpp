@@ -24,9 +24,13 @@ namespace behaviours {
 
     void AvoidObstacle::sense(){
 		int j;
-
+		double thresh;
 		for (j = 0; j < DISTANCE_SENSORS; j++){
-			if ( (*this->dss).at(j)->getValue() > THRESHOLD_OBSTACLE ){
+			thresh = THRESHOLD_OBSTACLE;
+			if ( j == 0 || j == DISTANCE_SENSORS-1 )
+				thresh = FRONT_THRESHOLD_OBSTACLE;
+
+			if ( (*this->dss).at(j)->getValue() > thresh ){
 				setStimulusPresent();
 				// TODO Set obstacle side
 			}
@@ -42,7 +46,7 @@ namespace behaviours {
 				speed[i] += braitenberg_coefficients[j][i] * (*this->dss).at(j)->getValue();
 			}
 		}
-		wheels->setSpeed(speed[0],speed[1]);
+		wheels->setSpeed(speed[0]*SPEED_FACTOR,speed[1]*SPEED_FACTOR);
 	}
 
 

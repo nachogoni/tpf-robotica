@@ -33,6 +33,7 @@ void DifferentialWheelsWOdometry::computeOdometry() {
 
 	this->lastLeftEncoder = l;
 	this->lastRightEncoder = r;
+	this->distanceCovered = 0;
 
 	//printf("estimated distance covered by left wheel: %g m.\n",dl);
 	//printf("estimated distance covered by right wheel: %g m.\n",dr);
@@ -59,7 +60,11 @@ void DifferentialWheelsWOdometry::computePosition(double ldist, double rdist){
 	this->lastAngle->add(dtita);
 	delete dtita;
 
-	this->lastPosition->add(-lc * sin(this->lastAngle->getNormalizedValue()), -lc * cos(this->lastAngle->getNormalizedValue()));
+	double xdiff = -lc * sin(this->lastAngle->getNormalizedValue());
+	double zdiff = -lc * cos(this->lastAngle->getNormalizedValue());
+	this->distanceCovered = sqrt( xdiff * xdiff + zdiff * zdiff );
+
+	this->lastPosition->add(xdiff, zdiff);
 	return;
 }
 
@@ -79,6 +84,14 @@ void DifferentialWheelsWOdometry::setOrientation(double angle){
 void DifferentialWheelsWOdometry::setPosition(double x, double z, bool s){
     this->lastPosition->setX(x);
 	this->lastPosition->setY(z);
+}
+
+double DifferentialWheelsWOdometry::getDistanceCovered(){
+	return this->distanceCovered;
+}
+
+void DifferentialWheelsWOdometry::resetDistanceCovered(){
+    this->distanceCovered = 0;
 }
 
 } /* End of namespace robotapi */

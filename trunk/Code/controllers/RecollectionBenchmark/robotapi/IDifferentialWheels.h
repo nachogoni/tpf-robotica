@@ -56,6 +56,10 @@ class IDifferentialWheels : virtual public IDevice {
 
 	virtual void setPosition(double x, double z, bool s)  = 0;
 
+	virtual double getDistanceCovered()  = 0;
+
+	virtual void resetDistanceCovered()  = 0;
+
     // virtual destructor for interface
     virtual ~IDifferentialWheels() { }
 };
