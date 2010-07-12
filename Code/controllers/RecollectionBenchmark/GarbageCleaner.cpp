@@ -7,6 +7,7 @@
 #include <behaviours/GoToGarbage.h>
 #include <behaviours/Recalibrate.h>
 #include <behaviours/Recharge.h>
+#include <behaviours/RemoveFromStuck.h>
 #include <behaviours/UnloadGarbage.h>
 #include <behaviours/Wander.h>
 #include <robotapi/IDistanceSensor.h>
@@ -25,7 +26,7 @@
 #define MIN_PROCESSING_STEPS 1
 
 //#define INITIAL_PROCESSING_STEPS ((MAX_PROCESSING_STEPS+MIN_PROCESSING_STEPS)/2)
-#define INITIAL_PROCESSING_STEPS 2
+#define INITIAL_PROCESSING_STEPS 10
 
 std::vector<robotapi::IDistanceSensor*> dss;
 std::vector<robotapi::IDistanceSensor*> fss;
@@ -125,7 +126,7 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 	ab = new behaviours::GoToGarbage( gr, wheels );
 	myAbstractBehaviours.push_back(ab);
 
-	ab = new behaviours::CollectGarbage( gr, &myIRobot, trashBin, wheels, wi, servoFront );
+	ab = new behaviours::CollectGarbage( gr, &myIRobot, trashBin, wheels, wi, servoFront, servoContainer );
 	myAbstractBehaviours.push_back(ab);
 
 	ab = new behaviours::GoToDisposal( wi, &myIRobot, trashBin , wheels, fss , servoRear, servoContainer );
@@ -141,6 +142,9 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 	#endif
 
 	ab = new behaviours::AvoidObstacle(wheels,dss);
+	myAbstractBehaviours.push_back(ab);
+
+	ab = new behaviours::RemoveFromStuck(&myIRobot, wheels);
 	myAbstractBehaviours.push_back(ab);
 
 }

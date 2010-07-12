@@ -26,7 +26,7 @@ class CollectGarbage : public AbstractBehaviour {
 
 	public:
 
-		CollectGarbage(utils::GarbageRecognition * gr, robotapi::IRobot * robot, robotapi::ITrashBin * tb, robotapi::IDifferentialWheels * wheels, WorldInfo * wi, robotapi::IServo * shovel);
+		CollectGarbage(utils::GarbageRecognition * gr, robotapi::IRobot * robot, robotapi::ITrashBin * tb, robotapi::IDifferentialWheels * wheels, WorldInfo * wi, robotapi::IServo * shovel, robotapi::IServo * container);
 		~CollectGarbage();
 
 		void sense();
@@ -35,6 +35,7 @@ class CollectGarbage : public AbstractBehaviour {
 
 	private:
 		robotapi::IServo * shovel;
+		robotapi::IServo * cont;
 		robotapi::IRobot * robot;
 		robotapi::IDifferentialWheels * wheels;
 		WorldInfo * wi;

@@ -73,6 +73,7 @@ class GoToDisposal : public AbstractBehaviour {
 	    behaviours::AbstractBehaviour * disposalBehaviours [4];
 		robotapi::IDifferentialWheels * wheels;
 		robotapi::IServo * cont;
+		robotapi::IRobot * robot;
 		robotapi::ITrashBin * trashbin;
 		std::vector<robotapi::IDistanceSensor*> * fss;
 		WorldInfo * wi;
