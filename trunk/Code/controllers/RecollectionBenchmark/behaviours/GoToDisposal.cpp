@@ -14,6 +14,7 @@ GoToDisposal::GoToDisposal(WorldInfo * wi, robotapi::IRobot * robot, robotapi::I
 	this->fss = &fss;
 	this->wheels = wheels;
 	this->cont = cont;
+	this->robot = robot;
 
 	this->trashbin->setFullBias(1);
 
@@ -59,6 +60,7 @@ void GoToDisposal::action(){
 
 	if ( xpos < BASE_POSITION && fabs( this->wheels->getOrientation() - 3*(PI/2)) < GO_TO_D_ORIENTATION_TOLE ){
 		this->disposalBehaviours[3]->action();
+		this->cont->setPosition(0);
 		followingLine = false;
 		return;
 	}

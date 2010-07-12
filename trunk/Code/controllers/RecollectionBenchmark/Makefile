@@ -7,7 +7,8 @@ CPP_SOURCES = recollectionbenchmark.cpp GarbageCleaner.cpp WorldInfo.cpp \
 							behaviours/CollectGarbage.cpp behaviours/GoToGarbage.cpp behaviours/FocusGarbage.cpp \
 							behaviours/FindLine.cpp behaviours/GoToBase.cpp behaviours/Recharge.cpp \
 							behaviours/GoToBaseGroup.cpp behaviours/PositionInLine.cpp behaviours/Recalibrate.cpp \
-							behaviours/GoToDisposal.cpp behaviours/UnloadGarbage.cpp behaviours/Wander.cpp \
+							behaviours/RemoveFromStuck.cpp behaviours/GoToDisposal.cpp behaviours/UnloadGarbage.cpp \
+							behaviours/Wander.cpp \
 							utils/MinimalBoundingRectangle.cpp utils/Garbage.cpp utils/GarbageRecognition.cpp \
 							utils/Contours.cpp utils/Histogram.cpp \
 							utils/MyLine.cpp utils/MyPoint.cpp utils/MyAngle.cpp utils/MyWall.cpp \

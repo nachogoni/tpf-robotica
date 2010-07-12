@@ -6,13 +6,14 @@ namespace behaviours {
 
 	int getStepsToGarbage(double distanceInMeters,double speed);
 
-	CollectGarbage::CollectGarbage(utils::GarbageRecognition * gr, robotapi::IRobot * robot, robotapi::ITrashBin * tb, robotapi::IDifferentialWheels * wheels, WorldInfo * wi,  robotapi::IServo * shovel) : AbstractBehaviour("Collect Garbage"){
+	CollectGarbage::CollectGarbage(utils::GarbageRecognition * gr, robotapi::IRobot * robot, robotapi::ITrashBin * tb, robotapi::IDifferentialWheels * wheels, WorldInfo * wi,  robotapi::IServo * shovel, robotapi::IServo * container) : AbstractBehaviour("Collect Garbage"){
 		this->shovel = shovel;
 		this->gr = gr;
 		this->wi = wi;
 		this->robot = robot;
 		this->wheels = wheels;
 		this->trashBin = tb;
+		this->cont = container;
 	}
 	
 	CollectGarbage::~CollectGarbage(){}
@@ -38,7 +39,6 @@ namespace behaviours {
 
     void CollectGarbage::action(){
 		this->wheels->setSpeed(0,0);
-		printf("COLLECTING\n");
 		this->robot->step(COLLECT_TIME_STEP);
 
 		printf("COLLECTING\n");
@@ -47,6 +47,8 @@ namespace behaviours {
 
 		// Lift up the Shovel
 		this->shovel->setPosition(1.57);
+		this->cont->setPosition(0);
+
 		for ( int i = 0 ; i < COLLECT_WAIT_STEPS_A_LAST ; i ++ ){
 			this->robot->step(COLLECT_TIME_STEP);
 		}
