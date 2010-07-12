@@ -27,15 +27,14 @@ distintos metodos que se nos ocurrieron
 \section{Actuadores}
 \label{h_actuadores}
 
-En nuestro caso, los motores son la principal forma en que el robot puede interactuar activamente con el ambiente que lo rodea.
-Cada una de las tareas que deb\'iamos realizar requer\'ia de actuadores acordes.
-
+La principal forma en que el robot puede interactuar activamente con el ambiente que lo rodea son los motores y
+cada tarea que deb\'iamos realizar requer\'ia de actuadores acordes.
 Estas cuestiones son las que analizamos en este apartado.
 
 \subsection{Motores de cont\'inua}
 \label{h_actuadores_motorDC}
 
-Para la tracci\'on principal de las ruedas necesitabamos motores que tuvieran el torque necesario para mover el robot, pero que pudieramos medir y
+Para la tracci\'on principal de las ruedas necesitabamos motores que tuvieran el torque suficiente para mover el robot, pero que pudieramos medir y
 controlar la velocidad era la principal necesidad. Para esta tarea utilizamos motores de cont\'inua con caja reductora y encoder.
 Con dos de estos motores logramos poder garantizar una velocidad determinada en las ruedas, controlar de la cantidad de movimiento en forma
 independiente en cada rueda y entre otras cosas conocer la cantidad de las vueltas dadas por cada una de las ruedas.
@@ -43,12 +42,9 @@ independiente en cada rueda y entre otras cosas conocer la cantidad de las vuelt
 \subsubsection{Caracter\'isticas}
 \label{h_actuadores_motorDC_caracteristicas}
 
-Los motores que elegimos son de la marca Ignis\footnote{http://www.ignis.com.ar} modelo \emph{MR-2FA} con caracter\'isticas expresadas en la tabla
+Los motores que elegimos son de la marca Ignis\footnote{http://www.ignis.com.ar} modelo \emph{MR-2FA} con caracter\'isticas expresadas en el cuadro
 \ref{hT_motorDC}, est\'an provistos de una caja reductora, poseen un encoder de $4$ estados por vuelta en el eje del motor y un sensor de de efecto
 de campo para determinar una vuelta en la salida de la caja reductora.
-
-La caja reductora provee una relaci\'on de $94$ vueltas del motor por cada $1$ vuelta del eje de salida de la caja.
-
 En la figura \ref{hF_motorDC} mostramos las dimensiones exteriores del motor.
 
 \begin{table}
@@ -78,6 +74,7 @@ En la figura \ref{hF_motorDC} mostramos las dimensiones exteriores del motor.
 
 Una ventaja que encontramos en este modelo es que ya trae el encoder integrado aunque su resoluci\'on podr\'ia haber sido mayor.
 Los encoders los explicamos m\'as en detalle en la secci\'on \ref{h_sensado_encoder}.
+La caja reductora provee una relaci\'on de $94$ vueltas del motor por cada $1$ vuelta del eje de salida de la caja.
 
 \subsubsection{Circuito de control}
 \label{h_actuadores_motorDC_circuito}
@@ -88,7 +85,7 @@ Internamente tiene dos puentes H puenteables y puede soportar hasta $4 A$. Ideal
 La principal funci\'on del driver era proveer de la corriente y voltaje necesarios para el funcionamiento del motor, pero la configuraci\'on
 del puente H nos dio la posibilidad de, con una l\'ogica simple, determinar el sentido de la corriente y potencia que recib\'ia el motor.
 
-Este integrado admite el puenteo de la salida aumentando as\'i la corriente que pueda circular por \'el.
+Este integrado admite el puenteo de las salidas aumentando as\'i la corriente que circular\'a por el motor.
 Para hacer esto, conectamos las salidas \emph{Out1} y \emph{Out4} por un lado y por el otro las salidas \emph{Out2} y \emph{Out3}.
 De igual forma los pines de habilitaci\'on \emph{EnA} y \emph{EnB}, luego la entrada \emph{In1} con la \emph{In4} por un lado y
 por el otro la \emph{In2} con la \emph{In3}.
@@ -102,7 +99,7 @@ por el otro la \emph{In2} con la \emph{In3}.
 
 De esta forma, se controla con s\'olo $3$ cables, uno de habilitaci\'on y otros $2$ de \emph{Input} que determinan
 la polarizaci\'on de los transistores internos y por ende, el sentido de giro del motor.
-En la tabla \ref{hT_l298} mostramos la tabla de verdad para los pines de control, donde H es estado algo, L estado bajo y X cualquier estado.
+En el cuadro \ref{hT_l298} mostramos la tabla de verdad para los pines de control, donde H es estado alto, L estado bajo y X cualquier estado.
 En la figura \ref{hF_l298} mostramos el diagrama interno del integrado.
 
 \begin{table}
@@ -123,7 +120,7 @@ En la figura \ref{hF_l298} mostramos el diagrama interno del integrado.
 	\label{hT_l298}
 \end{table}
 
-Para determinar la potencia que recibir\'ia el motor usamos el m\'odulo de \emph{PWM} del microcontrolador, que explicamos m\'as en detalle en la
+Para determinar la potencia que recibir\'a el motor usamos el m\'odulo de \emph{PWM} del microcontrolador, que explicamos m\'as en detalle en la
 secci\'on \ref{h_controlador_micro_modulos}.
 Variando el ancho del pulso sobre el pin de habilitaci\'on del driver determinamos la cantidad de tiempo que el motor recibe tensi\'on, lo cual
 se traduce en la potencia que este tiene para realizar el movimiento.
@@ -137,7 +134,7 @@ microcontrolador, que explicamos en la secci\'on \ref{h_controlador_micro_modulo
 Conociendo el valor de la resistencia y el valor leido por el m\'odulo de \emph{ADC}, pudimos determinar cuanta corriente que circulaba por la
 resistencia y por ende la corriente consumida por el motor.
 
-Para controlar la velocidad del motor usamos 1 de los 2 encoders que trae.
+Para controlar la velocidad del motor usamos uno de los dos encoders que trae.
 Conectados como entrada para el m\'odulo de \emph{Timer} del microcontrolador, en configuraci\'on de contador, que explicamos m\'as en detalle en la
 secci\'on \ref{h_controlador_micro_modulos}.
 Usando otro \emph{Timer} para tener una base de tiempo fija y con el valor del contador pudimos determinar y controlar la velocidad de las ruedas.
@@ -155,16 +152,16 @@ chequeos y ejercer control sobre el motor.
 Verificamos el consumo del motor para evitar sobrecargar el circuito y los motores ante un posible atasco de las ruedas.
 Tambi\'en actualizamos el acumulado de vueltas realizadas por el motor para la odometr\'ia.
 
-Cada $200$ms, o sea $32$ interrupciones, tomamos la cantidad de cuentas del encoder, correjimos la velocidad de giro del motor ajustando el
+Cada $200$ms ($32$ interrupciones) tomamos la cantidad de cuentas del encoder, corregimos la velocidad de giro del motor ajustando el
 ancho del pulso generado por el PWM.
 Luego borramos el contador y esperamos otros $200$ms.
 
 \subsection{Servo motores}
 \label{h_actuadores_servo}
 
-Para el movimiento de las partes del m\'odulo de recolecci\'on. una c\'amara con paneo y giro o un senor de ultrasonido colocado
+Para el movimiento de las partes del m\'odulo de recolecci\'on, una c\'amara con paneo y giro o un senor de ultrasonido colocado
 en la parte superior haciendo las veces de radar, pensamos en el uso de servo motores.
-La principal caracter\'istica de estos actuadores es que nosotros s\'olo debemos indicar el \'angulo al que queremos que este
+La principal caracter\'istica de estos actuadores es que s\'olo debemos indicar el \'angulo al que queremos que este
 el eje del motor y este se coloca autom\'aticamente.
 El \'angulo de trabajo va desde $0^{\circ}$ a $180^{\circ}$ y algunos llegan hasta los $200^{\circ}$.
 
@@ -172,8 +169,8 @@ Aunque no fue implementado el ning\'un mecanismo que requiriera el uso de estos 
 en torno a este tipo de actuadores.
 En la secci\'on \ref{h_placas_servos} explicamos el dise\~no de las placas que los controlan.
 
-El servo de prueba que utilizamos para el desarrollo es el modelo \emph{HX5010} de la marca Hextronik\footnote{www.hextronik.com/}
-con caracteristicas que expresamos en la tabla \ref{hT_hx5010}
+El servo de prueba que utilizamos para el desarrollo es el modelo \emph{HX5010} de la marca Hextronik\footnote{http://www.hextronik.com/}
+con caracteristicas que expresamos en el cuadro \ref{hT_hx5010}
 
 \begin{table}
 	\begin{center}
@@ -216,7 +213,7 @@ Debido a que pensamos usar servos digitales y por lo menos \'ibamos a necesitar 
 Como s\'olo dispon\'iamos de 1, decidimos realizar la misma funci\'on pero por software.
 
 Usamos el timer de $16$bits del microcontrolador configurado con el clock interno como medida del tiempo para crear $5$ salidas con
-pulsos que var\'ian el ancho en forma independiente cada una.
+pulsos que var\'ian su ancho en forma independiente cada una.
 Definimos un ancho m\'inimo y m\'aximo, pudiendo configurar pasos intermedios de $1^{\circ}$ (aproximadamente $69.4\mu s$).
 
 \section{Sensado}
@@ -237,10 +234,8 @@ En base a esta medici\'on se calcula la distancia entre el sensor y el objeto re
 \subsubsection{Caracter\'isticas}
 \label{h_sensado_telemetros_caracteristicas}
 
-medidas, tiempo de muestreo, tipo de salida, rangos de distancia, rangos de voltaje, distancia vs voltaje
-
 Los tel\'emetros infrarrojos que elegimos son de la marca Sharp\footnote{http://sharp-world.com/products/device}, modelo \emph{GP2D120}.
-En la tabla \ref{hT_gp2d120} detallamos los valores caracter\'isticos del modelo.
+En el cuadro \ref{hT_gp2d120} detallamos los valores caracter\'isticos del modelo.
 
 Este tipo de sensores tienen un retardo de aproximadamente $43.1ms$ durante el cual la lectura que se realiza no es confiable y luego
 las nuevas lecturas se hacen en ventanas de aproximadamente el mismo tiempo.
@@ -275,17 +270,15 @@ En la figura \ref{hF_gp2d120_pulse} mostramos el diagrama de tiempos.
 \subsubsection{Circuito de control}
 \label{h_sensado_telemetros_circuito}
 
-alimentacion, conmutacion (transistor, estado de habilitacion: 0), conexion con el micro, salida del sensor, modulo ADC, muestreo, capacitor para alimentacion, circuito minimo (diagrama)
-
 No necesit\'abamos un driver para manejar los tel\'emetros, pero decidimos usar un transistor para poder habilitarlos o no,
 de otra manera el sensor estaba tomando mediciones continuamente provocando un consumo de bater\'ia innecesario.
 De esta forma s\'olo se enciende cuando se va a utilizar.
 
 El transistor que utilizamos es un conmutador y amplificador de uso general, el \emph{BC327} y por ser de tipo PNP se
-exita con un estado bajo, por lo que la l\'ogica de conmitaci\'on est\'a negada.
+exita con un estado bajo, por lo que la l\'ogica de conmutaci\'on est\'a negada.
 
 El tipo de salida de este modelo de tel\'emetros es anal\'ogica y est\'an conectadas al m\'odulo \emph{ADC} del microcontrolador.
-En la figura \ref{hF_gp2d120_distancia} mostramos la tabla de conversi\'on entre voltaje de salida y distancia al objeto, y en la figura
+En la figura \ref{hF_gp2d120_distancia} mostramos el cuadro de conversi\'on entre voltaje de salida y distancia al objeto, y en la figura
 \ref{hF_gp2d120_apertura} mostramos el \'angulo de apertura de la zona de detecci\'on seg\'un la distancia al objetivo.
 
 \begin{figure}[ht]
@@ -330,7 +323,7 @@ hacerlo mediante un \'unico pin.
 La distancia medida mediante el tren de pulsos es codificada linealmente en el ancho de un pulso que var\'ia de $100\mu s$ a $25 ms$.
 Si dentro del rango de detecci\'on no se encuentra ning\'un objeto, el pulso tendr\'a un ancho de $30ms$.
 
-En la tabla \ref{hT_srf05} detallamos las caracter\'sticas del sensor \emph{SRF05} y en la figura \ref{hF_srf05} mostramos el haz ultras\'onico
+En el cuadro \ref{hT_srf05} detallamos las caracter\'sticas del sensor \emph{SRF05} y en la figura \ref{hF_srf05} mostramos el haz ultras\'onico
 del sensor.
 
 \begin{table}[ht]
@@ -522,7 +515,7 @@ En la figura \ref{hF_bateria_diagrama} mostramos el diagrama del divisor de tens
 	\label{hF_bateria_diagrama}
 \end{figure}
 
-En la tabla \ref{hT_bateria_divT} mostramos las posibles tensiones en la bater\'ia y la tensi\'on de salida en el divisor.
+En el cuadro \ref{hT_bateria_divT} mostramos las posibles tensiones en la bater\'ia y la tensi\'on de salida en el divisor.
 Tambi\'en incluimos el valor aproximado para el ADC con tensi\'on de referencia a $5V$ que leer\'ia la salida del divisor.
 El rango de voltajes que analizamos es tienendo en cuenta la posibilidad de efectuar mediciones durante la carga de la bater\'ia
 y sabiendo que con una tensi\'on menor a $5 V$ la l\'ogica del prototipo que construimos comenzar\'ia a fallar.
@@ -562,7 +555,7 @@ El consumo de los motores de corriente cont\'inua lo medimos leyendo el pin de s
 Lo que medimos con el m\'odulo de \emph{ADC} del microcontrolador es la tensi\'on en este pin.
 Esta depende de la ca\'ida de tensi\'on en la resistencia conectada a masa y de la corriente que circula por el motor.
 Conociendo el valor de la resistencia podemos calcular el consumo del motor.
-En la tabla \ref{hT_consumo} comparamos el consumo en el motor, el voltaje sensado y la lectura en el ADC.
+En el cuadro \ref{hT_consumo} comparamos el consumo en el motor, el voltaje sensado y la lectura en el ADC.
 
 \begin{table}[ht]
 	\begin{center}
@@ -620,8 +613,8 @@ Estas cuestiones son las que explicamos en este cap\'itulo.
 \subsection{Netbook}
 \label{h_controlador_netbook}
 
-Elegimos como controlador principal la netbook \emph{EeePC 1005-HA} de la marca Asus\footnote{www.asus.com}.
-Como caracter\'isticas principales cuenta con un procesador Intel\footnote{www.intel.com} Atom N280 1.66 GHz, 1GB DDR-2, un disco de
+Elegimos como controlador principal la netbook \emph{EeePC 1005-HA} de la marca Asus\footnote{http://www.asus.com/}.
+Como caracter\'isticas principales cuenta con un procesador Intel\footnote{http://www.intel.com/} Atom N280 1.66 GHz, 1GB DDR-2, un disco de
 250GB, una pantalla de 10 pulgadas y una bater\'ia de 48Wh que nos da una autonom\'ia de aproximadamente 8 horas.
 Cuenta con una c\'amara integrada de 0.3MP, placa de red inal\'ambrica y ethernet, placa de sonido y 3 puertos USB.
 Pesa aproximadamente 1.27Kg y sus dimensiones son $26.2$ x $17.8$ x $3.7$ cent\'imetros.
@@ -754,7 +747,7 @@ La configuraci\'on que elegimos para realizar la comunicaci\'on fue una velocida
 sin bit de paridad y sin control de flujo.
 Logramos una gran velocidad de respuesta a los comandos de esta forma.
 
-En las tablas \ref{hT_comm_conexionLink} y \ref{hT_comm_conexionRS232} especificamos el conexionado entre las placas
+En los cuadros \ref{hT_comm_conexionLink} y \ref{hT_comm_conexionRS232} especificamos el conexionado entre las placas
 y contra el controlador principal.
 
 \begin{table}[ht]
@@ -860,7 +853,7 @@ de inicializaci\'on, identificaci\'on de controladores, versionado o alg\'una ot
 se desarrolle en un futuro y deba ser incluida en el protocolo.
 El controlador principal deber\'ia ser quien env\'ia este tipo de comandos, pero no creamos restricciones al respecto.
 
-En la tabla \ref{hT_comm_comandos_comunes} listamos y explicamos brevemente los comandos comunes del protocolo.
+En el cuadro \ref{hT_comm_comandos_comunes} listamos y explicamos brevemente los comandos comunes del protocolo.
 
 \begin{table}[ht]
 	\begin{center}
@@ -940,13 +933,13 @@ Existen grupos con comandos predefinidos cada uno se trata en las secciones como
 Los comandos espec\'ificos para cada grupo deben ser desde 0x40 hasta el valor 0x7E.
 
 El \emph{MAIN CONTROLLER} no posee por ahora ning\'un comando escpec\'ifico pero le reservamos el espacio en el protocolo.
-En las tablas \ref{hT_comm_comandos_motordc_a} y \ref{hT_comm_comandos_motordc_b} enumeramos los comandos para el
+En los cuadros \ref{hT_comm_comandos_motordc_a} y \ref{hT_comm_comandos_motordc_b} enumeramos los comandos para el
 controlador \emph{DC MOTOR}.
-El controlador \emph{SERVO MOTOR} responde a los comandos de las tablas \label{hT_comm_comandos_servo_a}
+El controlador \emph{SERVO MOTOR} responde a los comandos de los cuadros \label{hT_comm_comandos_servo_a}
 y \label{hT_comm_comandos_servo_b}
-En la tabla \ref{hT_comm_comandos_distance} listamos los comandos del controlador \emph{DISTANCE SENSOR}.
+En el cuadro \ref{hT_comm_comandos_distance} listamos los comandos del controlador \emph{DISTANCE SENSOR}.
 De igual forma, aunque no esten implementados reservamos y especificamos los comandos para \emph{BATTERY CONTROLLER} y
-\emph{TRASH BIN} en las tablas \ref{hT_comm_comandos_bateria} y \ref{hT_comm_comandos_basura} respectivamente.
+\emph{TRASH BIN} en los cuadros \ref{hT_comm_comandos_bateria} y \ref{hT_comm_comandos_basura} respectivamente.
 
 \begin{table}
 	\begin{center}
@@ -1693,9 +1686,6 @@ analisis de paquetes por segundo, bytes de datos vs bytes de header, retransmisi
 \section{Placas controladoras}
 \label{h_placas}
 
-porque tuvimos que diseñar nuestras propias placas, cosas que tuvimos en cuenta y decisiones tomadas, codigos fuente a los apendices
-
-
 Las funciones y requerimientos de nuestro proyecto ten\'ian partes que eran comunes a otros trabajos en rob\'otica o quiz\'as
 de electr\'onica general.
 Pero ten\'ian peculiaridades y aspectos que no pudimos satisfacer con placas prefabricadas.
@@ -1704,7 +1694,7 @@ las posibilidades.
 Y mantener distintos modos y protocolos dentro del proyecto generaba una carga de l\'ogica que podiamos evitar.
 
 Analizando las posibilidades y entendiendo que una de las principales razones de nuestro trabajo era generar las bases
-de conocimiento y el punto de partida a futuro de un proyecto m\'as grande, decidimos producir nuestra propia versi\'on
+de conocimiento y el punto de partida a un proyecto m\'as grande, decidimos producir nuestra propia versi\'on
 de placas controladoras.
 
 Aunque iban a tener un uso bien definido dentro de nuestro trabajo, tambi\'en cre\'imos necesario que tuvieran un nivel
@@ -1741,7 +1731,7 @@ capa de transporte de \emph{RS232}.
 Los conectores y configuraci\'on son comunes y utilizamos dos tipos de conectores para realizar la interconexi\'on entre las placas.
 Como mostramos en la figura \ref{hF_placa_gen_comm} usamos conectores \emph{RJ11} para generar el lazo entre nodos de la cadena y el
 conector \emph{DB9} para la conexi\'on con la PC.
-En las tablas \ref{hT_comm_conexionLink} y \ref{hT_comm_conexionRS232} explicamos, respectivamente, el conexionado para cada caso.
+En los cuadros \ref{hT_comm_conexionLink} y \ref{hT_comm_conexionRS232} explicamos, respectivamente, el conexionado para cada caso.
 
 \begin{figure}[ht]
 	\centering
@@ -1903,7 +1893,11 @@ y sentido del movimiento que realiz\'o la rueda, informar el consumo y poder det
 Este \'ultimo requerimiento era de vital importancia si quer\'iamos tener precisi\'on en el movimiento que realizar\'ia la rueda
 ya que el control de alta resoluci\'on hubiera sido imposible hacerlo desde el controlador principal.
 
-Como explicamos en la secci\'on \ref{h_actuadores_motorDC_circuito}.......................
+Como explicamos en la secci\'on \ref{h_actuadores_motorDC_circuito} usamos un puente H para controlar el giro y poder otorgarle
+la corriente necesaria al motor.
+
+
+...
 
 
 \subsubsection{M\'odulo de comunicaci\'on}
