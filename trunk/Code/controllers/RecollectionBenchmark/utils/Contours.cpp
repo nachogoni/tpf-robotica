@@ -145,10 +145,10 @@ int Contours::histogramMatchingFilter(IplImage * src, CvHistogram * testImageHis
 	//get contour bounding box
 	box=cvBoundingRect(this->c,0);
 
-	IplImage * src_bbox=cvCreateImage(cvSize(box.width,box.height),src->depth,src->nChannels);
+	IplImage * src_bbox=cvCloneImage(src);
 	
 	//gets subimage bounded by box
-    cvGetSubArr( src,(CvMat*)src_bbox, box );
+  cvSetImageROI(src_bbox,box);
 	//gets subimage histogram
 	utils::Histogram * h = new Histogram(h_bins,s_bins);
 	CvHistogram* hist = h->getHShistogramFromRGB(src_bbox);
@@ -156,6 +156,7 @@ int Contours::histogramMatchingFilter(IplImage * src, CvHistogram * testImageHis
 	val=cvCompareHist(hist,testImageHistogram,CV_COMP_BHATTACHARYYA);
 	
 	cvReleaseHist(&hist);
+  cvResetImageROI(src_bbox);
 	cvReleaseImage(&src_bbox);
 	delete h;
 	
