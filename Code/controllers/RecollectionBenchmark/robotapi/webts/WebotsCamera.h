@@ -3,6 +3,7 @@
 
 #include <robotapi/ICamera.h>
 #include <robotapi/webts/WebotsDevice.h>
+#include <robotapi/webts/WebotsImage.h>
 #include <webots/Camera.hpp>
 
 namespace robotapi {
@@ -26,6 +27,7 @@ public:
 private:
 
 	webots::Camera * mycam;
+	robotapi::webts::WebotsImage * wi;
 
     };
 

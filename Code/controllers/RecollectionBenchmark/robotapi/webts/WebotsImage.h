@@ -19,7 +19,9 @@ class WebotsImage : virtual public robotapi::IImage {
 
 		IplImage * toIPL();
 
-		WebotsImage(const unsigned char * img, int w, int h);
+		void setImage(const unsigned char * img);
+
+		WebotsImage(int w, int h);
 
 	private:
 		const unsigned char * img;

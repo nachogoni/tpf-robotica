@@ -41,11 +41,14 @@ namespace webts {
 		return rgb;
 	}
 
-	WebotsImage::WebotsImage(const unsigned char * img, int w, int h){
+	void WebotsImage::setImage(const unsigned char * img){
+		this->img = img;
+	}
+
+	WebotsImage::WebotsImage(int w, int h){
         this->srcSize = cvSize(w,h);
 		this->w = w;
 		this->h = h;
-		this->img = img;
 	}
 
 } /* End of namespace robotapi::webts */
