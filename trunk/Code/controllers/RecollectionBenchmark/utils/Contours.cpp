@@ -139,15 +139,12 @@ int Contours::boxAreaFilter(double minAreaRatio){
  */
 int Contours::histogramMatchingFilter(IplImage * src, CvHistogram * testImageHistogram,int h_bins,int s_bins, double min){
 	CvRect box;
-	CvMemStorage* mem = cvCreateMemStorage(0);
 	
 	double val;
 	
-	
 	//get contour bounding box
 	box=cvBoundingRect(this->c,0);
-	
-	
+
 	IplImage * src_bbox=cvCreateImage(cvSize(box.width,box.height),src->depth,src->nChannels);
 	
 	//gets subimage bounded by box
