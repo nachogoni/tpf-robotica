@@ -86,22 +86,13 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 	garbages.clear();
   
 
-	//cvNamedWindow("output",CV_WINDOW_AUTOSIZE);
-	//object model
-
 	//image for the histogram-based filter
 	//could be a parameter
 
 	utils::Histogram * h = new Histogram(HIST_H_BINS,HIST_S_BINS);
 	CvHistogram * testImageHistogram = h->getHShistogramFromRGB(model);
 
-	//~ int frameWidth=cvGetCaptureProperty(capture,CV_CAP_PROP_FRAME_WIDTH);
-	//~ int frameHeight=cvGetCaptureProperty(capture,CV_CAP_PROP_FRAME_HEIGHT);
-
-
-
 	//gets a frame for setting  image size
-	//CvSize srcSize = cvSize(frameWidth,frameHeight);
 	CvSize srcSize = cvGetSize(src);
 
 	//images for HSV conversion
@@ -109,8 +100,6 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 	IplImage* h_plane = cvCreateImage( srcSize, 8, 1 );
 	IplImage* s_plane = cvCreateImage( srcSize, 8, 1 );
 	IplImage* v_plane = cvCreateImage( srcSize, 8, 1 );
-
-
 
 	//Image for thresholding
 	IplImage * threshImage=cvCreateImage(srcSize,8,1);
