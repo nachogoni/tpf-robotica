@@ -107,14 +107,20 @@ namespace webts {
 		df->computeOdometry();
 		utils::ArenaGridSlot * currentSlot = this->ag->getSlotAt(df->getPosition());
 //		printf("STEPPING");
+
+		#ifdef REFRESH_SEEN_SLOTS
 		if ( currentSlot != NULL ){
 			//printf("Current Slot: %g - %g --> Timestamp: %ld\n",currentSlot->getX(),currentSlot->getZ(),currentSlot->getTimeStamp());
 			std::list<utils::ArenaGridSlot *> seenSlots = this->getSlotsSeen(df->getPosition(), df->getOrientation(), currentSlot);
 			this->saveChanges(seenSlots);
 		}
+		#endif
 
+		#ifdef CONTROLLER_DEBUG
 		printf("Current Position : %g %g %g\n",df->getPosition()->getX(),df->getPosition()->getY(),df->getOrientation());
+		#endif
 		
+		#ifdef OUTPUT_ODOMETRY_ERROR_GPS
 		if ( gps != NULL ){
 			const double * values = gps->getValues();
 			double difX = values[0] - lastGPSX;
@@ -144,10 +150,12 @@ namespace webts {
 			}
 			fclose(pFile);
 		}
+		#endif
 		
-		
+		#ifdef CONTROLLER_DEBUG
 		printf("Slots Left: %d - Really Left: %d - Visited : %d\n",this->ag->getSlotsLeft(),this->ag->getSlotsLeftWOExcluded(),this->ag->getSlotsVisited());
 		printf("Robot Battery : %g - PC Battery : %g\n",robotBattery->getValue(),pcBattery->getValue());
+		#endif
 /*
 		printf("Current Touch Sensor value : %d\n",this->tb->getValue());
 		*/
