@@ -33,13 +33,88 @@ encontradas a lo largo del desarrollo de \'este trabajo pr\'actico final.
 \subsection{Investigaciones previas}
 \label{inv_prev}
 
+A continuaci\'on se van a presentar trabajos realizados por otros autores relacionados en alguna
+forma con el trabajo que nosotros realizamos. Primero se da una breve descripci\'on del trabajo
+del otro autor y luego se comparan con nuestro trabajo, viendo similitudes y diferencias entre ambos.
+
 \subsubsection{Desarrollo de comportamientos no triviales en robots reales : Robot recolector de basura - Stefano Nolfi}
+En \'este paper se muestra el uso de un Khepera con el m\'odulo Gripper en una arena delimitada por
+paredes para la recolecci\'on de "basura". Dicho robot se puede ver en la figura \ref{fig:khepera}.
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.6]{comportamientos/gripperAH.png}
+\caption{Robot Khepera con el m\'odulo Gripper}
+\label{fig:khepera}
+\end{center}
+\end{figure}
+La base tiene una fuente de luz asociada y el objetivo del
+robot es llevar peque\~nos objetos a un lugar de dep\'osito. Se utiliza \emph{aprendizaje por refuerzo} para
+asociar las velocidades angulares a los diferentes tama\~nos de las "basuras". Para obtener el comportamiento
+deseado se hace uso de \emph{algoritmos gen\'eticos} y \emph{redes neuronales}. Una vez obtenido el mismo mediante
+simulaci\'on en Webots, se lo prob\'o en el Khepera f\'isico.
+Comparando el trabajo de Stefano Nolfi con el nuestro podemos observar que:
+\begin{itemize}
+
+\item{Existencia de un dep\'osito:} Ambos tienen un dep\'osito en el cual dejar la basura recogida y una forma
+de identificarla: una fuente de luz usada por Nolfi y en nuestro trabajo, al llegar al final de una determinada
+l\'inea de la arena.
+
+\item{Autonom\'ia:} Ambos son aut\'onomos en el sentido que no son manejados por un ente externo. En cuanto
+a la recarga de la bater\'ia, Nolfi no explicita si es asistida o no; en nuestro caso, el robot se encarga
+de ir a la base de recarga una vez detectada la falta de energ\'ia.
+
+\item{M\'etodo de Recolecci\'on:} En el trabajo de Nolfi se utiliza un m\'odulo agregado al Khepera, que simula
+un brazo con dos dedos, la recolecci\'on se realiza juntando ambos y la liberaci\'on se realiza separando ambos.
+Nuestro trabajo se basa m\'as en la actividad humana que en el comportamiento humano para realizar este comportamiento,
+ya que podr\'ia compararse con un recolector de basura que primero guarda lo encontrado usando una pala en su tacho
+y luego descarga su tacho en un dep\'osito de mayor tama\~no.
+
+\item{M\'etodo de aprendizaje:} Nuestro trabajo no utiliza alguna forma de aprendizaje por refuerzo o algoritmo
+evolutivo. No es el caso de Nolfi, que utiliza ambas t\'ecnicas para evolucionar el comportamiento deseado.
+
+\item{Robot Utilizado:} Como ya se dijo, Nolfi utiliz\'o un Khepera en la simulaci\'on. En nuestro trabajo
+utilizamos un E-puck para la simulaci\'on, una versi\'on nueva del Khepera, pero sin el m\'odulo Gripper.
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.6]{comportamientos/e-puck.png}
+\caption{Robot E-puck}
+\label{fig:epuck}
+\end{center}
+\end{figure}
+
+\end{itemize}
 
 \subsubsection{Arquitectura de control para un Robot Aut\'onomo M\'ovil - Neves And Oliveira}
-
-\subsubsection{El uso de l\'ogica difusa en la navegaci\'on de un robot aut\'onomo - Alessandro Saffiotti}
+Neves y Oliveira describen en su trabajo una arquitectura de control basada en comportamientos para un
+robot m\'ovil en un ambiente din\'amico, utilizando muchos aspectos de la arquitectura \emph{Subsumption} propuesta
+por \emph{Brooks} y que fue usada por nosotros al realizar \'este trabajo explicada en \ref{arq_prop}.
+La arquitectura propuesta, o \emph{Control System Arquitecture}, se basa tambi\'en en la teor\'ia de
+\emph{The Society of Mind}, escrita por \emph{Minsky}, donde el sistema es visto como una sociedad de agentes,
+cada uno con una particular competencia y que colaboran entre ellos para ayudar a la sociedad a alcanzar
+su meta.
+La arquitectura est\'a compuesta por tres niveles: un nivel reflexivo, uno reactivo, y otro cognitivo, aumentando
+la complejidad al igual que el orden en que fueron presentados.
+\\
+El nivel reflexivo incluye aquellos comportamientos
+innatos, es decir, act\'uan directamente como est\'imulo-respuesta. El segundo nivel, el reactivo, est\'a
+compuesto por agentes que responden r\'apidamente a los est\'imulos ya que requieren poco nivel de procesamiento.
+Finalmente, en el nivel cognitivo, se encuentran los agentes encargados de guiar y administrar los comportamientos
+reactivos de forma tal que el robot muestre un comportamiento orientado.
+\\
+Aunque la arquitectura explicada es similar a la utilizada en nuestro trabajo, \'esta organizaci\'on de los
+comportamientos en capas no la utilizamos, aunque podemos divisar que algunos de los comportamientos que propusimos
+corresponden a la primera capa de reflexi\'on, como por ejemplo el evitamiento de
+obst\'aculos; otros podr\'ian incluirse en la segunda capa de comportamientos reactivos, como lo es deambular y
+finalmente en la \'ultima capa estar\'ia el reconocimiento de objectos debido a su gran demanda de procesamiento.
 
 \subsubsection{Path Planning usando Algoritmos Gen\'eticos - Salvatore Candido}
+En este paper se describe la utilizaci\'on de algor\'itmos gen\'eticos para resolver el problema de Path Planning.
+\'Este problema consiste en armar un plan, una secuencia de acciones de forma tal que a partir de un punto de origen y siguiendo
+ese plan, se llegue a un segundo punto, el de destino. Debido a la componente din\'amica de nuestro trabajo, siempre
+tratamos de mantener los comportamientos del robot lo m\'as reactivos posibles, por lo que armar un plan no 
+ser\'ia el mejor approach para ser utilizado. Por el contrario, el uso de algor\'itmos gen\'eticos puede ser
+una herramienta que podr\'ia llegar a ser utilizada en una futura continuaci\'on de nuestro trabajo y que no
+utilizamos por el tiempo que estimamos que nos hubiese demandado.
 
 \subsubsection{Navegaci\'on predictiva de un robot aut\'onomo - Foka And Trahanias}
 
@@ -50,19 +125,119 @@ encontradas a lo largo del desarrollo de \'este trabajo pr\'actico final.
 \label{arq_prop}
 
 \newpage
-\input{comportamientos.tex}
+\input{comportamientos/comportamientos.tex}
 
 \newpage
 \subsection{Odometr\'ia}
 \label{odometry}
+Para saber donde se encuentra el robot en cierto momento, se utiliza odometr\'ia.
+\\
+\'Esta se basa en la medici\'on de las cuentas dadas por un motor para obtener el desplazamiento realizado 
+por la rueda asociada al mismo. Dado que el motor que usamos fue un motor diferencial para cada rueda,
+\'esto es posible de realizar.
+\\
+A diferencia de los m\'etodos de posicionamiento absoluto, la odometr\'ia
+da una estimaci\'on del desplazamiento \emph{local} a la ubicaci\'on anterior del robot, por lo cual \emph{un error}
+en una estimaci\'on \emph{se propaga} hacia las siguientes estimaciones. 
+\\
+Para calcular la posici\'on en el instante n $P_n$ y la orientaci\'on $O_n$ en base a la posici\'on en el 
+instante (n-1) $P_{n-1}$ y la correspondiente orientaci\'on $O_{n-1}$, usamos las siguientes f\'ormulas:
+\begin{eqnarray}
+d_l = \frac{(e_l(n) - e_l(n-1)) * R_l}{EncRes} \\
+d_r = \frac{(e_r(n) - e_r(n-1)) * R_r}{EncRes} \\
+lc = \frac{d_r + d_l}{2} \\
+P_n = P_{n-1} + (lc * \cos{O_{n-1}},lc * \sin{O_{n-1}}) \\
+O_n = O_{n-1} + \frac{d_r - d_l}{dbw} \\
+\end{eqnarray}
+donde $d_l$ y $d_r$ son las distancias recorridas por las ruedas izquierda y derecha respectivamente. Ambas
+son calculadas teniendo en cuenta los valores anteriores y actuales de los encoders $e_i(n)$, el radio de la rueda $R_i$ y
+la resoluci\'on del encoder $EncRes$. $dbw$ es la distancia entre ruedas.
+\\
+Los errores que influyen en el c\'alculo de la odometr\'ia pueden ser de dos tipos:
+
+\begin{itemize}
+
+\item{Sistem\'aticos:} Son aquellos que pueden ser corregidos o tenidos en cuenta para disminuir el error.
+
+\item{No sistem\'aticos:} Son aquellos que pueden intentarse corregir pero \emph{no} eliminar.
+
+\end{itemize}
+
+Decidimos tener en cuenta dos errores sistem\'aticos para disminuir el error en la odometr\'ia :
+\begin{itemize}
+\item{Incerteza sobre la distancia entre las ruedas ($dbw$)}
+\item{Ruedas con radios diferentes ($R_l$ y $R_r$)}
+\end{itemize}
+Tuvimos en cuenta estos errores dado que son los que m\'as contribuyen al error acumulado a lo
+largo del trayecto del robot.
+Para corregir \'estas fuentes de error, utilizamos el \emph{test del camino
+bidireccional describiendo un cuadrado} (UMBmark)\footnote{http://www-personal.umich.edu/~johannb/Papers/umbmark.pdf}.
+Dado que en el momento de realizar el test no hab\'ia un robot f\'isico, decidimos realizar el test sobre
+un e-puck simulado en Webots.
+As\'i fuimos obteniendo los valores de correcci\'on para los di\'ametros de las ruedas $c_i$ y la correci\'on
+sobre la distancia entre las ruedas $c_{dbw}$ hasta que el error sistem\'atico m\'aximo dejara de disminuir. En la
+figura \ref{fig:errsist} se puede ver c\'omo disminuye el error a lo largo de las iteraciones.
+
+\begin{figure}[htp]
+\begin{center}
+%\includegraphics[scale=0.6]{comportamientos/errsist.eps}
+\caption{Error Sistem\'atico M\'aximo a lo largo de las iteraciones}
+\label{fig:errsist}
+\end{center}
+\end{figure}
+
+En la \'ultima iteraci\'on obtuvimos los coeficientes de correcci\'on $c_l = 0.99998703$, $c_r = 1.00001297$
+y $c_{dbw} = 1.092171094$ para ruedas con radio $R_l = R_r = 0.205$, una distancia entre ruedas de $0.052$ y
+una resoluci\'on de encoder $EncRes = 159.23$.
 
 \newpage
 \subsection{Interfaces con hardware y m\'odulo de reconocimiento de objetos}
 \label{interfaces}
+Decidimos hacer que el controlador encargado de realizar los comportamientos sea independiente
+de la forma con la que se implemente el hardware y la forma con que se implemente el reconocimiento
+de los objetos. Para \'esto definimos interfaces, de forma tal que el controlador las mismas
+y tanto el hardware como el m\'odulo de reconocimiento de objetos puedan cambiar su implementaci\'on
+pero brindando siempre la informaci\'on que necesita el controlador para poder realizar
+los comportamientos. \'Esta decisi\'on nos posibilit\'o realizar un controlador que sea capaz de ser
+ejecutado tanto en Webots, donde se hizo el desarroll\'o, como en la base real del robot. Cabe aclarar
+que el traspaso de la simulaci\'on a la realidad no es instant\'anea, ya que hay que calibrar los dispositivos,
+realizar nuevamente la odometr\'ia, entre otras cosas, pero el trabajo demandado es mucho menor ya
+que una correcci\'on en la l\'ogica de los comportamientos se puede observar tanto en un simulador como
+en la realidad.
 
 \subsubsection{Interfaz con hardware}
+La interfaz con el hardware se basa en tener clases encargadas de obtener los valores de los sensores
+o del accionar de los actuadores.
+\\En la implementaci\'on de la interfaz que corrimos en Webots, hic\'imos
+llamadas al controlador del simulador, que utiliza sensores y actuadores simulados.
+\\En la implementaci\'on que se comunica con el robot f\'isico,
+las llamadas las hicimos a un servidor encargado de enviar y recibir paquetes del protocolo descripto
+en la secci\'on \ref{protocolo} a trav\'es del puerto serial.
+\\De est\'a forma es cuesti\'on de decidir que implementaci\'on se usa en base a si se quiere
+correr en un simulador como Webots, o en el robot f\'isico. Si se quisiese usar otro simulador
+u otro tipo de hardware, s\'olo hace falta implementar la interfaz que cumpla con lo establecido e
+indicarle a la capa de comportamientos que la utilice para realizar su ejecuci\'on.
 
-\subsubsection{Interfaz con m\'odulo de reconocimiento de objetos}
+\subsubsection{Interfaz con m\'odulo de reconocimiento de objetos usando Visi\'on}
+Dado que el desarrollo de los comportamientos lo hicimos separado del desarrollo del
+m\'odulo que reconoce objetos utilizando una c\'amara, decidimos hacer una interfaz de
+forma tal que se puedan desarrollar de forma paralela.
+Como el controlador de comportamientos es \textbf{usuario} del m\'odulo de reconocimiento,
+necesita saber en un instante de tiempo $t$, que objetos est\'an siendo reconocidos. Para \'esto
+el m\'odulo debe tener una fuente de informaci\'on, en este caso, una c\'amara dado que se usa
+Visi\'on.
+\\
+Desde el punto de vista de la anatom\'ia, \'esto se puede ver como los ojos (c\'amara), la parte del cerebro
+encargada de analizar el est\'imulo recibido por los mismos (m\'odulo de reconocimiento) y la parte del cerebro
+encargada de analizar los est\'imulos y realizar las acciones (controlador de comportamientos). Si se hubiese
+usado alg\'un tipo de conjunto de sensores t\'actiles para reconocer objetos (mano), en vez de visi\'on, 
+el m\'odulo de reconocimiento de objetos bien podr\'ia analizar la informaci\'on que ellos proveen e
+informar al controlador sobre su an\'alisis.
+\\
+\'Esta analog\'ia puede llevar a pensar que los sensores de distancia u otros dispositivos que usamos
+en este desarrollo bien podr\'ian formar parte de otro m\'odulo, y no se estar\'ia equivocado. La raz\'on
+por la cual el m\'odulo de visi\'on est\'a separado y el resto de los sensores no, es que el procesamiento
+de una secuencia de im\'agenes es muy complejo y pesado, como se muestra en la secci\'on \ref{vision}.
 
 \newpage
 \subsection{Resultados obtenidos}
