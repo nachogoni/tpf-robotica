@@ -26,7 +26,7 @@
 #define MIN_PROCESSING_STEPS 1
 
 //#define INITIAL_PROCESSING_STEPS ((MAX_PROCESSING_STEPS+MIN_PROCESSING_STEPS)/2)
-#define INITIAL_PROCESSING_STEPS 10
+#define INITIAL_PROCESSING_STEPS 1
 
 std::vector<robotapi::IDistanceSensor*> dss;
 std::vector<robotapi::IDistanceSensor*> fss;
@@ -132,10 +132,13 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 	ab = new behaviours::GoToDisposal( wi, &myIRobot, trashBin , wheels, fss , servoRear, servoContainer );
 	myAbstractBehaviours.push_back(ab);
 	#endif
+
 /*
 	ab = new behaviours::Recalibrate ( &myIRobot, wheels );
 	myAbstractBehaviours.push_back(ab);
 */
+
+
 	#ifdef GO_TO_RECHARGE
 	ab = new behaviours::GoToBaseGroup( wi, &myIRobot, robotBattery , pcBattery , wheels, fss );
 	myAbstractBehaviours.push_back(ab);
@@ -181,8 +184,10 @@ void GarbageCleaner::cleanGarbage()
 		this->myIRobot.step(TIME_STEP);
 		steps++;
 
+		#ifdef CONTROLLER_DEBUG
 		this->printStats();
 		printf("-----------                                   -----------\n");
+		#endif
 	}
 
 }
