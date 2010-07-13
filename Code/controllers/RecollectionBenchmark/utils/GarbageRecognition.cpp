@@ -86,13 +86,22 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 	garbages.clear();
   
 
+	//cvNamedWindow("output",CV_WINDOW_AUTOSIZE);
+	//object model
+
 	//image for the histogram-based filter
 	//could be a parameter
 
 	utils::Histogram * h = new Histogram(HIST_H_BINS,HIST_S_BINS);
 	CvHistogram * testImageHistogram = h->getHShistogramFromRGB(model);
 
+	//~ int frameWidth=cvGetCaptureProperty(capture,CV_CAP_PROP_FRAME_WIDTH);
+	//~ int frameHeight=cvGetCaptureProperty(capture,CV_CAP_PROP_FRAME_HEIGHT);
+
+
+
 	//gets a frame for setting  image size
+	//CvSize srcSize = cvSize(frameWidth,frameHeight);
 	CvSize srcSize = cvGetSize(src);
 
 	//images for HSV conversion
@@ -100,6 +109,8 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 	IplImage* h_plane = cvCreateImage( srcSize, 8, 1 );
 	IplImage* s_plane = cvCreateImage( srcSize, 8, 1 );
 	IplImage* v_plane = cvCreateImage( srcSize, 8, 1 );
+
+
 
 	//Image for thresholding
 	IplImage * threshImage=cvCreateImage(srcSize,8,1);
@@ -169,31 +180,32 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 		utils::Contours * ct = new Contours(aContour);
 
 	
-	    int	pf = ct->perimeterFilter(MINCONTOUR_PERIMETER,MAXCONTOUR_PERIMETER);
+	    //int	pf = ct->perimeterFilter(MINCONTOUR_PERIMETER,MAXCONTOUR_PERIMETER);
 
-		int raf = ct->rectangularAspectFilter(CONTOUR_RECTANGULAR_MIN_RATIO, CONTOUR_RECTANGULAR_MAX_RATIO);
+		//int raf = ct->rectangularAspectFilter(CONTOUR_RECTANGULAR_MIN_RATIO, CONTOUR_RECTANGULAR_MAX_RATIO);
 
 		// int af = ct->areaFilter(MINCONTOUR_AREA,MAXCONTOUR_AREA);
-		int baf = ct->boxAreaFilter(BOXFILTER_TOLERANCE);
+		//int baf = ct->boxAreaFilter(BOXFILTER_TOLERANCE);
 
-        int hmf = ct->histogramMatchingFilter(src,testImageHistogram, HIST_H_BINS,HIST_S_BINS,HIST_MIN);
+        //int hmf = ct->histogramMatchingFilter(src,testImageHistogram, HIST_H_BINS,HIST_S_BINS,HIST_MIN);
 
 
 		//apply filters
 
-		if( pf && raf && baf && hmf	){
+		if (ct->perimeterFilter(MINCONTOUR_PERIMETER,MAXCONTOUR_PERIMETER) &&
+        ct->rectangularAspectFilter(CONTOUR_RECTANGULAR_MIN_RATIO, CONTOUR_RECTANGULAR_MAX_RATIO) &&
+        ct->boxAreaFilter(BOXFILTER_TOLERANCE) &&
+        ct->histogramMatchingFilter(src,testImageHistogram, HIST_H_BINS,HIST_S_BINS,HIST_MIN) &&
+       1){
 
-				//if passed filters
-				ct->printContour(3,cvScalar(127,127,0,0),
-					contourImage);
+				
 				
 				//get contour bounding box
 				boundingRect=cvBoundingRect(ct->getContour(),0);
-				cvRectangle(contourImage,cvPoint(boundingRect.x,boundingRect.y),
-						cvPoint(boundingRect.x+boundingRect.width,
-						boundingRect.y+boundingRect.height),
-						_GREEN,1,8,0);
+				
 				//build garbage List
+			
+				//printf(" c %d,%d\n",boundingRect.x,boundingRect.y);
 
 				utils::MinimalBoundingRectangle * r = new utils::MinimalBoundingRectangle(boundingRect.x,
 					boundingRect.y,boundingRect.width,boundingRect.height);
@@ -201,6 +213,7 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 
 
 				utils::Garbage * aGarbage = new utils::Garbage(r);
+//				printf("%d , %d - %d , %d\n",boundingRect.x,boundingRect.y,boundingRect.width,boundingRect.height);
 
 				garbages.push_back(aGarbage);
 
@@ -213,12 +226,16 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 		cont_index++;
 	}
 
+   // cvShowImage("output",contourImage);
+   // cvWaitKey(0);
+	delete h;
+  
   if(contoursCopy!=NULL)
     cvReleaseMemStorage(&contoursCopy->storage);
 
-	delete h;
 	cvReleaseHist(&testImageHistogram);
 	//Image for thresholding
+	//cvReleaseMemStorage( &contours->storage );
 	cvReleaseImage(&threshImage);
 	cvReleaseImage(&equalizedImage);
 	cvReleaseImage(&morphImage);
@@ -229,7 +246,6 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 	cvReleaseImage(&h_plane);
 	cvReleaseImage(&s_plane);
 	cvReleaseImage(&v_plane);
-	cvReleaseStructuringElement(&element);
 
 	return garbages;
 }
