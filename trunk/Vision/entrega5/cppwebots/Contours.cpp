@@ -141,7 +141,7 @@ int Contours::boxAreaFilter(double minAreaRatio){
  */
 int Contours::histogramMatchingFilter(IplImage * src, CvHistogram * testImageHistogram,int h_bins,int s_bins, double min){
 	CvRect box;
-	CvMemStorage* mem = cvCreateMemStorage(0);
+	
 	
 	double val;
 	
@@ -151,10 +151,12 @@ int Contours::histogramMatchingFilter(IplImage * src, CvHistogram * testImageHis
 	
 	printf("box x:%d y:%d \n",box.x,box.y);
 	
-	IplImage * src_bbox=cvCreateImage(cvSize(box.width,box.height),src->depth,src->nChannels);
+	IplImage * src_bbox=cvCloneImage(src);
 	
 	//gets subimage bounded by box
-    cvGetSubArr( src,(CvMat*)src_bbox, box );
+	cvSetImageROI(src_bbox, box);
+	
+    //~ cvGetSubRect( src,(CvMat*)src_bbox, box );
 
 	//gets subimage histogram
 	utils::Histogram * h = new Histogram(h_bins,s_bins);
@@ -163,7 +165,9 @@ int Contours::histogramMatchingFilter(IplImage * src, CvHistogram * testImageHis
 	val=cvCompareHist(hist,testImageHistogram,CV_COMP_BHATTACHARYYA);
 	
 	cvReleaseHist(&hist);
+	cvResetImageROI(src_bbox);
 	cvReleaseImage(&src_bbox);
+	//~ cvReleaseImage(&copy);
 	delete h;
 	
 	return (val<min);

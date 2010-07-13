@@ -51,7 +51,8 @@ GarbageRecognition::getGarbageList()
 	    IplImage * src = cvLoadImage("./colilla-scene.png",1);
 	    IplImage * model = cvLoadImage("./colilla-sinBlanco.png",1);
 		garbages = this->garbageList(src,model);
-	
+		cvReleaseImage(&src);
+		cvReleaseImage(&model);
 	return garbages;
 }
 
@@ -113,6 +114,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 
 	//contours
 	CvSeq * contours;
+	CvSeq * contoursCopy;
 
 	//Main loop
 
@@ -144,7 +146,8 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 
 	//get all contours
 	contours=myFindContours(smoothImage);
-
+	contoursCopy=contours;
+	
 	cont_index=0;
 	cvCopy(src,contourImage,0);
 	
@@ -169,7 +172,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 		//apply filters
 
     
-		if( pf && raf && baf && hmf	){
+		if( pf && raf && baf && 1	){
 				
 				//if passed filters
 				ct->printContour(3,cvScalar(127,127,0,0),
@@ -203,10 +206,20 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 		cont_index++;
 	}
 
-   // cvShowImage("output",contourImage);
-   // cvWaitKey(0);
+   cvShowImage("output",contourImage);
+   cvWaitKey(0);
 	delete h;
-
+	if(contoursCopy!=NULL)
+		cvReleaseMemStorage(&contoursCopy->storage);
+	
+	cvReleaseImage(&threshImage);
+	cvReleaseImage(&morphImage);
+	cvReleaseImage(&smoothImage);
+	cvReleaseImage(&contourImage);
+	cvReleaseImage(&hsv);
+	cvReleaseImage(&h_plane);
+	cvReleaseImage(&s_plane);
+	cvReleaseImage(&v_plane);
 	return garbageList;
 }
 
