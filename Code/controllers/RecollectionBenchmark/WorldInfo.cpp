@@ -38,8 +38,10 @@ void WorldInfo::readWalls(FILE * f){
 	fscanf (f, "%d\r\n", &cant);
 	while ( i < cant ){
 		fscanf (f, "%lf:%lf:%lf:%lf:%d\r\n", &x, &y, &l, &w, &h);
+/*
 		utils::MyWall * wall = new utils::MyWall(l,w,x,y,(h?true:false));
 		this->walls.push_back(wall);
+*/
 		printf("%g:%g:%g:%g:%d\n",x,y,l,w,h);
 		i++;
 	}
@@ -52,8 +54,10 @@ void WorldInfo::readLines(FILE * f){
 	fscanf (f, "%d\r\n", &cant);
 	while ( i < cant ){
 		fscanf (f, "%lf:%lf:%lf:%lf:%lf\n", &x, &y, &l, &w, &o);
+/*
 		utils::MyLine * line = new utils::MyLine(l,x,y,o,w);
 		this->lines.push_back(line);
+*/
 		printf("%f:%f:%f:%f:%f\n",x,y,l,w,o);
 		i++;
 	}
