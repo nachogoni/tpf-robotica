@@ -16,6 +16,7 @@ utils::MinimalBoundingRectangle * Garbage::boundingBox()
 Garbage::~Garbage()
 {
 	delete this->mbr;
+	this->mbr = NULL;
 }
 
 }

@@ -44,6 +44,7 @@ namespace behaviours {
 			rightSpeed *= -1;
 		}
    		this->wheels->setSpeed(leftSpeed,rightSpeed);
+		this->currentGarbage = NULL;
 	}
 
 } /* End of namespace behaviours */
