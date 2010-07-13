@@ -6,6 +6,7 @@ namespace webts {
 
     WebotsCamera::WebotsCamera( webots::Camera & cam ) : WebotsDevice ( cam ){
 		this->mycam = &cam;
+		this->wi = new robotapi::webts::WebotsImage(this->mycam->getWidth(),this->mycam->getHeight());
 	}
 
     void WebotsCamera::enable(int ms){
@@ -17,7 +18,7 @@ namespace webts {
 	}
 
 	IImage & WebotsCamera::getImage(){
-		WebotsImage * wi = new WebotsImage(this->mycam->getImage(),this->mycam->getWidth(),this->mycam->getHeight());
+		this->wi->setImage(this->mycam->getImage());
 		return *wi;
 	}
 
