@@ -23,7 +23,6 @@ namespace webts {
 //        printf("IMG width : %d - height : %d\n",this->w,this->h);
         for(int i = 0; i < this->h; i ++ ){
             for(int j = 0; j < this->w; j ++ ){
-//                IplImage* img=cvCreateImage(cvSize(640,480),IPL_DEPTH_8U,3); ((uchar *)(img->imageData + i*img->widthStep))[j*img->nChannels + 0]=111; // B ((uchar *)(img->imageData + i*img->widthStep))[j*img->nChannels + 1]=112; // G ((uchar *)(img->imageData + i*img->widthStep))[j*img->nChannels + 2]=113; // R
 				// B G R For IPL...
 
 				// Blue

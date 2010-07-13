@@ -15,6 +15,7 @@
 #include <robotapi/IBattery.h>
 #include <robotapi/IDifferentialWheels.h>
 #include <robotapi/ITrashBin.h>
+#include <robotapi/webts/WebotsRobot.h>
 #include <vector>
 #include <sstream>
 #include <iostream>
@@ -146,10 +147,10 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 
 	ab = new behaviours::AvoidObstacle(wheels,dss);
 	myAbstractBehaviours.push_back(ab);
-
+/*
 	ab = new behaviours::RemoveFromStuck(&myIRobot, wheels);
 	myAbstractBehaviours.push_back(ab);
-
+*/
 }
 
 void GarbageCleaner::cleanGarbage()

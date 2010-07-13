@@ -8,8 +8,9 @@
 #include <utils/ArenaGrid.h>
 #include <utils/ArenaGridSlot.h>
 #include <utils/MyPoint.h>
-/*
+
 #define CONTROLLER_DEBUG 1
+/*
 #define OUTPUT_ODOMETRY_ERROR_GPS 1
 #define REFRESH_SEEN_SLOTS 1
 */
