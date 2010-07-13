@@ -47,7 +47,9 @@ namespace behaviours {
 
 			setLastStimuli(behaviour_id);
 			*/
+			#ifdef CONTROLLER_DEBUG
 			printf("Stimulus Present: %s\n",this->s.c_str());
+			#endif
 			action();
 		}
 	}
