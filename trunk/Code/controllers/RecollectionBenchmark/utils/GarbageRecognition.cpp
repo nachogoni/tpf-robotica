@@ -205,8 +205,6 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 						boundingRect.y+boundingRect.height),
 						_GREEN,1,8,0);
 				//build garbage List
-			
-				//printf(" c %d,%d\n",boundingRect.x,boundingRect.y);
 
 				utils::MinimalBoundingRectangle * r = new utils::MinimalBoundingRectangle(boundingRect.x,
 					boundingRect.y,boundingRect.width,boundingRect.height);
@@ -214,7 +212,6 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 
 
 				utils::Garbage * aGarbage = new utils::Garbage(r);
-//				printf("%d , %d - %d , %d\n",boundingRect.x,boundingRect.y,boundingRect.width,boundingRect.height);
 
 				garbages.push_back(aGarbage);
 
@@ -227,16 +224,12 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 		cont_index++;
 	}
 
-   // cvShowImage("output",contourImage);
-   // cvWaitKey(0);
-	delete h;
-  
   if(contoursCopy!=NULL)
     cvReleaseMemStorage(&contoursCopy->storage);
 
+	delete h;
 	cvReleaseHist(&testImageHistogram);
 	//Image for thresholding
-	//cvReleaseMemStorage( &contours->storage );
 	cvReleaseImage(&threshImage);
 	cvReleaseImage(&equalizedImage);
 	cvReleaseImage(&morphImage);
@@ -247,6 +240,7 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 	cvReleaseImage(&h_plane);
 	cvReleaseImage(&s_plane);
 	cvReleaseImage(&v_plane);
+	cvReleaseStructuringElement(&element);
 
 	return garbages;
 }
