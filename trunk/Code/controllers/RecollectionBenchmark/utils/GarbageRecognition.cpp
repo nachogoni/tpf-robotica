@@ -84,6 +84,7 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 	for ( it=garbages.begin() ; it != garbages.end() ; it++ )
 		delete *it;
 	garbages.clear();
+  
 
 	//cvNamedWindow("output",CV_WINDOW_AUTOSIZE);
 	//object model
@@ -136,6 +137,7 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 
 	//contours
 	CvSeq * contours;
+  CvSeq * contoursCopy;
 
 	//Main loop
 
@@ -166,8 +168,9 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 
 	//get all contours
 	contours = myFindContours(smoothImage);
-
-	cont_index=0;
+  contoursCopy=contours;
+	
+  cont_index=0;
 	cvCopy(src,contourImage,0);
 	
 
@@ -227,6 +230,9 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
    // cvShowImage("output",contourImage);
    // cvWaitKey(0);
 	delete h;
+  
+  if(contoursCopy!=NULL)
+    cvReleaseMemStorage(&contoursCopy->storage);
 
 	cvReleaseHist(&testImageHistogram);
 	//Image for thresholding
@@ -241,7 +247,6 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 	cvReleaseImage(&h_plane);
 	cvReleaseImage(&s_plane);
 	cvReleaseImage(&v_plane);
-
 
 	return garbages;
 }
