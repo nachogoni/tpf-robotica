@@ -31,10 +31,10 @@ namespace behaviours {
 		double desvstdA = this->desvStd(this->angles, this->sumA);
 		double desvstdX = this->desvStd(this->xs, this->sumX);
 		double desvstdZ = this->desvStd(this->zs, this->sumZ);
-
+/*
 		printf("Steps : %d - devstdA : %d - devstdX : %d - devstdZ : %d\n",this->steps, desvstdA > REMOVE_DESVSTD_ANGLE_THRESHOLD? 1 : 0,
 			 	desvstdX > REMOVE_DESVSTD_DIST_THRESHOLD? 1 : 0, desvstdZ > REMOVE_DESVSTD_DIST_THRESHOLD? 1 : 0);
-
+*/
 		// si es mayor a mi umbral, seteo steps en 0 y la suma
 		if ( desvstdA > REMOVE_DESVSTD_ANGLE_THRESHOLD ||
 			 desvstdX > REMOVE_DESVSTD_DIST_THRESHOLD ||
@@ -50,7 +50,7 @@ namespace behaviours {
 			setStimulusPresent();
 			printf("%g - %g - %g\n",desvstdA,desvstdX,desvstdZ);
 			fflush(stdout);
-			system("pause");
+			//system("pause");
 			//seteo steps en 0 y la suma, contadores
 			this->steps = 0;
 			this->sumA = 0;
