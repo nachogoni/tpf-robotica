@@ -1,0 +1,88 @@
+PLATOS1
+
+--Prediction stats-- 
+Number of objects guessed: 0
+Number of objects guessed and hit: 0
+Number of objects found by vision system: 1966
+Number of objects found by vision system and hit: 1832
+--Windowing stats -- 
+Number of objects focused: 0
+Number of objects focused and hit: 0
+Number of not focused objects: 1966
+Number of not focused objects and hit: 1832
+Number of focused frames: 0
+--Detection stats-- 
+ Total number of objects to be recognized 2236
+ number of hits 1832
+ number of detected objects that didn't exist 134
+ False negative detection  0.18068
+ False positive detection  0.0681587
+
+
+PLATOS2
+
+
+--Prediction stats-- 
+Number of objects guessed: 0
+Number of objects guessed and hit: 0
+Number of objects found by vision system: 1228
+Number of objects found by vision system and hit: 1117
+--Windowing stats -- 
+Number of objects focused: 0
+Number of objects focused and hit: 0
+Number of not focused objects: 1228
+Number of not focused objects and hit: 1117
+Number of focused frames: 0
+--Detection stats-- 
+ Total number of objects to be recognized 1128
+ number of hits 1117
+ number of detected objects that didn't exist 111
+ False negative detection  0.00975177
+ False positive detection  0.0903909
+
+
+
+CON PREDICCION
+
+platos1
+
+--Prediction stats-- 
+Number of objects guessed: 179
+Number of objects guessed and hit: 34
+Number of objects found by vision system: 1893
+Number of objects found by vision system and hit: 1820
+--Windowing stats -- 
+Number of objects focused: 0
+Number of objects focused and hit: 0
+Number of not focused objects: 2072
+Number of not focused objects and hit: 1854
+Number of focused frames: 0
+--Detection stats-- 
+ Total number of objects to be recognized 2236
+ number of hits 1854
+ number of detected objects that didn't exist 218
+ False negative detection  0.170841
+ False positive detection  0.105212
+
+platos2
+
+--Prediction stats-- 
+Number of objects guessed: 115
+Number of objects guessed and hit: 16
+Number of objects found by vision system: 1169
+Number of objects found by vision system and hit: 1101
+--Windowing stats -- 
+Number of objects focused: 0
+Number of objects focused and hit: 0
+Number of not focused objects: 1284
+Number of not focused objects and hit: 1117
+Number of focused frames: 0
+--Detection stats-- 
+ Total number of objects to be recognized 1128
+ number of hits 1112
+ number of detected objects that didn't exist 167
+ False negative detection  0.0141844
+ False positive detection  0.130571
+
+
+
