@@ -207,7 +207,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	cvAdaptiveThreshold( v_plane, threshAda, 255,
 		CV_ADAPTIVE_THRESH_GAUSSIAN_C,CV_THRESH_BINARY_INV,5, 5 );
 	
-	cvShowImage("thresh adaptativo",threshAda);
+	//~ cvShowImage("thresh adaptativo",threshAda);
 	
 	/*I(x,y)blue ~ ((uchar*)(img->imageData + img->widthStep*y))[x*3]
 	I(x,y)green ~ ((uchar*)(img->imageData + img->widthStep*y))[x*3+1]
@@ -229,7 +229,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	//~ cvShowImage("Luminiscense",s_plane);
 	//~ cvAnd(h_plane, v_plane, andImage);
 	
-	cvShowImage("Hue plane",h_plane);
+	//~ cvShowImage("Hue plane",h_plane);
 	//~ cvShowImage("And",andImage);
 	
 	
@@ -243,13 +243,13 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	
 	morphImage2=cvCloneImage(morphImage);
 	//test
-	cvShowImage("dilate",morphImage2);
+	//~ cvShowImage("dilate",morphImage2);
 	
 	cvErode(morphImage,morphImage,element,MORPH_ERODE_ITER);
 	
 	
 	//test
-	cvShowImage("erode",morphImage);
+	//~ cvShowImage("erode",morphImage);
 	
 	//~ cvThreshold(morphImage,threshImage,100,255,CV_THRESH_BINARY);
 	cvThreshold(morphImage,threshImage,100,255,CV_THRESH_BINARY);

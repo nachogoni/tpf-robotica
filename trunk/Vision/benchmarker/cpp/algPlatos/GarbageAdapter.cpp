@@ -12,9 +12,9 @@ using namespace utils;
 
 	GarbageAdapter::GarbageAdapter(){
 		this->gr=new GarbageRecognition();
-		this->gr->disablePrediction();
+		//~ this->gr->disablePrediction();
 		this->gr->disableWindowing();
-
+		this->gr->enableWindowing();
 	}
 	
 	GarbageAdapter::~GarbageAdapter(){};
