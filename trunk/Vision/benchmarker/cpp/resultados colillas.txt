@@ -39,6 +39,23 @@ Number of not focused objects and hit: 636
  False positive detection  0.391388
 
 
+primerpaneo
+--Prediction stats-- 
+Number of objects guessed: 0
+Number of objects guessed and hit: 0
+Number of objects found by vision system: 3899
+Number of objects found by vision system and hit: 2373
+--Windowing stats -- 
+Number of objects focused: 0
+Number of objects focused and hit: 0
+Number of not focused objects: 3899
+Number of not focused objects and hit: 2373
+--Detection stats-- 
+ Total number of objects to be recognized 2708
+ number of hits 2363
+ number of detected objects that didn't exist 1526
+ False negative detection  0.1274
+ False positive detection  0.392389
 
 
 con prediccion
