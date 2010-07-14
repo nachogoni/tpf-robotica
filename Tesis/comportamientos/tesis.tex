@@ -117,8 +117,49 @@ una herramienta que podr\'ia llegar a ser utilizada en una futura continuaci\'on
 utilizamos por el tiempo que estimamos que nos hubiese demandado.
 
 \subsubsection{Navegaci\'on predictiva de un robot aut\'onomo - Foka And Trahanias}
+La navegaci\'on predictiva nace como una posible soluci\'on al problema de un robot navegando en un ambiente
+con muchas personas y obst\'aculos, tal como lo es el ambiente en el cual navegar\'a el robot resultante
+de nuestro trabajo.
+\\
+La forma en que es implementada por los autores es mediante un \emph{POMDP}, es decir, 
+un proceso de decisi\'on de markov parcialmente observable. Cabe destacar estas dos \'ultimas palabras, ya
+que indican la naturaleza del ambiente: hay incertidumbre o falta de informaci\'on acerca de ciertas variables
+del entorno. En este caso, se utiliza el \emph{POMDP} para manejar tanto la navegaci\'on del robot como el
+evitamiento de obst\'aculos, un punto en que se diferencia de lo propuesto por nosotros, que es tratar el
+\emph{wandering} de forma separada del m\'odulo de evitamiento de obst\'aculos. \'Esto, en parte, se debi\'o
+a la arquitectura utilizada y que desde ese punto de vista, ambos comportamientos son muy lejanos.
 
 \subsubsection{Algoritmo de navegaci\'on y evitamiento de obst\'aculos en un entorno desconocido - Clark Et. al}
+En este paper se presentan dos algoritmos complementarios para la navegaci\'on en ese tipo de entornos.
+\\
+El primero consiste en la navegaci\'on y un mapeo del entorno que garantiza una cobertura completa de una arena
+cuyas ubicaciones de la paredes no se conocen \emph{a priori}. Consiste b\'asicamente en un seguimiento de las
+paredes complementado por una variaci\'on de \emph{flood filling} para asesgurarse la cobertura completa de la
+arena. El algoritmo completo se puede apreciar en la figura \ref{fig:clark}
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.8]{comportamientos/clarkDiagram.png}
+\caption{Algoritmo completo}
+\label{fig:clark}
+\end{center}
+\end{figure}
+\\
+Un aut\'omata con aprendizaje estoc\'astico es el algoritmo que complementa al primero, y su objetivo es
+el evitamiento de obst\'aculos. Para \'esto, se utiliza un mecanismo de recompensa/castigo de forma tal
+que se adapten las probabilidades de las acciones a tomar. 
+\\
+En relaci\'on con nuestro trabajo, hay ciertas similitudes y diferencias, enumeradas a continuaci\'on:
+\begin{itemize}
+\item{}Ambos presentan un mecanismo de "seguimiento de", en nuestro caso lo hacemos con l\'ineas y basuras, en
+el paper se utiliza con paredes. Sin embargo, se utilizan para objetivos diferentes. Nosotros lo usamos para
+dirigirnos a la base ya que tratamos de mantener el conociemiento que el robot tiene sobre el mundo lo m\'as
+acotado posible, o, en el caso de las basuras, para recolectarlas. En el paper se utiliza el mecanismo de seguir
+las l\'ineas para obtener un modelo del mundo, algo que puede llegar a servir mucho en ambientes no tan din\'amicos
+como el nuestro, raz\'on por la cual no elegimos implementarlo.
+\item{}Tambi\'en se coincide en la existencia de un m\'etodo para evitar obst\'aculos. En el paper se implementa como
+un aut\'omata que va aprendiendo seg\'un los premios o castigos que recibe; en nuestro caso, el comportamiento es puramente
+reactivo y reacciona en base a los valores de los sensores de distancia, pero no tiene memoria.
+\end{itemize}
 
 \newpage
 \subsection{Arquitectura propuesta}
@@ -147,7 +188,7 @@ d_l = \frac{(e_l(n) - e_l(n-1)) * R_l}{EncRes} \\
 d_r = \frac{(e_r(n) - e_r(n-1)) * R_r}{EncRes} \\
 lc = \frac{d_r + d_l}{2} \\
 P_n = P_{n-1} + (lc * \cos{O_{n-1}},lc * \sin{O_{n-1}}) \\
-O_n = O_{n-1} + \frac{d_r - d_l}{dbw} \\
+O_n = O_{n-1} + \frac{d_r - d_l}{dbw}
 \end{eqnarray}
 donde $d_l$ y $d_r$ son las distancias recorridas por las ruedas izquierda y derecha respectivamente. Ambas
 son calculadas teniendo en cuenta los valores anteriores y actuales de los encoders $e_i(n)$, el radio de la rueda $R_i$ y
