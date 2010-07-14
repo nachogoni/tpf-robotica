@@ -69,7 +69,7 @@ namespace behaviours {
 
 		double currentX, currentY;
 		utils::MyPoint * currentPosition;
-		while ( distanceCovered < distanceToGarbage ){
+		while ( distanceCovered < (distanceToGarbage + 0.001) ){
 			this->robot->step(COLLECT_TIME_STEP);
 			currentPosition = this->wheels->getPosition();
 			currentX = currentPosition->getX();
@@ -81,33 +81,18 @@ namespace behaviours {
 		this->shovel->setPosition(SHOVEL_ANGLE);
 		this->wheels->setSpeed(0,0);
 
-		for ( int i = 0 ; i < COLLECT_WAIT_STEPS_A_LAST ; i ++ ){
+		for ( int i = 0 ; i < 4 * COLLECT_WAIT_STEPS_A_LAST ; i ++ ){
 			this->robot->step(COLLECT_TIME_STEP);
 		}
 
 		this->shovel->setPosition(0);
-		for ( int i = 0 ; i < COLLECT_WAIT_STEPS_LAST ; i ++ ){
+		for ( int i = 0 ; i < 4 * COLLECT_WAIT_STEPS_LAST ; i ++ ){
 			this->robot->step(COLLECT_TIME_STEP);
 		}
 
-/*
-		// Wait till the trashBin changes it's value
-		int tbVal = this->trashBin->getValue();
-		int oldVal = tbVal;
-		while ( tbVal <= oldVal ){
-			this->robot->step(TIME_STEP);
-			tbVal = this->trashBin->getValue();
-		}
-		
-		// Put the Shovel in its initial state
-		this->shovel->setPosition(0);
-
-		for ( int i = 0 ; i < WAIT_STEPS ; i ++ ){
-			this->robot->step(TIME_STEP);
-		}
-*/
 		// Make Garbage Recognition take a new image
 		this->gr->stepDone();
 	}
 
 } /* End of namespace behaviours */
+

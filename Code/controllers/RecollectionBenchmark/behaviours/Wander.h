@@ -7,7 +7,8 @@
 #include "WorldInfo.h"
 
 #define WANDER_SPD 100.0
-#define WANDER_TURN_FACTOR 0.35
+#define WANDER_TURN_FACTOR 0.85
+#define WANDER_STEPS_BASE 400
 
 
 namespace behaviours {
@@ -23,9 +24,16 @@ class Wander : public AbstractBehaviour {
 	
 		void action();
 
+		void comingFromBase();
+
 	private:
 		WorldInfo * wi;
 		robotapi::IDifferentialWheels* wheels;
+
+		bool isComingFromBase;
+		bool leftWasLast;
+		double turnFactor;
+		int steps;
 
 		utils::ArenaGridSlot * getOldestSlot(std::vector<utils::ArenaGridSlot *> nb);
 	};

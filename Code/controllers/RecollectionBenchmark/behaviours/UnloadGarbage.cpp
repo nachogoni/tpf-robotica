@@ -96,10 +96,11 @@ namespace behaviours {
 		// Now, turn steps/2 in the other direction, middle sensor should be in the middle of the line
 		this->wheels->setSpeed(-UNLOAD_BASE_SPD,UNLOAD_BASE_SPD);
 		for( int i = 0 ; i < (int)(ceil(steps/2.0)) ; i++ ){
+			/*
             for (int j = 0; j < FLOOR_SENSORS; j++){
 				printf("Floor sensor %d: %d\n", j, (*this->fss).at(j)->getValue() );
 			}
-
+			*/
 			this->robot->step(UNLOAD_TIME_STEP);
 		}
 

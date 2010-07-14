@@ -10,6 +10,7 @@
 #define REMOVE_STEP 32
 #define REMOVE_DESVSTD_ANGLE_THRESHOLD 0.1
 #define REMOVE_DESVSTD_DIST_THRESHOLD 0.01
+#define REMOVE_ANGLE_TO_ADD (PI*3.0/4.0)
 
 namespace behaviours {
 
@@ -26,6 +27,12 @@ public:
 
 	double desvStd(double values [], double sum);
 
+	void resetCounters();
+
+	double getMax(double oldValue, double newValue);
+
+	double getMin(double oldValue, double newValue);
+
 private:
 
 	robotapi::IRobot * robot;
@@ -37,6 +44,11 @@ private:
 	double sumA;
 	double sumX;
 	double sumZ;
+
+	double lastXMin;
+	double lastXMax;
+	double lastZMin;
+	double lastZMax;
 
 	};
 
