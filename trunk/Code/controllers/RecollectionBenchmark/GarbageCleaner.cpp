@@ -111,14 +111,18 @@ void GarbageCleaner::initializeSensors(){
 	
 }
 
+behaviours::Wander * wander;
+behaviours::GoToBaseGroup * gotobase;
+behaviours::GoToDisposal * gotodisposal;
+
 void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 	gr = new utils::GarbageRecognition(wi);
 	gr->setCamera(*camera);
 
     behaviours::AbstractBehaviour * ab;
 
-	ab = new behaviours::Wander(wi, wheels);
-	myAbstractBehaviours.push_back(ab);
+	wander = new behaviours::Wander(wi, wheels);
+	myAbstractBehaviours.push_back(wander);
 
 	#ifdef FOCUS_GOTO_COLLECT_DISPOSE_GARBAGE
 	ab = new behaviours::FocusGarbage( gr, wheels );
@@ -130,8 +134,8 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 	ab = new behaviours::CollectGarbage( gr, &myIRobot, trashBin, wheels, wi, servoFront, servoContainer );
 	myAbstractBehaviours.push_back(ab);
 
-	ab = new behaviours::GoToDisposal( wi, &myIRobot, trashBin , wheels, fss , servoRear, servoContainer );
-	myAbstractBehaviours.push_back(ab);
+	gotodisposal = new behaviours::GoToDisposal( wi, &myIRobot, trashBin , wheels, fss , servoRear, servoContainer );
+	myAbstractBehaviours.push_back(gotodisposal);
 	#endif
 
 /*
@@ -141,16 +145,16 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
 
 
 	#ifdef GO_TO_RECHARGE
-	ab = new behaviours::GoToBaseGroup( wi, &myIRobot, robotBattery , pcBattery , wheels, fss );
-	myAbstractBehaviours.push_back(ab);
+	gotobase = new behaviours::GoToBaseGroup( wi, &myIRobot, robotBattery , pcBattery , wheels, fss );
+	myAbstractBehaviours.push_back(gotobase);
 	#endif
 
 	ab = new behaviours::AvoidObstacle(wheels,dss);
 	myAbstractBehaviours.push_back(ab);
-/*
+
 	ab = new behaviours::RemoveFromStuck(&myIRobot, wheels);
 	myAbstractBehaviours.push_back(ab);
-*/
+
 }
 
 void GarbageCleaner::cleanGarbage()
@@ -180,6 +184,8 @@ void GarbageCleaner::cleanGarbage()
 				found = true;
 				wheels->computeOdometry();
 				(*it)->act();
+				if ( (*it) == gotobase || (*it) == gotodisposal )
+					wander->comingFromBase();
 			}
 		}
 		this->myIRobot.step(TIME_STEP);

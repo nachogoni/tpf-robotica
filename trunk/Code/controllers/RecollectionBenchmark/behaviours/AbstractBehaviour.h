@@ -3,6 +3,7 @@
 
 #include <string>
 #include <robotapi/IRobot.h>
+#include <robotapi/webts/WebotsRobot.h>
 
 #define LINE_UP_THRESHOLD 350
 #define LINE_DOWN_THRESHOLD 175

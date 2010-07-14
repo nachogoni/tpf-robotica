@@ -6,19 +6,45 @@ namespace behaviours {
 	Wander::Wander(WorldInfo * wi, robotapi::IDifferentialWheels * wheels) : AbstractBehaviour("Wander"){
 		this->wheels = wheels;
 		this->wi = wi;
+		this->isComingFromBase = false;
+		this->leftWasLast = true;
+		this->turnFactor = WANDER_TURN_FACTOR;
+		this->steps = 0;
 	}
 
 	Wander::~Wander(){}
 
     void Wander::sense(){}
 
+	void Wander::comingFromBase(){
+		this->isComingFromBase = true;
+	}
+
     void Wander::action(){
 		double leftSpeed = WANDER_SPD;
 		double rightSpeed = WANDER_SPD;
+		if ( this->isComingFromBase ){
+			if ( this->steps == 0 )
+				this->leftWasLast = !this->leftWasLast;
+			
+			this->steps++;
+			if ( !leftWasLast ){
+				// Turn right
+				rightSpeed *= this->turnFactor;
+			}else{
+				// Turn left
+				leftSpeed *= this->turnFactor;
+			}
+			
+			if ( this->steps != 0 && (this->steps % WANDER_STEPS_BASE == 0) ){
+				this->steps = 0;
+				this->isComingFromBase = false;
+			}
+		}
 
 		utils::MyPoint * p = this->wheels->getPosition();
 		double orientation = this->wheels->getOrientation();
-
+		/*
 		std::vector<utils::ArenaGridSlot *> nb = this->wi->getArenaGrid()->getNeighboursAt(p,orientation);
 		if ( nb.size() != 0 ){
 			utils::ArenaGridSlot * oldestSlot = this->getOldestSlot(nb);
@@ -29,6 +55,7 @@ namespace behaviours {
 			if ( dir > 0 )
 				leftSpeed *= (1-WANDER_TURN_FACTOR);
 		}
+		*/
 		this->wheels->setSpeed(leftSpeed,rightSpeed);
 	}
 

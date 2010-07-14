@@ -14,22 +14,22 @@ CPP_SOURCES = recollectionbenchmark.cpp GarbageCleaner.cpp WorldInfo.cpp \
 							utils/MyLine.cpp utils/MyPoint.cpp utils/MyAngle.cpp utils/MyWall.cpp \
 							utils/ArenaGrid.cpp utils/ArenaGridSlot.cpp utils/Rectangle2D.cpp \
 							robotapi/DifferentialWheelsWOdometry.cpp \
-							robotapi/real/RealBattery.cpp robotapi/real/RealTrashBin.cpp robotapi/real/RealPCBattery.cpp \
-							robotapi/real/RealCamera.cpp robotapi/real/RealDevice.cpp robotapi/real/RealDeviceTag.cpp \
-							robotapi/real/RealDifferentialWheels.cpp robotapi/real/RealDistanceSensor.cpp \
-							robotapi/real/RealImage.cpp robotapi/real/RealRobot.cpp robotapi/real/RealServo.cpp \
 							robotapi/webts/WebotsCamera.cpp robotapi/webts/WebotsDevice.cpp robotapi/webts/WebotsDeviceTag.cpp \
 							robotapi/webts/WebotsDifferentialWheels.cpp robotapi/webts/WebotsDistanceSensor.cpp \
 							robotapi/webts/WebotsImage.cpp robotapi/webts/WebotsRobot.cpp robotapi/webts/WebotsServo.cpp \
-							robotapi/webts/WebotsTrashBin.cpp robotapi/webts/WebotsPCBattery.cpp robotapi/webts/WebotsBattery.cpp \
-							protocol/BoardPacketHandler.cpp protocol/packet.cpp protocol/PacketServer.cpp \
-							protocol/packets/batterypacket.cpp protocol/packets/BoardPacket.cpp protocol/packets/DCMotorPacket.cpp \
-							protocol/packets/DistanceSensorPacket.cpp protocol/packets/floorsensorpacket.cpp \
-							protocol/packets/GroupPacket.cpp protocol/packets/ServoMotorPacket.cpp \
-							protocol/packets/trashbinpacket.cpp protocol/packets/ultrasonicsensorpacket.cpp \
-							protocol/handlers/BatteryBoardPacketHandler.cpp protocol/handlers/DCMotorBoardPacketHandler.cpp \
-							protocol/handlers/DistanceSensorBoardPacketHandler.cpp protocol/handlers/ServoBoardPacketHandler.cpp \
-							protocol/handlers/TrashBinBoardPacketHandler.cpp protocol/handlers/DefaultBoardPacketHandler.cpp
+							robotapi/webts/WebotsTrashBin.cpp robotapi/webts/WebotsPCBattery.cpp robotapi/webts/WebotsBattery.cpp
+#							robotapi/real/RealBattery.cpp robotapi/real/RealTrashBin.cpp robotapi/real/RealPCBattery.cpp \
+#							robotapi/real/RealCamera.cpp robotapi/real/RealDevice.cpp robotapi/real/RealDeviceTag.cpp \
+#							robotapi/real/RealDifferentialWheels.cpp robotapi/real/RealDistanceSensor.cpp \
+#							robotapi/real/RealImage.cpp robotapi/real/RealRobot.cpp robotapi/real/RealServo.cpp \
+#							protocol/BoardPacketHandler.cpp protocol/packet.cpp protocol/PacketServer.cpp \
+#							protocol/packets/batterypacket.cpp protocol/packets/BoardPacket.cpp protocol/packets/DCMotorPacket.cpp \
+#							protocol/packets/DistanceSensorPacket.cpp protocol/packets/floorsensorpacket.cpp \
+#							protocol/packets/GroupPacket.cpp protocol/packets/ServoMotorPacket.cpp \
+#							protocol/packets/trashbinpacket.cpp protocol/packets/ultrasonicsensorpacket.cpp \
+#							protocol/handlers/BatteryBoardPacketHandler.cpp protocol/handlers/DCMotorBoardPacketHandler.cpp \
+#							protocol/handlers/DistanceSensorBoardPacketHandler.cpp protocol/handlers/ServoBoardPacketHandler.cpp \
+#							protocol/handlers/TrashBinBoardPacketHandler.cpp protocol/handlers/DefaultBoardPacketHandler.cpp
 # or
 # CC_SOURCES = my_controller.cc my_clever_algo.cc my_gui.cc
 #

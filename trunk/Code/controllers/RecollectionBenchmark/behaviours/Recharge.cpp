@@ -79,9 +79,11 @@ namespace behaviours {
 		// Turn till the middle sensor is on the line
 		this->wheels->setSpeed(RECHARGE_BASE_SPD,-RECHARGE_BASE_SPD);
 		while( leftOnLine || !middleOnLine || rightOnLine ){
+			/*
 	        for (int j = 0; j < FLOOR_SENSORS; j++){
 				printf("Floor sensor %d: %d\n", j, (*this->fss).at(j)->getValue() );
 			}
+			*/
 			this->robot->step(RECHARGE_TIME_STEP);
 			//currentAngle = this->wheels->getOrientation();
 			leftOnLine = this->inLine((*this->fss).at(0)->getValue());
@@ -92,9 +94,11 @@ namespace behaviours {
 		int steps = 0;
 		// Continue turning till the middle sensor out of the line. Count Steps
 		while( middleOnLine ){
+			/*
 	        for (int j = 0; j < FLOOR_SENSORS; j++){
 				printf("Floor sensor %d: %d\n", j, (*this->fss).at(j)->getValue() );
 			}
+			*/
 
 			this->robot->step(RECHARGE_TIME_STEP);
 			//currentAngle = this->wheels->getOrientation();

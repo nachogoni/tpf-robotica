@@ -9,8 +9,8 @@ WorldInfo {
 }
 Viewpoint {
   fieldOfView 1.6454
-  orientation -0.560258 0.618223 0.551281 2.01968
-  position -0.132426 1.11175 0.000737226
+  orientation -0.562403 0.614378 0.553392 2.02529
+  position -0.236718 1.3215 0.0390594
 }
 PointLight {
   intensity 0.5
@@ -164,7 +164,7 @@ DEF short_rock_5 Solid {
   boundingObject USE short_brick_1_geometry
 }
 DEF E_PUCK DifferentialWheels {
-  translation -0.0015 0 -0.4
+  translation -0.295 0 -0.4
   children [
     GPS {
       resolution 1e-007
@@ -2017,7 +2017,7 @@ DEF E_PUCK DifferentialWheels {
   }
   controller "RecollectionBenchmark"
   battery [
-    11000, 18000, 600
+    18000, 18000, 600
   ]
   cpuConsumption 10
   motorConsumption 20
