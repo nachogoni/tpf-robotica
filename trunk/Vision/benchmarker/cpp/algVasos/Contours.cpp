@@ -512,7 +512,7 @@ int Contours::vasoFilter(){
 	
 	CvSeq * points=this->c;
 	CvPoint *longestEdge,*sndLongestEdge,*longestHead,*longestTail;
-	double longestEdgeLen;
+	double fstAndSecLen;
 	int shorterEdgesCount=0;
 	
 	if(points->total<4)
@@ -523,6 +523,7 @@ int Contours::vasoFilter(){
 	//second longest edge
 	//~ sndLongestEdge=getLongestEdge(points,&longestEdge[0],&longestEdge[1]);
 	sndLongestEdge=getLongestEdge2(points,&longestEdge[0],&longestEdge[1],&shorterEdgesCount);
+	
 	
 	//~ if(!cvCheckContourConvexity(points))
 		//~ return false;
@@ -543,6 +544,8 @@ int Contours::vasoFilter(){
 	double l1=edgeLength(longestEdge[0],longestEdge[1]);
 	double l2=edgeLength(sndLongestEdge[0],sndLongestEdge[1]);
 	
+	 if((l1+l2)/this->getPerimeter()<0.5)
+		return false;
 	
 	
 	//length of the two longest edges should be similar

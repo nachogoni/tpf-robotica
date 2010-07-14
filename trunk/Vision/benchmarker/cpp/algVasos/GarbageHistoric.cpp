@@ -61,8 +61,8 @@ namespace utils{
 		
 		this->deltaPos[0]=deltax;
 		this->deltaPos[1]=deltay;
-		//~ this->currentPos[0]+=deltaPos[0];
-		//~ this->currentPos[1]+=deltaPos[1];
+	
+	
 		this->currentPos[0]=newCentroid[0];
 		this->currentPos[1]=newCentroid[1];
 		
@@ -152,13 +152,14 @@ namespace utils{
 		int h=oldMbr->getHeight();
 		int w=oldMbr->getWidth();
 		
-		MinimalBoundingRectangle * mbr= new MinimalBoundingRectangle(x+deltax,y+deltay,h,w);
+		MinimalBoundingRectangle * mbr= new MinimalBoundingRectangle(x+deltax,y+deltay,w,h);
 		Garbage * newGarbage=new  Garbage(mbr,newCentroid);
 		
+		//Benchmarking purposes
 		newGarbage->isFocused=this->garbage->isFocused;
 		newGarbage->isPredicted=this->garbage->isPredicted;
 		newGarbage->isVisualized=this->garbage->isVisualized;
-		
+		//end
 		
 		return newGarbage;
 	}
