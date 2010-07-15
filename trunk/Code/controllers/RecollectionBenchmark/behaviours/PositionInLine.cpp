@@ -5,67 +5,135 @@
 
 namespace behaviours{
 
-// class constructor
-PositionInLine::PositionInLine(WorldInfo * wi, robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & fss) : AbstractBehaviour("Position In Line")
-{
-	this->wheels = wheels;
-	this->fss = &fss;
-	this->wi = wi;
-}
-
-// class destructor
-PositionInLine::~PositionInLine()
-{
-	// insert your code here
-}
-
-
-void PositionInLine::sense(){
-}
-
-void PositionInLine::action(){
-    double rspd = POSITIONING_BASE_SPD;
-    double lspd = POSITIONING_BASE_SPD;
-	double currentAngle = this->wheels->getOrientation();
-	if ( this->wheels->getPosition()->getY() < 0.06 ){
-		// It is the top right line
-		printf("On top right line\n");
-		if ( currentAngle > PI ){
-			// It is above the line
-			printf("Above the top right line\n");
-       	  	rspd = rspd * ( 1 - currentAngle/(HALF_PI) );
-	   	  	if ( this->inLine((*this->fss).at(1)->getValue()) )
-	  		    lspd = lspd * POSITION_TURN_FACTOR;
-			printf("Turning right\n");
-		}else{
-			// It is below the line
-   			printf("Below the top right line\n");
-		  	lspd = lspd * ( currentAngle/(HALF_PI) - 1 );
-		  	if ( this->inLine((*this->fss).at(1)->getValue()) )
-	  		    rspd = rspd * POSITION_TURN_FACTOR;
-			printf("Turning left\n");
+	// class constructor
+	PositionInLine::PositionInLine(robotapi::IRobot * robot, WorldInfo * wi, robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & fss) : AbstractBehaviour("Position In Line")
+	{
+		this->wheels = wheels;
+		this->fss = &fss;
+		this->wi = wi;
+		this->robot = robot;
+	}
+	
+	// class destructor
+	PositionInLine::~PositionInLine()
+	{
+		// insert your code here
+	}
+	
+	
+	void PositionInLine::sense(){
+	}
+	
+	void PositionInLine::action(){
+	    double rspd = POSITIONING_BASE_SPD;
+	    double lspd = POSITIONING_BASE_SPD;
+		double currentAngle = this->wheels->getOrientation();
+		double targetAngle = PI/2;
+		if ( this->wheels->getPosition()->getY() < 0.06 ){
+			targetAngle = PI;
+			// It is the top right line
+			printf("On top right line\n");
+			if ( currentAngle > PI ){
+				// It is above the line
+				printf("Above the top right line\n");
+	
+			}else{
+				// It is below the line
+	   			printf("Below the top right line\n");
+	
+			}
+		}else if ( this->wheels->getPosition()->getY() > 0.15 ){
+			targetAngle = 0;
+			// It is the top left line
+			printf("On top left line\n");
+	       	if ( currentAngle > PI ){
+				// It is above the line
+				printf("Above the top left line\n");
+	
+	        }else{
+				// It is below the line
+	   			printf("Below the top left line\n");
+	
+			}
 		}
-	}else if ( this->wheels->getPosition()->getY() > 0.15 ){
-		// It is the top left line
-		printf("On top left line\n");
-       	if ( currentAngle > PI ){
-			// It is above the line
-			printf("Above the top left line\n");
-		  	lspd = lspd * ( currentAngle/(HALF_PI) - 1 );
-		  	if ( this->inLine((*this->fss).at(1)->getValue()) )
-	  		    rspd = rspd * POSITION_TURN_FACTOR;
-			printf("Turning left\n");
-        }else{
-			// It is below the line
-   			printf("Below the top left line\n");
-	   	  	rspd = rspd * ( 1 - currentAngle/(HALF_PI) );
-   		  	if ( this->inLine((*this->fss).at(1)->getValue()) )
-	  		    lspd = lspd * POSITION_TURN_FACTOR;
-			printf("Turning right\n");
+		double sDisplX = this->wi->getFloorSensorsDisplacementX();
+		double sDisplY = this->wi->getFloorSensorsDisplacementY();
+		#ifdef CONTROLLER_DEBUG
+		printf("%d - %d - %d\n",(*this->fss).at(0)->getValue(),(*this->fss).at(1)->getValue(),(*this->fss).at(2)->getValue());
+		printf("disp X: %g - disp Y: %g\n",sDisplX,sDisplY);
+		#endif
+		double tita = atan(sDisplX/sDisplY);
+		if ( AbstractBehaviour::inLine((*this->fss).at(2)->getValue()) )
+			tita = -tita;
+		if ( AbstractBehaviour::inLine((*this->fss).at(1)->getValue()) )
+			tita = 0;
+
+		if ( tita != 0 )
+			this->turnTita(tita);
+
+		double distanceToGo = sDisplY;
+		if ( tita != 0 )
+			distanceToGo = sqrt(sDisplY*sDisplY+sDisplX*sDisplX);
+
+		#ifdef CONTROLLER_DEBUG
+		printf("distanceToGo : %g\n",distanceToGo);
+		#endif
+
+		this->wheels->setSpeed(POSITIONING_BASE_SPD,POSITIONING_BASE_SPD);	
+		this->goForward(distanceToGo);
+
+		currentAngle = this->wheels->getOrientation();
+		double angleToTurn = targetAngle - currentAngle;
+		if ( angleToTurn < -PI )
+			angleToTurn += TWO_PI;
+
+		#ifdef CONTROLLER_DEBUG
+		printf("tita : %g\n",angleToTurn);
+		#endif
+
+		this->turnTita(angleToTurn);
+
+		return;
+	}
+
+	void PositionInLine::turnTita(double tita){
+		double lspd = -POSITIONING_BASE_SPD;
+		double rspd = POSITIONING_BASE_SPD;
+
+		if ( tita < 0 ){
+			lspd *= -1;
+			rspd *= -1;
+		}
+
+		double cAngle = this->wheels->getOrientation();
+		utils::MyAngle * ma = new utils::MyAngle(cAngle+tita);
+		double targetAngle = ma->getNormalizedValue();
+		delete ma;
+ 
+		this->wheels->setSpeed(lspd,rspd);
+		while ( fabs(targetAngle - cAngle) > POSITION_ANGLE_TOLE ){
+			this->robot->step(POSITION_TIME_STEP);
+			cAngle = this->wheels->getOrientation();
 		}
 	}
 
-	this->wheels->setSpeed(lspd,rspd);
-}
+	void PositionInLine::goForward(double distance){
+		double distanceCovered = 0;
+
+		utils::MyPoint * lastPosition = this->wheels->getPosition();
+		double initialX = lastPosition->getX();
+		double initialY = lastPosition->getY();
+
+		double currentX, currentY;
+		utils::MyPoint * currentPosition;
+		while ( distanceCovered < distance ){
+			this->robot->step(POSITION_TIME_STEP);
+			currentPosition = this->wheels->getPosition();
+			currentX = currentPosition->getX();
+			currentY = currentPosition->getY();
+			distanceCovered = sqrt( pow(currentX-initialX,2) + pow(currentY-initialY,2) );
+		}
+	}
+
 
 }

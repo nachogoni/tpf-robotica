@@ -8,8 +8,10 @@
 #include <vector>
 
 #define POSITIONING_BASE_SPD 20.0
+#define POSITION_ANGLE_TOLE 0.1
 
 #define POSITION_TURN_FACTOR 2
+#define POSITION_TIME_STEP 32
 
 namespace behaviours {
 
@@ -20,7 +22,7 @@ class PositionInLine : public AbstractBehaviour
 {
 	public:
 		// class constructor
-		PositionInLine(WorldInfo * wi, robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & fss);
+		PositionInLine(robotapi::IRobot * robot, WorldInfo * wi, robotapi::IDifferentialWheels * wheels, std::vector<robotapi::IDistanceSensor*> & fss);
 		// class destructor
 		~PositionInLine();
 		
@@ -29,9 +31,15 @@ class PositionInLine : public AbstractBehaviour
 	    void action();
 
 	private:
+
+		void turnTita(double tita);
+
+		void goForward(double distance);
+
 		std::vector<robotapi::IDistanceSensor*> * fss;
 		robotapi::IDifferentialWheels * wheels;
 		WorldInfo * wi;
+		robotapi::IRobot * robot;
 };
 
 }

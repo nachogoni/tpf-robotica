@@ -26,6 +26,7 @@ WorldInfo::WorldInfo()
 	this->readWheelsFactors(pFile);
 	this->readArenaBoundaries(pFile);
 	this->readGridResolutions(pFile);
+	this->readFloorSensorsDisplacement(pFile);
 	this->arena = new utils::ArenaGrid(this->arenaMinX,this->arenaMinZ,this->arenaMaxX,this->arenaMaxZ,this->resolutionX,this->resolutionZ);
 	fclose(pFile);
 	this->gamma = PI/2 + this->getCameraAngle() - this->getCameraFOVV()/2;
@@ -109,7 +110,7 @@ void WorldInfo::readCameraFOV(FILE * f){
 
 void WorldInfo::readCameraPosition(FILE * f){
 	fscanf (f, "%lf:%lf\n", &this->cameraX, &this->cameraY);
-	printf("%g:%g\n",this->cameraX,this->cameraY);
+	printf("Camera Position - X: %g , Y: %g\n",this->cameraX,this->cameraY);
 }
 
 void WorldInfo::readCameraAngle(FILE * f){
@@ -119,7 +120,7 @@ void WorldInfo::readCameraAngle(FILE * f){
 
 void WorldInfo::readCameraImageSize(FILE * f){
 	fscanf (f, "%d:%d\n", &this->cameraImageWidth,&this->cameraImageHeight);
-	printf("%d:%d\n",this->cameraImageWidth,this->cameraImageHeight);
+	printf("Camera Image Size - Width: %d , Height: %d\n",this->cameraImageWidth,this->cameraImageHeight);
 }
 
 void WorldInfo::readArenaBoundaries(FILE * f){
@@ -129,8 +130,14 @@ void WorldInfo::readArenaBoundaries(FILE * f){
 
 void WorldInfo::readGridResolutions(FILE * f){
 	fscanf (f, "%d:%d\n", &this->resolutionX,&this->resolutionZ);
-	printf("%d:%d\n",this->resolutionX,this->resolutionZ);
+	printf("Grid resolution - X:%d , Z:%d\n",this->resolutionX,this->resolutionZ);
 }
+
+void WorldInfo::readFloorSensorsDisplacement(FILE * f){
+	fscanf (f, "%lf:%lf\n", &this->fSensorX,&this->fSensorY);
+	printf("Floor sensors displacement - X: %g , Y: %g\n",this->fSensorX,this->fSensorY);
+}
+
 
 utils::MyLine * WorldInfo::getCurrentLine(){
 	// TODO Make calculations acording to the actual position
@@ -217,5 +224,13 @@ double WorldInfo::getMinimumDistance(){
 
 double WorldInfo::getDistance(double angle){
 	return tan(this->gamma+angle) * this->getCameraY();
+}
+
+double WorldInfo::getFloorSensorsDisplacementX(){
+	return this->fSensorX;
+}
+
+double WorldInfo::getFloorSensorsDisplacementY(){
+	return this->fSensorY;
 }
 
