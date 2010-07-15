@@ -168,6 +168,82 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 		\subsubsection*{Algoritmo}
 		\subsubsection*{Representaci\'on}
 	\subsubsection{Filtros}
+	Realizada la etapa de pre-procesamiento y la recolección de contornos de la imágen el paso que sigue es verificar que estos
+	contornos tengan las caracteristicas deseadas. Para realizar esto, se implementan una serie de filtros que verifican propiedades
+	puntuales sobre los mismos, si un contorno supera todos los filtros entonces consideramos a tal como un objeto reconocido. \\
+	\indent Los filtros se disponen en cascada, es decir, se prueba un filtro en un contorno solo si este superó todos los filtros 
+	anteriores. De esta forma podemos ordenar los filtros de más general a más especifico, optimizando los tiempos de detección. Por ejemplo , conocer 
+	el área que abarca un contorno determina facil y rápidamente si un contorno corresponde a una colilla o a un plato evitando la ejecución
+	de filtros mas especificos. A continuación detallamos los filtros realizados:
+	\subsubsection*{Filtro de área}
+	El filtro de área calcula el área encerrada por un contorno y verifica que la misma se encuentre por encima y/o por debajo
+	de valores determinados. El área encerrada por un contorno se computa utilizando la formula de green \cite{greenwolfram}.
+	Si bien esto es mas veloz que contabilizar todos los pixeles encerrados en el contorno, posee la desventaja que no se tienen en cuenta agujeros
+	en el interior del mismo.
+	\subsubsection*{Filtro de área por zona}
+	Un objeto que posee un área determinada puede ocupar más o menos pixeles dependiendo de su ubicación en la imagen. Este se debe a la 
+	perspectiva de la cámara y puede afectar al reconocimiento de un contorno. Para contemplar esta variación se pueden establecer distintas
+	zonas en la imágen y definir distintos valores de área minimos y máximo para cada una de ellas. Al ejecutarse este filtro se calcula la
+	zona a la cual pertenece dependiendo de su ubicación en la imagen y se verifican los valores para dicha zona, si este los satisface entonces
+	el contorno supera al filtro.PONER FOTO
+	\subsubsection*{Filtro de perímetro}
+	El filtro de perímetro calcula , efectivamente, el perímetro cubierto por un contorno. Esto se hace contando la cantidad de pixeles que lo definen.
+	Vale remarcar, que el valor del perímetro depende apliamente de la precisión con la que se obtengan los bordes ya que se ve drásticamente modificado 
+	si se aumenta o disiminuye dicha precisión.
+	\subsubsection*{Filtro de eccentricidad}
+	La eccentricidad es un parametro que relaciona la longitud del eje más largo con el del más corto. Esta se define como 
+	$longitud del eje más largo/ longitud del eje mas corto$ . Algunas figuras pueden caracterizarse por tener valores de eccentricidad
+	que se mantienen en cierto rango y permite identificarlas usando este filtro.
+	\subsubsection*{Filtro de circularidad}
+	La circularidad es un parametro que relaciona área con perímetro y define la redondez de una fígura. Se define como $perímetro^2/area$. Algunas figuras pueden 
+	caracterizarse por tener valores de circularidad que se mantienen en cierto rango y permite identificarlas usando este filtro.
+	\subsubsection*{Filtro de área rectangular}
+	El filtro de área rectangular relaciona el área del objeto con el área del rectángulo contenedor mínimo. Este verifica que el área
+	del contorno cubra en gran parte el área del rectángulo. Esto se logra mediante la división $(área contorno / área rectángulo)> p$, donde 
+	$p$ es el porcentaje de área que queremos que sea cubierto.
+	\subsubsection*{Filtro de elipse}
+	El filtro de elipse verifica que un contorno determinado se ajuste o no a una elipse. Esto se logra usando un algoritmo basado 
+	en cuadrados mínimos. El mismo retorna como resultado las longitudes de los semi-ejes de la elipse $a$ y $b$. Con estas medidas calculamos
+	el área según la formúla $a=\pi*a*b$ y se la compara con la obtenida a travez del filtro de área. Se computa como $|a-aReal|/ aReal > p$ donde p determina el
+	valor de verosimilitud, donde mas chico significa mas parecido. Si estas dos áreas son lo suficientemente similares consideramos que el contorno supera el filtro. 
+	Para el ajuste de elipse se utiliza el algoritmo Fitzgibbon, Pilu y Fisher \cite{Fitzgibbon99}.
+	\subsubsection*{Filtro de vaso}
+	El filtro para vasos consiste en varias etapas. Recordando que el contorno se codifica como un polígono, se obtienen los dos segmentos 
+	más largos y se verifica que estos no compartan vertices. Por otro lado se pide que la suma de la longitud de estos dos segmentos supere al $50\%$ del 
+	perímetro del contorno, indicado por dicho filtro. Finalmente, se verifica que la distancia mínima entre estos dos ejes sea mayor a cierto valor prefijado, proporcional a la
+	longitud del segmento más largo. El filtro se basa en la idea de que los dos segmentos más largos se correspondan con los lados laterales del vaso. PONER FOTO
+	DE VASO.
+	\subsubsection*{Filtro de histograma}
+	El filtro de histograma verífica la similitud de un histograma obtenido a partir del contorno con otro histograma obtenido a partir de 
+	una imagen modelo del objeto a detectar. El histograma modelo se calcula en el inicio de la ejecución mientras que el del contorno se
+	computa en tiempo real. Esto se hace obteniendo el rectángulo contenedor mínimo de dicho contorno y computando un histograma 2d de la imagen
+	utilizando los canales de saturación y tono. Esto permite caracterizar a un objeto por una composición de colores y no por su forma. El 
+	problema de este filtro es que requiere mayor procesamiento.
+	
+	\subsubsection{Reconocimiento de vasos}
+	Para el reconocimiento de vasos se utilizan(en este orden) los filtros de área, perímetro, circularidad y el de vasos.
+	El filtro de área verifica que $500 \leq area \leq 10000 $ , el de perímetro que $100 \leq per \leq 800 $ , el de circularidad
+	que $14 \leq circ \leq 18$. El filtro de vasos no es parametrizado. 
+	
+	\subsubsection{Reconocimiento de colillas}
+	Para el reconocimiento de vasos se utilizan(en este orden) los filtros de área, perímetro y área rectangular.
+	El filtro de área verifica que $50 \leq area \leq 800 $, el de perímetro que $10 \leq per \leq 150 $ y el de área rectangular
+	que sea cubierto el $70\%$ del área del rectángulo contenedor mínimo.
+	
+	\subsubsection{Reconocimiento de platos}
+	Para el reconocimiento de platos se utilizan(en este orden) los filtros de área, perímetro, circularidad, eccentricidad y de elipse.
+	El filtro de área verifica que $500 \leq area \leq 10000 $ , el de perímetro que $500 \leq per \leq 1500 $ , el de circularidad
+	que $10 \leq circ \leq 16$, el de eccentricidad que $0.65 \leq ecc \leq 0.95$ y  el de elipse que $|a-aReal|/ aReal > 0.2$.
+
+\begin{figure}[tpb]
+\begin{center}
+  \includegraphics[scale=0.4]{figuras/filtros.png}
+\end{center}
+  \caption{\small Ejemplo de descriptores de contorno. Se visualiza el área,perímetro, zona y circularidad del contorno 
+  detectado de una colilla y un vaso}
+  \label{fig:erode}
+\end{figure}
+
 	\subsection{Sistema de predicci\'on}
 	El algoritmo de visión que hemos descripto hasta aquí funciona 
 	procesando la imagen correspondiente a un único cuadro. Sin embargo, 
@@ -366,9 +442,77 @@ Pensamos todos los criterios con el objetivo de maximizar las chances de que el 
 	
 	
 \subsection{Resultados}
-\subsubsection{colillas de cigarrillo}
-\subsubsection{Vasos de plastico}
-	
+Con el objetivo de  medir la efectividad del algoritmo de detección, desarrollamos un sistema de benchmarking. Este sistema permite
+a un usuario indicar la presencia de objetos a detectar en un video, marcandolos con rectángulos en las sucesiones de cuadros. De esta
+manera, corremos el algoritmo de detección por el mismo video y verificamos que los centroides de los objetos detectados por el algoritmo 
+se encuentren contenidos dentro de los rectángulos indicados.  Para obtener estadisticas utilizamos la siguiente información:
+\begin{itemize}
+\item { Cantidad de objetos a detectar \textbf{(\# O)}: Se corresponde con la cantidad de rectángulos marcados por el usuario}
+\item { Hits\textbf{(H)} : Cantidad de detecciones por parte del algoritmo que se corresponden con rectángulos marcados.}
+\item { Misses o detecciones falsas \textbf{(M)} : Cantidad de detecciones por parte del algoritmo que no se corresponden con rectángulos marcados.}
+\end{itemize}
+Se desprende directamente que la cantidad de detecciones: $\#D=H+M$ .
+Con estos datos obtenemos los porcentajes de error , falsos positivos : 
+\[
+	fp=1 - \frac{H}{\# O}
+\]
+y falsos negativos:
+\[
+	fn=\frac{M}{\# D}
+\]
+En el caso óptimo, ambas medidas de error tendrán un valor de $0$. \\
+\indent A estas estadisticas se agregan las particulares para el sistema de predicción. Recolectamos información sobre
+cuantos casos el sistema de predicción estimó la posición y acertó (cuando el sistema de visión no detectó un objeto). Denominamos
+a la cantidad de estimaciones realizada por el sistema de predicción con \textbf{G} mientras que a las estimaciones que además fueron acertadas
+\textbf{G\&H}. 
+Exhibimos los resultados obtenidos tras utilizar solo el sistema de visión en \ref{tab:result} e utilizando el sistema de visión con el 
+sistema de predicción en \ref{tab:result_pred}.
+
+\begin{table}[htb]
+  \begin{tabular}{|l | c | c | c | c | c | c |}
+	\hline  
+	\textbf{Video} & \textbf{(\#O)} &  \textbf{(\#D)} & \textbf{(H)} & \textbf{(M)} & \textbf{fp(\%)} & \textbf{fn(\%)} \\
+	\hline
+	\hline
+	vasos1 & 5050 & 4880 & 4849 & 31 & 0.6 & 3.9 \\
+	vasos3 & 1777 & 1708 & 1696 & 12 & 0.7 & 4.5 \\
+	vasos4 & 6196 & 5354 & 5251 & 103 & 1.9 & 15.2 \\
+	\hline
+	colillas1 & 1645 & 1648 & 1282 & 367 & 22.2 & 22.0 \\
+	colillas2 & 891 & 1045 & 636 &  409 & 39.1 & 28.6 \\
+	colillas3 & 2708 & 3899 & 2373 & 1526 & 39.2 & 12.7 \\
+	\hline
+	platos1 & 2236 & 1966 & 1832 & 134 & 6.8 & 18.0\\
+	platos2 & 1128 & 1228 & 1117 & 111& 9.0 & 0.9\\
+	\hline
+	\end{tabular}
+	\label{tab:result}
+	\caption{Performance del sistema sin el algoritmo de predicción}
+\end{table}
+
+%Con prediccion
+\begin{table}[htb]
+  \begin{tabular}{|l | c | c | c | c | c | c | c | c |}
+	\hline  
+	\textbf{Video} & \textbf{(\#O)} &  \textbf{(\#D)} & \textbf{(H)} & \textbf{(M)} & \textbf{fp(\%)} & \textbf{fn(\%)} & \textbf{G} & \textbf{G\&H} \\
+	\hline
+	\hline
+	vasos1 & 5050 & 5017 & 4888 & 118 & 2.3 & 3.2  & 245 & 142\\
+	vasos3 & 1777 & 1773 & 1707 & 66 & 3.7 & 3.9 & 121 & 60 \\
+	vasos4 & 6196 & 5703 & 5459 & 240 & 4.2 & 11.8 & 536 & 373 \\
+	\hline
+	colillas1 & 1645 & 1444 & 1330 & 98 & 6.8 & 19.1 & 296 & 229 \\
+	colillas2 & 891 & 687 & 586 & 95 & 13.9 & 34.2 & 127 & 57 \\
+	colillas3 & 2708 & 2555 & 2242 & 254 & 10.1 & 17.2  & 516 & 320\\
+	\hline
+	platos1 & 2236 & 1966 & 1854 & 218 & 10.5 & 17.0 & 179 & 34\\
+	platos2 & 1128 & 1228 & 1112 & 167& 13.0 & 1.4 & 115 & 16\\
+	\hline
+	\end{tabular}
+	\label{tab:result_pred}
+	\caption{Performance del sistema con el sistema de predicción, PONER PARAMETROS}
+\end{table}
+
 	
 \subsection{Conclusi\'on}
 Conclusi\'on de visi\'on
