@@ -30,6 +30,8 @@ class WorldInfo {
 		double getCameraX();
 		double getCameraY();
 		double getCameraAngle();
+		double getFloorSensorsDisplacementX();
+		double getFloorSensorsDisplacementY();
 		int getCameraImageWidth();
 		int getCameraImageHeight();
 		utils::ArenaGrid * getArenaGrid();
@@ -62,6 +64,8 @@ class WorldInfo {
 		int resolutionX;
 		int resolutionZ;
 		utils::ArenaGrid * arena;
+		double fSensorX;
+		double fSensorY;
 
 		double gamma;
 
@@ -80,6 +84,7 @@ class WorldInfo {
 		void readCameraImageSize(FILE * f);
 		void readArenaBoundaries(FILE * f);
 		void readGridResolutions(FILE * f);
+		void readFloorSensorsDisplacement(FILE * f);
 		
 };
 

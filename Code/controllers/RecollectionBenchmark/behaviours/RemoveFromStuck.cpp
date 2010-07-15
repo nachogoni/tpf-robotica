@@ -20,6 +20,7 @@ namespace behaviours {
 
 		this->lastXMin = this->getMin(this->lastXMin,pos->getX());
 		this->lastZMin = this->getMin(this->lastZMin,pos->getY());
+
 		this->lastXMax = this->getMax(this->lastXMax,pos->getX());
 		this->lastZMax = this->getMax(this->lastZMax,pos->getY());
 /*
@@ -45,6 +46,8 @@ namespace behaviours {
 			 desvstdX > REMOVE_DESVSTD_DIST_THRESHOLD ||
 			 desvstdZ > REMOVE_DESVSTD_DIST_THRESHOLD){
 */
+		this->steps++;
+		printf("%d, %g : %g - %g : %g\n",this->steps,this->lastXMax,this->lastXMin,this->lastZMax,this->lastZMin);
 		if ( fabs(this->lastXMax - this->lastXMin) > REMOVE_DESVSTD_DIST_THRESHOLD ||
 			 fabs(this->lastZMax - this->lastZMin) > REMOVE_DESVSTD_DIST_THRESHOLD ){
 			this->resetCounters();
@@ -59,9 +62,9 @@ namespace behaviours {
 	}
 
 	void RemoveFromStuck::resetCounters(){
-		this->lastXMax = DBL_MIN;
+		this->lastXMax = -DBL_MAX;
 		this->lastXMin = DBL_MAX;
-		this->lastZMax = DBL_MIN;
+		this->lastZMax = -DBL_MAX;
 		this->lastZMin = DBL_MAX;
 		this->steps = 0;
 	}

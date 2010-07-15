@@ -156,14 +156,10 @@ namespace webts {
 		printf("Slots Left: %d - Really Left: %d - Visited : %d\n",this->ag->getSlotsLeft(),this->ag->getSlotsLeftWOExcluded(),this->ag->getSlotsVisited());
 		printf("Robot Battery : %g - PC Battery : %g\n",robotBattery->getValue(),pcBattery->getValue());
 		#endif
-/*
-		printf("Current Touch Sensor value : %d\n",this->tb->getValue());
-		*/
 
 		// Refresh stats
 		if ( gc != NULL )
 			gc->stepWasDone();
-
 		return ;
 	}
     

@@ -21,7 +21,7 @@ GoToDisposal::GoToDisposal(WorldInfo * wi, robotapi::IRobot * robot, robotapi::I
 	behaviours::AbstractBehaviour * ab = new behaviours::FindLine( wi, wheels, fss );
 	disposalBehaviours[0] = ab;
 
-	ab = new behaviours::PositionInLine( wi, wheels, fss );
+	ab = new behaviours::PositionInLine( robot, wi, wheels, fss );
 	disposalBehaviours[1] = ab;
 
 	ab = new behaviours::GoToBase( wheels, fss );

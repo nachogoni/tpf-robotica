@@ -20,7 +20,7 @@ GoToBaseGroup::GoToBaseGroup(WorldInfo * wi,robotapi::IRobot * robot, robotapi::
 	behaviours::AbstractBehaviour * ab = new behaviours::FindLine( wi, wheels, fss );
 	myBehaviours[0] = ab;
 
-	ab = new behaviours::PositionInLine( wi, wheels, fss );
+	ab = new behaviours::PositionInLine( robot, wi, wheels, fss );
 	myBehaviours[1] = ab;
 
 	ab = new behaviours::GoToBase( wheels, fss );
