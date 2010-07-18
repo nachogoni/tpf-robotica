@@ -1873,8 +1873,8 @@ Aunque usar componentes de montaje superficial nos permitir\'ian tener una placa
 \subsection{Placa controladora de motores DC}
 \label{h_placas_motorDC}
 
-Nuestro proyecto implicaba, entre otras cosas, el dise\~no y construcci\'on de un robot movil y como principal necesidad
-ten\'ia que poder movilizarse por el terreno.
+Nuestro proyecto implicaba, entre otras cosas, el dise\~no y construcci\'on de un robot movil el cual dev\'ia poder
+trasladarse por el terreno como primer requerimiento.
 Y debido a que el desplazamiento iba a ser mediante ruedas, el control de los motores que las impulran era cr\'itico.
 
 Creamos una placa especializada para esta tarea sobredimensionando los requerimientos para no tener acotadas las opciones
@@ -1893,8 +1893,18 @@ y sentido del movimiento que realiz\'o la rueda, informar el consumo y poder det
 Este \'ultimo requerimiento era de vital importancia si quer\'iamos tener precisi\'on en el movimiento que realizar\'ia la rueda
 ya que el control de alta resoluci\'on hubiera sido imposible hacerlo desde el controlador principal.
 
+Todos los comandos desde y hacia el controlador principal viajan por la red de comunicaci\'on como explicamos en la secci\'on
+\ref{h_comm} coloc\'andose como un eslab\'on m\'as en la cadena.
+
+
+
 Como explicamos en la secci\'on \ref{h_actuadores_motorDC_circuito} usamos un puente H para controlar el giro y poder otorgarle
 la corriente necesaria al motor.
+
+
+
+Como mostramos en el diagrama de la figura \ref{hF_placa_dc_puenteH} las salidas 1 y 2 est\'an puenteadas con las salidas 4 y 3
+respectivamente para tener una mayor potencia, de esta forma el motor puede consumir hasta $4A$.
 
 
 ...
@@ -1919,6 +1929,10 @@ configuracion de la placa, leds, comunicacion, header de programacion, switch de
 \label{h_placas_motorDC_esquematico}
 
 esquematicos de la placa
+
+
+
+
 
 \subsubsection{Circuito}
 \label{h_placas_motorDC_circuito}
