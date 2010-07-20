@@ -235,8 +235,110 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 \end{figure}
 
 	\subsubsection{Detección de contornos}
-		\subsubsection*{Algoritmo}
-		\subsubsection*{Representación\'on}
+	La detección de contornos se produce sobre las imagenes binarias producidas en la etapa de pre-procesamiento. Dichos contornos
+	quedan definidos implicitamente como la separación de regiones positivas de las negativas. 
+	
+	\subsubsection*{Algoritmo}
+	Recordemos que las imágenes binarias se caracterizan por tener solo dos tipo de pixeles, los que contienen un cero(0-pixeles) o los que tienen 
+	un valor mayor a 0 (1-pixeles). Decimos que un conjunto de 0-pixeles o 1-pixeles \textit{conectados} forman una componente. Entendemos dos tipos de conectividad
+	la 4-conectividad y la 8-conectividad: dos pixeles con coordenadas $(x',y')$ y $(x'',y'')$ son 4-conexos si y solo si 
+	$|x' - x''| + |y'-y''| = 1$ y 8-conexos si y solo si $max(|x'-x''|,|y'-y''|)=1$, la figura \ref{fig:conectividad} ilustra estas relaciones.
+	Usando estas relaciones se puede segmentar una imagen binaria en varias componentes 4-(8-)conexas de 0-(1-)pixeles. Cada una de estas
+	componentes consiste de pixeles de valores iguales y, para cualquier par de pixeles de la componente, existe un 4-(8-)camino que los
+	conecta. Ya que las 1-componentes( componentes que contienen 1-pixeles) son complementarias con las 0-componentes podemos solo considerar las primeras y asumir que todo
+	lo demás corresponde a 0-pixels conformando el fondo. Cada 1-componente  posee un único borde exterior que lo separa de la 0-componente
+	que lo rodea y cero o más bordes interiores que lo separan de las 0-componentes que rodea (agujeros). Un ejemplo de esto puede apreciarse
+	en la figura \ref{fig:contours}. El algoritmo utilizado no tiene en cuenta agujeros interiores de un contorno. Definimos entonces un punto de borde a un 
+	elemento de una 1-componente que es 4-conexo con una 0-componente y al \textit{borde} o \textit{contorno} de una figura como un conjunto de puntos de bordes conectados. 
+	El objetivo del algoritmo en cuestión es la recopilación de todos los bordes. Este recorre la imagen línea por línea buscando nuevos puntos de borde, cuando encuentra
+	uno, activa un proceso de seguimiento de borde almacenando las coordenadas de cada punto que lo compone. Durante este proceso marca los pixeles ya 
+	visitados con un valor especial para no volver a incidir en ellos. Finalmente se disponen todos los contornos encontrados en una lista.
+	Este algoritmo de reconocimiento de contornos esta basado en la técnica expuesta por Suzuki y Abe \cite{suzuki85}.
+	
+	\begin{figure}[tpb]
+\begin{center}
+  \includegraphics[scale=0.6]{figuras/48conexos.png}
+\end{center}
+  \caption{\small Tipos de conectividad entre pixeles de una imagen binaria}
+  \label{fig:conectividad}
+\end{figure}
+
+\begin{figure}[tpb]
+\begin{center}
+  \includegraphics[scale=0.6]{figuras/zonas-contours.png}
+\end{center}
+  \caption{\small Ejemplo de segmentación en imágenes binarias. Las 1-componentes w1,w2 y w3 se encuentran rodeadas por la componente de fondo b1 y a su vez
+  rodean a 0-componentes b2,b3 y b4 }
+  \label{fig:contours}
+\end{figure}
+	
+	
+	\subsubsection*{Representación}
+	Como se expresa en el trabajo de Zhang y Lu \cite{Zhang02}, existen diversas formas de representar los contornos, cada una con
+	distintas aplicaciones. En nuestro caso se utilizan la codificación encadenada de Freeman, que consiste describir una sucesión de puntos
+	de acuerdo a la posición de un punto con respecto a su predecesor en la secuencia. Para esto se númeran los vecinos de un pixel con 
+	los números del 1 al 7 como indica la figura \ref{fig:freeman}. De esta manera, un contorno puede almacenarse como la coordenada de
+	un punto inicial seguido de una cadena de códigos (del 1 al 7) que indican la posición del próximo punto respecto al actual. Esta 
+	representación es una forma más compacta. La figura \ref{fig:freeman_sample} exhibe un 
+	ejemplo de codificación utilizando este método.
+	
+	\begin{figure}[htpb]
+\begin{center}
+  \includegraphics[scale=0.6]{figuras/freeman-sample.png}
+\end{center}	
+  \caption{\small Ejemplo de codificación de un contorno utilizando los códigos de Freeman. }
+  \label{fig:erode}
+\end{figure}
+
+\begin{figure}[htpb]
+\begin{center}
+  \includegraphics[scale=0.6]{figuras/freeman-codes.png}
+\end{center}
+  \caption{\small Matriz para la codificación de freeman. El número indica la dirección de desplazamiento del próximo punto respecto del
+  actual (punto negro) }.
+  \label{fig:freeman}
+\end{figure}
+		
+		
+	\subsubsection*{Polígonos}
+	Como mencionamos, los contornos son representados utilizando la codificación de Freeman. Sin embargo, la precisión con la que se muestrean estos bordes suele ser excesiva o redundante para nuestras
+	necesidades lo cual hace el análisis de figuras más dificil. Con el fin de reducir esta complejidad utilizamos un algoritmo
+	para representar el mismo contorno con una menor cantidad de puntos. Esto se realiza mediante un algoritmo de aproximación por polígonos
+	basado en el trabajo de Douglas y Pecker \cite{dp74}. Previo a la aplicación de este algoritmo, convertimos el contorno a una representación
+	tradicional de secuencias de puntos $(x,y)$ correspondientes a las coordenadas del borde en la imagen. Esto se puede lograr facilmente
+	partiendo del punto inicial y calculando la variación en la coordenada según el código de vecino correspondiente ( 1-7).\\
+	\indent La técnica de aproximación comienza por trazar una línea entre los dos puntos del contorno que se encuentren más alejados uno del otro.
+	Luego se recorre el resto de los puntos buscando aquel que se encuentre a mayor distancia de esta línea. A dicho punto se lo agrega al 
+	polígono aproximado, generando dos nuevas líneas con los dos puntos iniciales. Este proceso se itera agregando siempre el punto que se 
+	encuentre mas distante de la aproximación hasta que todos los puntos del contorno se encuentren a una distancia menor que cierto parámetro 
+	de precisión establecido. En la figura \ref{fig:polyaprox} podemos apreciar una esquematización de este proceso. Otra ventaja que 
+	otorga la utilización de esta aproximación es que si un contorno presenta una serie de puntos alineados, estos serán remplazados por un 
+	único segmento o lado del polígono, lo que nos permite identificar lineas en los contornos. Esta caracteristica es aprovechada para
+	realizar la detección de vasos como se ve en la próxima sección. En la figura \ref{fig:polyVasos} podemos observar un contorno
+	y su aproximación por polígonos.
+	
+\begin{figure}[htpb]
+\begin{center}
+  \includegraphics[scale=0.8]{figuras/polyaprox.png}
+\end{center}
+  \caption{\small Aproximación de contornos mediante polígonos. (a) Se observa que el contorno se encuentra acorde el borde del vaso, las
+  partes laterales del mismo se encuentran segmentadas (efecto serrucho) por la cantidad de puntos. (b) El contorno es representado mediante
+  8 puntos, los lados laterales solo involucran un segmento posibilitando la detección de lineas.}
+  \label{fig:polyVasos}
+\end{figure}
+
+\begin{figure}[htpb]
+\begin{center}
+  \includegraphics[scale=0.6]{figuras/douglas-pecker.png}
+\end{center}
+  \caption{\small Iteraciones del algoritmo de aproximación de polígonos de Douglas-Peucker. (a) Imagen original. (b) Extracción de contorno
+  (c) Se seleccionan dos puntos iniciales y se traza una línea entre ellos (d) Se agrega a la aproximación el punto mas lejano del contorno a esta línea.
+  (e) Se repite el proceso agregando siempre el punto mas lejano (f) hasta que todos los puntos esten a cierta distancia requerida.}
+  \label{fig:polyaprox}
+\end{figure}
+
+	
+
 	\subsubsection{Filtros}
 	Realizada la etapa de pre-procesamiento y la recolección de contornos de la imagen el paso que sigue es verificar que estos
 	contornos tengan las características deseadas. Para realizar esto, se implementan una serie de filtros que verifican propiedades
