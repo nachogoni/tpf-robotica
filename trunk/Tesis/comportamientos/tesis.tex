@@ -164,6 +164,65 @@ reactivo y reacciona en base a los valores de los sensores de distancia, pero no
 \newpage
 \subsection{Arquitectura propuesta}
 \label{arq_prop}
+Una arquitectura basada en comportamientos define la forma en que los mismos son especificados, desde
+su granularidad ( que tan complejo o simple es un comportamiento ), la base para su especificaci\'on,
+el tipo de respuesta y la forma en que se coordinan.
+\\
+La arquitectura que elegimos para desarrollar nuestro trabajo es \emph{Subsumption}, desarrollada por
+Rodney Brooks a mediados de 1980. \'Esta arquitectura est\'a basada en comportamientos puramente reactivos,
+rompiendo as\'i con el esquema que estaba de moda en la \'epoca de \emph{sensar-planear-actuar}. Algunos
+de los principios propuestos que fueron tenidos en cuenta durante el desarrollo de nuestro trabajo son:
+\begin{itemize}
+\item{}Un comportamiento complejo no es necesariamente el producto de un complejo sistema de control
+\item{}El mundo es el mejor modelo del mismo
+\item{}La simplicidad es una virtud
+\item{}Los sistemas deben ser construidos incrementalmente
+\end{itemize}
+Cada comportamiento es un par est\'imulo-respuesta. Tal como se observa en la Figura \ref{fig:behaviour},
+cada est\'imulo o respuesta puede ser inhibido o suprimida por otros comportamientos activos.
+Adem\'as, cada comportamiento recibe una se\~nal de reset, que vuelve al comportamiento que
+recibi\'o esta se\~nal a su estado original.
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.85]{comportamientos/behaviour.png}
+\caption{Esquema de comportamiento}
+\label{fig:behaviour}
+\end{center}
+\end{figure}
+El nombre \emph{Subsumption} proviene de la forma en que los comportamientos son coordinados entre s\'i. Hay
+una jerarqu\'ia donde los comportamientos de la arquitectura tienen mayor o menor prioridad seg\'un su posici\'on.
+Los comportamientos de los menores niveles no tienen conocimiento de los comportamientos de las capas de mayor
+nivel. Gracias a esto, se puede plantear un dise\~no incremental, brindando flexibilidad, adaptaci\'on y paralelismo
+al desarrollo e implementaci\'on de los comportamientos.
+\\
+La idea a seguir es que el mundo sea el principal medio de comunicaci\'on entre los comportamientos, dado que la respuesta
+de un comportamiento ante est\'imulo resulta en un cambio en el mundo y, por lo tanto, en la relaci\'on del robot con el mismo,
+ya que el robot en su pr\'oximo paso sensar\'a otro estado del mundo.
+\\
+El procedimiento b\'asico para dise\~nar y desarrollar comportamientos para robots con esta arquitectura es sencillo:
+\begin{enumerate}
+\item Especificar cualitativamente la forma en que el mundo responde al mundo, es decir, el comportamiento que realizar\'a.
+\item Descomponer la especificaci\'on como un conjunto de acciones disjuntas.
+\item Determinar la granularidad del comportamiento, analizando en que nivel de la jerarqu\'ia existente se encontrar\'a y 
+cu\'antas acciones disjuntas es necesario llevar a cabo para el cumplimiento de la tarea.
+\end{enumerate}
+
+Un ejemplo de \'esta arquitectura se puede observar en \ref{fig:subsumptionExample}. En la misma hay 4 comportamientos:
+Homing, Pickup, Avoiding y Wandering. Las l\'ineas que entran a cada comportamiento son los est\'imulos ante los cuales
+se activan y las salidas de los mismos son las se\~nales de respuesta correspondientes. La se\~nal de respuesta de la arquitectura
+es la l\'inea que sale por la derecha de la caja (Arquitectura) que contiene la relaci\'on entre los comportamientos.
+Puede verse como Homing inhibe la salida de Pickup ya que su salida entra al supresor (denotado con un c\'irculo con una S dentro)
+de la salida de Pickup y por lo tanto, las salidas de los dem\'as comportamientos, ya que su prioridad es mayor al resto. En el
+caso que no est\'en presentes los est\'imulos de Homing, Pickup y Avoiding, no hay inhibici\'on en la salida de Wandering, y por lo
+tanto se lleva a cabo el comportamiento de Wandering.
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=1.0]{comportamientos/subsumptionExample.png}
+\caption{Un ejemplo de Subsumption}
+\label{fig:subsumptionExample}
+\end{center}
+\end{figure}
+
 
 \newpage
 \input{comportamientos/comportamientos.tex}
