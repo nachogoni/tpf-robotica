@@ -8,7 +8,6 @@
 #include "PredictionParameters.h"
 
 
-
 namespace utils{
 	
 	
@@ -25,7 +24,7 @@ namespace utils{
 		
 		for (itHist = gHistCopy.begin(); itHist != gHistCopy.end(); itHist++)
 		{
-			(*itHist)->printPrediction();
+			//~ (*itHist)->printPrediction();
 			
 			//check for removal
 			if( (*itHist)->age - (*itHist)->lastAppeareance >= (*itHist)->maxNumberOfFramesNoAppear){
@@ -43,21 +42,24 @@ namespace utils{
 			
 			if(((*itHist)->age % PREDICTION_REFRESH_AGE) ==0){
 				if((*itHist)->state==SHOW){
-					(*itHist)->maxNumberOfFramesNoAppear=10*((*itHist)->appeareances/(double) (*itHist)->age);
+					double appeareanceRate=((double)(*itHist)->appeareances/(double) (*itHist)->age);
+					//~ cvWaitKey(0);
+					(*itHist)->maxNumberOfFramesNoAppear=(int) (PREDICTION_DEFAULT_FRAMES_NOAPPEAR*appeareanceRate);
+					//~ printf("appeareance rate %g , framesNoAppear %d \n",appeareanceRate,(*itHist)->maxNumberOfFramesNoAppear);
 				}					
 			}
 
 			//collect
 			if((*itHist)->state==SHOW){
-				factor=(*itHist)->age - (*itHist)->lastAppeareance ;
+				factor=(*itHist)->age - (*itHist)->lastAppeareance;
 				if( factor!=1){
 					//make a guess
 					guess=(*itHist)->guessPosition();
-						guess->isPredicted=true;
+					guess->isPredicted=true;
 					guess->isVisualized=false;
 					newGarbageList.push_back(guess);
 				}else{
-					(*itHist)->garbage->isPredicted=false;
+					(*itHist)->garbage->isPredicted=false	;
 					newGarbageList.push_back((*itHist)->garbage);
 				}
 			}
