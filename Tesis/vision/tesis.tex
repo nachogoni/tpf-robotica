@@ -73,16 +73,63 @@ Sin embargo, también establece que ya que solo usan parte de una forma, estos s
 \begin{center}
   \includegraphics[scale=0.55]{figuras/shapess.png}
 \end{center}
-  \caption{Clasifación de las técnicas de descripción y representación de formas}
+  \caption{Clasifación de las técnicas de descripción y representación de figuras}
   \label{fig:review_shape}
 \end{figure}
 
-
+% sidewalk following
 	\subsubsection{Sidewalk Following Using Color Histograms - John S. Seng}
+	Este trabajo describe un algoritmo usado para detectar y seguir 
+	veredas o áreas transitables en un video filmado con una única 
+	lente con el objetivo de lograr la navegación autonoma dentro del 
+	campus de una universidad. La plataforma en la cual se tomaron los videos esta 
+	compuesta de una silla de ruedas motorizada controlada por una cpu 
+	a bordo corriendo un sistema operativo linux. El robot tiene una 
+	única cámara NTSC que provee imágenes color con una tasa de 15 
+	cuadros por segundo. Todos los videos de prueba fueron tomados 
+	utilizando esta plataforma controlada por radio por un operador.\\
+	\indent El algoritmo en cuestión utiliza histogramas 2-d de los 
+	canales de tono y saturación de los pixeles para modelar las áreas
+	transitables y las no transitables. Se utiliza una área de 
+	entrenamiento ubicada directamente en frente del robot en la cual se asume que 
+	no hay obstáculos y contiene pixeles representativos del área que 
+	esta transitando. Esta área de entrenamiento se utiliza para 
+	actualizar uno de los 4 histogramas que modelan el área 
+	transitable. Además, se mantiene un histograma que modela el
+	área no transitable o fondo de la imagen, tomando una muestra de pixeles del último 
+	cuadro que fueron clasificados como tales . La 
+	clasificación de pixeles entonces se realiza utilizando la 
+	siguiente métrica:
+	\[
+	P_{transitable}= T(h,s)/ ( T(h,s) + NT(h,s))
+	\]
+	donde T y NT son los histogramas que modelan las áreas transitables
+	y no transitables respectivamente. $P_{transitable}$ se calcula para 
+	los 4 histogramas tomando el máximo de estos, si este supera 
+	cierto umbral entonces se considera a dicho pixel como 
+	correspondiente a un área transitable.
+	La actualización de los histogramas se realiza reemplazando el 
+	histograma de menor cantidad de aciertos con el histograma 
+	del área de entrenamiento.  Entre los resultados se destaca el 
+	hecho de que 4 histogramas resultaron suficientes para modelar la
+	variación de color de las áreas transitables, sin embargo, este no 
+	logro clasificar a la zonas cubiertas de sombra como transitables.
+	Bajo condiciones de luz favorables, 2 histogramas fueron 
+	suficientes para clasificar , en promedio, el 50\% del área 
+	transitable. Las posibles mejoras incluyen la incorporación de 
+	bordes o texturas para el reconocimiento de áreas transitables 
+	como así la posibilidad de tener áreas de entrenamiento con 
+	posiciones dinámicas de acuerdo a las condiciones de iluminación.
+	
+	
+	
+	
 	\subsubsection{Skin Detection using HSV color space - V. A. Oliveira, A. Conci}
 	En este artículo se trabajó sobre la detección de piel en imágenes utilizando el espacio de color HSV. El algoritmo propuesto 
 por el autor consiste en el filtrado de los pixeles en base al valor del canal de tonalidad (canal H). Los rangos de valores utilizados para 
-representar el color de la piel fueron obtenidos de otros artículos relacionados. Luego, con el objetivo de eliminar ruido, se aplican filtros morfológicos y de suavizado, estos son (en este orden) dilatación, erosión y un filtro de mediana. Para los filtros morfológicos se utilizaron núcleos de 5x5 pixeles mientras que para el filtro de mediana se usaron núcleos de 3x3 pixeles. Finalmente, el autor midió la performance de su algoritmo utilizando imágenes de prueba en donde se aprecian distintas zonas con piel aisladas. A partir de estas imágenes, se obtuvieron las coordenadas de los pixeles que se corresponden con piel y se las contrastó con aquellas que identificó el algoritmo. Los resultados presentados para 4 imágenes son satisfactorios obteniendo en promedio un porcentaje de falsos negativos cercano al 1\% y de falsos positivos menor al 6\%.
+representar el c
+
+olor de la piel fueron obtenidos de otros artículos relacionados. Luego, con el objetivo de eliminar ruido, se aplican filtros morfológicos y de suavizado, estos son (en este orden) dilatación, erosión y un filtro de mediana. Para los filtros morfológicos se utilizaron núcleos de 5x5 pixeles mientras que para el filtro de mediana se usaron núcleos de 3x3 pixeles. Finalmente, el autor midió la performance de su algoritmo utilizando imágenes de prueba en donde se aprecian distintas zonas con piel aisladas. A partir de estas imágenes, se obtuvieron las coordenadas de los pixeles que se corresponden con piel y se las contrastó con aquellas que identificó el algoritmo. Los resultados presentados para 4 imágenes son satisfactorios obteniendo en promedio un porcentaje de falsos negativos cercano al 1\% y de falsos positivos menor al 6\%.
 
 	\subsubsection{Line Detection and Lane Following for an Autonomous Mobile Robot - Andrew Reed Bacha}
 	En este artículo se describió el software utilizado para uno de los robots ganadores de la competencia "Intelligent Ground Vehicle Competition" (IGVC) en donde se requiere que los robots naveguen  a través de un camino delimitado por líneas pintadas sobre césped en un ambiente al aire libre en donde se pueden presentar obstáculos. El robot utilizaba una única cámara para el sistema de visión y su objetivo era detectar las líneas pintadas 
@@ -203,7 +250,7 @@ Ilustramos esto en las figuras \ref{fig:erode-sample} y \ref{fig:dilate-sample}.
   \label{fig:erode-sample}
 \end{figure}
 
-	\subsubsection*{Dilatación}
+	\paragraph{Dilatación}
 En imágenes no binarias, la operación de dilatación se define tomando el máximo local bajo el elemento estructural y poniéndole ese valor al punto principal. El efecto producido es una reducción general en el brillo de la imagen y un probable aumento el tamaño de las figuras \cite{nasa-dilate-erode}.  Cuando un área grande aparece, a causa del ruido, partida en varias componentes, el uso de la operación de dilatación provoca que  se combinen nuevamente en una sola. Un ejemplo de esto puede ser apreciado en la figura \ref{fig:dilate}. Otro beneficio de utilizar dilatación es la eliminación del ruido espurio como se aprecia en la figura \ref{fig:dilate-ruido}.
 
 \begin{figure}[tpb]
@@ -223,7 +270,7 @@ En imágenes no binarias, la operación de dilatación se define tomando el máx
   \label{fig:dilate-ruido}
 \end{figure}
 
-	\subsubsection*{Erosi\'on}
+	\paragraph{Erosi\'on}
 En imágenes no binarias, la operación de erosión se define tomando el mínimo local bajo el elemento estructural y poniéndole ese valor al punto principal. Contrario a la dilatación, este operador generalmente reduce el brillo de la imagen y disminuye el tamaño de las figuras \cite{nasa-dilate-erode}. Usamos la operación de erosión para eliminar las protuberancias que pueden surgir de aplicar la operación de dilatación. En la figura \ref{fig:erode} podemos apreciar el efecto de aplicar dilatación y luego erosión.
 
 \begin{figure}[tpb]
@@ -238,7 +285,7 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	La detección de contornos se produce sobre las imagenes binarias producidas en la etapa de pre-procesamiento. Dichos contornos
 	quedan definidos implicitamente como la separación de regiones positivas de las negativas. 
 	
-	\subsubsection*{Algoritmo}
+	\paragraph{Algoritmo}
 	Recordemos que las imágenes binarias se caracterizan por tener solo dos tipo de pixeles, los que contienen un cero(0-pixeles) o los que tienen 
 	un valor mayor a 0 (1-pixeles). Decimos que un conjunto de 0-pixeles o 1-pixeles \textit{conectados} forman una componente. Entendemos dos tipos de conectividad
 	la 4-conectividad y la 8-conectividad: dos pixeles con coordenadas $(x',y')$ y $(x'',y'')$ son 4-conexos si y solo si 
@@ -273,7 +320,7 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 \end{figure}
 	
 	
-	\subsubsection*{Representación}
+	\paragraph{Representación}
 	Como se expresa en el trabajo de Zhang y Lu \cite{Zhang02}, existen diversas formas de representar los contornos, cada una con
 	distintas aplicaciones. En nuestro caso se utilizan la codificación encadenada de Freeman, que consiste describir una sucesión de puntos
 	de acuerdo a la posición de un punto con respecto a su predecesor en la secuencia. Para esto se númeran los vecinos de un pixel con 
@@ -300,7 +347,7 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 \end{figure}
 		
 		
-	\subsubsection*{Polígonos}
+	\paragraph{Polígonos}
 	Como mencionamos, los contornos son representados utilizando la codificación de Freeman. Sin embargo, la precisión con la que se muestrean estos bordes suele ser excesiva o redundante para nuestras
 	necesidades lo cual hace el análisis de figuras más dificil. Con el fin de reducir esta complejidad utilizamos un algoritmo
 	para representar el mismo contorno con una menor cantidad de puntos. Esto se realiza mediante un algoritmo de aproximación por polígonos
@@ -347,45 +394,45 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	anteriores. De esta forma podemos ordenar los filtros de más general a más específico, optimizando los tiempos de detección. Por ejemplo , conocer 
 	el área que abarca un contorno determina fácil y rápidamente si un contorno corresponde a una colilla o a un plato evitando la ejecución
 	de filtros más específicos. A continuación detallamos los filtros realizados:
-	\subsubsection*{Filtro de área}
+	\paragraph{Filtro de área}
 	El filtro de área calcula el área encerrada por un contorno y verifica que la misma se encuentre por encima y/o por debajo
 	de valores determinados. El área encerrada por un contorno se computa utilizando la formula de Green \cite{greenwolfram}.
 	Si bien esto es más veloz que contabilizar todos los pixeles encerrados en el contorno, posee la desventaja que no se tienen en cuenta agujeros
 	en el interior del mismo.
-	\subsubsection*{Filtro de área por zona}
+	\paragraph{Filtro de área por zona}
 	Un objeto que posee un área determinada puede ocupar más o menos pixeles dependiendo de su ubicación en la imagen. Este se debe a la 
 	perspectiva de la cámara y puede afectar al reconocimiento de un contorno. Para contemplar esta variación se pueden establecer distintas
 	zonas en la imagen y definir distintos valores de área mínimos y máximo para cada una de ellas. Al ejecutarse este filtro se calcula la
 	zona a la cual pertenece dependiendo de su ubicación en la imagen y se verifican los valores para dicha zona, si este los satisface entonces
 	el contorno supera al filtro.PONER FOTO
-	\subsubsection*{Filtro de perímetro}
+	\paragraph{Filtro de perímetro}
 	El filtro de perímetro calcula , efectivamente, el perímetro cubierto por un contorno. Esto se hace contando la cantidad de pixeles que lo definen.
 	Vale remarcar, que el valor del perímetro depende ampliamente de la precisión con la que se obtengan los bordes ya que se ve drásticamente modificado 
 	si se aumenta o disminuye dicha precisión.
-	\subsubsection*{Filtro de excentricidad}
+	\paragraph{Filtro de excentricidad}
 	La excentricidad es un parámetro que relaciona la longitud del eje más largo con el del más corto. Esta se define como 
 	$longitud del eje mas largo/ longitud del eje mas corto$ . Algunas figuras pueden caracterizarse por tener valores de excentricidad
 	que se mantienen en cierto rango y permite identificarlas usando este filtro.
-	\subsubsection*{Filtro de circularidad}
+	\paragraph{Filtro de circularidad}
 	La circularidad es un parámetro que relaciona área con perímetro y define la redondez de una figura. Se define como $perimetro^2/area$. Algunas figuras pueden 
 	caracterizarse por tener valores de circularidad que se mantienen en cierto rango y permite identificarlas usando este filtro.
-	\subsubsection*{Filtro de área rectangular}
+	\paragraph{Filtro de área rectangular}
 	El filtro de área rectangular relaciona el área del objeto con el área del rectángulo contenedor mínimo. Este verifica que el área
 	del contorno cubra en gran parte el área del rectángulo. Esto se logra mediante la división $(area contorno / area rectangulo)> p$, donde 
 	$p$ es el porcentaje de área que queremos que sea cubierto.
-	\subsubsection*{Filtro de elipse}
+	\paragraph{Filtro de elipse}
 	El filtro de elipse verifica que un contorno determinado se ajuste o no a una elipse. Esto se logra usando un algoritmo basado 
 	en cuadrados mínimos. El mismo retorna como resultado las longitudes de los semi-ejes de la elipse $a$ y $b$. Con estas medidas calculamos
 	el área según la fórmula $A=\pi*a*b$ y se la compara con la obtenida a través del filtro de área. Se computa como $|A-AReal|/ AReal > p$ donde p determina el
 	valor de verosimilitud, donde más chico significa más parecido. Si estas dos áreas son lo suficientemente similares consideramos que el contorno supera el filtro. 
 	Para el ajuste de elipse se utiliza el algoritmo Fitzgibbon, Pilu y Fisher \cite{Fitzgibbon99}.
-	\subsubsection*{Filtro de vaso}
+	\paragraph{Filtro de vaso}
 	El filtro para vasos consiste en varias etapas. Recordando que el contorno se codifica como un polígono, se obtienen los dos segmentos 
 	más largos y se verifica que estos no compartan vértices. Por otro lado se pide que la suma de la longitud de estos dos segmentos supere al $50\%$ del 
 	perímetro del contorno, indicado por dicho filtro. Finalmente, se verifica que la distancia mínima entre estos dos ejes sea mayor a cierto valor prefijado, proporcional a la
 	longitud del segmento más largo. El filtro se basa en la idea de que los dos segmentos más largos se correspondan con los lados laterales del vaso. PONER FOTO
 	DE VASO.
-	\subsubsection*{Filtro de histograma}
+	\paragraph{Filtro de histograma}
 	El filtro de histograma verifica la similitud de un histograma obtenido a partir del contorno con otro histograma obtenido a partir de 
 	una imagen modelo del objeto a detectar. El histograma modelo se calcula en el inicio de la ejecución mientras que el del contorno se
 	computa en tiempo real. Esto se hace obteniendo el rectángulo contenedor mínimo de dicho contorno y computando un histograma 2d de la imagen
@@ -472,7 +519,7 @@ predicción}
 sistema de visión no lo detecta en un número $\eta$ de cuadros 
 consecutivos.}
 \item{ $\eta$ se calcula cada $\lambda$ cuadros como 
-$\frac{antiguedad}{detecciones}*\rho$ donde $\rho$ es un parámetro del 
+$\frac{detecciones}{antiguedad}\times \rho$ donde $\rho$ es un parámetro del 
 sistema}.
 \item{ Si un objeto es considerado por el sistema de predicción y este 
 no es detectado por el sistema de visión para algún cuadro entonces 
@@ -516,12 +563,9 @@ detección. Si en el cuadro anterior fue detectado entonces se utiliza
 $\alpha$ , si fue detectado hace dos cuadros entonces $2*\alpha$,3 
 cuadros $3*\alpha$ y así. La variable $\delta$ establece el umbral de 
 detección de un objeto por parte del sistema de visión para que el 
-sistema de predicción lo empiece  a considerar. Para la detección de 
-colillas se establecieron tres cuadros de umbral mientras que para los 
-vasos 2 cuadros. $\rho$ estable , independientemente de su 
+sistema de predicción lo empiece  a considerar. $\rho$ establece, independientemente de su 
 regularidad, la cantidad máxima de cuadros que puede permanecer un 
-objeto sin ser detectado y mantenido por el sistema de predicción. En 
-ambos casos (colillas y vasos) establecimos 10 cuadros.\\ 
+objeto sin ser detectado y mantenido por el sistema de predicción. \\ 
 \indent Es importante destacar que tanto $\rho$ como $\delta$ repercuten directamente en la 
 performance de detección. En el caso de la variable $\delta$, el 
 sistema de visión debe reconocer un objeto $\delta -1$ veces antes de que sea 
@@ -535,13 +579,13 @@ disminuyendo el porcentaje de falsos negativos.\\
 	desplazamiento del objeto o del robot), el sistema de 
 	predicción arriesga la posición de este un máximo de $\rho$ veces 
 	(según la regularidad de detección) y, en esta caso, las equivoca a 
-	todas ya que el objeto cesó de figurar en la imagen. El lado 
+	todas ya que el objeto no figura más en la imagen. El lado 
 	positivo es que cuando un objeto que tenía un historial de 
 	detección positivo es ocluido o alterado de tal forma que el 
 	sistema de visión no lo reconoce, el sistema de predicción 
 	arriesgará la posición (hasta $\rho$ veces) pudiéndole acertar o no hasta que el objeto 
 	sea nuevamente detectado por el sistema de visión o sea descartado. 
-	Es en esta última situación donde se obtienen nuevas detecciones que el sistema de visión 
+	Es en esta última situación es donde se obtienen nuevas detecciones que el sistema de visión 
 	nunca podría obtener por sí solo.\\
 	\indent A partir de estas reflexiones surge la importancia de configurar 
 	estas variables de acuerdo al sistema de visión que estemos 
@@ -638,8 +682,39 @@ cuántos casos el sistema de predicción estimó la posición y acertó (cuando 
 a la cantidad de estimaciones realizada por el sistema de predicción con \textbf{G} mientras que a las estimaciones que además fueron acertadas
 \textbf{G\&H}. 
 Exhibimos los resultados obtenidos tras utilizar solo el sistema de visión en \ref{tab:result} e utilizando el sistema de visión con el 
-sistema de predicción en \ref{tab:pred}.
-
+sistema de predicción en \ref{tab:pred} \ref{tab:pred_2}.\\
+\indent En los resultados arrojados en el cuadro \ref{tab:result} solo por el sistema de visión 
+se observan problemas en la detección de colillas debido a los altos 
+porcentajes de falsos negativos. Esto indica que el detector tiene 
+problemas en distinguir a los objetos de su entorno ya que comete 
+demasiados errores al detectar objetos que no existen. Esto concuerda 
+con el hecho de que, en el caso de las colillas, el número de 
+detecciones #D es siempre mayor que el #O.  Este no es el 
+caso de los vasos y platos que presentan porcentajes relativamente 
+bajos en todos los casos. La diferencia de performance entre los vasos 
+y platos con las colillas es entendible ya que las colillas son 
+objetos de menor tamaño e incluso poseen un color muy similar al del 
+entorno, lo cual dificulta su detección. En cambio, el color blanco y 
+el gran tamaño de los vasos y platos hace que se distingan facilmente 
+del fondo pero su color los hace mas sensibles a la iluminación.
+\indent Utilizando el mismo sistema de visión con el sistema de 
+predicción  obtenemos resultados un tanto distintos indicados en la 
+tabla \ref{tab:pred}. En el caso de las colillas observamos una mejora notable 
+en los falsos negativos debido al efecto pasa-altos establecido por 
+la variable $\delta$, eliminando las apariciones espontaneas y el 
+número de detecciones en general. A su vez, esta disminución impacta 
+en la cantidad de hits y por consecuente en el porcentaje de falsos 
+negativos, pero de forma mucho mas leve, haciendolo un trade-off 
+favorable. En el caso de los vasos y platos no se observa ninguna 
+mejora notoria. Para el caso de los vasos vemos un leve incremento 
+en el porcentaje de falsos positivos producido por $\delta$ pero en 
+este caso, a diferencia de las colillas, la disminución en el 
+porcentaje de falsos negativos es aún mas pequeña, resultando en un 
+balance no favorable. Algo similar sucede con los platos en donde se 
+reduce notablemente la cantidad de hits sin ver ninguna mejoras en la 
+cantidad de detecciones falsas. Esto último puede ser atribuido a la 
+baja cantidad de aciertos logrado por el predictor cuando el sistema 
+de visión falló. 
 \begin{table}[htb]
   \begin{tabular}{|l | c | c | c | c | c | c |}
 	\hline  
@@ -647,7 +722,7 @@ sistema de predicción en \ref{tab:pred}.
 	\hline
 	\hline
 	vasos1 & 5050 & 4880 & 4849 & 31 & 0.6 & 3.9 \\
-	vasos3 & 1777 & 1708 & 1696 & 12 & 0.7 & 4.5 \\
+	vasos3 & 1777 & 1708 & 1696 & 12 & 0.7 & 4.5 \\	
 	vasos4 & 6196 & 5354 & 5251 & 103 & 1.9 & 15.2 \\
 	\hline
 	colillas1 & 1645 & 1648 & 1282 & 367 & 22.2 & 22.0 \\
@@ -682,11 +757,49 @@ sistema de predicción en \ref{tab:pred}.
 	\hline
 	\end{tabular}
 	\label{tab:pred}
-	\caption{Performance del sistema con el sistema de predicción, PONER PARAMETROS}
+	\caption{Performance del sistema con el sistema de predicción para 
+	$\lambda=10$, $\rho=10$, $\delta=3$ }
+\end{table}
+
+\begin{table}[htb]
+  \begin{tabular}{|l | c | c | c | c | c | c | c | c |}
+	\hline  
+	\textbf{Video} & \textbf{(\#O)} &  \textbf{(\#D)} & \textbf{(H)} & \textbf{(M)} & \textbf{fp(\%)} & \textbf{fn(\%)} & \textbf{G} & \textbf{G\&H} \\
+	\hline
+	\hline
+	vasos1 & 5050 & 4866 & 4839 & 27 & 0.5 & 4.1  & 72 & 83\\
+	vasos3 & 1777 & 1700 & 1689 & 11 & 0.6 & 4.9 & 27 & 32 \\
+	vasos4 & 6196 & 5318 & 5222 & 96 & 1.8 & 15.7 & 226 & 241 \\
+	\hline
+	colillas1 & 1645 & 1220 & 1168 & 53 & 4.3 & 28.9 & 126 & 142 \\
+	colillas2 & 891 & 652 & 566 & 86 & 13.1 & 36.4 & 38 & 78 \\
+	colillas3 & 2708 & 2414 & 2142 & 272 & 11.2 & 20.0 & 158 & 303\\
+	\hline
+	platos1 & 2236 & 1958 & 1843 & 115 & 5.8 & 17.5 & 16 & 50\\
+	platos2 & 1128 & 1211 & 1115 & 96 & 7.9 & 1.1 & 8 & 26\\
+	\hline
+	\end{tabular}
+	\label{tab:pred_2}
+	\caption{Performance del sistema con el sistema de predicción con
+	$\lambda=10$, $\rho=4$, $\delta=2$}
 \end{table}
 
 	
 \subsection{Conclusi\'on}
-Conclusi\'on de visi\'on
+Presentamos un algoritmo para el reconocimiento de distintos objetos en 
+un ambiente dinámico en el marco de un robot autónomo capaz de 
+recolectar basura. El mismo funciona sobre la librería de visión 
+computacional OpenCv y el lenguaje c++.  El algoritmo cuenta
+con una etapa de pre-procesado donde se extraen los pixeles de colores de interés y se disminuye el ruido utilizando 
+operaciones morfológicas y de threshold. La etapa de procesamiento extrae los contornos y utiliza una aproximación por polígonos
+para simplificar el análisis posterior, el cual consiste en una serie de filtros pre-definidos que determinan si se trata de un objeto o no. 
+Implementamos un mecanismo de predicción parametrizable que corre sobre el algoritmo 
+en cuestión por el cual se puede optimizar la performance de 
+detección según las caracteristicas propias de cada detector. Se 
+midieron los resultados obtenidos realizando el reconocimiento de 
+vasos,colillas y platos obteniendo un promedio de $TANTO$ de fp y 
+$tanto$. Finalmente agregamos un mecanismo de focalización por el cual 
+el sistema completo puede trabajar sobre un único objeto reduciendo 
+los tiempos de procesamiento. 
 
 
