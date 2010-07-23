@@ -1886,15 +1886,91 @@ de corriente continua para el robot.
 \subsubsection{Caracter\'isticas principales}
 \label{h_placas_motorDC_caracteristicas}
 
-principio de funcionamiento, como logra controlar la velocidad, como logra ser parte de la cadena, como logra sensar el consumo, controlar el motor, puente H, diodos, leds, VREF
-
-La funci\'on principal es mantener una velocidad estable en el motor de cont\'inua, pero tambi\'en poder sensar la cantidad
-y sentido del movimiento que realiz\'o la rueda, informar el consumo y poder determinar el desplazamiento a realizar entre otros.
+La funci\'on principal es entre otros, mantener una velocidad estable en el motor de cont\'inua, pero tambi\'en poder sensar la cantidad
+y sentido del movimiento que realiz\'o la rueda, informar el consumo y poder determinar el desplazamiento a realizar.
 Este \'ultimo requerimiento era de vital importancia si quer\'iamos tener precisi\'on en el movimiento que realizar\'ia la rueda
 ya que el control de alta resoluci\'on hubiera sido imposible hacerlo desde el controlador principal.
 
 Todos los comandos desde y hacia el controlador principal viajan por la red de comunicaci\'on como explicamos en la secci\'on
 \ref{h_comm} coloc\'andose como un eslab\'on m\'as en la cadena.
+Usamos como base la placa gen\'erica que explicamos en la subsecci\'on \ref{h_placas_generica} y agregamos el circuito necesario para
+el control del motor como explicamos en el punto \ref{h_placas_motorDC_circuito}.
+
+\subsubsection{Comunicaci\'on}
+\label{h_placas_motorDC_comm}
+
+Al utilizar la placa gen\'erica como base mantuvimos la secci\'on de comunicaci\'on de la misma intecta, pues
+en principio, era un m\'odulo probado y funcional, adem\'as manten\'iamos la misma estructura f\'isica que
+facilitaba el conexionado para futuros usuarios.
+
+Como explicamos en la secci\'on \ref{h_comm_protocolo_comandosEspecificos} esta placa responde a comandos
+espec\'ificos listados en los cuadros \ref{hT_comm_comandos_motordc_a} y  \ref{hT_comm_comandos_motordc_b}.
+La principal informaci\'on disponible mediante estos comandos es la velocidad de la rueda en cuentas del
+encoder por segundo, el sentido de giro y el hist\'orico de cuentas realizadas.
+Podemos enviar comandos para setear estos valores y otros, como la cantidad de cuentas del encoder y a que
+velocidad debe girar la rueda debe hacerlo.
+
+Tambi\'en podemos leer la cantidad de cuentas restantes antes de frenar y el consumo actual del motor para
+hacer c\'alculos sobre el tiempo restante de bater\'ia.
+
+\subsubsection{Alimentaci\'on de la placa}
+\label{h_placas_motorDC_alimentacion}
+
+Como explicamos en la subsecci\'on \ref{h_placas_generica}, la alimentaci\'on principal de la l\'ogica es
+de 7 a 20 voltios, con la posibilidad de alimentarla directamente con 5 voltios por uno de los pines del conector.
+La alimentaci\'on del motor es por una bornera de 2 pines como listamos en el cuadro \ref{hT_placa_dc_alimentacion},
+aislada completamente para disminuir as\'i el ruido generado por el funcionamiente del motor sobre de la l\'ogica.
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{|c|c|}
+			\hline
+			Pin & Voltaje \\
+			\hline
+			1 & GND \\
+			\hline
+			2 & 12v (depende del motor) \\
+			\hline
+		\end{tabular}
+		\caption{Pines de alimentaci\'on del motor}
+		\label{hT_placa_dc_alimentacion}
+	\end{center}
+\end{table}
+
+Como la alimentaci\'on del motor se hace mediante el \emph{puente H}, no puede superar los $46V$ que es el
+m\'aximo que puede operar el \emph{L298}.
+
+Cabe aclarar tambi\'en que al estar ambos circuitos completamente aislados, se necesita unificar ambas masas
+para establecer un punto de referencia com\'un para poder ejercer el contro del \emph{puente H} y lectura
+del consumo, de forma correcta.
+Recomendamos hacer esto lo m\'as cerca posible de la bater\'ia para disminuir al m\'aximo el ruido que pueda
+generarse debido a los motores.
+
+\subsubsection{Configuraci\'on}
+\label{h_placas_motorDC_config}
+
+configuracion de la placa, leds, comunicacion, header de programacion, switch de seleccion de encoder
+
+La configuraci\'on de la placa es relativamente sencilla.
+Antes que nada debemos determinar el rol de la placa dentro de la cadena de comunicaci\'on, esto lo hacemos
+mediante el switch \emph{S3}.
+Podemos colocarlo en modo \emph{LINK} para que sea un eslab\'on m\'as o en modo \emph{LAST} para que sea
+la terminaci\'on de la cadena.
+
+
+
+
+El switch \emph{S2} lo utilizamos para asociar los pines del microcontrolador con el canal de datos del header
+de programaci\'on (modo \emph{ICD2}) o con el encoder elegido en el \emph{S4} (Encoder\_A o Encoder\_B).
+EXPLICAR***
+
+
+
+\subsubsection{Esquem\'atico}
+\label{h_placas_motorDC_esquematico}
+
+esquematicos de la placa
+
 
 
 
@@ -1907,37 +1983,15 @@ Como mostramos en el diagrama de la figura \ref{hF_placa_dc_puenteH} las salidas
 respectivamente para tener una mayor potencia, de esta forma el motor puede consumir hasta $4A$.
 
 
-...
-
-
-\subsubsection{M\'odulo de comunicaci\'on}
-\label{h_placas_motorDC_comm}
-
-se explico en el modulo generico, se agregan los comandos especificos y se puede explicar como se obtiene la informacion para dar las respuestas
-
-\subsubsection{Alimentaci\'on de la placa}
-\label{h_placas_motorDC_alimentacion}
-
-se explico en el modulo generico, tension para la alimentacion para los motores, necesidad de masa unica como referencia, consumo aproximado de los motores
-
-\subsubsection{Configuraci\'on}
-\label{h_placas_motorDC_config}
-
-configuracion de la placa, leds, comunicacion, header de programacion, switch de seleccion de encoder
-
-\subsubsection{Esquem\'atico}
-\label{h_placas_motorDC_esquematico}
-
-esquematicos de la placa
-
-
-
-
 
 \subsubsection{Circuito}
 \label{h_placas_motorDC_circuito}
 
 circuito de la placa
+
+
+
+
 
 \subsubsection{C\'odigo b\'asico}
 \label{h_placas_motorDC_codigo}
