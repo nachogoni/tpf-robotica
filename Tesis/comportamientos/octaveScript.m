@@ -33,23 +33,56 @@ print('graphics/RechargeContAct.png','-dpng');
 bar(contActna)
 print('graphics/AvoidContAct.png','-dpng');
 
+bar(icontActnw)
+print('graphics/WanderContInact.png','-dpng');
+
+bar(icontActnf)
+print('graphics/FocusContInact.png','-dpng');
+
+bar(icontActng)
+print('graphics/GoToContInact.png','-dpng');
+
+bar(icontActnc)
+print('graphics/CollectContInact.png','-dpng');
+
+bar(icontActnu)
+print('graphics/UnloadContInact.png','-dpng');
+
+bar(icontActnr)
+print('graphics/RechargeContInact.png','-dpng');
+
+bar(icontActna)
+print('graphics/AvoidContInact.png','-dpng');
+
 meanV
+imeanV
 
 desvStd
+idesvStd
 
 max(meanV)
+max(imeanV)
 max(desvStd)
+max(idesvStd)
 
-mw = max(contActnw);
-mf = max(contActnf);
-mg = max(contActng);
-mr = max(contActnr);
-mc = max(contActnc);
-ma = max(contActna);
-mu = max(contActnu);
-mp = max(contActnp);
+mw = max(contActnw)
+mf = max(contActnf)
+mg = max(contActng)
+mr = max(contActnr)
+mc = max(contActnc)
+ma = max(contActna)
+mu = max(contActnu)
 
-max([mw mf mg mr mc ma mu mp])
+cantActnw = length(contActnw)
+cantActnf = length(contActnf)
+cantActng = length(contActng)
+cantActnr = length(contActnr)
+cantActnc = length(contActnc)
+cantActna = length(contActna)
+cantActnu = length(contActnu)
+%mp = max(contActnp)
+
+max([mw mf mg mr mc ma mu])
 
 contActnw;
 contActnf;
@@ -58,7 +91,8 @@ contActnc;
 contActnu;
 contActnr;
 contActna;
-contActnp;
+
+%contActnp;
 %bar(contActnp)
 
 
