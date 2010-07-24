@@ -67,7 +67,7 @@ En la figura \ref{hF_motorDC} mostramos las dimensiones exteriores del motor.
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[scale=1]{MR2-FA.png}
+	\includegraphics[scale=1]{figuras/MR2-FA.png}
 	\caption{Vista lateral y frontal del motor Ignis MR-2FA.}
 	\label{hF_motorDC}
 \end{figure}
@@ -80,7 +80,10 @@ La caja reductora provee una relaci\'on de $94$ vueltas del motor por cada $1$ v
 \label{h_actuadores_motorDC_circuito}
 
 Para alimentar y poder controlar los motores elegimos el driver \emph{L298} de la marca ST\footnote{http://www.st.com}.
-Internamente tiene dos puentes H puenteables y puede soportar hasta $4 A$. Ideal para estos motores u otros que se elijan en el futuro.
+Internamente tiene dos puentes H puenteables y puede soportar hasta $4 A$.
+Esto lo logramos teniendo las salidas $1$ y $2$ est\'an puenteadas con las salidas $4$ y $3$ respectivamente, como
+mostramos en el diagrama de la figura \ref{hF_placa_dc_schema3}.
+Ideal para estos motores u otros que se elijan en el futuro.
 
 La principal funci\'on del driver era proveer de la corriente y voltaje necesarios para el funcionamiento del motor, pero la configuraci\'on
 del puente H nos dio la posibilidad de, con una l\'ogica simple, determinar el sentido de la corriente y potencia que recib\'ia el motor.
@@ -92,7 +95,7 @@ por el otro la \emph{In2} con la \emph{In3}.
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[scale=0.40]{L298.png}
+	\includegraphics[scale=0.40]{figuras/L298.png}
 	\caption{Diagrama interno del driver L298.}
 	\label{hF_l298}
 \end{figure}
@@ -262,7 +265,7 @@ En la figura \ref{hF_gp2d120_pulse} mostramos el diagrama de tiempos.
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[scale=0.25]{gp2d120_pulse.png}
+	\includegraphics[scale=0.25]{figuras/gp2d120_pulse.png}
 	\caption{Diagrama de tiempos del sensor GP2D120.}
 	\label{hF_gp2d120_pulse}
 \end{figure}
@@ -284,13 +287,13 @@ En la figura \ref{hF_gp2d120_distancia} mostramos el cuadro de conversi\'on entr
 \begin{figure}[ht]
 	\begin{minipage}[b]{0.5\linewidth}
 		\centering
-		\includegraphics[scale=0.25]{tel-VxL.png}
+		\includegraphics[scale=0.25]{figuras/tel-VxL.png}
 		\caption{Voltaje de salida seg\'un la distancia al objeto del tel\'emetro GP2D120.}
 		\label{hF_gp2d120_distancia}
 	\end{minipage}
 	\begin{minipage}[b]{0.5\linewidth}
 		\centering
-		\includegraphics[scale=0.25]{tel-VxX.png}
+		\includegraphics[scale=0.25]{figuras/tel-VxX.png}
 		\caption{\'Angulo de apertura seg\'un la distancia del tel\'emetro GP2D120.}
 		\label{hF_gp2d120_apertura}
 	\end{minipage}
@@ -350,7 +353,7 @@ del sensor.
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[scale=0.5]{srf05_beam.png}
+	\includegraphics[scale=0.5]{figuras/srf05_beam.png}
 	\caption{Haz ultras\'onico del sensor SRF05.}
 	\label{hF_srf05}
 \end{figure}
@@ -367,7 +370,7 @@ En la figura \ref{hF_srf05_pulse} mostramos el diagrama de tiempos.
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[scale=0.25]{srf05_pulse.png}
+	\includegraphics[scale=0.25]{figuras/srf05_pulse.png}
 	\caption{Diagrama de tiempos del sensor SRF05.}
 	\label{hF_srf05_pulse}
 \end{figure}
@@ -401,7 +404,7 @@ Es por esto que usamos estos sensores para identificar una l\'inea en el piso.
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[scale=0.25]{cny70_dim.png}
+	\includegraphics[scale=0.25]{figuras/cny70_dim.png}
 	\caption{Medidas en mil\'imetros del sensor CNY70.}
 	\label{hF_cny70_dim}
 \end{figure}
@@ -420,14 +423,14 @@ En la figura \ref{hF_cny70_ID} mostramos la corriente que circula por el colecto
 \begin{figure}[ht]
 	\begin{minipage}[b]{0.45\linewidth}
 		\centering
-		\includegraphics[scale=0.25]{cny70_diagrama.png}
+		\includegraphics[scale=0.25]{figuras/cny70_diagrama.png}
 		\caption{Principio de funcionamiento reflectivo del sensor CNY70.}
 		\label{hF_cny70_diagrama}
 	\end{minipage}
 	\hspace{0.5cm}
 	\begin{minipage}[b]{0.45\linewidth}
 		\centering
-		\includegraphics[scale=0.25]{cny70_IxD.png}
+		\includegraphics[scale=0.25]{figuras/cny70_IxD.png}
 		\caption{Corriente en el colector seg\'un la distancia del sensor CNY70.}
 		\label{hF_cny70_ID}
 	\end{minipage}
@@ -510,7 +513,7 @@ En la figura \ref{hF_bateria_diagrama} mostramos el diagrama del divisor de tens
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[scale=0.35]{bateria.png}
+	\includegraphics[scale=0.35]{figuras/bateria.png}
 	\caption{Divisor de tensi\'on para el sensado de la bater\'ia.}
 	\label{hF_bateria_diagrama}
 \end{figure}
@@ -647,7 +650,7 @@ Utilizamos con un cristal externo de 20MHz como clock.
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[scale=0.20]{pic16f88.png}
+	\includegraphics[scale=0.20]{figuras/pic16f88.png}
 	\caption{Diagrama del microcontrolador PIC16F88.}
 	\label{hF_pic16f88_diagrama}
 \end{figure}
@@ -664,7 +667,7 @@ En la figura \ref{hF_pic16f88_modulos} mostramos los distintos m\'odulos interno
 
 \begin{figure}[b]
 	\centering
-	\includegraphics[scale=0.35]{pic16f88_modulos.png}
+	\includegraphics[scale=0.35]{figuras/pic16f88_modulos.png}
 	\caption{M\'odulos internos del microcontrolador PIC16F88.}
 	\label{hF_pic16f88_modulos}
 \end{figure}
@@ -715,6 +718,31 @@ El firmware de cada microcontrolador lo escribimos en C y usamos la IDE de progr
 \emph{Microchip MPLAB}\footnote{http://www.microchip.com/} con el compilador \emph{CCS PCM V4.023}\footnote{http://www.ccsinfo.com/}.
 Usamos el programador \emph{ICD2} de la empresa \emph{Microchip} para descargar c\'odigo compilado al microcontrolador.
 El cual nos dio la posibilidad de debuguear el c\'odigo en m\'as de una oportunidad.
+Mediante el header de programaci\'on en circuito que detallamos en el cuadro \ref{hT_header_icd2}, establecemos la
+interface con el programador \emph{ICD2} para cargar el firmware en el microcontrolador o para debuguearlo.
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{|c|c|}
+			\hline
+			Pines & Se\~nal \\
+			\hline
+			1 y 2 & MCLR \\
+			\hline
+			3 y 4 & $5v$ VCC \\
+			\hline
+			5 y 6 & GND \\
+			\hline
+			7 y 8 & PGD (Data) \\
+			\hline
+			9 y 10 & PGC (Clock) \\
+			\hline
+		\end{tabular}
+		\caption{Pines de programaci\'on en circuito con \emph{ICD2}.}
+		\label{hT_header_icd2}
+	\end{center}
+\end{table}
+
 
 \section{Comunicaci\'on}
 \label{h_comm}
@@ -738,7 +766,7 @@ hasta su destinatario como mostramos en la figura \ref{hF_comm_daisychain}.
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[scale=.40]{daisychain_diagram.png}
+	\includegraphics[scale=.40]{figuras/daisychain_diagram.png}
 	\caption{Diagrama general del m\'etodo daisy chain}
 	\label{hF_comm_daisychain}
 \end{figure}
@@ -1735,7 +1763,7 @@ En los cuadros \ref{hT_comm_conexionLink} y \ref{hT_comm_conexionRS232} explicam
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[scale=.25]{rj11_db9.png}
+	\includegraphics[scale=.25]{figuras/rj11_db9.png}
 	\caption{Conectores RJ11 (6P4C) y DB9.}
 	\label{hF_placa_gen_comm}
 \end{figure}
@@ -1756,7 +1784,7 @@ En la figura \ref{hF_placa_gen_borneras} mostramos la bornera y en el cuadro \re
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[scale=.3]{bornera3.png}
+	\includegraphics[scale=.3]{figuras/bornera3.png}
 	\caption{Bornera de alimentaci\'on.}
 	\label{hF_placa_gen_borneras}
 \end{figure}
@@ -1799,29 +1827,29 @@ y data del header de programaci\'on (modo \emph{ICD2}) o con los pines del heade
 
 En la figura \ref{hF_placa_gen_schema1} mostramos el esquem\'atico del microcontrolador y el conexionado
 con los headers, el m\'odulo de comunicaci\'on y conectores para conformar la cadena \emph{Daisy chain}
-la figura \ref{hF_placa_gen_schema2}.
+los detallamos en la figura \ref{hF_placa_gen_schema2}.
 En la figura \ref{hF_placa_gen_schema3} mostramos el diagrama de la fuente de alimentaci\'on y bornera.
 
 \begin{figure}
 	\centering
-	\includegraphics[scale=.3]{gen_schemaMicro.png}
-	\includegraphics[scale=.3]{gen_schemaHeaders.png}
+	\includegraphics[scale=.3]{figuras/gen_schemaMicro.png}
+	\includegraphics[scale=.3]{figuras/gen_schemaHeaders.png}
 	\caption{Microcontrolador y headers}
 	\label{hF_placa_gen_schema1}
 \end{figure}
 
 \begin{figure}
 	\centering
-	\includegraphics[scale=.3]{gen_schemaComm1.png}
-	\includegraphics[scale=.3]{gen_schemaComm2.png}
-	\includegraphics[scale=.3]{gen_schemaComm3.png}
+	\includegraphics[scale=.3]{figuras/gen_schemaComm1.png}
+	\includegraphics[scale=.3]{figuras/gen_schemaComm2.png}
+	\includegraphics[scale=.3]{figuras/gen_schemaComm3.png}
 	\caption{Comunicaci\'on, switch de modo y conectores de entrada y salida}
 	\label{hF_placa_gen_schema2}
 \end{figure}
 
 \begin{figure}
 	\centering
-	\includegraphics[scale=.3]{gen_schemaFuente.png}
+	\includegraphics[scale=.3]{figuras/gen_schemaFuente.png}
 	\caption{Fuente de alimentaci\'on}
 	\label{hF_placa_gen_schema3}
 \end{figure}
@@ -1834,16 +1862,16 @@ la figura \ref{hF_placa_gen_capas} ambas capas de la placa.
 
 \begin{figure}
 	\centering
-	\includegraphics[scale=.2]{gen_componentes.png}
-	\caption{M\'ascara de componentes.}
+	\includegraphics[scale=.2]{figuras/gen_componentes.png}
+	\caption{M\'ascara de componentes de la placa gen\'erica.}
 	\label{hF_placa_gen_componentes}
 \end{figure}
 
 \begin{figure}
 	\centering
-	\includegraphics[scale=.2]{gen_top.png}
-	\includegraphics[scale=.2]{gen_bottom.png}
-	\caption{Capas superior e inferior de la placa.}
+	\includegraphics[scale=.2]{figuras/gen_top.png}
+	\includegraphics[scale=.2]{figuras/gen_bottom.png}
+	\caption{Capas superior e inferior de la placa gen\'erica.}
 	\label{hF_placa_gen_capas}
 \end{figure}
 
@@ -1932,7 +1960,7 @@ aislada completamente para disminuir as\'i el ruido generado por el funcionamien
 			2 & 12v (depende del motor) \\
 			\hline
 		\end{tabular}
-		\caption{Pines de alimentaci\'on del motor}
+		\caption{Pines de alimentaci\'on del motor.}
 		\label{hT_placa_dc_alimentacion}
 	\end{center}
 \end{table}
@@ -1949,60 +1977,158 @@ generarse debido a los motores.
 \subsubsection{Configuraci\'on}
 \label{h_placas_motorDC_config}
 
-configuracion de la placa, leds, comunicacion, header de programacion, switch de seleccion de encoder
-
 La configuraci\'on de la placa es relativamente sencilla.
 Antes que nada debemos determinar el rol de la placa dentro de la cadena de comunicaci\'on, esto lo hacemos
 mediante el switch \emph{S3}.
 Podemos colocarlo en modo \emph{LINK} para que sea un eslab\'on m\'as o en modo \emph{LAST} para que sea
 la terminaci\'on de la cadena.
 
+El header del motor comunica la placa con el motor de cont\'inua, en el cuadro \ref{hT_placa_dc_header_motor}
+detallamos la posici\'on de los pines.
 
+Las se\~nales \emph{MOTOR\_B} y \emph{MOTOR\_A} son para la alimentaci\'on del motor, dependiendo del sentido
+de circulaci\'on la corriente entre estos pines ser\'a el sentido de giro del motor.
+Esto se controla desde el puente H \emph{L298}.
 
+Los sensores dentro del motor est\'an reciben tensi\'on mediante los pines \emph{$5v$ VCC} y \emph{GND}.
+La se\~nal \emph{IDX} genera pulsos seg\'un las vueltas en el eje de salida de la caja de reducci\'on del
+motor.
+En cambio las se\~nales \emph{Encoder\_A} o \emph{Encoder\_B} generan pulsos en base a las vueltas del motor
+antes de entrar en la caja.
 
 El switch \emph{S2} lo utilizamos para asociar los pines del microcontrolador con el canal de datos del header
-de programaci\'on (modo \emph{ICD2}) o con el encoder elegido en el \emph{S4} (Encoder\_A o Encoder\_B).
-EXPLICAR***
+de programaci\'on, que explicamos en la secci\'on \ref{h_controlador_micro_programacion}, modo \emph{ICD2} o
+con la se\~nal de lectura del encoder.
 
+La se\~nal del encoder proviene a su vez del switch \emph{S4}, el cual nos da la posibilidad de elegir entre
+alguna de las dos se\~nales \emph{Encoder\_A} o \emph{Encoder\_B}.
 
+Los pines \emph{P2} y \emph{P3} los usamos como referencia del conversor anal\'ogico digital respectivamente,
+un puente a \emph{GND} y \emph{VCC}, o al divisor de tensi\'on formado por las resistencias \emph{R5} y \emph{R6}.
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			Pin & Se\~nal & Pin & Se\~nal \\
+			\hline
+			1 & MOTOR\_B & 2 & MOTOR\_A \\
+			\hline
+			3 & IDX & 4 & - \\
+			\hline
+			5 & ENCODER\_B & 6 & GND \\
+			\hline
+			7 & ENCODER\_A & 8 & GND \\
+			\hline
+			9 & $5v$ VCC & 10 & GND \\
+			\hline
+		\end{tabular}
+		\caption{Pines del header de comunicaci\'on con el motor.}
+		\label{hT_placa_dc_header_motor}
+	\end{center}
+\end{table}
 
 \subsubsection{Esquem\'atico}
 \label{h_placas_motorDC_esquematico}
 
-esquematicos de la placa
+En la figura \ref{hF_placa_dc_schema} mostramos el esquem\'atico del microcontrolador y el conexionado el header
+de programaci\'on.
+En la figura \ref{hF_placa_dc_schema2} detallamos el m\'odulo de comunicaci\'on y el conexionado con los conectores
+entre placas.
+En la figura \ref{hF_placa_dc_schema3} el esquem\'atico del driver y el header del motor.
+En la figura \ref{hF_placa_dc_schema4} mostramos los pines del divisor de tensi\'on para el conversor anal\'ogico
+digital y en la figura \ref{hF_placa_dc_schema5} la fuente de alimentaci\'on y borneras.
 
+\begin{figure}
+	\centering
+	\includegraphics[scale=.3]{figuras/dc_schemaMicro.png}
+	\caption{Microcontrolador y header de programaci\'on.}
+	\label{hF_placa_dc_schema}
+\end{figure}
 
+\begin{figure}
+	\centering
+	\includegraphics[scale=.28]{figuras/dc_schemaComm1.png}
+	\includegraphics[scale=.28]{figuras/dc_schemaComm2.png}
+	\includegraphics[scale=.28]{figuras/dc_schemaComm3.png}
+	\caption{Comunicaci\'on, switch de modo y conectores de entrada y salida.}
+	\label{hF_placa_dc_schema2}
+\end{figure}
 
+\begin{figure}
+	\centering
+	\includegraphics[scale=.3]{figuras/dc_schemaDriver.png}
+	\includegraphics[scale=.3]{figuras/dc_schemaMotorEncoder.png}
+	\caption{Driver y header de conexi\'on con el motor.}
+	\label{hF_placa_dc_schema3}
+\end{figure}
 
-Como explicamos en la secci\'on \ref{h_actuadores_motorDC_circuito} usamos un puente H para controlar el giro y poder otorgarle
-la corriente necesaria al motor.
+\begin{figure}
+	\centering
+	\includegraphics[scale=.3]{figuras/dc_schemaADC.png}
+	\caption{Divisor de tensi\'on para el voltaje de referencia.}
+	\label{hF_placa_dc_schema4}
+\end{figure}
 
-
-
-Como mostramos en el diagrama de la figura \ref{hF_placa_dc_puenteH} las salidas 1 y 2 est\'an puenteadas con las salidas 4 y 3
-respectivamente para tener una mayor potencia, de esta forma el motor puede consumir hasta $4A$.
-
-
+\begin{figure}
+	\centering
+	\includegraphics[scale=.3]{figuras/dc_schemaFuente.png}
+	\caption{Fuente de alimentaci\'on de la l\'ogica y motor.}
+	\label{hF_placa_dc_schema5}
+\end{figure}
 
 \subsubsection{Circuito}
 \label{h_placas_motorDC_circuito}
 
-circuito de la placa
+En la figura \ref{hF_placa_dc_componentes} se muestra la m\'ascara de componentes de la placa.
+En la figura \ref{hF_placa_dc_capas} se muestran ambas capas de la placa.
 
+\begin{figure}
+	\centering
+	\includegraphics[scale=.3]{figuras/dc_componentes.png}
+	\caption{M\'ascara de componentes de la placa controladora de motores DC.}
+	\label{hF_placa_dc_componentes}
+\end{figure}
 
-
-
+\begin{figure}
+\centering
+	\includegraphics[scale=.3]{figuras/dc_top.png}
+	\includegraphics[scale=.3]{figuras/dc_bottom.png}
+	\caption{Capas superior e inferior de la placa controladora de motores DC.}
+	\label{hF_placa_dc_capas}
+\end{figure}
 
 \subsubsection{C\'odigo b\'asico}
 \label{h_placas_motorDC_codigo}
 
-explicacion de lo minimo que deberia tener para ser parte de la cadena de comunicacion, sensado y control de la velocidad de los motores
+El c\'odigo m\'inimo para ser parte de la cadena de comunicaci\'on es similar al de todas las placas que
+armamos.
+La personalizaci\'on del codigo est\'a dentro de la funci\'on que interpreta el comando recibido y realiza
+las tareas internas necesarias para llevar a cabo dicha acci\'on y depende \'integramente del protocolo.
+
+Para el sensado de la velocidad debemos determinar cuales son los pines de lectura de la se\~nal del encoder
+y debemos generar una base de tiempo que nos permita estableces cuantas cuentas del encoder hay por intervalo
+de tiempo.
+Con dicha informaci\'on podemos aumentar o disminuir el ancho del pulso que controla al puente H \emph{L298}
+y, en consecuencia, controlar la velocidad del motor de corriente cont\'inua.
+
+Para mantener un hist\'orico de cuentas de encoder realidas nosotros usamos el conocimiento del sentido de giro
+del motor para sumar o restar el valor calculado por cada intervalo de tiempo en una variable interna del
+microcontrolador.
 
 \subsubsection{Posibles extensiones}
 \label{h_placas_motorDC_extensiones}
 
-porque hay 2, porque no esta en una sola
-unificar en una placa el control de mas de un motor, pasar a montaje superficial los componentes, hacerla mas chica
+Un punto recurrente de discusi\'on fue el uso de una placa por cada motor de corriente cont\'inua.
+Sab\'iamos que era posible realizar todas las funciones necesarias para el control de dos motores en una \'unica
+placa, pero esto nos tra\'ia una mayor complejidad tanto a nivel f\'isico como a nivel l\'ogico de control, y un
+tiempo de implementaci\'on superior.
+Es por estas razones que decidimos esta configuraci\'on y dejarlo como futura extensi\'on para la cual usar\'iamos
+los conocimientos y experiencias adquiridas en el desarrollo de la actual.
+
+Otra posible extensi\'on que es recurrente en todas las placas es el uso de componentes de montaje superficial
+lo que disminuir\'ia el tamaño de la misma en gran medida pero a su vez implicaba cierta complejidad que preferimos
+evitar en el desarrollo del prototipo.
 
 \subsection{Placas de sensado}
 \label{h_placas_sensado}
