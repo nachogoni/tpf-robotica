@@ -81,12 +81,12 @@ namespace behaviours {
 		this->shovel->setPosition(SHOVEL_ANGLE);
 		this->wheels->setSpeed(0,0);
 
-		for ( int i = 0 ; i < 4 * COLLECT_WAIT_STEPS_A_LAST ; i ++ ){
+		for ( int i = 0 ; i < COLLECT_WAIT_STEPS ; i ++ ){
 			this->robot->step(COLLECT_TIME_STEP);
 		}
 
 		this->shovel->setPosition(0);
-		for ( int i = 0 ; i < 4 * COLLECT_WAIT_STEPS_LAST ; i ++ ){
+		for ( int i = 0 ; i < COLLECT_WAIT_STEPS ; i ++ ){
 			this->robot->step(COLLECT_TIME_STEP);
 		}
 
