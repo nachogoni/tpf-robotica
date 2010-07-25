@@ -12,26 +12,19 @@ plot(nu,'5;Unload;');
 
 pie(vars(length(vars),:),[0,0,0,0,1,0,0,0],["Wander","Focus Garbage","Go To Garbage","Collect Garbage","Unload Garbage","Recharge","Avoid Obstacles","Panic"])
 
-bar(contActnw)
-print('graphics/WanderContAct.png','-dpng');
+% Plot Behaviour's progress in each timestep
+plotBehaviours
 
-bar(contActnf)
-print('graphics/FocusContAct.png','-dpng');
+% Plot All behaviours progress
+allPlot
 
-bar(contActng)
-print('graphics/GoToContAct.png','-dpng');
+% Plot Behaviours's continous active time steps
 
-bar(contActnc)
-print('graphics/CollectContAct.png','-dpng');
+plotContinousBehaviours
 
-bar(contActnu)
-print('graphics/UnloadContAct.png','-dpng');
 
-bar(contActnr)
-print('graphics/RechargeContAct.png','-dpng');
 
-bar(contActna)
-print('graphics/AvoidContAct.png','-dpng');
+% Plot Behaviours's continous inactive time steps
 
 bar(icontActnw)
 print('graphics/WanderContInact.png','-dpng');
@@ -95,4 +88,14 @@ contActna;
 %contActnp;
 %bar(contActnp)
 
+scontActnw;
+scontActnf;
+scontActng;
+scontActnc;
+scontActnu;
+scontActnr;
+scontActna;
+
+smeanV
+sdesvStd
 
