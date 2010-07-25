@@ -357,18 +357,77 @@ de una secuencia de im\'agenes es muy complejo y pesado, como se muestra en la s
 	\begin{center}
 		\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 			\hline
-			Indicador & W & FG & GTG & CG & UG & R & AO & P \\
+			Comportamiento & \# total de steps activo & \# veces que se activ\'o \\
 			\hline
-			Total & 64476 & 2057 & 14832 & 7166 & 76160 & 47188 & 16843 & 0 \\
-			Promedio & 48.4410 & 1.4863 & 12.1773 & 477.7333 & 237.2586 & 178.0679 & 11.1765 & 0 \\
-			Desv\'io est\'andar & 225.07466 & 3.27591 & 58.44234 & 0.70373 & 840.49848 & 647.39786 & 54.72354 & 0\\
-			Cantidad m\'axima & 2212 & 67 & 1222 & 478 & 6012 & 3950 & 1386 & 0\\
-			\# veces activo & 1331 & 1384 & 1218 & 15 & 321 & 265 & 1507 & 0 \\
+			Wandering & 64476 & 1330 \\
+			Enfocar basura & 2057 & 1384 \\
+			Ir a basura & 14832 & 1218 \\
+			Recolectar basura & 7166 & 15 \\
+			Ir a descargar basura & 76160 & 321 \\
+			Ir a recargar bater\'ia & 47188 & 265 \\
+			Evitar obst\'aculos & 16843 & 1507 \\
+			Salir situaciones indeseadas & 0 & 0 \\
 			\hline
 		\end{tabular}
 	\end{center}
-	\caption{Estad\'isticas sobre los comportamientos}
+	\caption{Resultados sobre steps que los comportamientos est\'an activos }
 	\label{behaviours_stats}
+\end{table}
+
+\begin{table}[ht]
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+			\hline
+			Comportamiento & Promedio & Desv\'io Est\'andard & \# m\'aximo \\
+			\hline
+			Wandering & 48.4410 & 225.07466 & 2212 \\
+			Enfocar basura & 1.4863 & 3.27591 & 67 \\
+			Ir a basura & 12.1773 & 58.44234 & 1222 \\
+			Recolectar basura & 477.7333 & 0.70373 & 478 \\
+			Ir a descargar basura & 237.2586 & 840.49848 & 6012 \\
+			Ir a recargar bater\'ia & 178.0679 & 647.39786 & 3950 \\
+			Evitar obst\'aculos & 11.1765 & 54.72354 & 1386 \\
+			Salir situaciones indeseadas & 0 & 0 & 0 \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Resultados sobre steps que los comportamientos est\'an continuamente activos}
+	\label{behaviours_stats1}
+\end{table}
+
+\begin{table}
+	\begin{center}
+		\begin{tabular}{|c||c|c|c|c|c|c|c|c||c|c|}
+		\hline
+    	 & W & EB & IAB & RB & DB & R & EO & SSI & Maximo & Ind Max \\
+		\hline
+		\hline
+			W &     0&    303&    176&      1&     12&      5&    833&      0&    833&      7\\
+		\hline
+			EB &   238&      0&   1036&      2&      1&      0&    107&      0&   1036&      3\\
+		\hline
+			IAB &    229&    967&      0&     12&      2&      1&      7&      0&    967&      2\\
+		\hline
+			RB &     12&      3&      0&      0&      0&      0&      0&      0&     12&      1\\
+		\hline
+			DB &     14&      0&      0&      0&      0&      2&    305&      0&    305&      7\\
+		\hline
+			R &      9&      0&      0&      0&      1&      0&    255&      0&    255&      7\\
+		\hline
+			EO &    828&    111&      6&      0&    305&    257&      0&      0&    828&      1\\
+		\hline
+			SSI &      0&      0&      0&      0&      0&      0&      0&      0&      0&      0\\
+		\hline
+		\noalign{\smallskip}
+		\hline
+			Maximo &    828&    967&   1036&     12&    305&    257&    833&      0&      -&      -\\
+		\hline
+			Ind Max &      7&      3&      2&      3&      7&      7&      1&      0&      -&      -\\
+		\hline
+		\end{tabular}
+	\end{center}
+	\caption{Transiciones entre estados}
+	\label{transitions}
 \end{table}
 
 \subsubsection{Relaci\'on (t\_cargando + t\_ir a base) / tiempo total}

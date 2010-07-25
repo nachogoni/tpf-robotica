@@ -1,4 +1,4 @@
-function ret = millisToSeconds(timesteps)
+function ret = stepsFormat(timesteps)
 
 totalmillis = timesteps * 32
 

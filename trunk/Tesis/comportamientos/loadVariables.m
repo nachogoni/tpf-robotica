@@ -85,3 +85,33 @@ imeanV(7) = mean(icontActna);
 %imeanV(8) = mean(icontActnp);
 
 
+scontActnw = stepsBetweenActivation(nw);
+scontActnf = stepsBetweenActivation(nf);
+scontActng = stepsBetweenActivation(ng);
+scontActnc = stepsBetweenActivation(nc);
+scontActnu = stepsBetweenActivation(nu);
+scontActnr = stepsBetweenActivation(nr);
+scontActna = stepsBetweenActivation(na);
+%icontActnp = stepsBetweenActivation(np);
+
+sdesvStd = zeros(1,7);
+sdesvStd(1) = std(scontActnw);
+sdesvStd(2) = std(scontActnf);
+sdesvStd(3) = std(scontActng);
+sdesvStd(4) = std(scontActnc);
+sdesvStd(5) = std(scontActnu);
+sdesvStd(6) = std(scontActnr);
+sdesvStd(7) = std(scontActna);
+%idesvStd(8) = std(icontActnp);
+
+smeanV = zeros(1,7);
+smeanV(1) = mean(scontActnw);
+smeanV(2) = mean(scontActnf);
+smeanV(3) = mean(scontActng);
+smeanV(4) = mean(scontActnc);
+smeanV(5) = mean(scontActnu);
+smeanV(6) = mean(scontActnr);
+smeanV(7) = mean(scontActna);
+%imeanV(8) = mean(icontActnp);
+
+
