@@ -658,16 +658,23 @@ Pensamos todos los criterios con el objetivo de maximizar las chances de que el 
 	
 	
 \subsection{Resultados}
+En esta sección se describen los parámetros utilizados para la 
+medición de la performance y se muestran los resultados obtenidos para 
+el sistema de visión y un sistema de visión con predicción. De este 
+últimos exhibimos dos configuraciones.
+
+\subsubsection{Parámetros de medición}
 Con el objetivo de  medir la efectividad del algoritmo de detección, desarrollamos un sistema de benchmarking. Este sistema permite
 A un usuario indicar la presencia de objetos a detectar en un video, marcándolos con rectángulos en las sucesiones de cuadros. De esta
 manera, corremos el algoritmo de detección por el mismo video y verificamos que los centroides de los objetos detectados por el algoritmo 
 se encuentren contenidos dentro de los rectángulos indicados.  Para obtener estadísticas utilizamos la siguiente información:
 \begin{itemize}
-\item { Cantidad de objetos a detectar \textbf{(\# O)}: Se corresponde con la cantidad de rectángulos marcados por el usuario}
+\item { Cantidad de objetos a detectar \textbf{(\#O)}: Se corresponde con la cantidad de rectángulos marcados por el usuario}
 \item { Hits\textbf{(H)} : Cantidad de detecciones por parte del algoritmo que se corresponden con rectángulos marcados.}
 \item { Misses o detecciones falsas \textbf{(M)} : Cantidad de detecciones por parte del algoritmo que no se corresponden con rectángulos marcados.}
 \end{itemize}
-Se desprende directamente que la cantidad de detecciones: $\#D=H+M$ .
+Se desprende directamente que la cantidad de detecciones: 
+\textbf{$\#D=H+M$} .
 Con estos datos obtenemos los porcentajes de error , falsos positivos : 
 \[
 	fp=1 - \frac{H}{\# O}
@@ -676,49 +683,152 @@ y falsos negativos:
 \[
 	fn=\frac{M}{\# D}
 \]
-En el caso óptimo, ambas medidas de error tendrán un valor de $0$. \\
+En el caso óptimo, ambas medidas de error tendrán un valor de $0\%$.  \\
 \indent A estas estadísticas se agregan las particulares para el sistema de predicción. Recolectamos información sobre
-cuántos casos el sistema de predicción estimó la posición y acertó (cuando el sistema de visión no detectó un objeto). Denominamos
-a la cantidad de estimaciones realizada por el sistema de predicción con \textbf{G} mientras que a las estimaciones que además fueron acertadas
-\textbf{G\&H}. 
-Exhibimos los resultados obtenidos tras utilizar solo el sistema de visión en \ref{tab:result} e utilizando el sistema de visión con el 
-sistema de predicción en \ref{tab:pred} \ref{tab:pred_2}.\\
+cuántos casos el sistema de predicción estimó la posición y acertó . Denominamos
+a la cantidad de estimaciones realizada por el sistema de predicción 
+con \textbf{G} mientras que a las estimaciones que además fueron 
+acertadas \textbf{G\&H}.
+
+\subsubsection{Análisis}
+Exhibimos los resultados obtenidos tras utilizar solo el sistema de 
+visión en el cuadro \ref{tab:result} e utilizando el sistema de 
+visión con el sistema de predicción, utilizando dos configuraciones 
+distintas, en 
+los cuadros \ref{tab:pred} y  \ref{tab:pred_2}. Además exhibimos los 
+resultados promedios de falsos positivos y falsos negativos agrupados 
+por objeto para todas las configuraciones en los cuadros \ref{tab:evo_colillas}, 
+\ref{tab:evo_vasos} y \ref{tab:evo_platos}. Las configuraciones 
+utilizadas fueron seleccionadas para destacar el comportamiento del 
+sistema de predicción, estas son:
+\begin{itemize}
+\item{\textbf{Configuración 1:} $\lambda=10$, $\rho=10$, $\delta=3$}
+\item{\textbf{Configuración 2:} $\lambda=10$, $\rho=4$, $\delta=2$}
+\end{itemize}
 \indent En los resultados arrojados en el cuadro \ref{tab:result} solo por el sistema de visión 
-se observan problemas en la detección de colillas debido a los altos 
-porcentajes de falsos negativos. Esto indica que el detector tiene 
-problemas en distinguir a los objetos de su entorno ya que comete 
-demasiados errores al detectar objetos que no existen. Esto concuerda 
+observamos problemas en la  detección de colillas ya que posee altos 
+porcentajes de falsos negativos. Esto indica que el detector, en el 
+caso de las colillas, tiene
+problemas en distinguir a estas de su entorno ya que comete 
+demasiados errores al reconocer colillas que no existen. Esto concuerda 
 con el hecho de que, en el caso de las colillas, el número de 
-detecciones #D es siempre mayor que el #O.  Este no es el 
-caso de los vasos y platos que presentan porcentajes relativamente 
-bajos en todos los casos. La diferencia de performance entre los vasos 
-y platos con las colillas es entendible ya que las colillas son 
-objetos de menor tamaño e incluso poseen un color muy similar al del 
-entorno, lo cual dificulta su detección. En cambio, el color blanco y 
-el gran tamaño de los vasos y platos hace que se distingan facilmente 
-del fondo pero su color los hace mas sensibles a la iluminación.
-\indent Utilizando el mismo sistema de visión con el sistema de 
-predicción  obtenemos resultados un tanto distintos indicados en la 
-tabla \ref{tab:pred}. En el caso de las colillas observamos una mejora notable 
-en los falsos negativos debido al efecto pasa-altos establecido por 
-la variable $\delta$, eliminando las apariciones espontaneas y el 
-número de detecciones en general. A su vez, esta disminución impacta 
-en la cantidad de hits y por consecuente en el porcentaje de falsos 
-negativos, pero de forma mucho mas leve, haciendolo un trade-off 
-favorable. En el caso de los vasos y platos no se observa ninguna 
-mejora notoria. Para el caso de los vasos vemos un leve incremento 
-en el porcentaje de falsos positivos producido por $\delta$ pero en 
-este caso, a diferencia de las colillas, la disminución en el 
-porcentaje de falsos negativos es aún mas pequeña, resultando en un 
-balance no favorable. Algo similar sucede con los platos en donde se 
-reduce notablemente la cantidad de hits sin ver ninguna mejoras en la 
-cantidad de detecciones falsas. Esto último puede ser atribuido a la 
-baja cantidad de aciertos logrado por el predictor cuando el sistema 
-de visión falló. 
+detecciones \#D es siempre mayor que \#O también observado en el 
+cuadro \ref{tab:result}. No obstante, al utilizar el sistema de 
+predicción observamos una gran reducción de este porcentaje producto 
+del filtrado realizado por dicho sistema el cual no considera una 
+basura hasta que esta se presente en $\delta$ cuadros consecutivos.  
+Esta mejora viene acompañada de efecto negativos ya que la cantidad de 
+hits se ve afectada pero con menor intensidad. Esto prueba que el 
+filtrado realizado es efectivo ya que elimina, sobre el total de las 
+detecciones, en mayor proporción a 
+aquellas que son falsas. El cuadro \ref{tab:evo_colillas} exhibe las ventajas de utilizar un sistema de 
+predicción para las colillas.\\
+\indent 
+En el caso de los vasos, observamos que el sistema de visión brinda 
+una muy buena performance por si solo, como se ve en el cuadro \ref{tab:result} 
+donde se muestran valores menores al $10\%$ en falsos positivos y falsos 
+negativos para todos los videos. La diferencia de performance con la 
+detección de colillas es comprensible ya que los vasos poseen 
+caracteristicas como tamaño y color que hacen que sea más facil 
+reconocerlos y mas dificil confundirlos en relación con las 
+colillas, que poseen un color similar al del fondo y son de tamaño 
+pequeño. En este caso, el sistema de predicción no hace tanta 
+diferencia como en el caso de las colillas, sin embargo, destacamos un 
+aumento en la cantidad de detecciones falsas en la configuración 1 
+,atribuido a el valor elevado de $\rho$, acompañado de un incremento 
+similar en el porcentaje de aciertos. Distinto es el caso de 
+la configuración 2 que disminuye levemente el porcentaje de falsas 
+detecciones y el porcentaje de aciertos respecto de los resultados
+obtenidos por el sistema de visión. El comportamiento de la 
+configuración 2 es razonable ya que esta es una configuración menos 
+invasiva y más respetuosa del sistema de visión subyacente en 
+comparación con la configuración 1. Esto se ve reflejado, en parte, 
+en la cantidad de estimaciones ( \textbf{G} ) y estimaciones correctas 
+(\textbf{G\&H}) cometidas por cada configuración. Podemos 
+apreciar las diferencias entre las distintas configuraciones para los 
+vasos en el cuadro \ref{tab:evo_vasos}.\\
+\indent El caso de los platos es similar al de los vasos. El sistema de visión 
+obtiene buenos resultados por si solo pero se ve perjudicado por la configuración 1 del sistema de 
+predicción ya que este no acierta en gran proporción de las estimaciones que realiza. 
+Sin embargo, en este caso , el aumento en el porcentaje de de detecciones 
+falsas es relativamente mayor que el aumento de aciertos. 
+La configuración 2, por otro lado, aumenta el 
+porcentaje de aciertos y disminuye la cantidad de detecciones falsas 
+aunque en ambos casos, de manera leve, mejorando apenas los resultados 
+obtenidos por el sistema de visión. En este caso, los porcentajes de 
+aciertos de las estimaciones son bajos pero observamos que utilizando 
+la configuración 2 el número de estimaciones es mucho menor con lo 
+que se cometen menos errores. Un cuadro comparativo de las 
+distintas configuraciónes para vasos pueden observarse en el cuadro 
+\ref{tab:evo_platos}.\\
+\indent  Las 2 configuraciones del sistema de predicción modifican de 
+distintas manera al algoritmo de visión subyacente. Para cada objeto 
+hemos obtenido resultados y comportamiento particulares lo que enalza 
+la necesidad de ajustar los parámetros del mismo para obtener la mejor 
+performance posible. Para poder realizar este ajuste es necesario 
+establecer que grado de incidencia tienen los dos tipos de errores en la performance del
+algoritmo. Bajo distintas circunstancias podemos preferir que el  
+sistema de visión cometa más errores de tipo I (falsos positivos) con 
+el objetivo de minimizar errores de tipo II ( falsos negatios). En ese 
+sentido el sistema de predicción proporciona los mecanismos que 
+permiten lograr estos ajustes sin necesidad de modificar el algoritmo de detección 
+subyacente.
+ 
+
+%~ Esto se lo atribuimos a que esta configuración tiene un valor de 
+%~ $\rho$ elevado y por lo tanto modifica demasiado la performance del 
+%~ sistema de visión. Recordemos que a valores de $\rho$ mas elevados, 
+%~ mayor serán el número de estimaciones de la posición de los objetos 
+%~ siendo mas propenso a cometer errores. En el caso de los vasos, debido 
+%~ a la alta efectividad del sistema de visión, resulta contra-producente  
+%~ arriesgar tanto. Esto se verifica utilizando la configuración 2 donde 
+%~ ,al realizar una menor cantidad de estimaciones, se obtiene un número mucho 
+%~ menor de detecciones falsas sin comprometer tanto la cantidad de 
+%~ aciertos. 
+%~ caso de los vasos y platos que presentan porcentajes relativamente 
+%~ bajos en todos los casos. La diferencia de performance entre los vasos 
+%~ y platos con las colillas es esperable ya que las colillas son 
+%~ objetos de menor tamaño e incluso poseen un color muy similar al del 
+%~ entorno, lo cual dificulta su detección. En cambio, el color blanco y 
+%~ el gran tamaño de los vasos y platos hace que se distingan facilmente 
+%~ del fondo pero su color los hace mas sensibles a la iluminación.\\
+%~ \indent Utilizando el mismo sistema de visión con el sistema de 
+%~ predicción  obtenemos resultados un tanto distintos indicados en la 
+%~ tabla \ref{tab:pred}. En el caso de las colillas observamos una mejora notable 
+%~ en los falsos negativos debido al efecto pasa-altos establecido por 
+%~ la variable $\delta$, eliminando las apariciones espontaneas y el 
+%~ número de detecciones en general. A su vez, esta disminución impacta 
+%~ en la cantidad de hits y por consecuente en el porcentaje de falsos 
+%~ negativos, pero de forma mucho mas leve lo que lo hace un trade-off 
+%~ favorable. En el caso de los vasos y platos no se observa ninguna 
+%~ mejora notoria. En los vasos vemos un leve incremento 
+%~ en el porcentaje de falsos positivos producido por $\delta$ pero en 
+%~ este caso, a diferencia de las colillas, la disminución en el 
+%~ porcentaje de falsos negativos es aún mas pequeña, resultando en un 
+%~ balance no favorable. Algo similar sucede con los platos en donde se 
+%~ reduce notablemente la cantidad de hits sin ver ninguna mejora en la 
+%~ cantidad de detecciones falsas. Esto último puede ser atribuido a la 
+%~ gran cantidad de errores cometidos al estimar la posición del objeto 
+%~ cuando este no fue detectado por el sistema de visión. En sintesis, el 
+%~ sistema de predicción logró una influencia positiva en el detector de colillas
+%~ filtrando algunas detecciones falsas pero entorpeció la detección de vasos y platos
+%~ donde ya poseíamos una buena performance. La configuración utilizada para el sistema de 
+%~ predicción en este cuadro resultó muy invasiva para estos dos detectores y los forzó a 
+%~ estimar posiciones de los objetos cuando esto no era necesario ya que se poseia un número bajo de 
+%~ deteccions falsas.\\
+%~ \indent En el cuadro \ref{tab:pred_2} exhibimos los resultados obtenidos con un sistema de predicción
+%~ menos invasivo. En este caso se eligieron valores de $\lambda=10$, $\rho=4$ y $\delta=2$. Tomando un valor
+%~ de $\rho$ y $\delta$ le damos mas confianza al sistema de visión como fue explicado previamente. En los vasos y
+%~ platos es notable la reducción en la cantidad de falsas detecciones sin afectar demasiado el número de hits logrado.
+%~ Esto viene acompañado con el hecho de que el predictor realizo menos estimaciones y aumento su tasa de acierto en todos 
+%~ los casos. Los resultados obtenidos para estos dos objetos son mejores que los obtenidos solo con el sistema de visión. 
+%~ Sin embargo, en el caso de las colillas, el predictor si impacto en la cantidad de hits por lo que no se observa un 
+%~ cambio del todo favorable respecto de la configuración anterior.\\
 \begin{table}[htb]
   \begin{tabular}{|l | c | c | c | c | c | c |}
 	\hline  
-	\textbf{Video} & \textbf{(\#O)} &  \textbf{(\#D)} & \textbf{(H)} & \textbf{(M)} & \textbf{fp(\%)} & \textbf{fn(\%)} \\
+	\textbf{Video} & \textbf{(\#O)} &  \textbf{(\#D)} & \textbf{(H)} & 
+	\textbf{(M)} & \textbf{fp(\%)} & \textbf{fn(\%)}\\
 	\hline
 	\hline
 	vasos1 & 5050 & 4880 & 4849 & 31 & 0.6 & 3.9 \\
@@ -733,8 +843,7 @@ de visión falló.
 	platos2 & 1128 & 1228 & 1117 & 111& 9.0 & 0.9 \\
 	\hline
 	\end{tabular}
-	\label{tab:result}
-	\caption{Performance del sistema sin el algoritmo de predicción}
+	\caption{\label{tab:result} Performance del sistema sin el algoritmo de predicción}
 \end{table}
 
 %Con predicción
@@ -756,8 +865,7 @@ de visión falló.
 	platos2 & 1128 & 1228 & 1112 & 167& 13.0 & 1.4 & 115 & 16\\
 	\hline
 	\end{tabular}
-	\label{tab:pred}
-	\caption{Performance del sistema con el sistema de predicción para 
+	\caption{\label{tab:pred} Performance del sistema con el sistema de predicción para 
 	$\lambda=10$, $\rho=10$, $\delta=3$ }
 \end{table}
 
@@ -779,10 +887,63 @@ de visión falló.
 	platos2 & 1128 & 1211 & 1115 & 96 & 7.9 & 1.1 & 8 & 26\\
 	\hline
 	\end{tabular}
-	\label{tab:pred_2}
-	\caption{Performance del sistema con el sistema de predicción con
+	\caption{\label{tab:pred_2} Performance del sistema con el sistema de predicción con
 	$\lambda=10$, $\rho=4$, $\delta=2$}
 \end{table}
+
+\begin{table}[htb]
+  \begin{tabular}{|l | c | c | c | c | c|}
+	\hline  
+	\textbf{Configuración} & \textbf{$\bar{fp}$(\%)} &  \textbf{$\bar{fn}$(\%)}& \textbf{G} &  \textbf{G\&H} &  \textbf{G/G\&H (\%)} \\
+	\hline
+	\hline
+	Sin predicción  & 18.1 & 34.9 & - & - & - \\
+	\hline
+	Configuración 1 & 20.7 & 9.5 & 939 & 606 & 64.5  \\
+	\hline
+	Configuración 2 & 26.0 & 9.5 & 523 & 322 & 61.5 \\
+	\hline
+	\end{tabular}
+	\caption{\label{tab:evo_colillas} Performance promedio de las colillas 
+	por configuración y  efectividad de las estimaciones del sistema de predicción}
+\end{table}
+
+\begin{table}[htb]
+  \begin{tabular}{|l | c | c | c | c | c|}
+	\hline
+	\textbf{Configuración} & \textbf{$\bar{fp}$(\%)} &  \textbf{$\bar{fn}$(\%)}& \textbf{G} &  \textbf{G\&H} &  \textbf{G/G\&H (\%)} \\
+	\hline
+	\hline
+	Sin predicción  & 9.4 & 1.2 & - & - & -\\
+	\hline
+	Configuración 1 & 7.4 &	3.3 & 902 & 575 & 63.7 \\
+	\hline
+	Configuración 2 & 9.7 &	1.1 & 356 & 325 & 91.2\\
+	\hline
+	\end{tabular}
+	\caption{\label{tab:evo_vasos} Performance promedio de los vasos según configuración del 
+	sistema y efectividad de las estimaciones del sistema de predicción}
+\end{table}
+
+
+
+\begin{table}[htb]
+  \begin{tabular}{|l | c | c | c | c | c|}
+	\hline
+	\textbf{Configuración} & \textbf{$\bar{fp}$(\%)} &  \textbf{$\bar{fn}$(\%)}& \textbf{G} &  \textbf{G\&H} &  \textbf{G/G\&H (\%)} \\
+	\hline
+	\hline
+	Sin predicción &  12.3 & 7.6 & - & - & -\\
+	\hline
+	Configuración 1 & 11.8 & 12.0 & 294 & 50 & 17.0\\
+	\hline
+	Configuración 2 & 12.0 & 6.6 & 76 & 24 & 31.5 \\
+	\hline
+	\end{tabular}
+	\caption{\label{tab:evo_platos} Performance promedio de los platos según configuración del 
+	sistema y efectividad de las estimaciones del sistema de predicción}
+\end{table}
+
 
 	
 \subsection{Conclusi\'on}
