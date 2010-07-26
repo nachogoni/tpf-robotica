@@ -114,4 +114,6 @@ smeanV(6) = mean(scontActnr);
 smeanV(7) = mean(scontActna);
 %imeanV(8) = mean(icontActnp);
 
+finalVars = vars(length(vars),:);
 
+percentages = finalVars ./ sum(finalVars);

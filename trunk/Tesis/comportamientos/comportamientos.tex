@@ -12,9 +12,34 @@ Una vez que decidimos utilizar la arquitectura explicada en la secci\'on \ref{ar
 \end{itemize}
 
 %Detallar que se hizo con cada item
+Para implementar la arquitectura decidimos asignarle un $ID$ num\'erico diferente a cada comportamiento.
+Tambi\'en tomamos la decisi\'on de elegir como comportamiento activo en el instante $t$,
+aquel comportamiento que est\'e activo en ese instante y tenga mayor $ID$,
+suprimiendo as\'i el resto de los comportamientos ( con un $ID$ menor ) que podr\'ian estar activos.
 
 %Explicar como se relaciona el requerimiento (robot recolector de basura autonomo) con los comportamientos que pusimos
+El requerimiento de este proyecto es la realizaci\'on de un robot aut\'onomo que recolecte
+basura de su entorno din\'amico pero estructuralmente fijo. De aqu\'i se infieren algunos de los
+comportamientos que debe tener el robot:
+\begin{itemize}
+	\item{\emph{Recolectar basura}}
+	\item{\emph{Recargar bater\'ia}:} Por ser aut\'onomo, debe poder ser capaz de recargarse s\'olo
+								para poder continuar con su actividad.
+	\item{\emph{Wandering}:} El robot no es controlado por control, ya que es aut\'onomo, por lo que
+						debe poder recorrer el entorno por s\'i mismo.
+	\item{\emph{Evitamiento de obst\'aculos}:} Debido a la naturaleza del entorno, el robot debe
+						ser capaz de navegar sin chocarse contra los l\'imites del entorno
+						ni con las personas que circulan por el mismo.
+\end{itemize}
 
+El comportamiento de recolectar basura y el requerimiento de la autonom\'ia llevan a su vez
+a la aparici\'on de m\'as comportamientos: \emph{Descargar basura} y \emph{Ir hacia basura}.
+\\
+La figura \ref{fig:architecture} muestra los comportamientos implementados y su orden de jerarqu\'ia.
+Se puede ver que hay m\'as comportamientos de los detallados anteriormente. \'Esto se debi\'o a que la forma
+en que se implementamos los comportamientos b\'asicos del robot nos requiri\'o el desarrollo
+de comportamientos auxiliares.
+\\
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[scale=0.5]{comportamientos/behavioursArchitecture.png}
@@ -22,13 +47,49 @@ Una vez que decidimos utilizar la arquitectura explicada en la secci\'on \ref{ar
 \label{fig:architecture}
 \end{center}
 \end{figure}
-
+\\
+Primero implementamos \emph{Wandering} debido a, en una primera aproximaci\'on, la sencillez
+del mismo. Luego implementamos \emph{Evitamiento de obst\'aculos} para lograr que el robot pueda
+navegar sin problemas por el arena. Como el comportamiento de recolectar e ir hacia la basura
+dependend\'ia del m\'odulo de reconocimiento de objetos y el mismo estaba siendo desarrollado
+en paralelo, se decidi\'o implementar el comportamiento de \emph{Recargar bater\'ia} y \emph{Descargar basura}.
+Una vez que tuvimos la primera implementaci\'on funcional del reconomiento de objetos, procedimos a
+desarrollar \emph{Ir hacia basura} y \emph{Recolectar Basura}.
+\\
+A continuaci\'on detallamos los comportamientos indicados en la figura \ref{fig:architecture},
+as\'i como la implementaci\'on en \textit{pseudo-codigo} de los mismos y detalles tenidos
+en cuenta para la realizaci\'on de los mismos.
 %A continuacion vamos a explicar cada comportamiento.....
 
 \subsubsection{Wandering}
 \label{wandering}
+
 \paragraph{Detalle del comportamiento}
+En una primer aproximaci\'on de \emph{Wandering}, s\'olo nos preocupamos por ir hacia adelante
+ya que eventualmente, el robot encuentra un obst\'aculo y realiza un giro cambiando la direcci\'on
+del robot.
+\\
+Los resultados de la simulaci\'on nos indicaron que el robot no recorr\'ia ciertas zonas o las recorr\'ia
+despu\'es de un largo tiempo, lo que nos llev\'o a un segundo approach. El mismo tiene en cuenta el hecho
+de que el robot posee una c\'amara y por lo tanto se puede llevar un seguimiento de los lugares que m\'as
+recientemente visit\'o o las zonas que hace mucho tiempo no visita.
+\\
+\'Este approach, en cierta forma, genera un modelo del mundo, un hecho que conflict\'ua con uno de
+los principios propuestos a seguir en la secci\'on \ref{arq_prop}. Para minimizar el conflicto, decidimos
+mantener al m\'inimo la informaci\'on almacenada para el funcionamiento del algoritmo, es decir, por cada
+zona de arena s\'olo mantenemos el timestamp de la \'ultima vez que el robot la visit\'o.
+
 \paragraph{Implementaci\'on del comportamiento}
+La implementaci\'on del segundo approach, en \emph{pseudo-c\'odigo} es la siguiente:
+\begin{verbatim}
+por cada paso
+    zona = pedir_zona_vista(camara)
+    marcar_zona_como_vista(modelodelmundo,zona)
+    ultimazonavisitada = pedir_ultima_zona_visitada(modelodelmundo)
+    velocidades = calcular_velocidades_de_ruedas(ultimazonavisitada)
+    poner_velocidades_en_ruedas(velocidades)
+\end{verbatim}
+
 
 \subsubsection{Enfocar Basura}
 \label{focus_garbage}
