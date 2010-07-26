@@ -1,7 +1,25 @@
 ﻿\section{Visión}
 
 \subsection{Introducción}
-Intro de visión
+En esta sección exhibimos el sistema de analisis de imágenes por 
+el cual el robot en cuestión da cuenta de la existencia o ausencia de 
+elementos residuales en el entorno descripto. El sistema se basa en la 
+utilización de una cámara de una única lente del tipo webcam para 
+obtener información del ambiente. Esta información es luego procesado 
+por la computadora a bordo del robot utilizando un algoritmo de visión 
+cuyo único objetivo es la detección de residuos 
+en dichas imágenes. El sistema fue probado con la detección de 
+colillas de cigarrillo, vasos descartables y platos de plástico. Para 
+el desarrollo del algoritmo utilizamos la libreria de visión 
+computacional Opencv \cite{opencv_library} acompañado de un sistema 
+desarrollado en C++. Como plataforma utilizamos un sistema linux 
+ubuntu versión 9.10 corriendo en una netbook PONER CARACTERISTICAS.
+La sección se divide en las siguientes partes: en la sub-sección 2 se 
+muestran los trabajos previos estudiados, en la sub-sección 3 se 
+describe el algoritmo de detección, en las secciones 4 y 5 se explican 
+los módulos de predicción y focalización mientras que en la 
+sub-sección 6 se muestran los resultados. La sub-sección 7 concluye 
+el cápitulo de visión.
 
 \subsection{Trabajos previos}
 	\subsubsection{Mobile Field Robot with Vision-Based Detection of Volunteer Potato Plants in a Corn Crop - FRITS K. VAN EVERT}
@@ -168,8 +186,7 @@ H= 180+(B - R)*60/S,  if V=G
 
 if H<0 then H=H+360
 \end{verbatim}
-\label{code:hsv}
-\caption{pseudo-código de la conversión RGB-HSV}
+\caption{\label{code:hsv}pseudo-código de la conversión RGB-HSV}
 \end{figure}
 
 Obteniendo el canal H, nos fijamos que los valores de los pixeles estén dentro de cierto rango correspondiente al color que buscamos. Como podemos observar en la figura \ref{fig:hsv_space} En el espacio de color HSV los colores se encuentran dispuestos a lo largo de una circunferencia, donde cada tonalidad representa un ángulo en la misma. Por ejemplo, si queremos abarcar las distintas tonalidades del azul podemos elegir el rango que va de 200$^\circ$ a 260$^\circ$. Cuando buscamos un color en particular  es preciso elegir este rango cuidadosamente ya que de ser un rango muy restrictivo podemos despreciar pixeles de interés arruinando la forma del contorno del objeto a buscar y si elegimos un rango más abarcativo podemos tomar pixeles de colores distintos al buscado, introduciendo ruido en las formas de los contornos. Experimentalmente se comprueban los resultados de un filtro de color con distintos rangos, como se muestra  en la figura \ref{fig:hue_range}.
@@ -200,7 +217,18 @@ Threshold o umbral es una operación que nos permite pasar de una imagen en esca
 \item{ Threshold a cero invertido : Si un pixel se encuentra por encima de $V$ conserva su valor, de otro modo se lee asigna $0$.}
 \end{itemize}
 El problema con esta familia de algoritmos es que en todos los casos el valor $V$ permanece constante para toda la imagen haciéndolo propenso a errores cuando la imagen presenta diferentes niveles de iluminación. Una manera de solucionar esto es pre-computando el valor $V$ para distintas zonas de la imagen. Un ejemplo de esta solución es la técnica de thresholding adaptativo, que computa el valor de $V$ a medida que recorre la imagen, usando para esto, una ventana cuyo tamaño es definido por el usuario. Siguiendo esta lógica, se utilizan los valores de los pixeles locales a esta ventana para definir un valor de $V$ (por ejemplo calculando el promedio de intensidad) y luego se aplica alguna de las técnicas de thresholding simples mencionadas, utilizando este mismo valor. Sin embargo, este algoritmo es más costoso y puede provocar efectos indeseados.ACA PODRIA IR UNA FOTO DE THRESHOLD ADAPTATIVO\\
-\indent En nuestro caso, utilizamos thresholding no para distinguir los objetos del fondo (esto es trabajo del filtro de color), sino como método de eliminación de ruido. Cuando se combina el canal de saturación con el resultado del filtro de color, se obtiene una imagen de escala de grises que esta segmentada en un conjunto de áreas con distintos valores de intensidad. Luego de aplicar dilatación y erosión, los niveles de intensidad de cada área se vuelven homogéneos (ya que se toma el máximo o mínimo local) y es entonces donde podemos diferenciar las zonas de intensidad alta de las zonas de intensidad baja, motivo por el cual utilizamos la operación de threshold. COMPLETAR AQUI \ref{fig:threshold_ruido} \ref{fig:threshold}. 
+\indent En nuestro caso, utilizamos thresholding no para distinguir los 
+objetos del fondo (esto es trabajo del filtro de color), sino como 
+método de eliminación de ruido. Cuando se combina el canal de 
+saturación con el resultado del filtro de color, se obtiene una imagen 
+de escala de grises que esta segmentada en un conjunto de áreas con 
+distintos valores de intensidad. Luego de aplicar dilatación y 
+erosión, los niveles de intensidad de cada área se vuelven 
+homogéneos (ya que se toma el máximo o mínimo local) y es entonces 
+donde podemos diferenciar las zonas de intensidad alta de las zonas de 
+intensidad baja, motivo por el cual utilizamos la operación de 
+threshold. En las figuras \ref{fig:threshold_ruido} y 
+\ref{fig:threshold} exhibimos dos casos de utilización de threshold. 
 \begin{figure}[tpb]
 \begin{center}
   \includegraphics[scale=0.4]{figuras/threshold-dif.png}
@@ -231,7 +259,7 @@ El problema con esta familia de algoritmos es que en todos los casos el valor $V
 
 	\subsubsection{Operaciones morfológicas}
 Sombras, luces y otros efectos pueden alterar el resultado del filtro de color introduciendo ruido en los objetos a detectar. Este ruido puede surgir tanto de la omisión de pixeles de interés como por la inclusión de pixeles extra. Para subsanar esto, utilizamos las operaciones morfológicas de dilatación y erosión. Ambas se basan en la utilización de un elemento estructural, esto es, una figura de cualquier tamaño y forma que tiene definido un punto principal y que recorre la imagen solapándose pixel a pixel. De acuerdo a operaciones locales a este elemento, el pixel que coincide con el punto principal se ve modificado. Usualmente se utilizan como elementos estructurales, pequeños discos o cuadrados, donde el punto principal se encuentra en el centro del mismo. El efecto generado se entiende mejor observándolo en imágenes binarias. En el caso de la dilatación, la idea intuitiva es remplazar cada pixel no vacío con una copia del elemento estructural cuyo punto principal se encuentra en esa posición. Para la erosión, la idea intuitiva es quedarse con aquellos pixeles tal que podamos hacer caber un elemento estructural cuyo punto principal se encuentra en esa posición y dicho elemento solo cubra pixeles no vacíos.
-Ilustramos esto en las figuras \ref{fig:erode-sample} y \ref{fig:dilate-sample}.
+Ilustramos esto en las figuras \ref{fig:dilate-sample} y \ref{fig:erode-sample}.
 
 
 \begin{figure}[tpb]
@@ -334,7 +362,7 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
   \includegraphics[scale=0.6]{figuras/freeman-sample.png}
 \end{center}	
   \caption{\small Ejemplo de codificación de un contorno utilizando los códigos de Freeman. }
-  \label{fig:erode}
+  \label{fig:freeman_sample}
 \end{figure}
 
 \begin{figure}[htpb]
@@ -411,7 +439,7 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	si se aumenta o disminuye dicha precisión.
 	\paragraph{Filtro de excentricidad}
 	La excentricidad es un parámetro que relaciona la longitud del eje más largo con el del más corto. Esta se define como 
-	$longitud del eje mas largo/ longitud del eje mas corto$ . Algunas figuras pueden caracterizarse por tener valores de excentricidad
+	\textit { longitud del eje mas largo / longitud del eje mas corto}  . Algunas figuras pueden caracterizarse por tener valores de excentricidad
 	que se mantienen en cierto rango y permite identificarlas usando este filtro.
 	\paragraph{Filtro de circularidad}
 	La circularidad es un parámetro que relaciona área con perímetro y define la redondez de una figura. Se define como $perimetro^2/area$. Algunas figuras pueden 
@@ -423,15 +451,17 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	\paragraph{Filtro de elipse}
 	El filtro de elipse verifica que un contorno determinado se ajuste o no a una elipse. Esto se logra usando un algoritmo basado 
 	en cuadrados mínimos. El mismo retorna como resultado las longitudes de los semi-ejes de la elipse $a$ y $b$. Con estas medidas calculamos
-	el área según la fórmula $A=\pi*a*b$ y se la compara con la obtenida a través del filtro de área. Se computa como $|A-AReal|/ AReal > p$ donde p determina el
+	el área según la fórmula $A=\pi\times a \times b$ y se la compara con la obtenida a través del filtro de área. Se computa como $|A-AReal|/ AReal > p$ donde p determina el
 	valor de verosimilitud, donde más chico significa más parecido. Si estas dos áreas son lo suficientemente similares consideramos que el contorno supera el filtro. 
 	Para el ajuste de elipse se utiliza el algoritmo Fitzgibbon, Pilu y Fisher \cite{Fitzgibbon99}.
 	\paragraph{Filtro de vaso}
 	El filtro para vasos consiste en varias etapas. Recordando que el contorno se codifica como un polígono, se obtienen los dos segmentos 
 	más largos y se verifica que estos no compartan vértices. Por otro lado se pide que la suma de la longitud de estos dos segmentos supere al $50\%$ del 
 	perímetro del contorno, indicado por dicho filtro. Finalmente, se verifica que la distancia mínima entre estos dos ejes sea mayor a cierto valor prefijado, proporcional a la
-	longitud del segmento más largo. El filtro se basa en la idea de que los dos segmentos más largos se correspondan con los lados laterales del vaso. PONER FOTO
-	DE VASO.
+	longitud del segmento más largo. El filtro se basa en la idea de que 
+	los dos segmentos más largos se correspondan con los lados laterales 
+	del vaso.  Se puede apreciar una foto  de un contorno que ha 
+	verificado este filtro en la figura \ref{fig:polyVasos}. 
 	\paragraph{Filtro de histograma}
 	El filtro de histograma verifica la similitud de un histograma obtenido a partir del contorno con otro histograma obtenido a partir de 
 	una imagen modelo del objeto a detectar. El histograma modelo se calcula en el inicio de la ejecución mientras que el del contorno se
@@ -652,8 +682,32 @@ disminuyendo el porcentaje de falsos negativos.\\
 \item{ Combinación ponderada - Se utilizan los  criterios mencionados dándoles mayor o menor peso a cada uno y eligiendo al objeto que obtenga mayor puntuación.}
 \end{itemize}
 Pensamos todos los criterios con el objetivo de maximizar las chances de que el robot tenga éxito en la recolección del objeto. El criterio de menor distancia implica un menor recorrido hacia el objeto y por lo tanto menos posibilidades de cometer error durante el recorrido. Si utilizamos el criterio de mayor detección en los últimos 20 cuadros estamos maximizando las chances de que el sistema de visión detecte al objeto durante el trayecto del robot hacia el mismo. Con un razonamiento similar, el criterio de mayor antigüedad maximiza las chances de que el sistema de visión detecte al objeto pero utilizando información más general y no tan local como el resultado de los últimos 20 cuadros. Previo a la focalización es necesario alimentar al sistema de predicción ya que sin este, no es posible utilizar ninguno de los criterios mencionados.\\ 
-	\indent Una vez que seleccionamos el objeto, utilizamos el sistema de predicción para dar cuenta de la posición del mismo. Con esta información, tomamos sub-imágenes (ventanas) de la captura original que solo abarquen un entorno del objeto como se aprecia en la figura \ref{fig:ventaneo} . Esto provoca un aumento sustancial de la performance ya que solo se procesa una fracción de la captura completa. El tamaño de la ventana queda determinado por las dimensiones del contorno del objeto a focalizar. Si consideramos al sistema de visión como un sensor podríamos decir que este mecanismo incrementa la frecuencia de muestreo del mismo ya que permite tomar una mayor cantidad de muestras en menor tiempo. La focalización sobre un objeto finaliza únicamente cuando este objeto deja de ser reconocido por el sistema de predicción y entonces retornamos al  procesamiento de la imagen completa. 
+	\indent Una vez que seleccionamos el objeto, utilizamos el sistema de 
+	predicción para dar cuenta de la posición del mismo. Con esta 
+	información, tomamos sub-imágenes (ventanas) de la captura original 
+	que solo abarquen un entorno del objeto como se aprecia en la figura 
+	\ref{fig:ventaneo} y \ref{fig:ventaneo_2} . Esto provoca un aumento sustancial de la performance ya que solo se procesa una fracción de la captura completa. El tamaño de la ventana queda determinado por las dimensiones del contorno del objeto a focalizar. Si consideramos al sistema de visión como un sensor podríamos decir que este mecanismo incrementa la frecuencia de muestreo del mismo ya que permite tomar una mayor cantidad de muestras en menor tiempo. La focalización sobre un objeto finaliza únicamente cuando este objeto deja de ser reconocido por el sistema de predicción y entonces retomamos al  procesamiento de la imagen completa. 
 
+\begin{figure}[htpb]
+\begin{center}
+  \includegraphics[scale=0.4]{figuras/ventana-1.png}
+\end{center}
+  \caption{\small Se observa un vaso delimitado por un rectángulo 
+  contenedor mínimo rojo. El rectángulo se utiliza para calcular el 
+  tamaño de la sub-imagen previo al ventaneo.}
+  \label{fig:ventaneo}
+\end{figure}
+
+
+\begin{figure}[htpb]
+\begin{center}
+  \includegraphics[scale=0.6]{figuras/ventana-2.png}
+\end{center}
+  \caption{\small Ventana o sub-imagen obtenida de un vaso en 
+  focalización. El tamaño de la ventana es de tamaño proporcional al 
+  contorno del objeto en cuestión.}
+  \label{fig:ventaneo_2}
+\end{figure}
 
 	
 	
@@ -767,9 +821,10 @@ hemos obtenido resultados y comportamiento particulares lo que enalza
 la necesidad de ajustar los parámetros del mismo para obtener la mejor 
 performance posible. Para poder realizar este ajuste es necesario 
 establecer que grado de incidencia tienen los dos tipos de errores en la performance del
-algoritmo. Bajo distintas circunstancias podemos preferir que el  
+algoritmo. Por ejemplo, bajo distintas circunstancias podemos preferir que el  
 sistema de visión cometa más errores de tipo I (falsos positivos) con 
-el objetivo de minimizar errores de tipo II ( falsos negatios). En ese 
+el objetivo de minimizar errores de tipo II ( falsos negatios) o 
+viceversa. En ese 
 sentido el sistema de predicción proporciona los mecanismos que 
 permiten lograr estos ajustes sin necesidad de modificar el algoritmo de detección 
 subyacente.
@@ -875,16 +930,16 @@ subyacente.
 	\textbf{Video} & \textbf{(\#O)} &  \textbf{(\#D)} & \textbf{(H)} & \textbf{(M)} & \textbf{fp(\%)} & \textbf{fn(\%)} & \textbf{G} & \textbf{G\&H} \\
 	\hline
 	\hline
-	vasos1 & 5050 & 4866 & 4839 & 27 & 0.5 & 4.1  & 72 & 83\\
-	vasos3 & 1777 & 1700 & 1689 & 11 & 0.6 & 4.9 & 27 & 32 \\
-	vasos4 & 6196 & 5318 & 5222 & 96 & 1.8 & 15.7 & 226 & 241 \\
+	vasos1 & 5050 & 4866 & 4839 & 27 & 0.5 & 4.1  & 83 & 72\\
+	vasos3 & 1777 & 1700 & 1689 & 11 & 0.6 & 4.9 & 32 & 27 \\
+	vasos4 & 6196 & 5318 & 5222 & 96 & 1.8 & 15.7 & 241 & 226 \\
 	\hline
-	colillas1 & 1645 & 1220 & 1168 & 53 & 4.3 & 28.9 & 126 & 142 \\
-	colillas2 & 891 & 652 & 566 & 86 & 13.1 & 36.4 & 38 & 78 \\
-	colillas3 & 2708 & 2414 & 2142 & 272 & 11.2 & 20.0 & 158 & 303\\
+	colillas1 & 1645 & 1220 & 1168 & 53 & 4.3 & 28.9 & 142 & 126 \\
+	colillas2 & 891 & 652 & 566 & 86 & 13.1 & 36.4 & 78 & 38 \\
+	colillas3 & 2708 & 2414 & 2142 & 272 & 11.2 & 20.0 & 303 & 158 \\
 	\hline
-	platos1 & 2236 & 1958 & 1843 & 115 & 5.8 & 17.5 & 16 & 50\\
-	platos2 & 1128 & 1211 & 1115 & 96 & 7.9 & 1.1 & 8 & 26\\
+	platos1 & 2236 & 1958 & 1843 & 115 & 5.8 & 17.5 & 50 & 16 \\
+	platos2 & 1128 & 1211 & 1115 & 96 & 7.9 & 1.1 & 26 & 8 \\
 	\hline
 	\end{tabular}
 	\caption{\label{tab:pred_2} Performance del sistema con el sistema de predicción con
@@ -894,7 +949,8 @@ subyacente.
 \begin{table}[htb]
   \begin{tabular}{|l | c | c | c | c | c|}
 	\hline  
-	\textbf{Configuración} & \textbf{$\bar{fp}$(\%)} &  \textbf{$\bar{fn}$(\%)}& \textbf{G} &  \textbf{G\&H} &  \textbf{G/G\&H (\%)} \\
+	\textbf{Configuración} & \textbf{$\bar{fp}$(\%)} &  
+	\textbf{$\bar{fn}$(\%)}& \textbf{G} &  \textbf{G\&H} &  \textbf{G\&H/G(\%)} \\
 	\hline
 	\hline
 	Sin predicción  & 18.1 & 34.9 & - & - & - \\
@@ -911,7 +967,7 @@ subyacente.
 \begin{table}[htb]
   \begin{tabular}{|l | c | c | c | c | c|}
 	\hline
-	\textbf{Configuración} & \textbf{$\bar{fp}$(\%)} &  \textbf{$\bar{fn}$(\%)}& \textbf{G} &  \textbf{G\&H} &  \textbf{G/G\&H (\%)} \\
+	\textbf{Configuración} & \textbf{$\bar{fp}$(\%)} &  \textbf{$\bar{fn}$(\%)}& \textbf{G} &  \textbf{G\&H} &  \textbf{G\&H/G(\%)} \\
 	\hline
 	\hline
 	Sin predicción  & 9.4 & 1.2 & - & - & -\\
@@ -930,7 +986,7 @@ subyacente.
 \begin{table}[htb]
   \begin{tabular}{|l | c | c | c | c | c|}
 	\hline
-	\textbf{Configuración} & \textbf{$\bar{fp}$(\%)} &  \textbf{$\bar{fn}$(\%)}& \textbf{G} &  \textbf{G\&H} &  \textbf{G/G\&H (\%)} \\
+	\textbf{Configuración} & \textbf{$\bar{fp}$(\%)} &  \textbf{$\bar{fn}$(\%)}& \textbf{G} &  \textbf{G\&H} &  \textbf{G\&H/G(\%)} \\
 	\hline
 	\hline
 	Sin predicción &  12.3 & 7.6 & - & - & -\\
@@ -958,8 +1014,8 @@ Implementamos un mecanismo de predicción parametrizable que corre sobre el algo
 en cuestión por el cual se puede optimizar la performance de 
 detección según las caracteristicas propias de cada detector. Se 
 midieron los resultados obtenidos realizando el reconocimiento de 
-vasos,colillas y platos obteniendo un promedio de $TANTO$ de fp y 
-$tanto$. Finalmente agregamos un mecanismo de focalización por el cual 
+vasos,colillas y platos obteniendo un promedio de $14\%$ de falsos 
+positivos  y $5\%$ de falsos negativos. Finalmente agregamos un mecanismo de focalización por el cual 
 el sistema completo puede trabajar sobre un único objeto reduciendo 
 los tiempos de procesamiento. 
 
