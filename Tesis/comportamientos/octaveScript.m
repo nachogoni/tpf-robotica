@@ -10,7 +10,8 @@ plot(nu,'5;Unload;');
 %plot(np,'2;Panic;');
 %hold off;
 
-pie(vars(length(vars),:),[0,0,0,0,1,0,0,0],["Wander","Focus Garbage","Go To Garbage","Collect Garbage","Unload Garbage","Recharge","Avoid Obstacles","Panic"])
+
+plotPie
 
 % Plot Behaviour's progress in each timestep
 plotBehaviours
