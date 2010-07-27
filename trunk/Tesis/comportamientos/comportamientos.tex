@@ -101,6 +101,14 @@ la c\'amara en el robot, el campo de visi\'on (de ahora en adelante \emph{Field 
 horizontal $FOV_h$ o vertical $FOV_v$ y el \'angulo de inclinaci\'on de la c\'amara $ac$. Viendo la figura
 \ref{fig:angleCamera} podemos ver que:
 
+\begin{figure}[htp]
+\begin{center}
+\includegraphics{comportamientos/angleCamera.png}
+\caption{Diagrama de posici\'on de la c\'amara}
+\label{fig:angleCamera}
+\end{center}
+\end{figure}
+
 \begin{eqnarray}
 ac + \frac{FOV_v}{2} + \theta = \frac{\pi}{2}\\
 \gamma + FOV_v + \theta = \frac{\pi}{2}\\
@@ -116,7 +124,9 @@ Organizando las ecuaciones, podemos deducir que:
 
 \begin{eqnarray}
 \gamma = \frac{\pi}{2} + ac - \frac{FOV_v}{2}\\
+\label{eqn:distance_d}
 d = \tan(\gamma) * c_h \\
+\label{eqn:distance_dh}
 d+h = \tan(\gamma+FOV_v) * c_h
 \end{eqnarray}
 
@@ -128,31 +138,159 @@ los puntos $A$, $B$, $C$ y $D$ del trapezoide que determina la zona que ve la c\
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics{comportamientos/angleCamera.png}
-\caption{Diagrama de posici\'on de la c\'amara}
-\label{fig:angleCamera}
-\end{center}
-\end{figure}
-
-\begin{figure}[htp]
-\begin{center}
-\includegraphics{comportamientos/rectangleWander.png}
+\includegraphics[scale=0.5]{comportamientos/rectangleWander.png}
 \caption{Zona vista por la c\'amara}
 \label{fig:zoneCamera}
 \end{center}
 \end{figure}
 
 \subsubsection{Enfocar Basura}
-\emph{Enfocar basura} surge como una necesidad ante la elecci\'on de la forma en que se va a la basura.
 \label{focus_garbage}
-\paragraph{Detalle del comportamiento}
-la elecci\'on de la forma en que se va a la basura.
-\paragraph{Implementaci\'on del comportamiento}
+Una vez que el m\'odulo de detecci\'on de objetos reconoce algo como basura, hay que elegir
+la forma en que se va a la basura. En la figura \ref{fig:papproachgoto} se puede ver un
+primer approach de hacer \'esto. Consiste en primero enfocar la basura de forma tal que
+la misma quede en el centro de la imagen de la c\'amara. De aqu\'i surge el comportamiento
+\emph{Enfocar Basura}.
+\\
+Un segundo approach (Figura \ref{fig:sapproachgoto}) no consiste en enfocar la basura,
+sino que se idea un arco hacia la misma. \'Esto requiere que se seteen las velocidades
+correspondientes a las ruedas de forma tal que la trayectoria del robot describa dicho
+arco. Con este segundo approach no existir\'ia el comportamiento que se est\'a describiendo.
+\\
+Dado que el primer approach es levemente m\'as simple de implementar, y teniendo en cuenta el
+principio enunciado en la secci\'on \ref{arq_prop} \emph{"La simplicidad es una virtud"},
+elegimos implementar el mismo, a pesar de tener un posible inconveniente, como se puede
+ver en la figura \ref{fig:papproachgotoproblem}.
+\\
+Cuando hay una basura en alguna esquina
+superior de la imagen de la c\'amara, y el robot gira sobre s\'i mismo para enfocarla,
+la basura puede llegar a perderse por el fondo de la imagen. \'Esto se debe a que la distancia
+hacia dichas esquinas es mayor a la distancia hacia el centro del borde superior de la imagen
+(Ver figura \ref{fig:zoneCamera}). Decimos que es un "posible" problema, ya que una vez que se
+pierde de vista la basura, el robot no enfocar\'a m\'as debido a que el est\'imulo desapareci\'o,
+pero si luego se dirige hacia adelante (por la activaci\'on de alg\'un otro comportamiento), 
+la basura volver\'a a aparecer en la imagen, sin desaprovechar la oportunidad de recogerla.
 
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.5]{comportamientos/basura.png}
+\includegraphics[scale=0.5]{comportamientos/basuraenfocada.png}
+\caption{Primer approach de ir a la basura}
+\label{fig:papproachgoto}
+\end{center}
+\end{figure}
+
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.5]{comportamientos/basuraAlt.png}
+\caption{Segundo approach de ir a la basura}
+\label{fig:sapproachgoto}
+\end{center}
+\end{figure}
+
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.3]{comportamientos/esquina.png}
+\includegraphics[scale=0.3]{comportamientos/frentemuylejos.png}
+\includegraphics[scale=0.3]{comportamientos/frentelejos.png}
+\caption{Posible inconveniente con el primer approach de ir a la basura}
+\label{fig:papproachgotoproblem}
+\end{center}
+\end{figure}
+
+\paragraph{Detalle del comportamiento}
+El approach elegido, entonces, se puede describir como:
+\begin{itemize}
+\item Si la basura est\'a a la izquierda de la im\'agen, se debe girar hacia la izquierda
+\item Si la basura est\'a a la derecha de la im\'agen, se debe girar hacia la derecha
+\item Si la basura est\'a en el centro, ya est\'a enfocada
+\end{itemize}
+
+%En el caso que haya m\'as de una basura elegimos la m\'as cercana, usando c\'alculos
+%detallados a continuaci\'on.
+\paragraph{Implementaci\'on del comportamiento}
+El comportamiento sigue el siguiente \emph{pseudo-codigo}:
+\begin{verbatim}
+por cada paso
+    lista_de_basuras = obtener_lista_de_basuras(modulodereconocimiento)
+    basura_mas_cercana = elijo_basura_mas_cercana(lista_de_basuras)
+    angulo_a_basura = obtener_angulo(basura_mas_cercana)
+    velocidad = VELOCIDAD_BASE * ( abs(angulo_a_basura) / (PI/2) ) + VELOCIDAD_BASE_MINIMA
+    si angulo_a_basura < 0 entonces
+        veloc_izq = -velocidad
+        veloc_der = velocidad
+    sino
+        veloc_izq = velocidad
+        veloc_der = -velocidad
+    fin_si
+    poner_velocidades_en_ruedas(veloc_izq,veloc_der)
+\end{verbatim}
+
+Se puede ver que la velocidad de giro del robot es proporcional al \'angulo que hay
+hacia la basura, logrando enfocar m\'as r\'apido cuando el \'angulo es mayor y tener
+mayor precisi\'on cuando el \'angulo es m\'as chico, adem\'as de tener mayor rapidez
+de enfoque y precisi\'on que si la velocidad de giro fuera constante.
+\\
+TODO HACER REFERENCIA A LA SECCION DE VISION CON OBTENERLISTADEBASURAS
+
+%%Para obtener el \'angulo y distancia hacia una basura....
+%%pasamos de una posicion (x,y) en la imagen a una posicion
+%(x,z) en el mundo. teniendo nuestra posicion P, podemos
+%calcular la distancia y el angulo
 \subsubsection{Ir a Basura}
 \label{go_to_garbage}
+Luego de la elecci\'on de la forma que se resuelve la situaci\'on de encontrar una
+basura (ver \ref{focus_garbage}), el comportamiento de ir a basura es trivial, ya
+que la basura, luego de ser enfocada, est\'a delante del robot y lo \'unico que
+basta es ir hacia adelante.
+
 \paragraph{Detalle del comportamiento}
+El est\'imulo necesario para que este comportamiento est\'e presente est\'a
+dado por dos condiciones:
+\begin{enumerate}
+\item El m\'etodo de reconociemiento de objetos reconoci\'o una basura
+\item La basura se encuentra en un entorno del medio horizontal de la imagen de la c\'amara
+\end{enumerate}
 \paragraph{Implementaci\'on del comportamiento}
+\begin{verbatim}
+por cada paso
+    distancia = obtener_distancia_a_basura(modulodereconocimiento)
+    coeff = (distancia - DIST_MIN)/(DIST_MAX - DIST_MIN)
+    veloc_der = VELOCIDAD_MIN*(1 - coeff) + coeff*VELOCIDAD_MAX
+    veloc_izq = veloc_der
+    poner_velocidades_en_ruedas(veloc_izq,veloc_der)
+\end{verbatim}
+
+Al igual que en la implementaci\'on del comportamiento \ref{focus_garbage},
+las velocidades que se le otorgan a las ruedas dependen de la distancia
+hacia la basura, de forma tal que si una basura est\'a muy lejos, la velocidad
+sea mayor y a medida que se va acercando, vaya disminuyendo linealmente.
+
+Dado que la basura se encuentra en un entorno del eje Y en la imagen (Ver figura
+\ref{fig:image_coord_conv}b) cometemos un error muy peque\~no al estimar la distancia
+a la basura como si estuviera sobre el mismo (asumiendo que la coordenada X de la
+basura en la imagen es 0).
+
+Como muestran las figuras \ref{fig:image_coord_conv} y \ref{fig:angleCamera},
+el \'angulo vertical hacia el punto m\'as alto de la imagen $(0,h)$ es 
+$\gamma+FOV_v$ y hacia el m\'as bajo, $(0,0)$, el \'angulo es $\gamma$.
+De las ecuaciones \eqref{eqn:distance_d} y \eqref{eqn:distance_dh} sabemos
+las distancias a los puntos $(0,0)$ (DIST\_MIN) y $(0,h)$ (DIST\_MAX). 
+Entonces, para obtener la distancia $dy$ hacia el punto $(0,y)$ basta con
+calcular:
+\begin{eqnarray}
+y_{angle} = FOV_v * \frac{y}{h} \\
+dy = \tan(\gamma + y_{angle}) * c_h \\
+\end{eqnarray}
+
+donde $y_{angle}$ es la proporci\'on de $FOV_v$ hacia $y$.
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.5]{comportamientos/imageCoordsConvertion.png}
+\caption{Conversi\'on de coordenadas de imagen de c\'amara}
+\label{fig:image_coord_conv}
+\end{center}
+\end{figure}
 
 \subsubsection{Recolectar Basura}
 \label{collect_garbage}
