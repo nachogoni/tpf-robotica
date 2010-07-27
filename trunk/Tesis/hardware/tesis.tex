@@ -2133,17 +2133,48 @@ evitar en el desarrollo del prototipo.
 \subsection{Placas de sensado}
 \label{h_placas_sensado}
 
-funcion de una placa de sensado, porque fue armada, para que sirve, que tipo de sensores puedo conectar, cuales son las posibles configuraciones, diferencias, sensado de la bateria
+Para sensar el entorno utilizamos distintos tipos de sensores que deb\'iamos leer y controlar seg\'un fuera
+requerido desde el controlador principal.
+Dise\~namos una placa a la que podemos conectarle cualquiera de los sensores que usamos en nuestro proyecto,
+ya sea un sensor de distancia por ultrasonido, tel\'emetros o sensores reflectivos de piso.
+Tamb\'ien utilizamos esta placa para realizar las lecturas de la tensi\'on de la bater\'ia.
+En este apartado detallamos cada una de las caracter\'isticas que tuvimos en cuenta durante el desarrollo
+de las placas de sensado.
 
 \subsubsection{Caracter\'isticas principales}
 \label{h_placas_sensado_caracteristicas}
 
-principio de funcionamiento, como logra tomar las muestras de los sensores, como logra ser parte de la cadena, seteo de los tipos de sensores
+El uso de diferentes tipos de sensores implicaba un m\'etodo distinto de lectura seg\'un qu\'e sensor
+estaba conectado.
+Los sensores de distancia por ultrasonido que usamos generan un pulso de ancho variable seg\'un la
+distancia al objetivo, de forma similar, los tel\'emetros setean un voltaje en la salida en base a la
+distancia con el objeto.
+Los sensores reflectivos de piso que usamos miden el nivel de luz infrarroja que refleja la superficie
+que tienen debajo de ellos y en base al valor sensado inferimos su color.
+
+Los sensores que devuelven el valor sensado mediante un voltaje utilizamos el conversos anal\'ogico
+digital para tomar las muestras necesarias.
+Salvo que se indique lo contrario, tomamos $5$ muestras y luego las promediamos para evitar un muestreo
+err\'oneo.
+
+En el caso del sensor de ultrasonido usamos el m\'odulo de timer para calcular el ancho del pulso
+generado por el sensor.
+Tambi\'en usamos interrupciones para captar los flancos ascendentes y descendentes para determinar el
+comienzo y fin del pulso respectivamente.
+
+Armamos la placa para poder conectar $1$ sensor de distancia por ultrasonido o un switch binario sobre
+el mismo puerto de conexi\'on.
+De manera conjunta podemos conectar a la misma placa, hasta $5$ sensores por voltaje, tel\'emetros,
+fototransistores (sensores de piso) o por ejemplo el divisor de tensi\'on que mide la carga en la bater\'ia.
 
 \subsubsection{M\'odulo de comunicaci\'on}
 \label{h_placas_sensado_comm}
 
-se explico en el modulo generico, se agregan los comandos especificos y se puede explicar como se obtiene la informacion para dar las respuestas
+De igual forma que las otras placas en el proyecto, mantenemos la misma disposici\'on f\'isica de
+la comunicaci\'on, desde el circuito base hasta la ubicaci\'on de los conectores para mayor facilidad
+a la hora de utilizarlas.
+Tambi\'en respetamos el protocolo de comunicaci\'on definiendo nuevos comandos espec\'ificos para la
+placa y retransmitiendo los paquetes con otro destinatario.
 
 \subsubsection{Alimentaci\'on de la placa}
 \label{h_placas_sensado_alimentacion}
@@ -2152,7 +2183,7 @@ se explico en el modulo generico
 
 \subsubsection{Configuraci\'on}
 \label{h_placas_sensado_config}
-
+seteo de los tipos de sensores
 configuracion de la placa, comunicacion, header de programacion
 
 \subsubsection{Esquem\'atico}
@@ -2167,8 +2198,9 @@ circuito de la placa
 
 \subsubsection{C\'odigo b\'asico}
 \label{h_placas_sensado_codigo}
-
+seteo de los tipos de sensores
 explicacion de lo minimo que deberia tener para ser parte de la cadena de comunicacion y sensado de los distintos perifericos
+como logra tomar las muestras de los sensores
 
 \subsubsection{Posibles extensiones}
 \label{h_placas_sensado_extensiones}
