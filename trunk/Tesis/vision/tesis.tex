@@ -4,17 +4,18 @@
 En esta sección exhibimos el sistema de analisis de imágenes por 
 el cual el robot en cuestión da cuenta de la existencia o ausencia de 
 elementos residuales en el entorno descripto. El sistema se basa en la 
-utilización de una cámara de una única lente del tipo webcam para 
-obtener información del ambiente. Esta información es luego procesado 
-por la computadora a bordo del robot utilizando un algoritmo de visión 
+utilización de una cámara de tipo webcam con una única lente para 
+obtener información del ambiente. Esta información es luego procesada 
+por una computadora a bordo del robot utilizando un algoritmo de visión 
 cuyo único objetivo es la detección de residuos 
-en dichas imágenes. El sistema fue probado con la detección de 
+en las imágenes obtenidas. El sistema fue probado con la detección de 
 colillas de cigarrillo, vasos descartables y platos de plástico. Para 
 el desarrollo del algoritmo utilizamos la libreria de visión 
-computacional Opencv \cite{opencv_library} acompañado de un sistema 
+computacional OpenCV \cite{opencv_library} acompañado de un sistema 
 desarrollado en C++. Como plataforma utilizamos un sistema linux 
-ubuntu versión 9.10 corriendo en una netbook PONER CARACTERISTICAS.
-La sección se divide en las siguientes partes: en la sub-sección 2 se 
+ubuntu versión 9.10 corriendo en una netbook con procesador intel atom 
+n450 y 1 gb de memoria RAM.
+Esta sección se divide en las siguientes partes: en la sub-sección 2 se 
 muestran los trabajos previos estudiados, en la sub-sección 3 se 
 describe el algoritmo de detección, en las secciones 4 y 5 se explican 
 los módulos de predicción y focalización mientras que en la 
@@ -22,31 +23,44 @@ sub-sección 6 se muestran los resultados. La sub-sección 7 concluye
 el cápitulo de visión.
 
 \subsection{Trabajos previos}
+En esta sección mostramos la información obtenida a partir de 
+trábajos anteriores relacionados con visión computacional, 
+procesamiento de imágenes y robots autonomos.
+ 
 	\subsubsection{Mobile Field Robot with Vision-Based Detection of Volunteer Potato Plants in a Corn Crop - FRITS K. VAN EVERT}
 	\cite{potato}
 	\subsubsection{Review of shape representation and description techinques - Dengsheng Zhang}
-El objetivo de este trabajo es realizar un resumen de las técnicas mas importantes en cuanto a la representación y descripción de formas.
+El objetivo de este trabajo es realizar un resumen de las técnicas mas 
+importantes en cuanto a la representación y descripción de figuras o 
+formas.
 Al clasificar dichas técnicas el autor sugiere una primera sub-división en 2 grupos, estos son: métodos basados en contornos y métodos basados 
 en regiones. Los primeros se caracterizan por extraer  la información solo del contorno mientras que los segundos de la región completa abarcada
-por el mismo. Dentro de cada clase, se dividen en técnicas estructurales o técnicas globales según  se represente una forma como un todo o 
+por el mismo. Dentro de cada clase, se dividen en técnicas 
+estructurales o técnicas globales según  se represente una figura como un todo o 
 por segmentos o secciones. La jerarquía completa puede observarse en la figura \ref{fig:review_shape}.\\
 \indent Dentro de la categoría de los basados en contornos, en la sub-categoría de globales, los métodos suelen computar vectores de 
-de propiedades númericas extraidas de la información del borde de una forma. La comparación entre formas se realiza 
+propiedades númericas extraidas de la información del borde de una 
+figura. La comparación entre formas se realiza 
 generalmente utilizando distancias métricas, como la distancia euclideana. Ejemplos de métodos sencillos que caen dentro de esta 
-categoría son \textit{area,circularidad($perimetro^2 / area$),excentricidad( longitud del eje mayor / longitud del eje menor)}. Otros métodos 
+categoría son \textit{area, circularidad( $perimetro^2 / area$), 
+excentricidad ( longitud del eje mayor / longitud del eje menor)}. Otros métodos 
 de la misma familia pero mas complejos son los métodos basados en la correspondencia de puntos. En estos métodos se trata a cada punto como una 
-caracteristica de la forma. La distancia de \textit{ Hausdorff} es una técnica clasica de esta categoría. Dadas dos formas representadas
+caracteristica de la figura que compone. La distancia de \textit{ Hausdorff} es una técnica clasica de esta categoría. Dadas dos formas representadas
 por dos sets de puntos $A={x_1,x_2...x_n}$ y $B={y_1,y_2...y_n}$ la distancia Haussdorf se define como 
 \[
 	 d_{\mathrm H}(A,B) = \max\{\,\sup_{x \in A} \inf_{y \in B} d(x,y),\, \sup_{y \in B} \inf_{x \in A} d(x,y)\,\}\mbox{,}
 \] 
 
-La comparación de formas usando distancia Hausdorff resulta sensible al ruido y a pequeñas alteraciones. Existen otros métodos basados
-en \textit{firma de contorno} que  representan una forma con una función uni-dimensional derivada de la información del borde de la forma, 
+La comparación de figuras usando distancia Hausdorff resulta sensible 
+al ruido y a pequeñas alteraciones en dos formas iguales. Existen otros métodos basados
+en \textit{firma de contorno} que  representan una figura con una 
+función uni-dimensional derivada de la información del borde de la 
+misma, 
 algunos son \textit{pérfil centroidal,coordenadas complejas y distancia al centroide}. Estos métodos deben ser normalizados para compensar
-traslaciones o escalas lo que los hace relativamente costoso. Esto sumado a la sensibilidad al ruido y a pequeños cambios en los bordes, hace que el método 
+traslaciones o escalas lo que los hace relativamente costosos. Esto sumado a la sensibilidad al ruido y a pequeños cambios en los bordes, hace que el método 
 no sea lo suficientemente robusto y que necesite de procesamiento adicional. Otra familia de descriptores se basan en los 
-\textit{Momentos de borde}. Dada una parametrización como una función uni-dimensional $z(i)$, se define el momento \textit{r}th \textit{$m_r$} 
+\textit{Momentos de borde}. Dada una parametrización como una función 
+uni-dimensional $z(i)$, se define el momento \textit{r}-esimo \textit{$m_r$} 
 y el momento central $\mu_r$ como:
 \[
 	m_r=\frac{1}{N} \sum_{i=1}^{N}{[z(i)]^r}\ \ \ \ \
@@ -54,7 +68,8 @@ y el momento central $\mu_r$ como:
 \]
 
 donde N es el número de puntos de borde. El momento normalizado $\bar{m_r}=m_r / (\mu_2)^{r/2}$
-es invariante frente a traslaciones, rotaciones y escalamientos. Sin embargo, momentos de alto orden
+es invariante frente a traslaciones, rotaciones y escalamientos. Sin 
+embargo, los momentos de alto orden
 son dificiles de asociar con interpretaciones fisicas del contorno.\\
 \indent La otra sub-categoría dentro de los métodos basados en contornos es la de los métodos estructurales.
 En estos métodos se suele descomponer un contorno en segmentos de bordes llamado primitivas. Los métodos estructurales
@@ -62,30 +77,37 @@ entonces se diferencian entre si de acuerdo a la definicion y organización de e
 de descomposición son aproximación por polígonos, descomposición por curvatura, y ajuste de curva. El resultado
 de la descomposición se codifica como una cadena $S=s_1,s_2...s_n$ donde $s_i$ puede ser un lado de un polígono, una 
 arista cuadratica, una función spline, etc. Además, $s_i$ puede contener varios atributos como longitud,orientación, curvatura promedio,etc.
-Métodos en esta linea es por ejemplo el de código en cadena, en el cual se describe un objeto por una serie de segmentos de longitud unitaria
-con una orientación determinada. En la implementación, se superpone una imagen con una grilla y se aproximan los puntos del contorno al 
-punto de la grilla mas cercano. Luego seleccionando un punto de partida, se codifica una secuencia estableciendo la dirección del segmento
-que conecta dos puntos contiguos de acuerdo a la dirección de este punto en la grilla ( respecto del anterior). Para la comparación de dos
-contornos es necesario realizar normalizaciones ya que el punto de partida puede variar y frente a un cambio de escala pueden parecer totalmente
-distintos. Otros métodos en esta sub-categoría pueden ser el de la descomposición polinomica o la descomposición en curvas suaves. \\
-\indent Dentro de la categoría de los métodos basados en la región de una forma y la sub-categoría de globales podemos encontrar los \textit{momentos Hu}.
+Métodos en esta línea son por ejemplo el de código en cadena, en el cual se describe un objeto por una serie de segmentos de longitud unitaria
+con una orientación determinada. En su implementación, se superpone una imagen con una grilla y se aproximan los puntos del contorno al 
+punto de la grilla mas cercano. Luego se selecciona un punto de 
+partida y se codifica una secuencia estableciendo la dirección del segmento
+que conecta un punto con el siguiente según la dirección de este en 
+la grilla ( respecto del punto  anterior). Para la comparación de dos
+contornos es necesario realizar normalizaciones ya que el punto de 
+partida puede variar y frente a un cambio de escala pueden parecer 
+contornos distintos. Otros métodos en esta sub-categoría pueden ser el de la descomposición polinomica o la descomposición en curvas suaves. \\
+\indent Dentro de la categoría de los métodos basados en la región 
+de una figura y la sub-categoría de globales podemos encontrar los \textit{momentos Hu}.
 Un momento de Hu de un contorno 2d se define como:
 \[
 	m_{pq}=\sum_{x}{\sum_{y}{x^py^qf(x,y)}}
 \]
 
-Usando combinaciones lineales de momentos de Hu de orden bajo se obtienen un descriptor 
-invariante frente a rotaciones,traslaciones y escalamientos. Sin embargo esta técnica probó servir solo 
-para formas simples ya que en formas mas complejas no tiene una buena performance. Otros métodos en esta
-sub-categoría pueden ser \textit{momentos algebraicos} o \textit{Descriptor general de fourier}. En la otra sub-categoría de métodos
+Usando combinaciones lineales de momentos de Hu de ordenes bajos 
+(valores de p y q menores a 2) se obtiene un descriptor 
+invariante frente a rotaciones, traslaciones o escalamientos. Sin embargo esta técnica probó servir solo 
+para figuras simples ya que en formas mas complejas no tiene una buena performance. Otros métodos en esta
+sub-categoría pueden ser \textit{momentos algebraicos} o \textit{descriptor general de fourier}. En la otra sub-categoría de métodos
 estructurales se destaca la \textit{envoltura convexa}. La envoltura convexa de un set de puntos es la mínima región que contiene 
 dichos puntos y es convexa. Este método obtiene dicha región y la compara con el contorno original obteniendo una serie de pequeñas
-componentes que marcan las deficiencias de concavidad del contorno. La forma en cuestión puede entonces representarse utilizando estas componentes.
-Finalmente la comparación entre dos contornos representados con esta técnica resulta en la comparación de grafos lo cual es otra
-cuestión por si solo. Además métodos en esta familia son dificiles y complejos de implementar.\\
+componentes que marcan las deficiencias de concavidad del contorno. La 
+figura en cuestión puede entonces representarse utilizando estas componentes.
+Finalmente la comparación entre dos contornos representados con esta 
+técnica resulta en la comparación de grafos lo cual es otro
+problema a resolver por si solo. Además, métodos en esta familia son dificiles y complejos de implementar.\\
 \indent Como conclusión el autor establece que los métodos basados en contorno son más populares ya que estan mas relacionados
 a la percepción humana y que para muchas aplicaciones es solo necesario la información sobre el contorno y no sobre el interior del mismo.
-Sin embargo, también establece que ya que solo usan parte de una forma, estos son más sensibles al ruido y pequeñas variaciones.
+Sin embargo, también establece que ya que solo usan parte de una figura, estos son más sensibles al ruido y pequeñas variaciones.
 
 \begin{figure}[tpb]
 \begin{center}
@@ -97,18 +119,19 @@ Sin embargo, también establece que ya que solo usan parte de una forma, estos s
 
 % sidewalk following
 	\subsubsection{Sidewalk Following Using Color Histograms - John S. Seng}
-	Este trabajo describe un algoritmo usado para detectar y seguir 
-	veredas o áreas transitables en un video filmado con una única 
-	lente con el objetivo de lograr la navegación autonoma dentro del 
+	Este trabajo describe un algoritmo  para detectar y seguir 
+	veredas o áreas transitables en un video filmado, con el objetivo de 
+	lograr la navegación autonoma de un robot dentro del 
 	campus de una universidad. La plataforma en la cual se tomaron los videos esta 
 	compuesta de una silla de ruedas motorizada controlada por una cpu 
 	a bordo corriendo un sistema operativo linux. El robot tiene una 
 	única cámara NTSC que provee imágenes color con una tasa de 15 
 	cuadros por segundo. Todos los videos de prueba fueron tomados 
-	utilizando esta plataforma controlada por radio por un operador.\\
+	utilizando esta plataforma conduciendola remotamente por un 
+	operador a traves de un sistema de radio.\\
 	\indent El algoritmo en cuestión utiliza histogramas 2-d de los 
 	canales de tono y saturación de los pixeles para modelar las áreas
-	transitables y las no transitables. Se utiliza una área de 
+	transitables y las no transitables. Se utiliza un área de 
 	entrenamiento ubicada directamente en frente del robot en la cual se asume que 
 	no hay obstáculos y contiene pixeles representativos del área que 
 	esta transitando. Esta área de entrenamiento se utiliza para 
@@ -130,7 +153,7 @@ Sin embargo, también establece que ya que solo usan parte de una forma, estos s
 	histograma de menor cantidad de aciertos con el histograma 
 	del área de entrenamiento.  Entre los resultados se destaca el 
 	hecho de que 4 histogramas resultaron suficientes para modelar la
-	variación de color de las áreas transitables, sin embargo, este no 
+	variación de color de las áreas transitables pero, sin embargo, este no 
 	logro clasificar a la zonas cubiertas de sombra como transitables.
 	Bajo condiciones de luz favorables, 2 histogramas fueron 
 	suficientes para clasificar , en promedio, el 50\% del área 
@@ -145,22 +168,77 @@ Sin embargo, también establece que ya que solo usan parte de una forma, estos s
 	\subsubsection{Skin Detection using HSV color space - V. A. Oliveira, A. Conci}
 	En este artículo se trabajó sobre la detección de piel en imágenes utilizando el espacio de color HSV. El algoritmo propuesto 
 por el autor consiste en el filtrado de los pixeles en base al valor del canal de tonalidad (canal H). Los rangos de valores utilizados para 
-representar el c
-
-olor de la piel fueron obtenidos de otros artículos relacionados. Luego, con el objetivo de eliminar ruido, se aplican filtros morfológicos y de suavizado, estos son (en este orden) dilatación, erosión y un filtro de mediana. Para los filtros morfológicos se utilizaron núcleos de 5x5 pixeles mientras que para el filtro de mediana se usaron núcleos de 3x3 pixeles. Finalmente, el autor midió la performance de su algoritmo utilizando imágenes de prueba en donde se aprecian distintas zonas con piel aisladas. A partir de estas imágenes, se obtuvieron las coordenadas de los pixeles que se corresponden con piel y se las contrastó con aquellas que identificó el algoritmo. Los resultados presentados para 4 imágenes son satisfactorios obteniendo en promedio un porcentaje de falsos negativos cercano al 1\% y de falsos positivos menor al 6\%.
+representar el color de la piel fueron obtenidos de otros artículos 
+relacionados. Con el objetivo de eliminar ruido, se aplican filtros morfológicos y de suavizado, estos son (en este orden) dilatación, erosión y un filtro de mediana. Para los filtros morfológicos se utilizaron núcleos de 5x5 pixeles mientras que para el filtro de mediana se usaron núcleos de 3x3 pixeles. Finalmente, el autor midió la performance de su algoritmo utilizando imágenes de prueba en donde se aprecian distintas zonas con piel aisladas. A partir de estas imágenes, se obtuvieron las coordenadas de los pixeles que se corresponden con piel y se las contrastó con aquellas que identificó el algoritmo. Los resultados presentados para 4 imágenes son satisfactorios obteniendo en promedio un porcentaje de falsos negativos cercano al 1\% y de falsos positivos menor al 6\%.
 
 	\subsubsection{Line Detection and Lane Following for an Autonomous Mobile Robot - Andrew Reed Bacha}
 	En este artículo se describió el software utilizado para uno de los robots ganadores de la competencia "Intelligent Ground Vehicle Competition" (IGVC) en donde se requiere que los robots naveguen  a través de un camino delimitado por líneas pintadas sobre césped en un ambiente al aire libre en donde se pueden presentar obstáculos. El robot utilizaba una única cámara para el sistema de visión y su objetivo era detectar las líneas pintadas 
-para determinar la dirección de movimiento del robot. El algoritmo descripto por el autor cuenta con una etapa de pre-procesamiento y otra de detección de líneas. En la etapa de pre-procesamiento se comienza por convertir la imagen a escala de grises utilizando una transformación en la que la intensidad de cada pixel es determinada usando $2*B(i,j) - G(i,j)$ con el argumento que el canal verde contiene ruido provocado por la exposición de luz en el pasto y de esta manera se lo elimina. Luego el autor propone utilizar un ajuste de brillo argumentando que los pixeles de la zona más alta se encuentran más expuestos a la luz por la perspectiva de la cámara, para esto sustrae una máscara que compensa este efecto. Además, el autor elimina la proyección del robot mismo sobre la cámara. En la etapa de detección se procedió realizando un threshold para obtener los pixeles más brillantes. Luego, la salida del threshold se utilizó como entrada para un detector de líneas basado en el algoritmo de hough. Finalmente, según la orientación de las líneas detectadas se determina la dirección del robot. El algoritmo se consideró exitoso ya que el robot propuesto fue el ganador de la competencia.
-
+para determinar la dirección de movimiento del robot. El algoritmo 
+descripto por el autor cuenta con una etapa de pre-procesamiento y otra 
+de detección de líneas. En la etapa de pre-procesamiento se comienza 
+por convertir la imagen a escala de grises utilizando una 
+transformación en la que la intensidad de cada pixel es determinada 
+usando $2*B(i,j) - G(i,j)$ con el argumento que el canal verde contiene 
+ruido provocado por la exposición de luz en el pasto y de esta manera 
+se lo elimina. Luego el autor propone utilizar un ajuste de brillo 
+argumentando que los pixeles de la zona más alta se encuentran más 
+expuestos a la luz por la perspectiva de la cámara, para esto sustrae 
+una máscara que compensa este efecto. Además, el autor elimina la 
+proyección del robot mismo sobre la imagen capturada por la cámara. 
+En la etapa de detección se realizó un threshold para obtener los pixeles más brillantes. Luego, la salida del threshold se utilizó como entrada para un detector de líneas basado en el algoritmo de hough. Finalmente, según la orientación de las líneas detectadas se determina la dirección del robot. El algoritmo se consideró exitoso ya que el robot propuesto fue el ganador de la competencia.
+\pagebreak
 
 	
 \subsection{Algoritmo de detección}
-\subsubsection{Estructura}
+En esta sección describimos las distintas etapas del algoritmo de análisis 
+de imágenes utilizado. Estas se pueden separar en una etapa de 
+pre-procesamiento donde se realiza un tratado de la imagen obtenida 
+para re1saltar las caracteristicas de interes y  una segunda etapa donde se 
+extraen estas caracteristicas para interpretarlas y  buscar 
+los objetos residuales en las imágenes.
+
+\subsubsection{Estructura general}
 La figura \ref{fig:alg_steps} ilustra las etapas del algoritmo. Este fue programado utilizando el lenguaje C++ y la librería de visión computacional openCv.
-El algoritmo comienza por tomar una imagen fresca de la cámara, las imágenes capturadas poseen el formato 24-bit RGB. A su vez, esta imagen puede ser descompuesta en 3 imágenes o canales de 8 bits, una para cada color (rojo, verde y azul). Con el objetivo de minimizar el impacto producido por cambios en la iluminación se convierte la imagen al formato HSV (tono, saturación y brillo). Luego utilizamos el canal H de esta nueva imagen para establecer que pixeles se corresponden con el color buscado, filtrando aquellos pixeles que no coinciden con el rango deseado. A su vez, usamos la información brindada por los  canales de saturación y/o brillo para obtener más precisión sobre el color de los pixeles.\\
-	\indent Descartamos los pixeles filtrados en el canal de saturación realizando un and bit a bit con la imagen filtrada.  En la siguiente etapa, se utilizan filtros morfológicos cuyo objetivo es la eliminación de ruido. El resultado de aplicar estos filtros resulta en la expansión de las áreas donde hay mucha presencia de pixeles de interés, produciendo un área de intensidad homogénea mientras que elimina la aparición aislada de estos, producto del ruido. El paso siguiente consiste en la aplicación de un umbral. El umbral filtra aquellos pixeles que no se encuentren por encima de un valor mínimo de intensidad marcándolos con valor cero y conserva únicamente los pixeles que si lo hacen estableciéndoles un valor predeterminado (mayor a cero). \\
-	\indent Hasta aquí el pre-procesamiento de la imagen, al llegar a esta etapa del algoritmo deseamos tener solo pixeles de los potenciales objetos de interés. Vale notar que, como consecuencia de aplicar un filtro umbral, la imagen se encuentra binarizada, es decir, los pixeles solo pueden tener dos posibles valores: cero (negro) si no es un pixel de interés o mayor a cero en el caso contrario. Es entonces que automáticamente quedan delimitadas las áreas que contienen pixeles de interés, el próximo paso del algoritmo se encarga de obtener los contornos de estas áreas. Para esto utilizamos el algoritmo de Suzuki \cite{suzuki85} que recorre los bordes de estas zonas y crea secuencias de puntos $(x,y)$ que definen el contorno de las mismas. Las secuencias de puntos son luego aproximadas para generar polígonos cerrados mediante el algoritmo de Douglas-Pecker \cite{dp74}. Tomando estos polígonos definimos distintos parámetros tales como el área, perímetro o figura que nos permiten discernir si se trata de un objeto a reconocer o no.
+El algoritmo comienza por tomar una imagen fresca de la cámara, las 
+imágenes capturadas poseen el formato 24-bit RGB. Con el objetivo de 
+minimizar el impacto producido por cambios en la iluminación se 
+convierte la imagen al formato HSV (tono, saturación y brillo). Luego 
+utilizamos el canal del tono de esta nueva imagen para establecer que 
+pixeles se corresponden con el color buscado, filtrando aquellos 
+pixeles que no coinciden con el rango deseado (ver inciso 
+\ref{sec:color}). A su vez, usamos la información brindada por los  canales de saturación y/o brillo para obtener más precisión sobre el color de los pixeles.\\
+	\indent Descartamos los pixeles filtrados en el canal de saturación 
+	realizando un and bit a bit con la imagen filtrada.  En la siguiente 
+	etapa, se utilizan filtros morfológicos cuyo objetivo es la 
+	eliminación de ruido. El resultado de aplicar estos filtros resulta 
+	en la expansión de las áreas donde hay mucha presencia de pixeles de 
+	interés, produciendo un área de intensidad homogénea mientras que 
+	en las áreas con poca presencia de estos 
+	elimina la aparición aislada de los mismos, generados por el ruido (ver 
+	inciso \ref{sec:morph}). El paso 
+	siguiente consiste en la aplicación de un umbral. El umbral filtra 
+	aquellos pixeles que no se encuentren por encima de un valor mínimo 
+	de intensidad marcándolos con valor cero y conserva únicamente los 
+	pixeles que si lo hacen estableciéndoles un valor predeterminado 
+	(mayor a cero) (ver inciso \ref{sec:thresh}). \\
+	\indent Las operaciones que mencionamos hasta aqui componen la 
+	etapa de  pre-procesamiento de la imagen. Finalizada dicha etapa del 
+	algoritmo deseamos tener solo pixeles de los potenciales objetos de 
+	interés. Vale notar que, como consecuencia de aplicar un filtro 
+	umbral, la imagen se encuentra binarizada, es decir, los pixeles solo 
+	pueden tener dos posibles valores: cero (negro) si no es un pixel de 
+	interés o mayor a cero en el caso contrario. Es entonces que 
+	automáticamente quedan delimitadas las áreas que contienen pixeles 
+	de interés, el próximo paso del algoritmo se encarga de obtener los 
+	contornos de estas áreas. Para esto utilizamos el algoritmo de Suzuki 
+	\cite{suzuki85} que recorre los bordes de estas zonas y crea 
+	secuencias de puntos $(x,y)$ que definen el contorno de las mismas. 
+	Las secuencias de puntos son luego aproximadas para generar polígonos 
+	cerrados mediante el algoritmo de Douglas-Pecker \cite{dp74}. Tomando 
+	estos polígonos definimos distintos parámetros tales como el área, 
+	perímetro o figura que nos permiten discernir si se trata de un objeto 
+	a reconocer o no. La posición del objeto es luego informada a 
+	partir de su rectángulo contenedor mínimo.
 
 
 \begin{figure}[tpb]
@@ -172,9 +250,19 @@ El algoritmo comienza por tomar una imagen fresca de la cámara, las imágenes c
 \end{figure}
 
 
-\subsubsection{Detección de color}
-El problema de decidir si un pixel determinado se corresponde con un color particular resulta mucho más sencillo de resolver en el espacio de color HSV. En el espacio RGB, de haber un cambio en el brillo o iluminación de la imagen, los tres canales se ven afectados de igual manera mientras que en el espacio HSV el canal H, que codifica la información sobre el tono del color, se ve mucho menos influenciado que los otros dos canales ( saturación y valor). De esta manera, podemos caracterizar el color de un pixel determinado observando su valor en dicho canal sin importar las condiciones de brillo o iluminación al cual se encuentra expuesto.
-\\ \indent Entonces, realizamos la detección de color verificando los valores correspondientes al canal H (tono) de la representación HSV de la imagen. Para esto realizamos la conversión de la imagen obtenida por la cámara  de formato RGB a HSV usando el algoritmo expuesto en la figura \ref{code:hsv}.
+\subsubsection{\label{sec:color} Detección de color}
+El problema de decidir si un pixel determinado se corresponde con un 
+color particular resulta mucho más sencillo de resolver en el espacio 
+de color HSV. Este espacio de color se compone de un canal H que 
+describe el color de un pixel, un canal S que pondera la saturación de 
+dicho color y un canal V que mide la luminosidad de dicho pixel. En el espacio RGB, de haber un cambio en el brillo o 
+iluminación de la imagen, los tres canales se ven afectados de igual 
+manera mientras que en el espacio HSV el canal H, que codifica la 
+información sobre el tono del color, se ve mucho menos influenciado en 
+comparación con los otros dos canales ( saturación y valor). De esta 
+manera, podemos caracterizar el color de un pixel determinado 
+observando su valor en dicho canal sin molestarnos demasiado por las condiciones de brillo o iluminación al cual se encuentra expuesto.
+\\ \indent Realizamos la detección de color verificando los valores correspondientes al canal H (tono) de la representación HSV de la imagen. Para esto realizamos la conversión de la imagen obtenida por la cámara  de formato RGB a HSV usando el algoritmo expuesto en la figura \ref{code:hsv}.
 \begin{figure}[tpb]
 \begin{verbatim}
 V=max(R, G, B)
@@ -189,7 +277,32 @@ if H<0 then H=H+360
 \caption{\label{code:hsv}pseudo-código de la conversión RGB-HSV}
 \end{figure}
 
-Obteniendo el canal H, nos fijamos que los valores de los pixeles estén dentro de cierto rango correspondiente al color que buscamos. Como podemos observar en la figura \ref{fig:hsv_space} En el espacio de color HSV los colores se encuentran dispuestos a lo largo de una circunferencia, donde cada tonalidad representa un ángulo en la misma. Por ejemplo, si queremos abarcar las distintas tonalidades del azul podemos elegir el rango que va de 200$^\circ$ a 260$^\circ$. Cuando buscamos un color en particular  es preciso elegir este rango cuidadosamente ya que de ser un rango muy restrictivo podemos despreciar pixeles de interés arruinando la forma del contorno del objeto a buscar y si elegimos un rango más abarcativo podemos tomar pixeles de colores distintos al buscado, introduciendo ruido en las formas de los contornos. Experimentalmente se comprueban los resultados de un filtro de color con distintos rangos, como se muestra  en la figura \ref{fig:hue_range}.
+Obteniendo el canal H, nos fijamos que los valores de los pixeles 
+estén dentro de cierto rango correspondiente al color que buscamos. 
+Como podemos observar en la figura \ref{fig:hsv_space}, en el espacio 
+de color HSV los colores se encuentran dispuestos a lo largo de una 
+circunferencia, donde cada tonalidad representa un ángulo en la misma. 
+Por ejemplo, si queremos abarcar las distintas tonalidades del azul 
+podemos elegir el rango que va de 200$^\circ$ a 260$^\circ$. Cuando 
+buscamos un color en particular  es preciso elegir este rango 
+cuidadosamente ya que de ser un rango muy restrictivo podemos 
+despreciar pixeles de interés arruinando la figura del contorno del 
+objeto a buscar y si elegimos un rango más abarcativo podemos tomar 
+pixeles de colores distintos al buscado, introduciendo ruido. 
+Experimentalmente comprobamos los resultados de un filtro de color con 
+distintos rangos, como se muestra  en la figura \ref{fig:hue_range}. 
+Una vez obtenidos los pixeles que se corresponden con el color buscado 
+se combinan estos con los del canal de saturación utilizando un and 
+bit a bit entre ambos pixeles. A mayor saturación consideramos mayor 
+presencia del color buscado en dicho pixel y por lo tanto mayor 
+probabilidad de que este corresponda a el objeto buscado. \\
+\indent En el caso de las colillas se utilizó el rango para el canal de tono 
+$20<h<40$ con valor en el canal de saturación mayor a 60. En el caso 
+de los platos y los vasos se busco detectar el color blanco. La 
+particularidad de este color es que este se encuentra presente en 
+todos los colores del rango H y se lo caracteriza por su valor alto en 
+el canal de valor. Por este motivo, para platos y vasos solo se verifica que 
+se cumpla que el valor del pixel tenga $v>170$.
 \begin{figure}[tpb]
 \begin{center}
   \includegraphics[scale=0.4]{figuras/hsv_triangle.png}
@@ -206,9 +319,14 @@ Obteniendo el canal H, nos fijamos que los valores de los pixeles estén dentro 
   \label{fig:hue_range}
 \end{figure}
 
-	\subsubsection{Threshold}
-Threshold o umbral es una operación que nos permite pasar de una imagen en escala de grises a una imagen binaria. El proceso de thresholding consiste en distinguir los pixeles que se encuentran por encima de un cierto valor de los que están por debajo del mismo. Con este objetivo, se crea una imagen binaria asignándoles valores 1 o 0 según su condición respecto del valor. El algoritmo de thresholding nos puede servir para distinguir un objeto determinado de un contexto o fondo siempre y cuando el objeto posea un mayor brillo que el fondo en el que se encuentra. Esto significa que los pixeles correspondientes a un objeto se encontrarán por encima de cierto valor característico, determinado por el fondo. En nuestro caso esto no sucede de esta forma ya que no siempre la intensidad / brillo de los objetos supera al fondo en el que se encuentra, por lo cual resulta difícil utilizar esta técnica. Podemos apreciar un ejemplo de este efecto en la figura \ref{fig:thresh-dif}. \\
-\indent Existen diversas variantes de threshold, los parámetros utilizados son $V$ para indicar el valor umbral y $M$ que indica el valor a setear en los pixeles.
+	\subsubsection{\label{sec:thresh} Threshold}
+Threshold o umbral es una operación que nos permite pasar de una 
+imagen en escala de grises a una imagen binaria. El proceso de 
+thresholding consiste en distinguir los pixeles que se encuentran por 
+encima de un cierto valor de los que están por debajo del mismo. Con este objetivo, se crea una imagen binaria asignándoles valores 1 o 0 según su condición respecto del valor. El algoritmo de thresholding nos puede servir para distinguir un objeto determinado de un contexto o fondo siempre y cuando el objeto posea un mayor brillo que el fondo en el que se encuentra. Esto significa que los pixeles correspondientes a un objeto se encontrarán por encima de cierto valor característico, determinado por el fondo. En nuestro caso esto no sucede de esta forma ya que no siempre la intensidad o brillo de los objetos supera al fondo en el que se encuentra, por lo cual resulta difícil utilizar esta técnica. Podemos apreciar un ejemplo de este efecto en la figura \ref{fig:thresh-dif}. \\
+\indent Existen diversas variantes de threshold, los parámetros 
+utilizados son $V$ para indicar el valor umbral y $M$ que indica el 
+valor a tomar por los pixeles.
 \begin{itemize}
 \item{ Threshold binario:  Si un pixel se encuentra por encima de $V$, se le asigna un valor $M$, de otro modo se le asigna $0$.}
 \item{ Threshold binario invertido:  Si un pixel se encuentra por encima de $V$, se le asigna 0, de otro modo se le asigna $M$.}
@@ -216,7 +334,22 @@ Threshold o umbral es una operación que nos permite pasar de una imagen en esca
 \item{ Threshold a cero invertido : Si un pixel se encuentra por encima de $V$ se le asigna $0$, de otro modo, conserva su valor.}
 \item{ Threshold a cero invertido : Si un pixel se encuentra por encima de $V$ conserva su valor, de otro modo se lee asigna $0$.}
 \end{itemize}
-El problema con esta familia de algoritmos es que en todos los casos el valor $V$ permanece constante para toda la imagen haciéndolo propenso a errores cuando la imagen presenta diferentes niveles de iluminación. Una manera de solucionar esto es pre-computando el valor $V$ para distintas zonas de la imagen. Un ejemplo de esta solución es la técnica de thresholding adaptativo, que computa el valor de $V$ a medida que recorre la imagen, usando para esto, una ventana cuyo tamaño es definido por el usuario. Siguiendo esta lógica, se utilizan los valores de los pixeles locales a esta ventana para definir un valor de $V$ (por ejemplo calculando el promedio de intensidad) y luego se aplica alguna de las técnicas de thresholding simples mencionadas, utilizando este mismo valor. Sin embargo, este algoritmo es más costoso y puede provocar efectos indeseados.ACA PODRIA IR UNA FOTO DE THRESHOLD ADAPTATIVO\\
+El problema con esta familia de algoritmos es que en todos los casos el 
+valor $V$ permanece constante para toda la imagen haciéndolo propenso 
+a errores cuando la imagen presenta diferentes niveles de iluminación. 
+Una manera de solucionar esto es pre-computando el valor $V$ para 
+distintas zonas de la imagen como lo hace la 
+técnica de thresholding adaptativo, que computa el valor de $V$ a 
+medida que recorre la imagen, usando para esto, una ventana cuyo 
+tamaño es definido por el usuario. Siguiendo esta lógica, se utilizan 
+los valores de los pixeles abarcado por esta ventana para definir un valor 
+de $V$ (por ejemplo calculando el promedio de intensidad) y luego se 
+aplica alguna de las técnicas de thresholding simples mencionadas, 
+utilizando este mismo valor. Sin embargo, este algoritmo es más 
+costoso y puede provocar efectos indeseados como se observa en la 
+figura \ref{fig:thresh_adapt} en donde el valor de V se calcula 
+utilizando un promedio ponderado por una función gaussiana de acuerdo a la distancia del centro 
+de la ventana.\\
 \indent En nuestro caso, utilizamos thresholding no para distinguir los 
 objetos del fondo (esto es trabajo del filtro de color), sino como 
 método de eliminación de ruido. Cuando se combina el canal de 
@@ -240,6 +373,20 @@ threshold. En las figuras \ref{fig:threshold_ruido} y
   \label{fig:thresh-dif}
 \end{figure}
 
+\begin{figure}[tpb]
+\begin{center}
+  \includegraphics[scale=0.25]{figuras/adaptative.png}
+\end{center}
+  \caption{\small Comparación de threshold adaptativo con el filtro de 
+  color. (b) Imagen obtenida de la cámara. 
+  (a) Salida del filtro de color. (c) Threshold adaptativo sobre la 
+  imagen b previa conversión a blanco y negro utilizando una ventana 
+  de 9x9 pixeles. Se observa que el filtro adaptativo identifica 
+  correctamente los contornos de las colillas pero agrega mucha 
+  información redundante que resultara en procesamiento extra.}
+  \label{fig:thresh_adapt}
+\end{figure}
+
 
 \begin{figure}[tpb]
 \begin{center}
@@ -257,7 +404,7 @@ threshold. En las figuras \ref{fig:threshold_ruido} y
   \label{fig:threshold}
 \end{figure}
 
-	\subsubsection{Operaciones morfológicas}
+	\subsubsection{\label{sec:morph} Operaciones morfológicas}
 Sombras, luces y otros efectos pueden alterar el resultado del filtro de color introduciendo ruido en los objetos a detectar. Este ruido puede surgir tanto de la omisión de pixeles de interés como por la inclusión de pixeles extra. Para subsanar esto, utilizamos las operaciones morfológicas de dilatación y erosión. Ambas se basan en la utilización de un elemento estructural, esto es, una figura de cualquier tamaño y forma que tiene definido un punto principal y que recorre la imagen solapándose pixel a pixel. De acuerdo a operaciones locales a este elemento, el pixel que coincide con el punto principal se ve modificado. Usualmente se utilizan como elementos estructurales, pequeños discos o cuadrados, donde el punto principal se encuentra en el centro del mismo. El efecto generado se entiende mejor observándolo en imágenes binarias. En el caso de la dilatación, la idea intuitiva es remplazar cada pixel no vacío con una copia del elemento estructural cuyo punto principal se encuentra en esa posición. Para la erosión, la idea intuitiva es quedarse con aquellos pixeles tal que podamos hacer caber un elemento estructural cuyo punto principal se encuentra en esa posición y dicho elemento solo cubra pixeles no vacíos.
 Ilustramos esto en las figuras \ref{fig:dilate-sample} y \ref{fig:erode-sample}.
 
@@ -313,7 +460,7 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	La detección de contornos se produce sobre las imagenes binarias producidas en la etapa de pre-procesamiento. Dichos contornos
 	quedan definidos implicitamente como la separación de regiones positivas de las negativas. 
 	
-	\paragraph{Algoritmo}
+	\paragraph{Algoritmo} 
 	Recordemos que las imágenes binarias se caracterizan por tener solo dos tipo de pixeles, los que contienen un cero(0-pixeles) o los que tienen 
 	un valor mayor a 0 (1-pixeles). Decimos que un conjunto de 0-pixeles o 1-pixeles \textit{conectados} forman una componente. Entendemos dos tipos de conectividad
 	la 4-conectividad y la 8-conectividad: dos pixeles con coordenadas $(x',y')$ y $(x'',y'')$ son 4-conexos si y solo si 
@@ -482,7 +629,26 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	\subsubsection{Reconocimiento de platos}
 	Para el reconocimiento de platos se utilizan(en este orden) los filtros de área, perímetro, circularidad, excentricidad y de elipse.
 	El filtro de área verifica que $500 \leq area \leq 10000 $ , el de perímetro que $500 \leq per \leq 1500 $ , el de circularidad
-	que $10 \leq circ \leq 16$, el de excentricidad que $0.65 \leq ecc \leq 0.95$ y  el de elipse que $|a-aReal|/ aReal > 0.2$.
+	que $10 \leq circ \leq 16$, el de excentricidad que $0.65 \leq ecc \leq 0.95$ y  el de elipse que $|a-aReal|/ aReal > 0.2$.s
+	
+	\subsubsection{Centroide}
+	En las siguientes secciones se hacen referencia a los centroides 
+	de un objeto. El centroide es el centro geometrico o centro de 
+	gravedad de una figura y 
+	sirve como punto de referencia para la misma. Para calcular dicho 
+	punto hacemos uso de las formulas propuestas por Hu \cite{Hu1962} para la 
+	descripción de figuras. El momento de Hu de un contorno 2d se define como:
+	\begin{equation}
+		m_{pq}=\sum_{x}{\sum_{y}{x^py^qI(x,y)}}
+	\end{equation}
+	
+	donde $I(x,y)$ es la intensidad del pixel de coordenadas $(x,y)$.
+	Notamos que $m_{0,0}$ representa la suma de la intensidad de todos los pixeles del 
+	contorno. Entonces, podemos definir al centroide $(x_c,y_c)$ como 
+	$x_c= m_{1,0} / m_{0,0}$ e 
+	$y_c=m_{0,1} / m_{0,0}$. Estas dos fórmulas se corresponden con el 
+	promedio de las coordenadas x e y de los puntos de la figura.  
+
 
 \begin{figure}[tpb]
 \begin{center}
