@@ -44,7 +44,7 @@ de comportamientos auxiliares.
 \\
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.5]{comportamientos/behavioursArchitecture.png}
+\includegraphics[scale=0.5]{comportamientos/behavioursArchitecture2.png}
 \caption{Arquitectura de Comportamientos}
 \label{fig:architecture}
 \end{center}
@@ -209,6 +209,7 @@ El approach elegido, entonces, se puede describir como:
 %En el caso que haya m\'as de una basura elegimos la m\'as cercana, usando c\'alculos
 %detallados a continuaci\'on.
 \paragraph{Implementaci\'on del comportamiento}
+\label{focus_garbage:impl}
 El comportamiento sigue el siguiente \emph{pseudo-codigo}:
 \begin{verbatim}
 por cada paso
@@ -226,9 +227,9 @@ por cada paso
     poner_velocidades_en_ruedas(veloc_izq,veloc_der)
 \end{verbatim}
 
-Se puede ver que la velocidad de giro del robot es proporcional al \'angulo que hay
-hacia la basura, logrando enfocar m\'as r\'apido cuando el \'angulo es mayor y tener
-mayor precisi\'on cuando el \'angulo es m\'as chico, adem\'as de tener mayor rapidez
+Se puede ver que la velocidad de giro del robot es proporcional al m\'odulo del \'angulo
+que hay hacia la basura, logrando enfocar m\'as r\'apido cuando el \'angulo es mayor y
+tener mayor precisi\'on cuando el \'angulo es m\'as chico, adem\'as de tener mayor rapidez
 de enfoque y precisi\'on que si la velocidad de giro fuera constante.
 \\
 TODO HACER REFERENCIA A LA SECCION DE VISION CON OBTENERLISTADEBASURAS
@@ -251,7 +252,9 @@ dado por dos condiciones:
 \item El m\'etodo de reconociemiento de objetos reconoci\'o una basura
 \item La basura se encuentra en un entorno del medio horizontal de la imagen de la c\'amara
 \end{enumerate}
+
 \paragraph{Implementaci\'on del comportamiento}
+\label{go_to_garbage:impl}
 \begin{verbatim}
 por cada paso
     distancia = obtener_distancia_a_basura(modulodereconocimiento)
@@ -261,7 +264,7 @@ por cada paso
     poner_velocidades_en_ruedas(veloc_izq,veloc_der)
 \end{verbatim}
 
-Al igual que en la implementaci\'on del comportamiento \ref{focus_garbage},
+Al igual que en la implementaci\'on del comportamiento \ref{focus_garbage:impl},
 las velocidades que se le otorgan a las ruedas dependen de la distancia
 hacia la basura, de forma tal que si una basura est\'a muy lejos, la velocidad
 sea mayor y a medida que se va acercando, vaya disminuyendo linealmente.
@@ -294,16 +297,119 @@ donde $y_{angle}$ es la proporci\'on de $FOV_v$ hacia $y$.
 
 \subsubsection{Recolectar Basura}
 \label{collect_garbage}
+Una vez que el robot llego a estar posicionado para recolectar la basura deseada,
+el comportamiento de \emph{recolectar basura} se activa. El mecanismo para \'esto
+fue cambiando a lo largo del desarrollo del proyecto.
+\\
+En un principio pensamos en usar una rampa interna dentro del robot, de forma
+tal que la basura suba esa rampa para luego caer en un dep\'osito de basura
+interno al robot. Por problemas con la simulaci\'on de este procedimiento, se
+busc\'o otro mecanismo.
+\\
+El mecanismo que elegimos para usar en la simulaci\'on fue el siguiente:
+\begin{itemize}
+	\item El robot tiene un servo en su parte posterior (debajo de la c\'amara)
+	\item Dos paredes delimitan el espacio a lo largo de la direcci\'on que une
+			el centro del robot con el servo anteriormente mencionado.
+\end{itemize}
+
+%TODO Poner imagen mostrando etapas de recoleccion
+
 \paragraph{Detalle del comportamiento}
+La activaci\'on de \emph{recolectar basura} depende de 3 condiciones:
+\begin{itemize}
+	\item Las dos condiciones impuestas para \emph{ir a basura}
+	\item La distancia a la basura elegida para ser recolectada debe ser menor a
+			un umbral.
+\end{itemize}
+
+Aqu\'i se puede observar que tan importantes son los comportamientos anteriores
+para que el robot logre recolectar la basura.
+\\
+Es importante la elecci\'on del umbral: un valor muy chico puede llevar a que el
+comportamiento no se active porque la basura ya no est\'a m\'as en la imagen. Por
+otro lado, un valor muy grande causar\'ia que el robot se disponga a recolectar 
+una basura que est\'a muy lejos y podr\'ia llegar a moverse por cuestiones propias
+del ambiente, llevando as\'i a una innecesaria activaci\'on del comportamiento.
+
 \paragraph{Implementaci\'on del comportamiento}
+El \emph{pseudo-codigo} de este comportamiento es el siguiente:
+
+\begin{verbatim}
+    distancia = obtener_distancia_a_basura(modulodereconocimiento)
+    levantar(servo_delantero)
+    recorrerdistancia(distancia)
+    cerrar(servo_delantero)
+\end{verbatim}
+
+La distancia hacia la basura es obtenida de la misma forma que en la secci\'on
+\ref{go_to_garbage:impl}. Levantar y cerrar el servo consiste en setear su
+posici\'on en $\frac{\pi}{2}$ y $0$ respectivamente. Para calcular la distancia
+recorrida se utiliz\'o la distancia entre la posici\'on del robot en el instante $t$,
+$P_r(t)$ y el instante $t+1$, $P_r(t+1)$, ambas dadas por la odometr\'ia
+(Ver secci\'on \ref{odometry}). Las diferentes etapas de la recolecci\'on de una
+basura se puede ver en la figura \ref{fig:recollection}.
+
+\begin{figure}[htp]
+\begin{center}
+%\includegraphics[scale=0.5]{comportamientos/recollectionStages.png}
+\includegraphics[scale=0.3]{comportamientos/unk.jpg}
+\caption{Etapas de recolecci\'on de basura}
+\label{fig:recollection}
+\end{center}
+\end{figure}
+
 
 \subsubsection{Ir a zona de descarga de basura}
 \label{go_to_unload_zone}
+Para dirigirse a la zona de descarga, decidimos imponerle una condici\'on al
+entorno donde el robot actuar\'a. \'Esta condici\'on consiste en poner l\'ineas
+de forma tal que si el robot sigue la misma, lo lleve al lugar donde se
+encuentra la zona de descarga.
+\\
+Por lo tanto, para dirigirse a la zona de descarga de basura, es necesario:
+\begin{itemize}
+	\item Buscar la l\'inea e ir a la misma
+	\item Entrar a la l\'inea, de forma tal que el robot y la l\'inea est\'en alineados
+	\item Seguir la l\'inea
+\end{itemize}
+Siguiendo con la idea que es mejor descomponer un comportamiento complejo en otros
+m\'as simples, decidimos separar el comportamiento de \emph{Ir a zona de descarga de basura}
+en 3 comportamientos m\'as simples: \emph{Buscar l\'inea}, \emph{Entrar a la l\'inea} y
+finalmente \emph{Seguir la l\'inea}.
 
 \paragraph{Buscar l\'inea}
 \label{find_line}
+Inicialmente, hab\'iamos dispuesto las l\'ineas de forma tal que sigan los l\'imites de la
+arena. Entonces para buscar la l\'inea tuvimos que calcular para cada l\'inea
+cu\'al es la distancia hacia la misma, luego elegir ir a la que menor distancia hab\'ia.
+Adem\'as de ser costoso, este approach ten\'ia un problema: a veces suced\'ia que al ir hacia una
+l\'inea, la distancia hacia otra pasaba a ser m\'as corta y \'esta \'ultima pod\'ia estar m\'as
+lejos de la zona de recarga que la primera.
+\\
+Luego repensamos el problema y nos dimos cuenta que el objetivo era llegar a la zona de descarga,
+por lo que decidimos dejar s\'olo 2 las l\'ineas que se encuentran cerca de la misma, como se
+puede apreciar en la figura \ref{fig:arenafinal}. La zona de descarga se ubica cerca de donde
+se encuentra el cilindro de color verde.
+
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.3]{comportamientos/arenafinal.png}
+\caption{Arena de simulaci\'on y ejes de coordenadas}
+\label{fig:arenafinal}
+\end{center}
+\end{figure}
+
 \subparagraph{Detalle del comportamiento}
+La decisi\'on de dejar s\'olo dos l\'ineas, acompa\~nada por la elecci\'on de la ubicaci\'on de la
+zona de descarga, nos facilit\'o la composici\'on de \'este comportamiento.
+\\ Como se ve en la figura \ref{fig:arenafinal}, para ir a la l\'inea se debe girar hasta tener
+un \'angulo de $\frac{\pi}{2}$ y luego ir hacia adelante.
+
+%Describir la eleccion de las distancias de las lineas hacia las paredes
+
 \subparagraph{Implementaci\'on del comportamiento}
+
 
 \paragraph{Entrar a l\'inea}
 \label{enter_line}
