@@ -409,7 +409,46 @@ un \'angulo de $\frac{\pi}{2}$ y luego ir hacia adelante.
 %Describir la eleccion de las distancias de las lineas hacia las paredes
 
 \subparagraph{Implementaci\'on del comportamiento}
+El \emph{pseudo-codigo} de este comportamiento es sencillo, ya que
+no requiere c\'alculos extras:
 
+\begin{verbatim}
+por cada paso
+    angulo_actual = obtener_angulo_actual(odometria)
+    si esta_en_un_entorno_de(angulo_actual,PI/2) entonces
+        si angulo_actual > PI/2 && angulo_actual < 3PI/2 entonces
+            giro_para_la_derecha
+        sino
+            giro_para_la_izquierda
+        fin si
+    sino
+        voy_hacia_linea
+    fin si
+\end{verbatim}
+
+Hicimos la verificaci\'on de que el \'angulo est\'e entre $\frac{\pi}{2}$ y $3\frac{\pi}{2}$
+para evitar girar m\'as de $\pi$, girando a la izquierda o a la derecha dependiendo
+cual sea el caso. Para ver esto m\'as claramente, veamos que sucediese si no estuviera:
+\begin{verbatim}
+    si esta_en_un_entorno_de(angulo_actual,PI/2) entonces
+        giro_para_la_izquierda
+    sino
+\end{verbatim}
+En el caso que el angulo actual sea $\pi$, el robot girar\'ia un total de $3\frac{\pi}{2}$
+hasta llegar al \'angulo destino $\frac{\pi}{2}$, cuando en realidad girando para el sentido
+contrario s\'olo tendr\'ia que girar $\frac{\pi}{2}$.
+\\
+Se puede observar en el c\'odigo usamos datos calculados por la odometr\'ia, en
+este caso, la orientaci\'on actual del robot. El lector se podr\'ia preguntar:
+"Si la odometr\'ia tiene la posici\'on actual del robot, ?` porqu\'e no se usaron los datos
+de la odometr\'ia para ir hacia la base ?". En principio, esto requiere que el robot sepa
+la ubicaci\'on de la base. Por otro lado, habr\'ia que utilizar alg\'un algoritmo de
+\emph{Path Planning} para realizar el recorrido, algo que no concuerda con la arquitectura
+elegida.
+Es importante destacar el uso de datos calculados por la odometr\'ia porque si la misma
+llega a tener un error grande, puede llevar a una activaci\'on err\'onea de comportamientos.
+En la secci\'on \ref{odometry:problems} se puede ver la incidencia de un error grande de
+la odometr\'ia en el comportamiento emergente del robot.
 
 \paragraph{Entrar a l\'inea}
 \label{enter_line}
