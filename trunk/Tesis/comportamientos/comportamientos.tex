@@ -403,12 +403,26 @@ Luego repensamos el problema y nos dimos cuenta que el objetivo era llegar a la 
 por lo que decidimos dejar s\'olo 2 las l\'ineas que se encuentran cerca de la misma, como se
 puede apreciar en la figura \ref{fig:arenafinal}. La zona de descarga se ubica cerca de donde
 se encuentra el cilindro de color verde.
+\\
+Para distinguir si el robot est\'a en una l\'inea o no, utilizamos sensores de piso dispuestos
+como se muestra en la figura \ref{fig:floorSensors}. Los sensores se encuentran a una distancia
+$a$ del centro del robot sobre el eje $Y$ y los de los costados a una distancia $b$ del eje $Y$.
+La distancia del sensor del medio hacia el centro del robot es $a$, mientras que la distancia
+hacia un sensor del costado es $r = \sqrt{a^2 + b^2}$.
 
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[scale=0.3]{comportamientos/arenafinal.png}
 \caption{Arena de simulaci\'on y ejes de coordenadas}
 \label{fig:arenafinal}
+\end{center}
+\end{figure}
+
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=1.0]{comportamientos/floorSensors.png}
+\caption{Disposici\'on de sensores de piso}
+\label{fig:floorSensors}
 \end{center}
 \end{figure}
 
@@ -472,7 +486,49 @@ lo lleve hacia la zona de descarga, por lo que una vez en la l\'inea, el robot d
 girar dependiendo de que lado se encuentre la misma (Ver figura \ref{fig:arenafinal}).
 
 \subparagraph{Implementaci\'on del comportamiento}
+\begin{verbatim}
+    angulo_final = obtener_angulo_final(obtener_linea(odometria))
+    tita = atan(dist_sens_piso_X,dist_sens_piso_Y)
+    si ( esta_en_la_linea(sensor_piso(DERECHA)) ) entonces
+        tita = -tita
+    fin si
+    si ( esta_en_la_linea(sensor_piso(MEDIO)) ) entonces
+        tita = 0
+    fin si
 
+    si ( tita != 0 ) entonces
+        girar(tita)
+    fin si
+
+    distancia_a_recorrer = dist_sens_piso_Y;
+    si ( tita != 0 ) entonces
+        distancia_a_recorrer = sqrt( dist_sens_piso_X^2 + dist_sens_piso_Y^2 )
+    fin si
+
+    recorrer(distancia_a_recorrer)
+
+    angulo_actual = obtener_angulo(odometria)
+
+    girar(normalizar(angulo_actual - angulo_final))
+\end{verbatim}
+
+%% Explicar el porque del primer giro - relacionarlo con la figura fig:floorSensors
+El primer giro del robot es para lograr que el robot quede con el sensor de piso del medio
+sobre la l\'inea. Como mostramos en la figura \ref{fig:floorSensorsStates}, en el caso (a) y (b)
+el robot girar\'a de forma tal que llegue un caso parecido al (c) ya posiblemente el sensor del
+medio no estar\'a en la l\'inea. Notar que si el sensor del medio est\'a en
+la l\'inea, entonces el robot no gira, cualquiera sea el estado de los sensores de los costados.
+El \'angulo que debe girar est\'a dado por $\theta = \arctan (\frac{b}{a})$ (Ver figura
+\ref{fig:floorSensors}) o $-\theta$ seg\'un cual sea el sensor que est\'e sobre la l\'inea.
+
+%% Explicar el porque del recorrido de la distancia - relacionarlo con la figura fig:floorSensors
+Luego del posible giro para lograr que el sensor de piso del medio quede sobre la l\'inea, 
+se recorre una distancia de $a$, en el caso que el robot no haya girado anteriormente, o $r$ en
+el caso que s\'i lo haya hecho. El motivo de este trayecto es que el centro del robot quede
+sobre la l\'inea, como muestra la figura \ref{fig:positioned}. De \'esta forma, s\'olo queda
+girar nuevamente hacia el \'angulo que se quiera. Si la l\'inea es la izquierda, entonces el
+robot deber\'a girar hasta que su orientaci\'on sea $0$, o $\pi$ en el caso que la l\'inea
+sea la derecha.
 
 \begin{figure}[htp]
 \begin{center}
@@ -480,24 +536,52 @@ girar dependiendo de que lado se encuentre la misma (Ver figura \ref{fig:arenafi
 \includegraphics[scale=0.4]{comportamientos/floorSensorsLine1.png}
 \includegraphics[scale=0.4]{comportamientos/floorSensorsLine2.png}
 \caption{Posibles estados iniciales de entrar a la l\'inea}
-\label{fig:floorSensors}
+\label{fig:floorSensorsStates}
 \end{center}
 \end{figure}
-
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=1.0]{comportamientos/floorSensors.png}
-\caption{Disposici\'on de sensores de piso}
-\label{fig:floorSensors}
+\includegraphics[scale=0.4]{comportamientos/floorSensorsLine3.png}
+\caption{Centro del robot sobre la l\'inea}
+\label{fig:positioned}
 \end{center}
 \end{figure}
 
-
 \paragraph{Seguir l\'inea}
 \label{follow_line}
+Una vez que el robot est\'a posicionado y con el sensor del medio sobre la l\'inea,
+s\'olo basta con seguirla para llegar hacia la zona deseada. \'Este comportamiento
+es sencillo de desarrollar.
+
 \subparagraph{Detalle del comportamiento}
+Para lograr que el robot siga la l\'inea el objetivo es tratar de mantener s\'olo el
+sensor del medio sobre la l\'nea. Entonces, basta con analizar que se debe hacer en los
+siguientes casos:
+\begin{enumerate}
+	\item El sensor de la derecha est\'a sobre la l\'inea
+	\item El sensor de la izquierda est\'a sobre la l\'inea
+\end{enumerate}
+En el primer caso, se debe lograr sacar el sensor de la derecha de la l\'inea,
+describiendo un peque\~no arco hacia ese lado. El segundo caso es an\'alogo:
+para sacar el sensor de la izquierda de la l\'inea se debe seguir una trayectoria
+con un peque\~no \'angulo hacia la izquierda. 
+
 \subparagraph{Implementaci\'on del comportamiento}
+El \emph{pseudo-c\'odigo} es simple:
+\begin{verbatim}
+por cada paso
+    veloc_izq = veloc_der = VELOC_SEGUIR_LINEA
+    si ( esta_en_la_linea(sensor_piso(IZQUIERDA)) ) entonces
+        veloc_izq *= ( 1 - FACTOR_DE_GIRO )
+        veloc_der *= ( 1 + FACTOR_DE_GIRO )
+    fin si
+    si ( esta_en_la_linea(sensor_piso(DERECHA)) ) entonces
+        veloc_izq *= ( 1 + FACTOR_DE_GIRO )
+        veloc_der *= ( 1 - FACTOR_DE_GIRO )
+    fin si
+    poner_velocidades_en_ruedas(veloc_izq,veloc_der)
+\end{verbatim}
 
 \subsubsection{Descargar Basura}
 \label{unload_garbage}
