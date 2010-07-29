@@ -55,7 +55,98 @@ procesamiento de imágenes y robots autonomos.
 	%~ embargo, no se reconocieron objetos sin textura. Para el método de 
 	%~ la bolsa de caracteristicas 
 	\subsubsection{Mobile Field Robot with Vision-Based Detection of Volunteer Potato Plants in a Corn Crop - FRITS K. VAN EVERT}
-	\cite{potato}
+	El objetivo de este trabajo es la construcción de un robot de 
+	tamaño reducido y de bajo costo capaz de detectar un tipo de 
+	planta de papas (volunteer potato) en un campo de trigo propocionar control automático de esta planta. El interés en 
+	esta especie se debe a que esta planta resulta dificil de controlar en las cosechas y favorece la 
+	proliferación de otras sustancias que pueden perjudicar la
+	cosecha. Con este proposito, se utilizó un camión de jugete como 
+	soporte para un robot mobil. Las partes de radio-control fueron 
+	removidas y remplazadas por micro-controladores para manejar la 
+	dirección y la velocidad del mismo. Además, como instrumento de 
+	sensado se agregaron una webcam estándar montada sobre un mástil a 
+	una altura de 1.5m, un contador de revoluciones y un gyroscopio de 
+	estado sólido. Las imágenes tomadas por la webcam son procesadas 
+	por una pc a bordo con un procesador pentium M de 1.6 mhz. El control robotico de volunteer potatoes involucra al 
+	menos 3 grandes etapas: navegación a travez del cultivo, detección 
+	de plantas de papa y el control de las mismas.\\
+	\indent En los campos de trigo la cosecha se dispone en filas 
+	dejando espacio entre hilera e hilera para el paso del robot. Para 
+	que este pueda navegar correctamente debe poder reconocer dichas 
+	hileras de modo de orientarse correctamente en el cultivo. Esto se 
+	logra mediante un algoritmo de visión. Este comienza 
+	tomando una imágen RGB de 320x240 de la cámara. Para separar las 
+	plantas del fondo se toma el doble del valor del canal G  y se 
+	sustraen los canales rojos y azules (2G -R - B). Pixeles con un 
+	valor mayor a cierto umbral son considerados planta y todos los 
+	demás fondo. En un segúndo paso de procesamiento, se detectan las 
+	filas de plantas utilizando un algoritmo inspirado en la 
+	transformada de Hough \cite{hough62}. Este dibuja líneas imaginarias sobre la 
+	imagen segmentada y se establece un puntaje para cada una según 
+	cuantos pixeles blancos ( plantas) cubran. Estos puntajes se 
+	convierten en valores de pixeles de una nueva imagen en donde la 
+	coordenada vertical de cada pixel corresponde con la pendiente de 
+	la línea imaginaria y donde la coordenada horizontal con la 
+	intersección con el eje de coordenadas. Las hileras de plantas 
+	contribuyen pixeles a varias líneas imaginarias y aparecen en la 
+	nueva imagen como áreas con pixeles brillantes. Se utilizan las 
+	operaciones de threshold y dilatación para combinar estas áreas 
+	brillantes en un única región contigua de la cual se 
+	extrae el centro de gravedad para representar una hilera de 
+	plantas. Ya que el ruido puede ocasionar el reconocimiento de 
+	hileras de plantas inexistentes se utilizan algunas reglas 
+	sencillas para validar estas detecciones. Dos ejemplos de estas 
+	reglas son ``las hileras de plantas deben estar a uno de los dos 
+	costados del robot'' y ``las hileras deben ser paralelas entre si''.
+	Luego, la orientación del robot se establece según la pendiente de 
+	estas líneas.\\
+	\indent Para la detección de las plantas ``volunteer potato'' se 
+	utiliza una segunda cámara ubicada a una menor altura para obtener 
+	mayor resolución sobre las plantas en si. El algoritmo consiste en 
+	extraer las siguientes caracteristicas de las imágenes: (1) 
+	promedio de rojo para pixeles de planta ,(2) promedio de verde para 
+	pixeles de planta ,(3) promedio de azul para pixeles de planta, (4) 
+	numero total de pixeles de planta en la imagen binaria ,(5) número 
+	total de pixeles de contorno en la imagen binaria y (6) número 
+	total de pixeles de borde en la imagen Canny binaria. Estas 
+	caracteristicas se relacionan al color(1,2 y 3), tamaño (4), figura 
+	(combinación de 4 y 5) y textura (6).  Utilizando la misma fórmula 
+	(2G -B -R) y la operación de threshold se segmenta nuevamente la imagen 
+	 en pixeles de planta o fondo. Sobre esta imagen se calcula el 
+	 promedio de rojo,azul y verde para las carateristicas 1,2 y 3. 
+	 Por otro lado, contando el número de pixeles planta en la misma 
+	 imagen se obtiene la caracteristica 4. Para la caracteristica 5 
+	 se extraen los contornos de esta imagen y se cuenta el número de 
+	 pixeles plantas contenidos en ellos. Para la caracteristica 6 se 
+	 repite este último procedimiento pero extrayendo los bordes de la 
+	 imagen pero  
+	 utilizando una implementación del algoritmo de Canny 
+	 \cite{Canny:1986:ACA}. Se espera que el número de pixeles de 
+	 borde sea mayor si se trata de una planta de papa ya que esta 
+	 contiene un número mayor de hojas pequeñas que se solapan entre si 
+	 mientras que las de trigo solo contienen algunas pocas hojas. Para 
+	 clasificar las imágenes se uso un set de imágenes de entrenamiento
+	 que fueron clasificadas manualmente según contenían 
+	 plantas de papa (1) o no. Luego se entrenó un 
+	 clasificador de discriminante lineal de Fisher \cite{HastieEtAl2008} para distinguir 
+	 entre imágenes que contienen plantas de papa de las que no.\\
+	 \indent Para poner a prueba el algoritmo se tomaron dos sets de 
+	 imágenes capturando el recorrido del mismo robot autónomo a 
+	 travez de un campo de trigo. La tasa global de error para el 
+	 clasificador fue de 1.5\% en el primer set y 10.6\% en el 
+	 segúndo. En cuanto a la performance en la navegación, el robot 
+	 fue capaz de recorrer con exito 120m de hileras de cultivo con 
+	 una velocidad promedio de $0.67$ m/s. El autor remarca el alto 
+	 tiempo de procesamiento requerido por el detector de plantas de 
+	 papa ya que este bajó la tasa de cuadros del algoritmo de 
+	 navegación de 30 a 8 cuadros por segúndo. Por dicho motivo se 
+	 redujo la velocidad de desplazamiento del robot a 0.2 m/s para 
+	 que este sea capaz de capturar correctamente todas las plantas. 
+	 El mecanismo de control no fue implentado pero se incluyo un 
+	 speaker que reproduce un sonido cuando este encuentra una planta 
+	 del tipo buscado. Los algoritmos de visión utilizados fueron 
+	 desarrollados usando Matlab con la librería Delft \cite{DipLib}.
+	 
 	\subsubsection{Review of shape representation and description techinques - Dengsheng Zhang}
 El objetivo de este trabajo es realizar un resumen de las técnicas mas 
 importantes en cuanto a la representación y descripción de figuras o 
@@ -212,7 +303,10 @@ argumentando que los pixeles de la zona más alta se encuentran más
 expuestos a la luz por la perspectiva de la cámara, para esto sustrae 
 una máscara que compensa este efecto. Además, el autor elimina la 
 proyección del robot mismo sobre la imagen capturada por la cámara. 
-En la etapa de detección se realizó un threshold para obtener los pixeles más brillantes. Luego, la salida del threshold se utilizó como entrada para un detector de líneas basado en el algoritmo de hough. Finalmente, según la orientación de las líneas detectadas se determina la dirección del robot. El algoritmo se consideró exitoso ya que el robot propuesto fue el ganador de la competencia.
+En la etapa de detección se realizó un threshold para obtener los 
+pixeles más brillantes. Luego, la salida del threshold se utilizó 
+como entrada para un detector de líneas basado en el algoritmo de 
+Hough \cite{hough62}. Finalmente, según la orientación de las líneas detectadas se determina la dirección del robot. El algoritmo se consideró exitoso ya que el robot propuesto fue el ganador de la competencia.
 \pagebreak
 
 	
@@ -980,14 +1074,21 @@ de que el robot tenga éxito en la recolección del objeto. El criterio de menor
 En esta sección se describen los parámetros utilizados para la 
 medición de la performance y se muestran los resultados obtenidos para 
 el sistema de visión y un sistema de visión con predicción. De este 
-últimos exhibimos dos configuraciones.
+últimos exhibimos dos configuraciones. Tomamos 8 videos de prueba en los cuales 3 pertenecen a 
+colillas, 3 a vasos y 2 a platos. Los videos fueron tomados utilizando 
+una silla de oficina giratoria para poder desplazarse suavemente por 
+el entorno simulando el movimiento del robot. La cámara se ubicó a 30 
+cm del piso formando un ángulo de $30^{\circ}$ con el asiento  en dirección 
+hacia el suelo. La cámara utilizada es una microsoft lifecam vx-700 del tipo webcam y posee una 
+resolución de 640x480.
 
 \subsubsection{Parámetros de medición}
 Con el objetivo de  medir la efectividad del algoritmo de detección, desarrollamos un sistema de benchmarking. Este sistema permite
 a un usuario indicar la presencia de objetos a detectar en un video, marcándolos con rectángulos en las sucesiones de cuadros. De esta
 manera, corremos el algoritmo de detección por el mismo video y verificamos que los centroides de los objetos detectados por el algoritmo 
 se encuentren contenidos dentro de los rectángulos indicados por el 
-usuario.  Para obtener estadísticas utilizamos la siguiente información:
+usuario. Para obtener estadísticas sobre la performance  
+medimos los siguientes parámetros:
 \begin{itemize}
 \item { Cantidad de objetos a detectar \textbf{(\#O)}: Se corresponde con la cantidad de rectángulos marcados por el usuario}
 \item { Hits\textbf{(H)} : Cantidad de detecciones por parte del algoritmo que se corresponden con rectángulos marcados.}
