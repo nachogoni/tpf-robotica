@@ -352,8 +352,15 @@ basura se puede ver en la figura \ref{fig:recollection}.
 
 \begin{figure}[htp]
 \begin{center}
-%\includegraphics[scale=0.5]{comportamientos/recollectionStages.png}
-\includegraphics[scale=0.3]{comportamientos/unk.jpg}
+\includegraphics[scale=0.25]{comportamientos/collect1.png}
+\includegraphics[scale=0.25]{comportamientos/collect2.png}
+\includegraphics[scale=0.25]{comportamientos/collect3.png}
+\includegraphics[scale=0.25]{comportamientos/collect4.png}
+\includegraphics[scale=0.25]{comportamientos/collect5.png}
+\includegraphics[scale=0.25]{comportamientos/collect6.png}
+\includegraphics[scale=0.25]{comportamientos/collect7.png}
+\includegraphics[scale=0.25]{comportamientos/collect8.png}
+%\includegraphics[scale=0.3]{comportamientos/unk.jpg}
 \caption{Etapas de recolecci\'on de basura}
 \label{fig:recollection}
 \end{center}
@@ -362,7 +369,12 @@ basura se puede ver en la figura \ref{fig:recollection}.
 
 \subsubsection{Ir a zona de descarga de basura}
 \label{go_to_unload_zone}
-Para dirigirse a la zona de descarga, decidimos imponerle una condici\'on al
+Como la capacidad del dep\'osito interno de basura del robot tiene un l\'imite, 
+surge como necesidad que el robot sea capaz de ir hacia una zona donde descargar\'a
+la basura que contiene, surgiendo as\'i el est\'imulo necesario para la activaci\'on
+de este comportamiento.
+\\
+Para ir hacia dicha zona, decidimos imponerle una condici\'on al
 entorno donde el robot actuar\'a. \'Esta condici\'on consiste en poner l\'ineas
 de forma tal que si el robot sigue la misma, lo lleve al lugar donde se
 encuentra la zona de descarga.
@@ -440,11 +452,11 @@ contrario s\'olo tendr\'ia que girar $\frac{\pi}{2}$.
 \\
 Se puede observar en el c\'odigo usamos datos calculados por la odometr\'ia, en
 este caso, la orientaci\'on actual del robot. El lector se podr\'ia preguntar:
-"Si la odometr\'ia tiene la posici\'on actual del robot, ?` porqu\'e no se usaron los datos
-de la odometr\'ia para ir hacia la base ?". En principio, esto requiere que el robot sepa
-la ubicaci\'on de la base. Por otro lado, habr\'ia que utilizar alg\'un algoritmo de
-\emph{Path Planning} para realizar el recorrido, algo que no concuerda con la arquitectura
-elegida.
+"Si la odometr\'ia tiene la posici\'on actual del robot, ?`porqu\'e no se usaron los datos
+de la misma para ir hacia la base?". En principio, esto requiere que el robot tenga
+conocimiento acerca de la ubicaci\'on de la base. Por otro lado, se hubiera tenido que utilizar
+alg\'un algoritmo de \emph{Path Planning} para realizar el recorrido, algo que no
+concuerda con la arquitectura elegida.
 Es importante destacar el uso de datos calculados por la odometr\'ia porque si la misma
 llega a tener un error grande, puede llevar a una activaci\'on err\'onea de comportamientos.
 En la secci\'on \ref{odometry:problems} se puede ver la incidencia de un error grande de
@@ -453,7 +465,34 @@ la odometr\'ia en el comportamiento emergente del robot.
 \paragraph{Entrar a l\'inea}
 \label{enter_line}
 \subparagraph{Detalle del comportamiento}
+
+Para seguir la l\'inea, es necesario que primero el robot est\'e posicionado sobre ella
+y alineado con la misma. Tambi\'en se necesita que la direcci\'on del robot sea la que
+lo lleve hacia la zona de descarga, por lo que una vez en la l\'inea, el robot deber\'a
+girar dependiendo de que lado se encuentre la misma (Ver figura \ref{fig:arenafinal}).
+
 \subparagraph{Implementaci\'on del comportamiento}
+
+
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.4]{comportamientos/floorSensorsLine.png}
+\includegraphics[scale=0.4]{comportamientos/floorSensorsLine1.png}
+\includegraphics[scale=0.4]{comportamientos/floorSensorsLine2.png}
+\caption{Posibles estados iniciales de entrar a la l\'inea}
+\label{fig:floorSensors}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=1.0]{comportamientos/floorSensors.png}
+\caption{Disposici\'on de sensores de piso}
+\label{fig:floorSensors}
+\end{center}
+\end{figure}
+
 
 \paragraph{Seguir l\'inea}
 \label{follow_line}
