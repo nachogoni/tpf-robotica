@@ -158,7 +158,7 @@ correspondientes a las ruedas de forma tal que la trayectoria del robot describa
 arco. Con este segundo approach no existir\'ia el comportamiento que se est\'a describiendo.
 \\
 Dado que el primer approach es levemente m\'as simple de implementar, y teniendo en cuenta el
-principio enunciado en la secci\'on \ref{arq_prop} \emph{"La simplicidad es una virtud"},
+principio enunciado en la secci\'on \ref{arq_prop} \emph{''La simplicidad es una virtud''},
 elegimos implementar el mismo, a pesar de tener un posible inconveniente, como se puede
 ver en la figura \ref{fig:papproachgotoproblem}.
 \\
@@ -166,7 +166,7 @@ Cuando hay una basura en alguna esquina
 superior de la imagen de la c\'amara, y el robot gira sobre s\'i mismo para enfocarla,
 la basura puede llegar a perderse por el fondo de la imagen. \'Esto se debe a que la distancia
 hacia dichas esquinas es mayor a la distancia hacia el centro del borde superior de la imagen
-(Ver figura \ref{fig:zoneCamera}). Decimos que es un "posible" problema, ya que una vez que se
+(Ver figura \ref{fig:zoneCamera}). Decimos que es un ''posible'' problema, ya que una vez que se
 pierde de vista la basura, el robot no enfocar\'a m\'as debido a que el est\'imulo desapareci\'o,
 pero si luego se dirige hacia adelante (por la activaci\'on de alg\'un otro comportamiento), 
 la basura volver\'a a aparecer en la imagen, sin desaprovechar la oportunidad de recogerla.
@@ -216,7 +216,9 @@ por cada paso
     lista_de_basuras = obtener_lista_de_basuras(modulodereconocimiento)
     basura_mas_cercana = elijo_basura_mas_cercana(lista_de_basuras)
     angulo_a_basura = obtener_angulo(basura_mas_cercana)
-    velocidad = VELOCIDAD_BASE * ( abs(angulo_a_basura) / (PI/2) ) + VELOCIDAD_BASE_MINIMA
+    velocidad = VELOCIDAD_BASE * ( abs(angulo_a_basura) / (PI/2) )
+               + VELOCIDAD_BASE_MINIMA
+
     si angulo_a_basura < 0 entonces
         veloc_izq = -velocidad
         veloc_der = velocidad
@@ -312,8 +314,6 @@ El mecanismo que elegimos para usar en la simulaci\'on fue el siguiente:
 	\item Dos paredes delimitan el espacio a lo largo de la direcci\'on que une
 			el centro del robot con el servo anteriormente mencionado.
 \end{itemize}
-
-%TODO Poner imagen mostrando etapas de recoleccion
 
 \paragraph{Detalle del comportamiento}
 La activaci\'on de \emph{recolectar basura} depende de 3 condiciones:
@@ -466,8 +466,8 @@ contrario s\'olo tendr\'ia que girar $\frac{\pi}{2}$.
 \\
 Se puede observar en el c\'odigo usamos datos calculados por la odometr\'ia, en
 este caso, la orientaci\'on actual del robot. El lector se podr\'ia preguntar:
-"Si la odometr\'ia tiene la posici\'on actual del robot, ?`porqu\'e no se usaron los datos
-de la misma para ir hacia la base?". En principio, esto requiere que el robot tenga
+''Si la odometr\'ia tiene la posici\'on actual del robot, ?`porqu\'e no se usaron los datos
+de la misma para ir hacia la base?''. En principio, esto requiere que el robot tenga
 conocimiento acerca de la ubicaci\'on de la base. Por otro lado, se hubiera tenido que utilizar
 alg\'un algoritmo de \emph{Path Planning} para realizar el recorrido, algo que no
 concuerda con la arquitectura elegida.
@@ -585,31 +585,171 @@ por cada paso
 
 \subsubsection{Descargar Basura}
 \label{unload_garbage}
+Una vez que el robot logr\'o llegar a la zona de descarga de basura, debe
+descargarla. Para \'esto decidimos ubicar un servo en la parte trasera del robot,
+con la misma idea del servo en la parte posterior utilizado para recolectar.
+
 \paragraph{Detalle del comportamiento}
+Para descargar la basura el robot debe posicionarse de forma tal que la compuerta
+de descarga quede adyacente a la zona. Dado que para llegar a la misma el robot
+sigui\'o la l\'inea, al finalizar va a estar orientado con un \'angulo en un
+entorno de $\frac{\pi}{2}$, mirando la zona de descarga. Como el servo de descarga
+se encuentra en la parte trasera, deber\'a realizar un giro para luego poder descargar
+la basura.
 \paragraph{Implementaci\'on del comportamiento}
+\begin{verbatim}
+    posicionarse()
+    levantar(servo_trasero)
+    recorrerdistancia(ANCHO_ROBOT)
+    cerrar(servo_trasero)
+\end{verbatim}
 
 \subsubsection{Ir a base de recarga de bater\'ia}
 \label{go_to_recharge}
-\paragraph{Detalle del comportamiento}
-\paragraph{Implementaci\'on del comportamiento}
+Ayudados por la elecci\'on que tomamos de poner la zona de descarga de basura
+muy cercana a la zona donde se recarga la bater\'ia, decidimos utilizar la
+misma estrategia de seguir la l\'inea para llegar hacia la misma.
+\\
+La diferencia
+entre ambos casos es el est\'imulo ante el cual se activan. En el caso de
+ir a la zona de descarga, el est\'imulo proviene del sensor del dep\'osito
+interno de basura que indica que el mismo est\'a lleno. En el caso de ir
+a la base de recarga de bater\'ia, el est\'imulo para la activaci\'on depende
+de los valores de dos sensores de bater\'ia que indican bater\'ia baja:
+\begin{itemize}
+	\item El sensor de la bater\'ia del robot, de donde se alimentan los sensores,
+			actuadores y motores.
+	\item El sensor de la computadora que corre el controlador.
+\end{itemize}
 
 \subsubsection{Cargar Bater\'ia}
 \label{recharge_battery}
 \paragraph{Detalle del comportamiento}
 \paragraph{Implementaci\'on del comportamiento}
+\begin{verbatim}
+    posicionarse()
+    mientras( bateria_no_llena(BATERIA_ROBOT)
+            o bateria_no_llena(BATERIA_PC) ) hacer
+
+        esperar()
+    fin mientras
+\end{verbatim}
+
+\begin{comment}
 
 \subsubsection{Recalibrarse}
 \label{recalibrate}
 \paragraph{Detalle del comportamiento}
 \paragraph{Implementaci\'on del comportamiento}
 
+\end{comment}
+
 \subsubsection{Evitar Obst\'aculos}
 \label{avoid_obstacles}
+\emph{Evitar obst\'aculos} es uno de los comportamientos con mayor jerarqu\'ia
+en la arquitectura que elegimos. Su nivel se debe a la importancia que tiene
+en un ambiente estructurado pero din\'amico como es el elegido. El objetivo
+del robot es facilitar una tarea, sin entorpecer el tr\'ansito de personas.
+\\
 \paragraph{Detalle del comportamiento}
+Para lograr tener conocimiento sobre la proximidad de un obst\'aculo, utilizamos
+sensores de proximidad. %TODO Hacer referencia a la seccion de J
+Dependiendo de la proximidad sensada por un sensor, el robot deber\'a alejarse
+de ese lado para evitar un posible choque. La activaci\'on del comportamiento
+depender\'a entonces de un valor menor del sensor que haga que la distancia hacia
+un obst\'aculo lleve al robot a quedarse estancado o le imposibilite moverse.
 \paragraph{Implementaci\'on del comportamiento}
+La implementaci\'on de \'este comportamiento la hicimos utilizando una red neuronal
+sin capas ocultas 
+(ver figura \ref{fig:redN}) usando los sensores de distancia como entradas y las
+2 neuronas de salida indicando los valores a ser seteados a los motores de las ruedas.
+\\
+Notar que hay conexiones tanto inhibitorias como excitatorias. Como es de esperarse,
+ambos sensores traseros ( 4 y 5 ) exitan a ambos motores. Distinto es el caso de los
+sensores del lado izquierdo ( 5, 6 y 7 ) que exitan el motor ubicado de su lado e
+inhiben el motor del lado opuesto, de forma tal que el robot gire para el lado
+opuesto de la ubicaci\'on de los sensores. La misma idea se sigue con los sensores
+( 0, 1 y 2 ) ubicados en el costado derecho del robot.
+\\
+Luego de entrenar la red, obtuvimos los siguientes valores para los pesos de la
+misma:
+
+\begin{table}[ht]
+	\begin{center}
+		\begin{tabular}{ | c | c | c | c | c | c | c | c | c | }
+			\hline 
+			Rueda & $W_0$ & $W_1$ & $W_2$ & $W_3$ &  $W_4$ & $W_5$ & $W_6$ & $W_7$ \\
+			\hline\hline
+			Izquierda & -0.9 & -0.85 & -0.2 & 0.6 & 0.5 & 0.35 & 0.8 & 0.6 \\
+			\hline
+			Derecha & 0.9 & 0.85 & 0.2 & 0.6 & 0.5 & -0.35 & -0.8 & -0.6 \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\label{pesos_obstaculo} 
+	\caption{Asignaci\'on de pesos para evitar obst\'aculos}
+\end{table}
+Se puede ver que los pesos que influyen en el motor de una rueda influyen
+con igual fuerza pero distinto signo en el motor de la rueda contraria.
+\\
+Este comportamiento, en \emph{pseudo-codigo} puede verse como:
+\begin{verbatim}
+por cada paso
+    veloc_izq = suma( coeficiente(RUEDA_IZQ)(SENSOR_I) * VALOR(SENSOR_I) )
+    veloc_izq *= FACTOR_DE INCIDENCIA
+    veloc_der = suma( coeficiente(RUEDA_DER)(SENSOR_I) * VALOR(SENSOR_I) )
+    veloc_der *= FACTOR_DE INCIDENCIA
+    poner_velocidades_en_ruedas(veloc_izq,veloc_der)
+\end{verbatim}
+
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.4]{comportamientos/red.png}
+\caption{Red neuronal entre los sensores de distancia y los motores}
+\label{fig:redN}
+\end{center}
+\end{figure}
 
 \subsubsection{Salir de situaciones no deseadas}
 \label{out_of_unwanted_situations}
+\emph{Salir de situaciones no deseadas} surgi\'o como un comportamiento
+para ayudar al objetivo de la autonom\'ia del robot. A medida que fuimos
+corriendo las simulaciones, observamos que hab\'ia situaciones donde corr\'ia
+peligro la autonom\'ia del robot. Un ejemplo de estas situaciones es el caso
+donde se ''activan mutuamente'' entre dos comportamientos.
+\\
+Para ver esto m\'as claramente, supongamos dos comportamientos $A$ y $B$ con
+nivel en la jerarqu\'ia $N(A)$ y $N(B)$, siendo $N(A) > N(B)$. Si la respuesta
+a un est\'imulo de $A$ lleva a la activaci\'on de $B$ y a la desactivaci\'on de $A$
+y luego la respuesta de $B$ lleva a la activaci\'on de $A$, podr\'ia llegar a
+entrarse en un ciclo si es que esta situaci\'on se da por un tiempo prolongado.
+El mayor peligro para la autonom\'ia se corre cuando $A$ es el comportamiento
+de \emph{evitar obst\'aculos} y $B$ es el comportamiento de \emph{ir a zona
+de recarga de bater\'ia} ya que el robot podr\'ia terminar qued\'andose sin
+bater\'ia en ese ciclo.
 \paragraph{Detalle del comportamiento}
+Las situaciones no deseadas se dan la mayor\'ia de los casos cuando un comportamiento
+hace girar al robot hacia un lado y el otro comportamiento hacia el lado contrario,
+aproximadamente en la misma magnitud. \'Esto quiere decir que la posici\'on del
+robot se mantiene alrededor de un punto por un per\'iodo prolongado de tiempo,
+por lo que decidimos tomar este hecho como est\'imulo para la activaci\'on de este
+comportamiento.
+\\
+La respuesta del comportamiento es, entonces, girar un \'angulo que cambie
+la direcci\'on del robot y adem\'as, que la suma de esa magnitud no sea peri\'odica.
+\'Esta \'ultima condici\'on se pide por el siguiente escenario:
+\begin{itemize}
+	\item Los comportamientos $A$ y $B$ se ''activan mutuamente'' cuando la orientaci\'on
+			del robot es $0$.
+	\item Los comportamientos $C$ y $D$ se ''activan mutuamente'' cuando la orientaci\'on
+			del robot es $\pi$.
+	\item La respuesta de \emph{salir de situaciones no deseadas} es girar un \'angulo $\pi$.
+\end{itemize}
+
 \paragraph{Implementaci\'on del comportamiento}
+\begin{verbatim}
+    angulo_actual = obtener_angulo_actual(odometria)
+	nuevo_angulo = angulo_actual + ANGULO_A_SUMAR
+	girar(nuevo_angulo)
+\end{verbatim}
 
