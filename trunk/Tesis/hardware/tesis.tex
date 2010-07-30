@@ -2167,6 +2167,11 @@ el mismo puerto de conexi\'on.
 De manera conjunta podemos conectar a la misma placa, hasta $5$ sensores por voltaje, tel\'emetros,
 fototransistores (sensores de piso) o por ejemplo el divisor de tensi\'on que mide la carga en la bater\'ia.
 
+Generamos la posibilidad de habilitar y deshabilitar la alimentaci\'on de estos sensores para poder aumentar
+as\'i la autonom\'ia del robot.
+Mediante el uso de un transistor \emph{BC327} por el que puede circular una corriente de hasta $500mA$ para
+alimentar al sensor que sea necesario.
+
 \subsubsection{M\'odulo de comunicaci\'on}
 \label{h_placas_sensado_comm}
 
@@ -2179,28 +2184,106 @@ placa y retransmitiendo los paquetes con otro destinatario.
 \subsubsection{Alimentaci\'on de la placa}
 \label{h_placas_sensado_alimentacion}
 
-se explico en el modulo generico
+De igual forma que las otras placas la alimentaci\'on principal de la l\'ogica es de 7 a 20 voltios,
+con la posibilidad de alimentarla directamente con 5 voltios por uno de los pines del conector como
+explicamos en la subsecci\'on \ref{h_placas_generica}.
 
 \subsubsection{Configuraci\'on}
 \label{h_placas_sensado_config}
-seteo de los tipos de sensores
-configuracion de la placa, comunicacion, header de programacion
+
+Para la configuraci\'on f\'isica de la placa necesitamos definir primero el rol de la placa dentro de
+la cadena de comunicaci\'on con la llave \emph{S3}.
+Como en todas las placas que dise\~namos s\'olo tenemos que elegir el modo \emph{LAST} o \emph{LINK}
+para determinar si es la terminaci\'on o un eslab\'on m\'as en la cadena.
+
+Debemos saber que no podemos conectar m\'as de $5$ sensores de los cuales debamos medir una tensi\'on
+para obtener el valor y s\'olo un sensor de distancia por ultrasonido o switch en el puerto para
+medir estados l\'ogicos y tiempo del pulso.
+
+Con la llave \emph{S2} cambiamos al modo programaci\'on vinculando el microcontrolador con el header
+de \emph{ICD2} o con la habilitaci\'on de los puertos de los sensores \emph{3} y \emph{4}.
+Si esta llave esta en la posici\'on incorrecta nunca se exitar\'a el transistor y por ende no habr\'a
+alimentaci\'on en el sensor.
+
+En el caso que necesitemos una resistencia \emph{pull-up} conectada con la salida del sensor podemos
+colocar un jumper en el correspondiente header de pull-up del puerto de sensor.
 
 \subsubsection{Esquem\'atico}
 \label{h_placas_sensado_esquematico}
 
-esquematicos de la placa
+En la figura \ref{hF_placa_sense_schema} mostramos el esquem\'atico del microcontrolador y el conexionado
+el header de programaci\'on.
+En la figura \ref{hF_placa_sense_schema2} detallamos el m\'odulo de comunicaci\'on y el conexionado con
+los conectores entre placas.
+
+En la figura \ref{hF_placa_sense_schema3} mostramos los puertos de conexi\'on para cada uno de los sensores
+y en la figura \ref{hF_placa_sense_schema4} la fuente de alimentaci\'on y bornera.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=.22]{figuras/sense_schemaMicro.png}
+	\caption{Microcontrolador y header de programaci\'on.}
+	\label{hF_placa_sense_schema}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=.28]{figuras/sense_schemaComm1.png}
+	\includegraphics[scale=.2]{figuras/sense_schemaComm2.png}
+	\includegraphics[scale=.28]{figuras/sense_schemaComm3.png}
+	\caption{Comunicaci\'on, llaves de modo y conectores de entrada y salida.}
+	\label{hF_placa_sense_schema2}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=.28]{figuras/sense_schemaSensor.png}
+	\caption{Puertos de conexi\'on para los sensores y header de \emph{pull-up}.}
+	\label{hF_placa_sense_schema3}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=.22]{figuras/sense_schemaFuente.png}
+	\caption{Fuente de alimentaci\'on de la l\'ogica.}
+	\label{hF_placa_sense_schema4}
+\end{figure}
 
 \subsubsection{Circuito}
 \label{h_placas_sensado_circuito}
 
-circuito de la placa
+En la figura \ref{hF_placa_sense_componentes} se muestra la m\'ascara de componentes de la placa.
+En la figura \ref{hF_placa_sense_capas} se muestran ambas capas de la placa.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=.3]{figuras/sense_componentes.png}
+	\caption{M\'ascara de componentes de la placa controladora de sensores.}
+	\label{hF_placa_sense_componentes}
+\end{figure}
+
+\begin{figure}
+\centering
+	\includegraphics[scale=.3]{figuras/sense_top.png}
+	\includegraphics[scale=.3]{figuras/sense_bottom.png}
+	\caption{Capas superior e inferior de la placa controladora de sensores.}
+	\label{hF_placa_sense_capas}
+\end{figure}
 
 \subsubsection{C\'odigo b\'asico}
 \label{h_placas_sensado_codigo}
-seteo de los tipos de sensores
-explicacion de lo minimo que deberia tener para ser parte de la cadena de comunicacion y sensado de los distintos perifericos
-como logra tomar las muestras de los sensores
+
+Al compartir el m\'odulo de comunicaci\'on entre las placas y para que nuestra placa sea parte de la
+cadena y podamos interpretar los paquetes que viajan por ella, debemos incluir el c\'odigo com\'un
+de comunicaci\'on e implementar la funci\'on que interpreta los paquetes que son dirigidos directamente
+a nuestra placa, grupo o a nivel broadcast.
+
+Dependiendo de la selecci\'on de los sensores a conectar ser\'a la configuraci\'on interna del microcontrolador.
+Al principio del c\'odigo colocamos una serie de scripts que nos ayudan a configurar los tiempos a los que se
+deben tomar las muestras de los sensores y los flags del microcontrolador.
+
+Los pines que exitan a la base de los transistores usan una l\'ogica inversa, es decir, un estado bajo habilita
+la alimentaci\'on del sensor y un estado alto, lo deshabilita.
 
 \subsubsection{Posibles extensiones}
 \label{h_placas_sensado_extensiones}
