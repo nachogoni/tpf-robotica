@@ -54,17 +54,18 @@ procesamiento de imágenes y robots autonomos.
 	%~ también algunos de los objetos con texturas repetitivas. Sin 
 	%~ embargo, no se reconocieron objetos sin textura. Para el método de 
 	%~ la bolsa de caracteristicas 
-	\subsubsection{Mobile Field Robot with Vision-Based Detection of Volunteer Potato Plants in a Corn Crop - FRITS K. VAN EVERT}
+	\subsubsection{\label{volunteer}Mobile Field Robot with Vision-Based Detection of Volunteer Potato Plants in a Corn Crop - FRITS K. VAN EVERT}
 	El objetivo de este trabajo es la construcción de un robot de 
 	tamaño reducido y de bajo costo capaz de detectar un tipo de 
-	planta de papas (volunteer potato) en un campo de trigo propocionar control automático de esta planta. El interés en 
+	planta de papas (volunteer potato) en un campo de trigo y propocionar control automático de esta planta. El interés en 
 	esta especie se debe a que esta planta resulta dificil de controlar en las cosechas y favorece la 
-	proliferación de otras sustancias que pueden perjudicar la
-	cosecha. Con este proposito, se utilizó un camión de jugete como 
-	soporte para un robot mobil. Las partes de radio-control fueron 
+	proliferación de otras sustancias que pueden perjudicar otros 
+	cultivos. Con este proposito, se utilizó un camión de jugete como 
+	soporte para un robot autónomo movil. Las partes de 
+	radio-control del mismo fueron 
 	removidas y remplazadas por micro-controladores para manejar la 
-	dirección y la velocidad del mismo. Además, como instrumento de 
-	sensado se agregaron una webcam estándar montada sobre un mástil a 
+	dirección y la velocidad del robót. Además, como instrumento de 
+	sensado se agregaron: una webcam estándar montada sobre un mástil a 
 	una altura de 1.5m, un contador de revoluciones y un gyroscopio de 
 	estado sólido. Las imágenes tomadas por la webcam son procesadas 
 	por una pc a bordo con un procesador pentium M de 1.6 mhz. El control robotico de volunteer potatoes involucra al 
@@ -106,7 +107,7 @@ procesamiento de imágenes y robots autonomos.
 	extraer las siguientes caracteristicas de las imágenes: (1) 
 	promedio de rojo para pixeles de planta ,(2) promedio de verde para 
 	pixeles de planta ,(3) promedio de azul para pixeles de planta, (4) 
-	numero total de pixeles de planta en la imagen binaria ,(5) número 
+	número total de pixeles de planta en la imagen binaria ,(5) número 
 	total de pixeles de contorno en la imagen binaria y (6) número 
 	total de pixeles de borde en la imagen Canny binaria. Estas 
 	caracteristicas se relacionan al color(1,2 y 3), tamaño (4), figura 
@@ -114,10 +115,10 @@ procesamiento de imágenes y robots autonomos.
 	(2G -B -R) y la operación de threshold se segmenta nuevamente la imagen 
 	 en pixeles de planta o fondo. Sobre esta imagen se calcula el 
 	 promedio de rojo,azul y verde para las carateristicas 1,2 y 3. 
-	 Por otro lado, contando el número de pixeles planta en la misma 
+	 Contando el número de pixeles planta en la misma 
 	 imagen se obtiene la caracteristica 4. Para la caracteristica 5 
 	 se extraen los contornos de esta imagen y se cuenta el número de 
-	 pixeles plantas contenidos en ellos. Para la caracteristica 6 se 
+	 pixeles plantas contenidos en ellos. Finalmente, para la caracteristica 6 se 
 	 repite este último procedimiento pero extrayendo los bordes de la 
 	 imagen pero  
 	 utilizando una implementación del algoritmo de Canny 
@@ -127,7 +128,7 @@ procesamiento de imágenes y robots autonomos.
 	 mientras que las de trigo solo contienen algunas pocas hojas. Para 
 	 clasificar las imágenes se uso un set de imágenes de entrenamiento
 	 que fueron clasificadas manualmente según contenían 
-	 plantas de papa (1) o no. Luego se entrenó un 
+	 plantas de papa o no. Luego se entrenó un 
 	 clasificador de discriminante lineal de Fisher \cite{HastieEtAl2008} para distinguir 
 	 entre imágenes que contienen plantas de papa de las que no.\\
 	 \indent Para poner a prueba el algoritmo se tomaron dos sets de 
@@ -139,7 +140,7 @@ procesamiento de imágenes y robots autonomos.
 	 una velocidad promedio de $0.67$ m/s. El autor remarca el alto 
 	 tiempo de procesamiento requerido por el detector de plantas de 
 	 papa ya que este bajó la tasa de cuadros del algoritmo de 
-	 navegación de 30 a 8 cuadros por segúndo. Por dicho motivo se 
+	 navegación de 30 a 8 cuadros/segúndo. Por dicho motivo se 
 	 redujo la velocidad de desplazamiento del robot a 0.2 m/s para 
 	 que este sea capaz de capturar correctamente todas las plantas. 
 	 El mecanismo de control no fue implentado pero se incluyo un 
@@ -1124,7 +1125,7 @@ utilizadas fueron seleccionadas para destacar distintos comportamientos del
 sistema de predicción, estas son:
 \begin{itemize}
 \item{\textbf{Configuración 1:} $\lambda=10$, $\rho=10$, $\delta=3$}
-\item{\textbf{Configuración 2:} $\lambda=10$, $\rho=4$, $\delta=2$}
+	\item{\textbf{Configuración 2:} $\lambda=10$, $\rho=4$, $\delta=2$}
 \end{itemize}
 \indent En los resultados arrojados en el cuadro \ref{tab:result} solo por el sistema de visión 
 observamos problemas en la  detección de colillas ya que posee altos 
@@ -1407,9 +1408,14 @@ Como alternativas a este sistema se puede implementar un sistema de
 votación donde se reúnan los resultados de cada filtro y se tome una 
 decisión en base a ellos. Adicionalmente, sería interesante que en 
 este sistema de votación se pueda indicar un valor que establezca la 
-importancia de cada filtro en relación a un objeto determinado. \\
+importancia de cada filtro en relación a un objeto determinado. Otra 
+posibilidad, basándonos en el trabajo \cite{potato} expuesto en la 
+sección \ref{volunteer}, es utilizar las 
+caracteristicas medidas por los filtros para entrenar un clasificador. 
+Luego este sera capaz de caracterizar a los residuos utilizando los 
+valores medidos de manera óptima.\\
 \indent En lo que respecta a la etapa de pre-procesamiento se pueden 
-tomar las ideas del trabajo expuesto en la sección \ref{sec:sidewalk} 
+tomar las ideas del trabajo \cite{sidewalk2008} expuesto en la sección \ref{sec:sidewalk} 
 para caracterizar el entorno del robot. Esto es, mantener histogramas 
 que modelen el entorno del robot utilizando aquellas regiones de las 
 imágenes donde no se hallaron  objetos de interés. De este modo sería más facíl 
