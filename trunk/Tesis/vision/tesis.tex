@@ -1,7 +1,7 @@
 ﻿\section{Visión}
 
 \subsection{Introducción}
-En esta sección exhibimos el sistema de analisis de imágenes por 
+En esta sección exhibimos el sistema de análisis de imágenes por 
 el cual el robot en cuestión da cuenta de la existencia o ausencia de 
 elementos residuales en el entorno descripto. El sistema se basa en la 
 utilización de una cámara de tipo webcam con una única lente para 
@@ -10,7 +10,7 @@ por una computadora a bordo del robot utilizando un algoritmo de visión
 cuyo único objetivo es la detección de residuos 
 en las imágenes obtenidas. El sistema fue probado con la detección de 
 colillas de cigarrillo, vasos descartables y platos de plástico. Para 
-el desarrollo del algoritmo utilizamos la libreria de visión 
+el desarrollo del algoritmo utilizamos la librería de visión 
 computacional OpenCV \cite{opencv_library} acompañado de un sistema 
 desarrollado en C++. Como plataforma utilizamos un sistema linux 
 ubuntu versión 9.10 corriendo en una netbook con procesador intel atom 
@@ -20,12 +20,12 @@ muestran los trabajos previos estudiados, en la sub-sección 3 se
 describe el algoritmo de detección, en las secciones 4 y 5 se explican 
 los módulos de predicción y focalización mientras que en la 
 sub-sección 6 se muestran los resultados. La sub-sección 7 concluye 
-el cápitulo de visión.
+el capítulo de visión.
 
 \subsection{Trabajos previos}
 En esta sección mostramos la información obtenida a partir de 
-trábajos anteriores relacionados con visión computacional, 
-procesamiento de imágenes y robots autonomos.
+trabajos anteriores relacionados con visión computacional, 
+procesamiento de imágenes y robots autónomos.
  
 	%~ \subsubsection{A tale of two object recognition methods for mobile 
 	%~ robots- Arnau Ramisa}
@@ -58,33 +58,33 @@ procesamiento de imágenes y robots autonomos.
 	El objetivo de este trabajo es la construcción de un robot de 
 	tamaño reducido y de bajo costo capaz de detectar un tipo de 
 	planta de papas (volunteer potato) en un campo de trigo y propocionar control automático de esta planta. El interés en 
-	esta especie se debe a que esta planta resulta dificil de controlar en las cosechas y favorece la 
+	esta especie se debe a que esta planta resulta difícil de controlar en las cosechas y favorece la 
 	proliferación de otras sustancias que pueden perjudicar otros 
-	cultivos. Con este proposito, se utilizó un camión de jugete como 
-	soporte para un robot autónomo movil. Las partes de 
+	cultivos. Con este propósito, se utilizó un camión de juguete como 
+	soporte para un robot autónomo móvil. Las partes de 
 	radio-control del mismo fueron 
 	removidas y remplazadas por micro-controladores para manejar la 
-	dirección y la velocidad del robót. Además, como instrumento de 
+	dirección y la velocidad del robot. Además, como instrumento de 
 	sensado se agregaron: una webcam estándar montada sobre un mástil a 
-	una altura de 1.5m, un contador de revoluciones y un gyroscopio de 
+	una altura de 1.5m, un contador de revoluciones y un giroscopio de 
 	estado sólido. Las imágenes tomadas por la webcam son procesadas 
-	por una pc a bordo con un procesador pentium M de 1.6 mhz. El control robotico de volunteer potatoes involucra al 
-	menos 3 grandes etapas: navegación a travez del cultivo, detección 
+	por una PC a bordo con un procesador Pentium M de 1.6 MHz El control robótico de volunteer potatoes involucra al 
+	menos 3 grandes etapas: navegación a través del cultivo, detección 
 	de plantas de papa y el control de las mismas.\\
 	\indent En los campos de trigo la cosecha se dispone en filas 
 	dejando espacio entre hilera e hilera para el paso del robot. Para 
 	que este pueda navegar correctamente debe poder reconocer dichas 
 	hileras de modo de orientarse correctamente en el cultivo. Esto se 
 	logra mediante un algoritmo de visión. Este comienza 
-	tomando una imágen RGB de 320x240 de la cámara. Para separar las 
+	tomando una imagen RGB de 320x240 de la cámara. Para separar las 
 	plantas del fondo se toma el doble del valor del canal G  y se 
 	sustraen los canales rojos y azules (2G -R - B). Pixeles con un 
 	valor mayor a cierto umbral son considerados planta y todos los 
-	demás fondo. En un segúndo paso de procesamiento, se detectan las 
+	demás fondo. En un segundo paso de procesamiento, se detectan las 
 	filas de plantas utilizando un algoritmo inspirado en la 
 	transformada de Hough \cite{hough62}. Este dibuja líneas imaginarias sobre la 
 	imagen segmentada y se establece un puntaje para cada una según 
-	cuantos pixeles blancos ( plantas) cubran. Estos puntajes se 
+	cuantos pixeles blancos (plantas) cubran. Estos puntajes se 
 	convierten en valores de pixeles de una nueva imagen en donde la 
 	coordenada vertical de cada pixel corresponde con la pendiente de 
 	la línea imaginaria y donde la coordenada horizontal con la 
@@ -98,27 +98,27 @@ procesamiento de imágenes y robots autonomos.
 	hileras de plantas inexistentes se utilizan algunas reglas 
 	sencillas para validar estas detecciones. Dos ejemplos de estas 
 	reglas son ``las hileras de plantas deben estar a uno de los dos 
-	costados del robot'' y ``las hileras deben ser paralelas entre si''.
+	costados del robot'' y ``las hileras deben ser paralelas entre sí''.
 	Luego, la orientación del robot se establece según la pendiente de 
 	estas líneas.\\
 	\indent Para la detección de las plantas ``volunteer potato'' se 
 	utiliza una segunda cámara ubicada a una menor altura para obtener 
-	mayor resolución sobre las plantas en si. El algoritmo consiste en 
-	extraer las siguientes caracteristicas de las imágenes: (1) 
-	promedio de rojo para pixeles de planta ,(2) promedio de verde para 
-	pixeles de planta ,(3) promedio de azul para pixeles de planta, (4) 
-	número total de pixeles de planta en la imagen binaria ,(5) número 
+	mayor resolución sobre las plantas en sí. El algoritmo consiste en 
+	extraer las siguientes características de las imágenes: (1) 
+	promedio de rojo para pixeles de planta, (2) promedio de verde para 
+	pixeles de planta, (3) promedio de azul para pixeles de planta, (4) 
+	número total de pixeles de planta en la imagen binaria, (5) número 
 	total de pixeles de contorno en la imagen binaria y (6) número 
 	total de pixeles de borde en la imagen Canny binaria. Estas 
-	caracteristicas se relacionan al color(1,2 y 3), tamaño (4), figura 
+	características se relacionan al color (1,2 y 3), tamaño (4), figura 
 	(combinación de 4 y 5) y textura (6).  Utilizando la misma fórmula 
 	(2G -B -R) y la operación de threshold se segmenta nuevamente la imagen 
 	 en pixeles de planta o fondo. Sobre esta imagen se calcula el 
-	 promedio de rojo,azul y verde para las carateristicas 1,2 y 3. 
+	 promedio de rojo, azul y verde para las características 1,2 y 3. 
 	 Contando el número de pixeles planta en la misma 
-	 imagen se obtiene la caracteristica 4. Para la caracteristica 5 
+	 imagen se obtiene la característica 4. Para la característica 5 
 	 se extraen los contornos de esta imagen y se cuenta el número de 
-	 pixeles plantas contenidos en ellos. Finalmente, para la caracteristica 6 se 
+	 pixeles plantas contenidos en ellos. Finalmente, para la característica 6 se 
 	 repite este último procedimiento pero extrayendo los bordes de la 
 	 imagen pero  
 	 utilizando una implementación del algoritmo de Canny 
@@ -133,23 +133,23 @@ procesamiento de imágenes y robots autonomos.
 	 entre imágenes que contienen plantas de papa de las que no.\\
 	 \indent Para poner a prueba el algoritmo se tomaron dos sets de 
 	 imágenes capturando el recorrido del mismo robot autónomo a 
-	 travez de un campo de trigo. La tasa global de error para el 
+	 través de un campo de trigo. La tasa global de error para el 
 	 clasificador fue de 1.5\% en el primer set y 10.6\% en el 
-	 segúndo. En cuanto a la performance en la navegación, el robot 
-	 fue capaz de recorrer con exito 120m de hileras de cultivo con 
+	 segundo. En cuanto a la performance en la navegación, el robot 
+	 fue capaz de recorrer con éxito 120m de hileras de cultivo con 
 	 una velocidad promedio de $0.67$ m/s. El autor remarca el alto 
 	 tiempo de procesamiento requerido por el detector de plantas de 
 	 papa ya que este bajó la tasa de cuadros del algoritmo de 
-	 navegación de 30 a 8 cuadros/segúndo. Por dicho motivo se 
+	 navegación de 30 a 8 cuadros/segundo. Por dicho motivo se 
 	 redujo la velocidad de desplazamiento del robot a 0.2 m/s para 
 	 que este sea capaz de capturar correctamente todas las plantas. 
-	 El mecanismo de control no fue implentado pero se incluyo un 
+	 El mecanismo de control no fue implementado pero se incluyo un 
 	 speaker que reproduce un sonido cuando este encuentra una planta 
 	 del tipo buscado. Los algoritmos de visión utilizados fueron 
 	 desarrollados usando Matlab con la librería Delft \cite{DipLib}.
 	 
 	\subsubsection{Review of shape representation and description techinques - Dengsheng Zhang}
-El objetivo de este trabajo es realizar un resumen de las técnicas mas 
+El objetivo de este trabajo es realizar un resumen de las técnicas más 
 importantes en cuanto a la representación y descripción de figuras o 
 formas.
 Al clasificar dichas técnicas el autor sugiere una primera sub-división en 2 grupos, estos son: métodos basados en contornos y métodos basados 
@@ -158,13 +158,13 @@ por el mismo. Dentro de cada clase, se dividen en técnicas
 estructurales o técnicas globales según  se represente una figura como un todo o 
 por segmentos o secciones. La jerarquía completa puede observarse en la figura \ref{fig:review_shape}.\\
 \indent Dentro de la categoría de los basados en contornos, en la sub-categoría de globales, los métodos suelen computar vectores de 
-propiedades númericas extraidas de la información del borde de una 
+propiedades numéricas extraídas de la información del borde de una 
 figura. La comparación entre formas se realiza 
-generalmente utilizando distancias métricas, como la distancia euclideana. Ejemplos de métodos sencillos que caen dentro de esta 
+generalmente utilizando distancias métricas, como la distancia euclidiana. Ejemplos de métodos sencillos que caen dentro de esta 
 categoría son \textit{area, circularidad( $perimetro^2 / area$), 
 excentricidad ( longitud del eje mayor / longitud del eje menor)}. Otros métodos 
-de la misma familia pero mas complejos son los métodos basados en la correspondencia de puntos. En estos métodos se trata a cada punto como una 
-caracteristica de la figura que compone. La distancia de \textit{ Hausdorff} es una técnica clasica de esta categoría. Dadas dos formas representadas
+de la misma familia pero más complejos son los métodos basados en la correspondencia de puntos. En estos métodos se trata a cada punto como una 
+característica de la figura que compone. La distancia de \textit{ Hausdorff} es una técnica clásica de esta categoría. Dadas dos formas representadas
 por dos sets de puntos $A={x_1,x_2...x_n}$ y $B={y_1,y_2...y_n}$ la distancia Haussdorf se define como 
 \[
 	 d_{\mathrm H}(A,B) = \max\{\,\sup_{x \in A} \inf_{y \in B} d(x,y),\, \sup_{y \in B} \inf_{x \in A} d(x,y)\,\}\mbox{,}
@@ -175,11 +175,11 @@ al ruido y a pequeñas alteraciones en dos formas iguales. Existen otros método
 en \textit{firma de contorno} que  representan una figura con una 
 función uni-dimensional derivada de la información del borde de la 
 misma, 
-algunos son \textit{pérfil centroidal,coordenadas complejas y distancia al centroide}. Estos métodos deben ser normalizados para compensar
+algunos son \textit{perfil centroidal, coordenadas complejas y distancia al centroide}. Estos métodos deben ser normalizados para compensar
 traslaciones o escalas lo que los hace relativamente costosos. Esto sumado a la sensibilidad al ruido y a pequeños cambios en los bordes, hace que el método 
 no sea lo suficientemente robusto y que necesite de procesamiento adicional. Otra familia de descriptores se basan en los 
 \textit{Momentos de borde}. Dada una parametrización como una función 
-uni-dimensional $z(i)$, se define el momento \textit{r}-esimo \textit{$m_r$} 
+uni-dimensional $z (i)$, se define el momento \textit{r}-esimo \textit{$m_r$} 
 y el momento central $\mu_r$ como:
 \[
 	m_r=\frac{1}{N} \sum_{i=1}^{N}{[z(i)]^r}\ \ \ \ \
@@ -189,22 +189,22 @@ y el momento central $\mu_r$ como:
 donde N es el número de puntos de borde. El momento normalizado $\bar{m_r}=m_r / (\mu_2)^{r/2}$
 es invariante frente a traslaciones, rotaciones y escalamientos. Sin 
 embargo, los momentos de alto orden
-son dificiles de asociar con interpretaciones fisicas del contorno.\\
+son difíciles de asociar con interpretaciones físicas del contorno.\\
 \indent La otra sub-categoría dentro de los métodos basados en contornos es la de los métodos estructurales.
 En estos métodos se suele descomponer un contorno en segmentos de bordes llamado primitivas. Los métodos estructurales
-entonces se diferencian entre si de acuerdo a la definicion y organización de estas primitivas. Algunos métodos
+entonces se diferencian entre sí de acuerdo a la definición y organización de estas primitivas. Algunos métodos
 de descomposición son aproximación por polígonos, descomposición por curvatura, y ajuste de curva. El resultado
 de la descomposición se codifica como una cadena $S=s_1,s_2...s_n$ donde $s_i$ puede ser un lado de un polígono, una 
-arista cuadratica, una función spline, etc. Además, $s_i$ puede contener varios atributos como longitud,orientación, curvatura promedio,etc.
+arista cuadrática, una función spline, etc. Además, $s_i$ puede contener varios atributos como longitud, orientación, curvatura promedio, etc.
 Métodos en esta línea son por ejemplo el de código en cadena, en el cual se describe un objeto por una serie de segmentos de longitud unitaria
 con una orientación determinada. En su implementación, se superpone una imagen con una grilla y se aproximan los puntos del contorno al 
-punto de la grilla mas cercano. Luego se selecciona un punto de 
+punto de la grilla más cercano. Luego se selecciona un punto de 
 partida y se codifica una secuencia estableciendo la dirección del segmento
 que conecta un punto con el siguiente según la dirección de este en 
-la grilla ( respecto del punto  anterior). Para la comparación de dos
+la grilla (respecto del punto  anterior). Para la comparación de dos
 contornos es necesario realizar normalizaciones ya que el punto de 
 partida puede variar y frente a un cambio de escala pueden parecer 
-contornos distintos. Otros métodos en esta sub-categoría pueden ser el de la descomposición polinomica o la descomposición en curvas suaves. \\
+contornos distintos. Otros métodos en esta sub-categoría pueden ser el de la descomposición poli nómica o la descomposición en curvas suaves. \\
 \indent Dentro de la categoría de los métodos basados en la región 
 de una figura y la sub-categoría de globales podemos encontrar los \textit{momentos Hu}.
 Un momento de Hu de un contorno 2d se define como:
@@ -215,16 +215,16 @@ Un momento de Hu de un contorno 2d se define como:
 Usando combinaciones lineales de momentos de Hu de ordenes bajos 
 (valores de p y q menores a 2) se obtiene un descriptor 
 invariante frente a rotaciones, traslaciones o escalamientos. Sin embargo esta técnica probó servir solo 
-para figuras simples ya que en formas mas complejas no tiene una buena performance. Otros métodos en esta
-sub-categoría pueden ser \textit{momentos algebraicos} o \textit{descriptor general de fourier}. En la otra sub-categoría de métodos
+para figuras simples ya que en formas más complejas no tiene una buena performance. Otros métodos en esta
+sub-categoría pueden ser \textit{momentos algebraicos} o \textit{descriptor general de Fourier}. En la otra sub-categoría de métodos
 estructurales se destaca la \textit{envoltura convexa}. La envoltura convexa de un set de puntos es la mínima región que contiene 
 dichos puntos y es convexa. Este método obtiene dicha región y la compara con el contorno original obteniendo una serie de pequeñas
 componentes que marcan las deficiencias de concavidad del contorno. La 
 figura en cuestión puede entonces representarse utilizando estas componentes.
 Finalmente la comparación entre dos contornos representados con esta 
 técnica resulta en la comparación de grafos lo cual es otro
-problema a resolver por si solo. Además, métodos en esta familia son dificiles y complejos de implementar.\\
-\indent Como conclusión el autor establece que los métodos basados en contorno son más populares ya que estan mas relacionados
+problema a resolver por sí solo. Además, métodos en esta familia son difíciles y complejos de implementar.\\
+\indent Como conclusión el autor establece que los métodos basados en contorno son más populares ya que están más relacionados
 a la percepción humana y que para muchas aplicaciones es solo necesario la información sobre el contorno y no sobre el interior del mismo.
 Sin embargo, también establece que ya que solo usan parte de una figura, estos son más sensibles al ruido y pequeñas variaciones.
 
@@ -232,7 +232,7 @@ Sin embargo, también establece que ya que solo usan parte de una figura, estos 
 \begin{center}
   \includegraphics[scale=0.55]{figuras/shapess.png}
 \end{center}
-  \caption{Clasifación de las técnicas de descripción y representación de figuras}
+  \caption{Clasificación de las técnicas de descripción y representación de figuras}
   \label{fig:review_shape}
 \end{figure}
 
@@ -240,14 +240,14 @@ Sin embargo, también establece que ya que solo usan parte de una figura, estos 
 	\subsubsection{\label{sec:sidewalk} Sidewalk Following Using Color Histograms - John S. Seng}
 	Este trabajo describe un algoritmo  para detectar y seguir 
 	veredas o áreas transitables en un video filmado, con el objetivo de 
-	lograr la navegación autonoma de un robot dentro del 
+	lograr la navegación autónoma de un robot dentro del 
 	campus de una universidad. La plataforma en la cual se tomaron los videos esta 
-	compuesta de una silla de ruedas motorizada controlada por una cpu 
-	a bordo corriendo un sistema operativo linux. El robot tiene una 
+	compuesta de una silla de ruedas motorizada controlada por una CPU 
+	a bordo corriendo un sistema operativo Linux. El robot tiene una 
 	única cámara NTSC que provee imágenes color con una tasa de 15 
 	cuadros por segundo. Todos los videos de prueba fueron tomados 
-	utilizando esta plataforma conduciendola remotamente por un 
-	operador a traves de un sistema de radio.\\
+	utilizando esta plataforma conduciéndola remotamente por un 
+	operador a través de un sistema de radio.\\
 	\indent El algoritmo en cuestión utiliza histogramas 2-d de los 
 	canales de tono y saturación de los pixeles para modelar las áreas
 	transitables y las no transitables. Se utiliza un área de 
@@ -257,7 +257,7 @@ Sin embargo, también establece que ya que solo usan parte de una figura, estos 
 	actualizar uno de los 4 histogramas que modelan el área 
 	transitable. Además, se mantiene un histograma que modela el
 	área no transitable o fondo de la imagen, tomando una muestra de pixeles del último 
-	cuadro que fueron clasificados como tales . La 
+	cuadro que fueron clasificados como tales. La 
 	clasificación de pixeles entonces se realiza utilizando la 
 	siguiente métrica:
 	\[
@@ -315,8 +315,8 @@ Hough \cite{hough62}. Finalmente, según la orientación de las líneas detectad
 En esta sección describimos las distintas etapas del algoritmo de análisis 
 de imágenes utilizado. Estas se pueden separar en una etapa de 
 pre-procesamiento donde se realiza un tratado de la imagen obtenida 
-para re1saltar las caracteristicas de interes y  una segunda etapa donde se 
-extraen estas caracteristicas para interpretarlas y  buscar 
+para re1saltar las características de interés y  una segunda etapa donde se 
+extraen estas características para interpretarlas y  buscar 
 los objetos residuales en las imágenes.
 
 \subsubsection{Estructura general}
@@ -343,11 +343,11 @@ pixeles que no coinciden con el rango deseado (ver inciso
 	de intensidad marcándolos con valor cero y conserva únicamente los 
 	pixeles que si lo hacen estableciéndoles un valor predeterminado 
 	(mayor a cero) (ver inciso \ref{sec:thresh}). \\
-	\indent Las operaciones que mencionamos hasta aqui componen la 
+	\indent Las operaciones que mencionamos hasta aquí componen la 
 	etapa de  pre-procesamiento de la imagen. Finalizada dicha etapa del 
 	algoritmo deseamos tener solo pixeles de los potenciales objetos de 
 	interés. Vale notar que, como consecuencia de aplicar un filtro 
-	umbral, la imagen se encuentra binarizada, es decir, los pixeles solo 
+	umbral, la imagen se encuentra bina rizada, es decir, los pixeles solo 
 	pueden tener dos posibles valores: cero (negro) si no es un pixel de 
 	interés o mayor a cero en el caso contrario. Es entonces que 
 	automáticamente quedan delimitadas las áreas que contienen pixeles 
@@ -381,7 +381,7 @@ dicho color y un canal V que mide la luminosidad de dicho pixel. En el espacio R
 iluminación de la imagen, los tres canales se ven afectados de igual 
 manera mientras que en el espacio HSV el canal H, que codifica la 
 información sobre el tono del color, se ve mucho menos influenciado en 
-comparación con los otros dos canales ( saturación y valor). De esta 
+comparación con los otros dos canales (saturación y valor). De esta 
 manera, podemos caracterizar el color de un pixel determinado 
 observando su valor en dicho canal sin molestarnos demasiado por las condiciones de brillo o iluminación al cual se encuentra expuesto.
 \\ \indent Realizamos la detección de color verificando los valores correspondientes al canal H (tono) de la representación HSV de la imagen. Para esto realizamos la conversión de la imagen obtenida por la cámara  de formato RGB a HSV usando el algoritmo expuesto en la figura \ref{code:hsv}.
@@ -417,7 +417,7 @@ Una vez obtenidos los pixeles que se corresponden con el color buscado
 se combinan estos con los del canal de saturación utilizando un and 
 bit a bit entre ambos pixeles. A mayor saturación consideramos mayor 
 presencia del color buscado en dicho pixel y por lo tanto mayor 
-probabilidad de que este corresponda a el objeto buscado. \\
+probabilidad de que este corresponda al objeto buscado. \\
 \indent En el caso de las colillas se utilizó el rango para el canal de tono 
 $20<h<40$ con valor en el canal de saturación mayor a 60. En el caso 
 de los platos y los vasos se busco detectar el color blanco. La 
@@ -485,7 +485,7 @@ intensidad baja, motivo por el cual utilizamos la operación de
 threshold. En las figuras \ref{fig:threshold_ruido} y 
 \ref{fig:threshold} exhibimos dos casos de utilización de threshold. 
 Para la detección de colillas, vasos y platos utilizamos establecemos 
-el umbral de la operación de threshold en 100, asignandoles un valor 
+el umbral de la operación de threshold en 100, asignándoles un valor 
 de 255 (valor máximo) a los pixeles que superen dicho umbral o 0 en 
 caso en contrario. 
 \begin{figure}[tpb]
@@ -553,7 +553,7 @@ Ilustramos esto en las figuras \ref{fig:dilate-sample} y \ref{fig:erode-sample}.
 
 	\paragraph{Dilatación}
 En imágenes no binarias, la operación de dilatación se define 
-tomando el máximo local bajo el elemento estructural y asignandole ese valor al punto principal. El efecto producido es una reducción general en el brillo de la imagen y un probable aumento el tamaño de las figuras \cite{nasa-dilate-erode}.  Cuando un área grande aparece, a causa del ruido, partida en varias componentes, el uso de la operación de dilatación provoca que  se combinen nuevamente en una sola. Un ejemplo de esto puede ser apreciado en la figura \ref{fig:dilate}. Otro beneficio de utilizar dilatación es la eliminación del ruido espurio como se aprecia en la figura \ref{fig:dilate-ruido}.
+tomando el máximo local bajo el elemento estructural y asignándole ese valor al punto principal. El efecto producido es una reducción general en el brillo de la imagen y un probable aumento el tamaño de las figuras \cite{nasa-dilate-erode}.  Cuando un área grande aparece, a causa del ruido, partida en varias componentes, el uso de la operación de dilatación provoca que  se combinen nuevamente en una sola. Un ejemplo de esto puede ser apreciado en la figura \ref{fig:dilate}. Otro beneficio de utilizar dilatación es la eliminación del ruido espurio como se aprecia en la figura \ref{fig:dilate-ruido}.
 
 \begin{figure}[tpb]
 \begin{center}
@@ -584,8 +584,8 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 \end{figure}
 
 	\subsubsection{Detección de contornos}
-	La detección de contornos se realiza sobre las imagenes binarias producidas en la etapa de pre-procesamiento. Dichos contornos
-	quedan definidos implicitamente como la separación de regiones 
+	La detección de contornos se realiza sobre las imágenes binarias producidas en la etapa de pre-procesamiento. Dichos contornos
+	quedan definidos implícitamente como la separación de regiones 
 	positivas de las negativas \footnote{ Como se trata de imágenes 
 	binarias, llamamos a una región positiva a las que contienen 
 	pixeles con valores mayores a 0 y a las negativas a las que tienen 
@@ -617,9 +617,9 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	uno nuevo, activa un proceso de seguimiento de borde almacenando las 
 	coordenadas de cada punto que lo compone. Durante este proceso va 
 	marcando los pixeles ya 
-	visitados asignandoles a estos un valor especial para no volver a 
+	visitados asignándoles a estos un valor especial para no volver a 
 	incidir en ellos. Finalmente se disponen todos los contornos encontrados en una lista.
-	Este algoritmo de reconocimiento de contornos esta basado en la 
+	Este algoritmo de reconocimiento de contornos está basado en la 
 	técnica expuesta por Suzuki y Abe para mayor detalle referimos al 
 	autor a \cite{suzuki85}.
 	
@@ -644,12 +644,12 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	\paragraph{Representación}
 	Como se expresa en el trabajo de Zhang y Lu \cite{Zhang02}, existen diversas formas de representar los contornos, cada una con
 	distintas aplicaciones. En nuestro caso se utilizan la codificación encadenada de Freeman, que consiste describir una sucesión de puntos
-	de acuerdo a la posición de un punto con respecto a su predecesor en la secuencia. Para esto se númeran los vecinos de un pixel con 
+	de acuerdo a la posición de un punto con respecto a su predecesor en la secuencia. Para esto se numeran los vecinos de un pixel con 
 	los números del 1 al 7 como indica la figura \ref{fig:freeman}. De esta manera, un contorno puede almacenarse como la coordenada de
 	un punto inicial seguido de una cadena de códigos (del 1 al 7) que indican la posición del próximo punto respecto al actual. Esta 
 	es una representación más compacta en comparación con una secuencia 
 	de coordenadas  $(x,y)$ y posibilita la extracción de 
-	caracteristicas tales como el CCH o NCCH \footnote{ CCH o chain 
+	características tales como el CCH o NCCH \footnote{ CCH o chain 
 	code histogram es un histograma que se extrae a partir de la 
 	frecuencia de aparición de los números 1 a 7 en un contorno 
 	codificado con cadenas de Freeman. Este descriptor es invariante 
@@ -670,7 +670,7 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 \begin{center}
   \includegraphics[scale=0.6]{figuras/freeman-codes.png}
 \end{center}
-  \caption{\small Matriz para la codificación de freeman. El número indica la dirección de desplazamiento del próximo punto respecto del
+  \caption{\small Matriz para la codificación de Freeman. El número indica la dirección de desplazamiento del próximo punto respecto del
   actual (punto negro) }.
   \label{fig:freeman}
 \end{figure}
@@ -678,20 +678,20 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 		
 	\paragraph{Polígonos}
 	Como mencionamos, los contornos son representados utilizando la codificación de Freeman. Sin embargo, la precisión con la que se muestrean estos bordes suele ser excesiva o redundante para nuestras
-	necesidades lo cual hace el análisis de figuras más dificil. Con el fin de reducir esta complejidad utilizamos un algoritmo
+	necesidades lo cual hace el análisis de figuras más difícil. Con el fin de reducir esta complejidad utilizamos un algoritmo
 	para representar el mismo contorno con una menor cantidad de puntos. Esto se realiza mediante un algoritmo de aproximación por polígonos
 	basado en el trabajo de Douglas y Pecker \cite{dp74}. Previo a la aplicación de este algoritmo, convertimos el contorno a una representación
 	tradicional de secuencias de puntos $(x,y)$ correspondientes a las 
-	coordenadas del borde en la imagen. Esto se puede lograr facilmente partiendo del punto inicial y calculando la variación en la coordenada según el código de vecino correspondiente ( 0-7).\\
+	coordenadas del borde en la imagen. Esto se puede lograr fácilmente partiendo del punto inicial y calculando la variación en la coordenada según el código de vecino correspondiente ( 0-7).\\
 	\indent La técnica de aproximación comienza tomando los dos puntos 
-	pertenecientes al contorno mas alejados entre si. Estos puntos se 
+	pertenecientes al contorno más alejados entre sí. Estos puntos se 
 	agregan a la aproximación y se traza una línea entre ellos.
 	Luego se recorre el resto de los puntos del contorno buscando a aquel 
 	que se encuentre a mayor distancia de esta línea. A dicho punto se lo 
-	agrega a la aproximación, generando dos nuevas líneas con los dos puntos iniciales. Este proceso se itera agregando siempre el punto que se encuentre mas distante de la aproximación hasta que todos los puntos del contorno se encuentren a una distancia menor que cierto parámetro 
+	agrega a la aproximación, generando dos nuevas líneas con los dos puntos iniciales. Este proceso se itera agregando siempre el punto que se encuentre más distante de la aproximación hasta que todos los puntos del contorno se encuentren a una distancia menor que cierto parámetro 
 	de precisión establecido. En la figura \ref{fig:polyaprox} podemos apreciar una esquematización de este proceso. Otra ventaja que 
 	otorga la utilización de esta aproximación es que si un contorno presenta una serie de puntos alineados, estos serán remplazados por un 
-	único segmento o lado del polígono, lo que nos permite identificar lineas en los contornos. Esta caracteristica es aprovechada para
+	único segmento o lado del polígono, lo que nos permite identificar líneas en los contornos. Esta característica es aprovechada para
 	realizar la detección de vasos como se ve en la próxima sección. En la figura \ref{fig:polyVasos} podemos observar un contorno
 	y su aproximación por polígonos.
 	
@@ -701,7 +701,7 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 \end{center}
   \caption{\small Aproximación de contornos mediante polígonos. (a) Se observa que el contorno se encuentra acorde el borde del vaso, las
   partes laterales del mismo se encuentran segmentadas (efecto serrucho) por la cantidad de puntos. (b) El contorno es representado mediante
-  8 puntos, los lados laterales solo involucran un segmento posibilitando la detección de lineas.}
+  8 puntos, los lados laterales solo involucran un segmento posibilitando la detección de líneas.}
   \label{fig:polyVasos}
 \end{figure}
 
@@ -710,8 +710,8 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
   \includegraphics[scale=0.6]{figuras/douglas-pecker.png}
 \end{center}
   \caption{\small Iteraciones del algoritmo de aproximación de polígonos de Douglas-Peucker. (a) Imagen original. (b) Extracción de contorno
-  (c) Se seleccionan dos puntos iniciales y se traza una línea entre ellos (d) Se agrega a la aproximación el punto mas lejano del contorno a esta línea.
-  (e) Se repite el proceso agregando siempre el punto mas lejano (f) hasta que todos los puntos esten a cierta distancia requerida.}
+  (c) Se seleccionan dos puntos iniciales y se traza una línea entre ellos (d) Se agrega a la aproximación el punto más lejano del contorno a esta línea.
+  (e) Se repite el proceso agregando siempre el punto más lejano (f) hasta que todos los puntos estén a cierta distancia requerida.}
   \label{fig:polyaprox}
 \end{figure}
 
@@ -743,7 +743,7 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	si se aumenta o disminuye dicha precisión.
 	\paragraph{Filtro de excentricidad}
 	La excentricidad es un parámetro que relaciona la longitud del eje más largo con el del más corto. Esta se define como 
-	\textit { longitud del eje mas largo / longitud del eje mas corto}  . Algunas figuras pueden caracterizarse por tener valores de excentricidad
+	\textit { longitud del eje más largo / longitud del eje más corto}  . Algunas figuras pueden caracterizarse por tener valores de excentricidad
 	que se mantienen en cierto rango y permite identificarlas usando este filtro.
 	\paragraph{Filtro de circularidad}
 	La circularidad es un parámetro que relaciona área con perímetro y define la redondez de una figura. Se define como $perimetro^2/area$. Algunas figuras pueden 
@@ -792,7 +792,7 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	
 	\subsubsection{Centroide}
 	En las siguientes secciones se hacen referencia a los centroides 
-	de un objeto. El centroide es el centro geometrico o centro de 
+	de un objeto. El centroide es el centro geométrico o centro de 
 	gravedad de una figura y 
 	sirve como punto de referencia para la misma. Para calcular dicho 
 	punto hacemos uso de las formulas propuestas por Hu \cite{Hu1962} para la 
@@ -847,11 +847,11 @@ el sistema de predicción asume que si se encuentra un objeto $A'$ en
 el cuadro siguiente $c_1$ con coordenadas $(x_1, y_1)$ tal que 
 $||(x_1,y_1) - (x_0,y_0)||\leq \alpha$, área $a'$ tal que $|a-a'| \leq 
 \gamma *a$ y perímetro $p'$ tal que $|p-p'|\leq \theta*p$ entonces $A 
-\simeq A'$, donde $\alpha$, $\gamma$ y $\theta$ son parametros del 
+\simeq A'$, donde $\alpha$, $\gamma$ y $\theta$ son parámetros del 
 sistema. Esta aseveración no solo vale para el cuadro subsiguiente 
 $c_1$ sino también para los siguientes $c_2,c_3 ... c_{0+\eta}$ donde 
 $\eta$, $\alpha$ y $\gamma$ se computan, para este caso, según el 
-historial de detección de cada objeto.  Basandose en esta regla, el 
+historial de detección de cada objeto.  Basándose en esta regla, el 
 sistema de predicción puede estimar la posición de un objeto que, 
 para un cuadro en particular, no fue detectado por el sistema de 
 visión. Para concretar este mecanismo, cuando un objeto es detectado a lo largo de varios cuadros se persiste la siguiente información:
@@ -877,7 +877,7 @@ predicción}
 sistema de visión no lo detecta en un número $\eta$ de cuadros 
 consecutivos.}
 \item{ $\eta$ se calcula cada $\lambda$ cuadros como 
-$\frac{detecciones}{antiguedad}\times \rho$ donde $\rho$ es un parámetro del 
+$\frac{detecciones}{antigüedad}\times \rho$ donde $\rho$ es un parámetro del 
 sistema}.
 \item{ Si un objeto es considerado por el sistema de predicción y este 
 no es detectado por el sistema de visión para algún cuadro entonces 
@@ -895,12 +895,12 @@ aparición nos referimos a que el objeto sea reconocido por el sistema
 de visión.} regularmente en 
 cuadros consecutivos, en concordancia con la asunción número 
 1. De no cumplir con esta asunción, consideramos que no se trata de un 
-objeto de interes e utilizamos la regla 1 para eliminar dicha detección. \\
+objeto de interés e utilizamos la regla 1 para eliminar dicha detección. \\
 	Una vez ganada la confianza del sistema de predicción, este 
 	último comienza a tener a estos objetos en consideración 
 	\footnote{Decimos que el sistema de predicción considera a un 
 	objeto cuando este empieza a informar la posición de este dentro de la 
-	imagen. Notese que, para un cuadro determinado, el sistema de 
+	imagen. Nótese que, para un cuadro determinado, el sistema de 
 	visión puede detectar un objeto y el sistema de predicción, como 
 	todavía no considera a dicho objeto, ignora la detección y no informa de su 
 	presencia.} y veta por su 
@@ -1147,12 +1147,12 @@ aquellas que son falsas. El cuadro \ref{tab:evo_colillas} exhibe las ventajas de
 predicción para las colillas.\\
 \indent 
 En el caso de los vasos, observamos que el sistema de visión brinda 
-una muy buena performance por si solo, como se ve en el cuadro \ref{tab:result} 
+una muy buena performance por sí solo, como se ve en el cuadro \ref{tab:result} 
 donde se muestran valores menores al $10\%$ en falsos positivos y falsos 
 negativos para todos los videos. La diferencia de performance con la 
 detección de colillas es comprensible ya que los vasos poseen 
-caracteristicas como tamaño y color que hacen que sea más facil 
-reconocerlos y mas dificil confundirlos en relación con estas 
+características como tamaño y color que hacen que sea más fácil 
+reconocerlos y mas difícil confundirlos en relación con estas 
 últimas, que poseen un color similar al del fondo y son de tamaño 
 pequeño. En este caso, el sistema de predicción no altera demasiado 
 los resultados como en el caso de las colillas, sin embargo, destacamos un 
@@ -1181,7 +1181,7 @@ obtenidos por el sistema de visión. En este caso, los porcentajes de
 aciertos de las estimaciones son bajos pero observamos que utilizando 
 la configuración 2 el número de estimaciones es mucho menor con lo 
 que se cometen menos errores. Un cuadro comparativo de las 
-distintas configuraciónes para vasos pueden observarse en el cuadro 
+distintas configuraciones para vasos pueden observarse en el cuadro 
 \ref{tab:evo_platos}.\\
 \indent  Las dos configuraciones del sistema de predicción modifican de 
 distintas manera al algoritmo de visión subyacente. Para cada objeto 
@@ -1194,16 +1194,16 @@ sistema de visión cometa más errores de tipo I (falsos positivos) con
 el objetivo de minimizar errores de tipo II ( falsos negativos) o 
 viceversa. En ese sentido el sistema de predicción proporciona los mecanismos que 
 permiten lograr estos ajustes sin necesidad de modificar el algoritmo de detección 
-subyacente. En nuestro caso consideramos que tal y tal cosa es mas 
+subyacente. En nuestro caso consideramos que tal y tal cosa es más 
 importante sobre tal otra por tal y tal motivo como hemos discutido en 
 la sección GUILLE.
  
 
 %~ Esto se lo atribuimos a que esta configuración tiene un valor de 
 %~ $\rho$ elevado y por lo tanto modifica demasiado la performance del 
-%~ sistema de visión. Recordemos que a valores de $\rho$ mas elevados, 
+%~ sistema de visión. Recordemos que a valores de $\rho$ más elevados, 
 %~ mayor serán el número de estimaciones de la posición de los objetos 
-%~ siendo mas propenso a cometer errores. En el caso de los vasos, debido 
+%~ siendo más propenso a cometer errores. En el caso de los vasos, debido 
 %~ a la alta efectividad del sistema de visión, resulta contra-producente  
 %~ arriesgar tanto. Esto se verifica utilizando la configuración 2 donde 
 %~ ,al realizar una menor cantidad de estimaciones, se obtiene un número mucho 
@@ -1214,8 +1214,8 @@ la sección GUILLE.
 %~ y platos con las colillas es esperable ya que las colillas son 
 %~ objetos de menor tamaño e incluso poseen un color muy similar al del 
 %~ entorno, lo cual dificulta su detección. En cambio, el color blanco y 
-%~ el gran tamaño de los vasos y platos hace que se distingan facilmente 
-%~ del fondo pero su color los hace mas sensibles a la iluminación.\\
+%~ el gran tamaño de los vasos y platos hace que se distingan fácilmente 
+%~ del fondo pero su color los hace más sensibles a la iluminación.\\
 %~ \indent Utilizando el mismo sistema de visión con el sistema de 
 %~ predicción  obtenemos resultados un tanto distintos indicados en la 
 %~ tabla \ref{tab:pred}. En el caso de las colillas observamos una mejora notable 
@@ -1223,26 +1223,26 @@ la sección GUILLE.
 %~ la variable $\delta$, eliminando las apariciones espontaneas y el 
 %~ número de detecciones en general. A su vez, esta disminución impacta 
 %~ en la cantidad de hits y por consecuente en el porcentaje de falsos 
-%~ negativos, pero de forma mucho mas leve lo que lo hace un trade-off 
+%~ negativos, pero de forma mucho más leve lo que lo hace un trade-off 
 %~ favorable. En el caso de los vasos y platos no se observa ninguna 
 %~ mejora notoria. En los vasos vemos un leve incremento 
 %~ en el porcentaje de falsos positivos producido por $\delta$ pero en 
 %~ este caso, a diferencia de las colillas, la disminución en el 
-%~ porcentaje de falsos negativos es aún mas pequeña, resultando en un 
+%~ porcentaje de falsos negativos es aún más pequeña, resultando en un 
 %~ balance no favorable. Algo similar sucede con los platos en donde se 
 %~ reduce notablemente la cantidad de hits sin ver ninguna mejora en la 
 %~ cantidad de detecciones falsas. Esto último puede ser atribuido a la 
 %~ gran cantidad de errores cometidos al estimar la posición del objeto 
-%~ cuando este no fue detectado por el sistema de visión. En sintesis, el 
+%~ cuando este no fue detectado por el sistema de visión. En síntesis, el 
 %~ sistema de predicción logró una influencia positiva en el detector de colillas
 %~ filtrando algunas detecciones falsas pero entorpeció la detección de vasos y platos
 %~ donde ya poseíamos una buena performance. La configuración utilizada para el sistema de 
 %~ predicción en este cuadro resultó muy invasiva para estos dos detectores y los forzó a 
-%~ estimar posiciones de los objetos cuando esto no era necesario ya que se poseia un número bajo de 
+%~ estimar posiciones de los objetos cuando esto no era necesario ya que se poseía un número bajo de 
 %~ deteccions falsas.\\
 %~ \indent En el cuadro \ref{tab:pred_2} exhibimos los resultados obtenidos con un sistema de predicción
 %~ menos invasivo. En este caso se eligieron valores de $\lambda=10$, $\rho=4$ y $\delta=2$. Tomando un valor
-%~ de $\rho$ y $\delta$ le damos mas confianza al sistema de visión como fue explicado previamente. En los vasos y
+%~ de $\rho$ y $\delta$ le damos más confianza al sistema de visión como fue explicado previamente. En los vasos y
 %~ platos es notable la reducción en la cantidad de falsas detecciones sin afectar demasiado el número de hits logrado.
 %~ Esto viene acompañado con el hecho de que el predictor realizo menos estimaciones y aumento su tasa de acierto en todos 
 %~ los casos. Los resultados obtenidos para estos dos objetos son mejores que los obtenidos solo con el sistema de visión. 
@@ -1381,12 +1381,12 @@ operaciones morfológicas y de threshold. La etapa de procesamiento extrae los c
 para simplificar el análisis posterior. Este consiste en una serie de 
 filtros pre-definidos dispuestos en cascada que interpretan la 
 información de contorno y  determinan si se trata 
-de un objeto de interes o no. 
+de un objeto de interés o no. 
 Implementamos un mecanismo de predicción parametrizable que funciona 
 sobre el algoritmo en cuestión por el cual se puede optimizar la performance de 
-detección según las caracteristicas propias de cada detector. Se 
+detección según las características propias de cada detector. Se 
 midieron los resultados obtenidos realizando el reconocimiento de 
-vasos,colillas y platos obteniendo un promedio de $14\%$ de falsos 
+vasos, colillas y platos obteniendo un promedio de $14\%$ de falsos 
 positivos  y $5\%$ de falsos negativos. Finalmente agregamos un mecanismo de focalización por el cual 
 el sistema completo puede concentrarse sobre un único objeto reduciendo 
 los tiempos de procesamiento. 
@@ -1395,15 +1395,15 @@ los tiempos de procesamiento.
 \subsubsection{Posibles extensiones}
 Existen varios puntos donde consideramos se pude mejorar este sistema 
 de visión. Una de las áreas donde se pueden introducir mejoras es en 
-la sección de filtros. Como hemos visto, existen novedosas tecnicas de 
+la sección de filtros. Como hemos visto, existen novedosas técnicas de 
 descripción y representación de contornos que pueden ser introducidas 
 como un filtro adicional sin necesidad de modificar la estructura del 
-algoritmo. La utilización de dichas técnicas pueden utiilzarse para 
+algoritmo. La utilización de dichas técnicas pueden utilizarse para 
 la caracterización de nuevos objetos a reconocer o bien para reforzar 
 los objetos ya tratados. Por otro lado, hallamos al sistema de filtros 
 en cascada un tanto limitado para la tarea propuesta ya que frente a 
 pequeñas perturbaciones que provoquen que un único filtro rechazo un 
-determinado contorno, este último se vera descartado por el sistema. 
+determinado contorno, este último se verá descartado por el sistema. 
 Como alternativas a este sistema se puede implementar un sistema de 
 votación donde se reúnan los resultados de cada filtro y se tome una 
 decisión en base a ellos. Adicionalmente, sería interesante que en 
@@ -1411,33 +1411,33 @@ este sistema de votación se pueda indicar un valor que establezca la
 importancia de cada filtro en relación a un objeto determinado. Otra 
 posibilidad, basándonos en el trabajo \cite{potato} expuesto en la 
 sección \ref{volunteer}, es utilizar las 
-caracteristicas medidas por los filtros para entrenar un clasificador. 
-Luego este sera capaz de caracterizar a los residuos utilizando los 
+características medidas por los filtros para entrenar un clasificador. 
+Luego este será capaz de caracterizar a los residuos utilizando los 
 valores medidos de manera óptima.\\
 \indent En lo que respecta a la etapa de pre-procesamiento se pueden 
 tomar las ideas del trabajo \cite{sidewalk2008} expuesto en la sección \ref{sec:sidewalk} 
 para caracterizar el entorno del robot. Esto es, mantener histogramas 
 que modelen el entorno del robot utilizando aquellas regiones de las 
-imágenes donde no se hallaron  objetos de interés. De este modo sería más facíl 
-distinguir un objeto del fondo o entorno que lo rodea. Esto tambíen 
+imágenes donde no se hallaron  objetos de interés. De este modo sería más fácil 
+distinguir un objeto del fondo o entorno que lo rodea. Esto también 
 ayudaría al algoritmo de visión a adaptarse a los cambios de 
 iluminación que pueden ocurrir ya que este histograma se podría 
-actualizar periodicamente.\\
-\indent Introducir algun sistema de sensado por el cual el robot pueda 
+actualizar periódicamente.\\
+\indent Introducir algún sistema de sensado por el cual el robot pueda 
 detectar si efectivamente se ha recolectado un residuo reconocido o no, resulta de 
-gran interés ya que permitiría implementar algun mecanismo de 
+gran interés ya que permitiría implementar algún mecanismo de 
 aprendizaje por refuerzo para el sistema de visión. De esta manera, el 
-sistema de visión podría adaptar parametros como el valor del umbral 
-el rango en el canal de tono para el filtro de color o los limites 
+sistema de visión podría adaptar parámetros como el valor del umbral 
+el rango en el canal de tono para el filtro de color o los límites 
 superiores e inferiores en el filtro de área de acuerdo a los 
 refuerzos recibidos.\\
 \indent El sistema de predicción puede cometer errores cuando, por 
 efectos de iluminación o oclusión, un objeto cambia su área o 
 perímetro en gran proporción. Por lo tanto , la inclusión de otros 
 descriptores de contorno en este sistema podría resultar en un 
-seguimiento mas efectivo de los mismos a lo largo de los cuadros. 
+seguimiento más efectivo de los mismos a lo largo de los cuadros. 
 También es posible mejorar la estimación de las posiciones utilizando 
-formúlas que tengan en cuenta no solo el último desplazamiento sino 
+fórmulas que tengan en cuenta no solo el último desplazamiento sino 
 el desplazamiento promedio del objeto en los últimos cuadros.
 
 
