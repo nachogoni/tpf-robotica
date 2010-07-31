@@ -1,28 +1,135 @@
 \section{Requerimientos}
 \label{h_requerimientos}
 
+Nuestro proyecto...
+
+
 \section{Ideas de implementaci\'on}
 \label{h_ideas}
+
+Evaluamos distintos factores para la elecci\'on de cada dispositivo o m\'odulo presente en el robot.
+Desde la forma de desplazamiento hasta el m\'etodo de sensado, pasando por el controlador, captura
+de im\'agenes y m\'etodo de recolecci\'on de residuos.
+Estos son los factores que explicamos y detallamos en este apartado.
 
 \subsection{Locomoci\'on}
 \label{h_ideas_locomocion}
 
-distintos tipos de locomocion que tuvimos en cuenta y porque elegimos este
+Un robot movil se caracteriza por su capacidad de desplazarse por el entorno.
+Es por esto que la locomoci\'on es un factor importante que tuvimos que resolver.
+
+La forma que usar\'ia el robot para desplazarse, si ser\'ia mediante ruedas, orugas o patas nos
+iba a determinar las necesidades de control, equilibrio, capacidad de coordinaci\'on, velocidad
+y hasta la autonom\'ia.
+
+El uso de orugas era una excelente opci\'on como base para soporte del peso y prove\'ia buen
+equilibrio, pero la fricci\'on de las mismas generaba una posible falta de precisi\'on que nos
+pod\'ia traer problemas para la detecci\'on de la cantidad de giro o desplazamiento y por ende,
+una incorrecta localizaci\'on en el terreno.
+Por otra parte, la coordinaci\'on de las patas y el equilibrio del cuerpo implicaba una
+complejidad que escapaba el alcance del proyecto.
+
+El uso de dos ruedas de tracci\'on y con al menos una tercer rueda de tipo castor para proveer
+equilibrio fue nuestra elecci\'on de dise\~no.
+
+En la secci\'on \ref{h_actuadores} explicamos detalladamente la elecci\'on de los actuadores
+para esta tarea.
 
 \subsection{Sensado del entorno}
 \label{h_ideas_sensado}
 
-distintos tipos de sensores disponibles y porque elegimos estos
+El sensado del ambiente englobaba varios puntos que deb\'iamos tener en cuenta a la hora de elegir
+la cantidad, forma, rango, m\'etodo y costo de los sensores.
+En principio los requerimientos eran claros, necesitabamos poder detectar objetos en el ambiente,
+evitar obst\'aculos y realizar mediciones internas al robot, como eran el nivel de bater\'ia,
+consumo y posici\'on de los motores.
+
+La captura de im\'agenes deb\'ia ser realizada por medio de una c\'amara de video o webcam.
+Esta prove\'ia de la principal fuente de datos para el proceso de reconocimiento de residuos
+explicado en el documento.
+Las distintas caracter\'isticas de la c\'amara como su resoluci\'on, refresco, nivel de ruido,
+mejoras de la im\'agen y su velocidad de respuesta nos determinar\'ian la elecci\'on de la misma.
+
+La detecci\'on de obst\'aculos implicaba otras caracter\'istcas de sensores.
+Principalmente de necesitabamos sensores de distancia con la apertura necesaria para cubrir lo
+mejor posible, el per\'imetro del robot, otorgando un rango de detecci\'on lo suficientemente olgado
+que permitiera una adecuada velocidad de respuesta al controlador principal para reacci\'onar y poder
+evitar objetos desconocidos o marcados como obst\'aculos.
+
+Entre los distintos tipos de sensores de distancia estaban los de ultrasonido, tel\'emetros infrarrojos
+y scanners l\'aser.
+Los sensores de distancia por ultrasonido tienen un rango aproximado entre 2 cent\'imetros y 4 metros
+en la zona de detecci\'on y un \'angulo de apertura variable seg\'un la distancia al objetivo.
+El tiempo de espera que debemos tener entre disparo y disparo del sensor por posibles rebotes del pulso
+de sonido es relativamente elevado, lo que no lo hace el m\'as adecuado para colocarlo a lo largo del
+per\'imetro del robot.
+En contraparte los tel\'emetros infrarrojos no poseen esta limitaci\'on debido a que no tiene esta
+limitaci\'on en cuanto a los rebotes.
+Pero los rangos efectivos de detecci\'on de objetos no cubrian completamente nuestras necesidades.
+
+Debido a las caracter\'isticas de los sensores decidimos combinarlos para aprovechar los beneficios de
+cada uno de ellos y suplir las falencias de un tipo con otro el tipo.
+Un anillo de 8 tel\'emetros distribuidos de forma tal que haya una mayor resoluci\'on en la zona frontal
+del robot contra la zona trasera y lateral y un \'unico sensor de distancia por ultrasonido al frente
+para captar objetos a mayor distancia fue nuestra elecci\'on.
+
+El uso de un scanner l\'aser hubiera sido ideal para un an\'alisis topogr\'afico del terreno esto no era
+un requerimiento de nuestro proyecto y el elevado costo sal\'a de nuestra escala.
+
+La detecci\'on de una l\'inea en el suelo la resolvimos mediante el uso de sensores opticos reflectivos
+apuntando hacia el piso de manera tal que permitieran diferenciar entre distintos niveles de reflexi\'on
+y por ende, diferenciar una l\'inea del piso.
+
+En la secci\'on \ref{h_sensado} explicamos con m\'as detalle cada uno de los sensores elegidos.
 
 \subsection{Controlador}
 \label{h_ideas_controlador}
 
-distintas formas de diagramar la forma de control, que tipo de controladores necesitamos, en cuales pensamos, con cuales nos quedamos
+Teniamos especificaciones que nos generaban la necesidad de ejercer control sobre los distitnos dispositivos
+presentes en el robot, ya sea para configurar o obtener la informaci\'on que proveen los sensores, para
+controlar la velocidad de las ruedas o mismo para comunicar las distintas partes.
+No exist\'ia una \'unica forma para realizar esto.
+
+Experiencias previas nos daban la idea de tener un \'unico controlador que mantuviera el control sobre cada uno
+de los dispositivos en nuestro robot.
+Esto generaba grandes exigencias de hardware y una alta complejidad de dise\~no a nivel software para coordinar
+y mantener todo en funcionamiento.
+Otra opci\'on era la existencia de peque\~nos controladores distribuidos con menor capacidad de procesamiento,
+destinados a pocas o una \'unica tarea, de dise\~no simple y con una menor complejidad a nivel software.
+Esta soluci\'on combinada con una buena modularizaci\'on y una comunicaci\'on acorde, generaba a nuestra visi\'on
+y seg\'un nuestras necesidades, la mejor opci\'on y por ende, fue la que elegimos.
+
+En la secci\'on \ref{h_comm} explicamos todo lo referente a la comunicaci\'on entre m\'odulos, en la secci\'on
+\ref{h_controlador} explicamos detalladamente la elecci\'on de los controladores y en la secci\'on \ref{h_placas}
+el dise\~no y construcci\'on de las placas.
+
+Como la captura de im\'agenes la realizar\'iamos por medio de una c\'amara de video, webcam o alg\'un otro tipo
+de c\'amara integrada y todo el procesamiento de im\'agenes requiere grandes capacidades de c\'alculo, resolvimos
+por simplicidad el uso de una computadora preferentemente de arquitectura x86 para facilitar la compatibilidad
+a nivel software.
+De manera conjunta decidimos el uso de una webcam con puerto USB como principal dispositivo de captura de im\'agenes.
+Por poseer una bater\'ia propia de gran capacidad, facilidad de uso, disponibilidad de sistema operativo, entorno
+de desarrollo, costos y soporte a nivel repuestos, eligiimos una netbook como controlador principal del robot.
 
 \subsection{M\'etodo de recolecci\'on}
 \label{h_ideas_recoleccion}
 
-distintos metodos que se nos ocurrieron
+La necesidad de recolecci\'on de basura del robot nos suger\'ia la existencia de un mecanismo que permitiera
+tomar objetos y llevarlos al recipiente interior para la futura descarga.
+Entre las opciones que tuvimos en cuenta la existencia de un brazo mec\'anico con los suficientes grados de
+libertad para realizar la tarea, idea que rechazamos por las dificultades de control y construcci\'on que
+s\'olo el brazo generaban.
+
+Otra opci\'on fue un mecanismo de aspirado de los residuos hacia el interior, pero esta soluci\'on no nos
+permit\'ia diferenciar entre lo que recolectabamos, juntar colillas de cigarrillos, vasos o botellas y
+generaba gran consumo de energ\'ia.
+
+Finalmente elegimos una soluci\'on que constaba de una pala que se extiend\'ia, recog\'ia y contra\'ia para
+dejar los residuos en el recipiente.
+Aunque por falta de tiempo el mecanismo no fue implementado para la presentaci\'on y armado f\'isico del prototipo.
+A\'un as\'i consideramos su existencia durante todo el desarrollo del proyecto y dise\~namos los mecanismos
+para ejercer el control tanto desde los comportamientos del robot, como tambi\'en a nivel protocolo de
+comunicaci\'on y placas controladoras para los actuadores f\'isicos.
 
 \section{Actuadores}
 \label{h_actuadores}
@@ -100,7 +207,7 @@ por el otro la \emph{In2} con la \emph{In3}.
 	\label{hF_l298}
 \end{figure}
 
-De esta forma, se controla con s\'olo $3$ cables, uno de habilitaci\'on y otros $2$ de \emph{Input} que determinan
+De esta forma, controlamos con s\'olo $3$ cables, uno de habilitaci\'on y otros $2$ de \emph{Input} que determinan
 la polarizaci\'on de los transistores internos y por ende, el sentido de giro del motor.
 En el cuadro \ref{hT_l298} mostramos la tabla de verdad para los pines de control, donde H es estado alto, L estado bajo y X cualquier estado.
 En la figura \ref{hF_l298} mostramos el diagrama interno del integrado.
@@ -207,7 +314,7 @@ un pulso que tiene un tiempo m\'inimo y m\'aximo para mapear los \'angulos m\'in
 
 Dentro del modo de uso, podemos hacer que queden sueltos o que se queden fijos en cierta posici\'on indicando, de forma cont\'inua, el valor
 del \'angulo requerido.
-La frecuencia a la que se debe setear la posici\'on depende el modelo.
+La frecuencia a la que debemos setear la posici\'on depende el modelo.
 
 \subsubsection{Rutinas de control}
 \label{h_actuadores_servo_rutinas}
@@ -232,7 +339,7 @@ En la secci\'on \ref{h_placas_sensado} explicamos el dise\~no y construcci\'on d
 
 El principio de funcionamiento de estos sensores es mediante un haz de luz infrarroja que es emitido hacia el objetivo, el cual
 es reflejado y captado a traves de un lente por un sensor de posici\'on relativa en el interior del sensor.
-En base a esta medici\'on se calcula la distancia entre el sensor y el objeto reflectivo que se encuentra frente a \'el.
+En base a esta medici\'on calculamos la distancia entre el sensor y el objeto reflectivo que se encuentra frente a \'el.
 
 \subsubsection{Caracter\'isticas}
 \label{h_sensado_telemetros_caracteristicas}
@@ -240,7 +347,7 @@ En base a esta medici\'on se calcula la distancia entre el sensor y el objeto re
 Los tel\'emetros infrarrojos que elegimos son de la marca Sharp\footnote{http://sharp-world.com/products/device}, modelo \emph{GP2D120}.
 En el cuadro \ref{hT_gp2d120} detallamos los valores caracter\'isticos del modelo.
 
-Este tipo de sensores tienen un retardo de aproximadamente $43.1ms$ durante el cual la lectura que se realiza no es confiable y luego
+Este tipo de sensores tienen un retardo de aproximadamente $43.1ms$ durante el cual la lectura que realizamos no es confiable y luego
 las nuevas lecturas se hacen en ventanas de aproximadamente el mismo tiempo.
 En la figura \ref{hF_gp2d120_pulse} mostramos el diagrama de tiempos.
 
@@ -2080,8 +2187,8 @@ digital y en la figura \ref{hF_placa_dc_schema5} la fuente de alimentaci\'on y b
 \subsubsection{Circuito}
 \label{h_placas_motorDC_circuito}
 
-En la figura \ref{hF_placa_dc_componentes} se muestra la m\'ascara de componentes de la placa.
-En la figura \ref{hF_placa_dc_capas} se muestran ambas capas de la placa.
+En la figura \ref{hF_placa_dc_componentes} mostramos la m\'ascara de componentes de la placa.
+En la figura \ref{hF_placa_dc_capas} mostramos ambas capas de la placa.
 
 \begin{figure}
 	\centering
@@ -2252,8 +2359,20 @@ y en la figura \ref{hF_placa_sense_schema4} la fuente de alimentaci\'on y borner
 \subsubsection{Circuito}
 \label{h_placas_sensado_circuito}
 
-En la figura \ref{hF_placa_sense_componentes} se muestra la m\'ascara de componentes de la placa.
-En la figura \ref{hF_placa_sense_capas} se muestran ambas capas de la placa.
+En la figura \ref{hF_placa_sense_componentes} mostramos la m\'ascara de componentes de la placa.
+En la figura \ref{hF_placa_sense_capas} mostramos ambas capas de la placa.
+
+Una observaci\'on importante en el circuito de esta placa es que al momento de montarla
+observamos una gran inestabilidad en el microcontrolador cuando hac\'iamos lecturas simult\'aneas
+en m\'as de 2 tel\'emetros.
+Luego de varios intentos para solucionar este inconveniente, descubrimos que era un problema
+en cuanto a un consumo instant\'eneo de los tel\'emetros que generaba que se reseteara el
+microcontrolador.
+Para solucionar esto colocamos un capacitor de $100\mu F$ entre las pistas de \emph{+5V} y
+\emph{GND} en medio de los puertos de los sensores 1 y 2.
+
+Luego de este peque\~no cambio pudimos seguir con nuestro desarrollo y las siguiente pruebas
+mostraron la estabilidad que necesitabamos en el microcontrolador.
 
 \begin{figure}
 	\centering
@@ -2414,8 +2533,8 @@ En la figura \ref{hF_placa_servo_schema4} la fuente de alimentaci\'on y bornera.
 \label{h_placas_servos_circuito}
 
 circuito de la placa
-En la figura \ref{hF_placa_servo_componentes} se muestra la m\'ascara de componentes de la placa.
-En la figura \ref{hF_placa_servo_capas} se muestran ambas capas de la placa.
+En la figura \ref{hF_placa_servo_componentes} mostramos la m\'ascara de componentes de la placa.
+En la figura \ref{hF_placa_servo_capas} mostramos ambas capas de la placa.
 
 \begin{figure}
 	\centering
