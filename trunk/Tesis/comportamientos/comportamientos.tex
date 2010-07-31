@@ -146,7 +146,8 @@ los puntos $A$, $B$, $C$ y $D$ del trapezoide que determina la zona que ve la c\
 
 \subsubsection{Enfocar Basura}
 \label{focus_garbage}
-Una vez que el m\'odulo de detecci\'on de objetos reconoce algo como basura, hay que elegir
+Una vez que el m\'odulo de detecci\'on de objetos reconoce algo como basura
+(ver secci\'on \ref{algoritmo_vision}), hay que elegir
 la forma en que se va a la basura. En la figura \ref{fig:papproachgoto} se puede ver un
 primer approach de hacer \'esto. Consiste en primero enfocar la basura de forma tal que
 la misma quede en el centro de la imagen de la c\'amara. De aqu\'i surge el comportamiento
@@ -158,7 +159,7 @@ correspondientes a las ruedas de forma tal que la trayectoria del robot describa
 arco. Con este segundo approach no existir\'ia el comportamiento que se est\'a describiendo.
 \\
 Dado que el primer approach es levemente m\'as simple de implementar, y teniendo en cuenta el
-principio enunciado en la secci\'on \ref{arq_prop} \emph{''La simplicidad es una virtud''},
+principio enunciado en la secci\'on \ref{arq_prop} \emph{``La simplicidad es una virtud''},
 elegimos implementar el mismo, a pesar de tener un posible inconveniente, como se puede
 ver en la figura \ref{fig:papproachgotoproblem}.
 \\
@@ -166,7 +167,7 @@ Cuando hay una basura en alguna esquina
 superior de la imagen de la c\'amara, y el robot gira sobre s\'i mismo para enfocarla,
 la basura puede llegar a perderse por el fondo de la imagen. \'Esto se debe a que la distancia
 hacia dichas esquinas es mayor a la distancia hacia el centro del borde superior de la imagen
-(Ver figura \ref{fig:zoneCamera}). Decimos que es un ''posible'' problema, ya que una vez que se
+(Ver figura \ref{fig:zoneCamera}). Decimos que es un ``posible'' problema, ya que una vez que se
 pierde de vista la basura, el robot no enfocar\'a m\'as debido a que el est\'imulo desapareci\'o,
 pero si luego se dirige hacia adelante (por la activaci\'on de alg\'un otro comportamiento), 
 la basura volver\'a a aparecer en la imagen, sin desaprovechar la oportunidad de recogerla.
@@ -234,7 +235,6 @@ que hay hacia la basura, logrando enfocar m\'as r\'apido cuando el \'angulo es m
 tener mayor precisi\'on cuando el \'angulo es m\'as chico, adem\'as de tener mayor rapidez
 de enfoque y precisi\'on que si la velocidad de giro fuera constante.
 \\
-TODO HACER REFERENCIA A LA SECCION DE VISION CON OBTENERLISTADEBASURAS
 
 %%Para obtener el \'angulo y distancia hacia una basura....
 %%pasamos de una posicion (x,y) en la imagen a una posicion
@@ -466,7 +466,7 @@ contrario s\'olo tendr\'ia que girar $\frac{\pi}{2}$.
 \\
 Se puede observar en el c\'odigo usamos datos calculados por la odometr\'ia, en
 este caso, la orientaci\'on actual del robot. El lector se podr\'ia preguntar:
-''Si la odometr\'ia tiene la posici\'on actual del robot, ?`porqu\'e no se usaron los datos
+``Si la odometr\'ia tiene la posici\'on actual del robot, ?`porqu\'e no se usaron los datos
 de la misma para ir hacia la base?''. En principio, esto requiere que el robot tenga
 conocimiento acerca de la ubicaci\'on de la base. Por otro lado, se hubiera tenido que utilizar
 alg\'un algoritmo de \emph{Path Planning} para realizar el recorrido, algo que no
@@ -521,6 +521,17 @@ la l\'inea, entonces el robot no gira, cualquiera sea el estado de los sensores 
 El \'angulo que debe girar est\'a dado por $\theta = \arctan (\frac{b}{a})$ (Ver figura
 \ref{fig:floorSensors}) o $-\theta$ seg\'un cual sea el sensor que est\'e sobre la l\'inea.
 
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.4]{comportamientos/floorSensorsLine.png}
+\includegraphics[scale=0.4]{comportamientos/floorSensorsLine1.png}
+\includegraphics[scale=0.4]{comportamientos/floorSensorsLine2.png}
+\caption{Posibles estados iniciales de entrar a la l\'inea}
+\label{fig:floorSensorsStates}
+\end{center}
+\end{figure}
+
+
 %% Explicar el porque del recorrido de la distancia - relacionarlo con la figura fig:floorSensors
 Luego del posible giro para lograr que el sensor de piso del medio quede sobre la l\'inea, 
 se recorre una distancia de $a$, en el caso que el robot no haya girado anteriormente, o $r$ en
@@ -532,18 +543,8 @@ sea la derecha.
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.4]{comportamientos/floorSensorsLine.png}
-\includegraphics[scale=0.4]{comportamientos/floorSensorsLine1.png}
-\includegraphics[scale=0.4]{comportamientos/floorSensorsLine2.png}
-\caption{Posibles estados iniciales de entrar a la l\'inea}
-\label{fig:floorSensorsStates}
-\end{center}
-\end{figure}
-
-\begin{figure}[htp]
-\begin{center}
 \includegraphics[scale=0.4]{comportamientos/floorSensorsLine3.png}
-\caption{Centro del robot sobre la l\'inea}
+\caption{Centro del robot sobre la l\'inea y posibles giros}
 \label{fig:positioned}
 \end{center}
 \end{figure}
@@ -653,7 +654,7 @@ del robot es facilitar una tarea, sin entorpecer el tr\'ansito de personas.
 \\
 \paragraph{Detalle del comportamiento}
 Para lograr tener conocimiento sobre la proximidad de un obst\'aculo, utilizamos
-sensores de proximidad. %TODO Hacer referencia a la seccion de J
+sensores de proximidad explicados en \ref{sensores de proximidad}.
 Dependiendo de la proximidad sensada por un sensor, el robot deber\'a alejarse
 de ese lado para evitar un posible choque. La activaci\'on del comportamiento
 depender\'a entonces de un valor menor del sensor que haga que la distancia hacia
@@ -716,7 +717,7 @@ por cada paso
 para ayudar al objetivo de la autonom\'ia del robot. A medida que fuimos
 corriendo las simulaciones, observamos que hab\'ia situaciones donde corr\'ia
 peligro la autonom\'ia del robot. Un ejemplo de estas situaciones es el caso
-donde se ''activan mutuamente'' entre dos comportamientos.
+donde se ``activan mutuamente'' entre dos comportamientos.
 \\
 Para ver esto m\'as claramente, supongamos dos comportamientos $A$ y $B$ con
 nivel en la jerarqu\'ia $N(A)$ y $N(B)$, siendo $N(A) > N(B)$. Si la respuesta
@@ -739,9 +740,9 @@ La respuesta del comportamiento es, entonces, girar un \'angulo que cambie
 la direcci\'on del robot y adem\'as, que la suma de esa magnitud no sea peri\'odica.
 \'Esta \'ultima condici\'on se pide por el siguiente escenario:
 \begin{itemize}
-	\item Los comportamientos $A$ y $B$ se ''activan mutuamente'' cuando la orientaci\'on
+	\item Los comportamientos $A$ y $B$ se ``activan mutuamente'' cuando la orientaci\'on
 			del robot es $0$.
-	\item Los comportamientos $C$ y $D$ se ''activan mutuamente'' cuando la orientaci\'on
+	\item Los comportamientos $C$ y $D$ se ``activan mutuamente'' cuando la orientaci\'on
 			del robot es $\pi$.
 	\item La respuesta de \emph{salir de situaciones no deseadas} es girar un \'angulo $\pi$.
 \end{itemize}
@@ -749,7 +750,7 @@ la direcci\'on del robot y adem\'as, que la suma de esa magnitud no sea peri\'od
 \paragraph{Implementaci\'on del comportamiento}
 \begin{verbatim}
     angulo_actual = obtener_angulo_actual(odometria)
-	nuevo_angulo = angulo_actual + ANGULO_A_SUMAR
-	girar(nuevo_angulo)
+    nuevo_angulo = angulo_actual + ANGULO_A_SUMAR
+    girar(nuevo_angulo)
 \end{verbatim}
 
