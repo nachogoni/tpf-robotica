@@ -451,7 +451,6 @@ int Contours::histogramMatchingFilter(IplImage * src, CvHistogram * testImageHis
 	
 	return (val<min);
 }
-//30,32,10
 
 std::vector<int> Contours::getCentroid(){
 	 std::vector<int> vec(2);
@@ -523,11 +522,8 @@ int Contours::vasoFilter(){
 	//get longest edge
 	longestEdge=getLongestEdge(points);
 	//second longest edge
-	//~ sndLongestEdge=getLongestEdge(points,&longestEdge[0],&longestEdge[1]);
 	sndLongestEdge=getLongestEdge2(points,&longestEdge[0],&longestEdge[1],&shorterEdgesCount);
 	
-	//~ if(!cvCheckContourConvexity(points))
-		//~ return false;
 	
 	//longest edges should not share a same point
 	if( equalsCvPoint(&longestEdge[0],&sndLongestEdge[0]) || 
@@ -536,8 +532,6 @@ int Contours::vasoFilter(){
 		equalsCvPoint(&longestEdge[1],&sndLongestEdge[0]))
 			return false;
 			
-	//~ if(points->total - shorterEdgesCount >2)
-		//~ return false;
 		
 	if(!minSeparationBetweenLongestEdges(longestEdge[0],longestEdge[1],sndLongestEdge[0],sndLongestEdge[1]))
 		return false;
@@ -554,43 +548,69 @@ int Contours::vasoFilter(){
 	double ecc=this->getEccentricity();
 	if(ecc<14 || ecc >18)
 		return false;
-			
-	//opposing increase lines
-	//~ if(isIncreasing(&longestEdge[0],&longestEdge[1])==
-		//~ isIncreasing(&sndLongestEdge[0],&sndLongestEdge[1]))
-		//~ return false;
 	
 	
 	
 	return true;
 }
 
+int Contours::platoFilter(){
+	
+	CvMemStorage* mem = cvCreateMemStorage(0);
+	
+	if(this->c->total<6)
+		return false;
+	
+	
+		
+	CvBox2D box=cvMinAreaRect2(this->c,mem);
+	CvBox2D box2=cvFitEllipse2(this->c);
+	
+	double majorAxis,minorAxis;
+	double majorAxis2,minorAxis2;
+	
+	
+	if(box2.size.width>box2.size.height){
+		majorAxis=box2.size.width;
+		minorAxis=box2.size.height;
+	}else{
+		minorAxis=box2.size.width;
+		majorAxis=box2.size.height;
+	}
+	
+	if(box.size.width>box.size.height){
+		majorAxis2=box.size.width;
+		minorAxis2=box.size.height;
+	}else{
+		minorAxis2=box.size.width;
+		majorAxis2=box.size.height;
+	}
+	
+	double boxDiff=fabs(majorAxis - majorAxis2) + fabs(minorAxis-minorAxis2);
+	//eccentricity formula
+	double ecc=sqrt(majorAxis*majorAxis -minorAxis*minorAxis)/majorAxis;
+	
+	
+	//~ if(ecc>0.95)
+		//~ return false;
+	//estimated area
+	
+	double calcArea=PI*(majorAxis/2)*(minorAxis/2);
+	double realArea=this->getArea();
+	
+	if(fabs(calcArea-realArea)/realArea > 0.2)
+		return false;
+	
+	double circ=this->getEccentricity();
+	
+	if(circ<10 || circ>20)
+		return false;
+	
+	if(ecc<0.65 || ecc>0.95)
+		return false;
+	
+	return true;
+}
 
 
-
-
-//~ CvHistogram * Contours::getPGH(){
-	//~ int dims[] = {8, 8};
-	//~ float range[] = {-180, 180, -100, 100};
-	//~ float *ranges[] = {&range[0], &range[2]}; 	
-	//~ cvHistogram * hist;
-	//~ cvCalcPGH( const CvSeq* contour, CvHistogram* hist );
-	//~ hist = cvCreateHist( 2, hist_size, CV_HIST_ARRAY, ranges, 1 );
-
-
-//~ double pghMatchShapes(CvSeq *shape1, CvSeq *shape2) {
-	//~ int dims[] = {8, 8};
-	//~ float range[] = {-180, 180, -100, 100};
-	//~ float *ranges[] = {&range[0], &range[2]};
-    //~ CvHistogram* hist1 = cvCreateHist(2, dims, CV_HIST_ARRAY, ranges, 1);
-    //~ CvHistogram* hist2 = cvCreateHist(2, dims, CV_HIST_ARRAY, ranges, 1);
-	//~ cvCalcPGH(shape1, hist1);
-    //~ cvCalcPGH(shape2, hist2);
-	//~ cvNormalizeHist(hist1, 100.0f);
-	//~ cvNormalizeHist(hist2, 100.0f);
-    //~ double corr = cvCompareHist(hist1, hist2, CV_COMP_BHATTACHARYYA);
-    //~ cvReleaseHist(&hist1);
-    //~ cvReleaseHist(&hist2);
-	//~ return corr;
-//~ }
 }

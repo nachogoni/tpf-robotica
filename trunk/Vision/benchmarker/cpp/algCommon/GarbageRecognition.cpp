@@ -181,7 +181,6 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	
 	//image for contour-finding operations
 	IplImage * contourImage=cvCreateImage(srcSize,8,3);
-	IplImage * contourImageV=cvCreateImage(srcSize,8,3);
 	
 
 	int frameCounter=1;
@@ -201,14 +200,12 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 
 	//convert image to hsv
 	cvCvtColor( src, hsv, CV_BGR2HSV );
-	//~ cvCvtColor( src, hsv, CV_BGR2HLS );
+
 	
 	cvCvtPixToPlane( hsv, h_plane, s_plane, v_plane, 0 );
 	h_planeV=cvCloneImage(h_plane);
 	
-	/*I(x,y)blue ~ ((uchar*)(img->imageData + img->widthStep*y))[x*3]
-	I(x,y)green ~ ((uchar*)(img->imageData + img->widthStep*y))[x*3+1]
-	I(x,y)red ~ ((uchar*)(img->imageData + img->widthStep*y))[x*3+2]*/
+
 	
 	for(int x=0;x<srcSize.width;x++){
 		for(int y=0;y<srcSize.height;y++){
@@ -222,6 +219,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 			else
 				*hue=0;
 			
+			//filter for cigar filters
 			if((*hueV>20 && *hueV<40 && *sat>60))
 				*hueV=255;
 			else
@@ -229,35 +227,20 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 		}
 	}
 	
-
-	
-	
-	
-	
-	//~ cvShowImage("Saturation or value",v_plane);
-	//~ cvShowImage("Luminiscense",s_plane);
-	//~ cvAnd(h_plane, v_plane, andImage);
-	
-	cvShowImage("Hue plane",h_plane);
-	cvShowImage("Hue plane2",h_planeV);
-	//~ cvShowImage("And",andImage);
-	
-	
+	//--first pipeline
 	//apply morphologic operations
 	element = cvCreateStructuringElementEx( MORPH_KERNEL_SIZE*2+1,
 		MORPH_KERNEL_SIZE*2+1, MORPH_KERNEL_SIZE, MORPH_KERNEL_SIZE,
 		CV_SHAPE_RECT, NULL);
 
-	//~ cvDilate(andImage,morphImage,element,MORPH_DILATE_ITER);
 	cvDilate(h_plane,morphImage,element,MORPH_DILATE_ITER);
 	cvErode(morphImage,morphImage,element,MORPH_ERODE_ITER);
 	
-	//~ cvThreshold(morphImage,threshImage,100,255,CV_THRESH_BINARY);
 	cvThreshold(morphImage,threshImage,100,255,CV_THRESH_BINARY);
-	cvShowImage("threshImage",threshImage);
 	
+	//-- end first pipeline
+	//-- start 2nd pipeline-----
 	
-	//2nd pipeline
 	cvAnd(h_planeV, v_plane, andImageV);
 	//apply morphologic operations
 	element = cvCreateStructuringElementEx( MORPH_KERNEL_SIZE*2+1,
@@ -268,7 +251,8 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	cvErode(morphImageV,morphImageV,element,MORPH_ERODE_ITER);
 	
 	cvThreshold(morphImageV,threshImageV,100,255,CV_THRESH_BINARY);
-	cvShowImage("threshImageV",threshImageV);
+
+    //--end second pipeline--
 	
 	//get all contours
 	contours=myFindContours(threshImage);
@@ -276,9 +260,11 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	
 	cont_index=0;
 	
+	//image to write contours on
 	cvCopy(src,contourImage,0);
-	cvCopy(src,contourImageV,0);
 	
+	
+	//contours for dishes and glasses
 	while(contours!=NULL){
 
 		CvSeq * aContour=getPolygon(contours);
@@ -289,17 +275,12 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 		else
 			ct = new Contours(aContour,this->window->window);
 		
-		//apply filters
+		//apply filters for vasos
 
-    
 		if( ct->perimeterFilter(100,10000) && 
 			ct->areaFilter(1000,100000) &&
-			//~ ct->numberOfPointsFilter(4)	&&
-			ct->vasoFilter() &&
-			//ct->rectangularAspectFilter(CONTOUR_RECTANGULAR_MIN_RATIO, CONTOUR_RECTANGULAR_MAX_RATIO) && 
-			//~ ct->boxAreaFilter(BOXFILTER_TOLERANCE) && 	
-			//ct->histogramMatchingFilter(src,testImageHistogram, HIST_H_BINS,HIST_S_BINS,HIST_MIN)&&
-			1){	
+			ct->vasoFilter()
+			){	
 				//get contour bounding box
 				boundingRect=cvBoundingRect(ct->getContour(),0);
 				cvRectangle(contourImage,cvPoint(boundingRect.x,boundingRect.y),
@@ -324,12 +305,37 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 				aGarbage->isPredicted=false;
 				aGarbage->isFocused=false;
 				
-				//test
-				//traversePoints(ct->getContour(),src);
 
 				garbageList.push_back(aGarbage);
+			}else if( ct->perimeterFilter(100,10000) && 
+			ct->areaFilter(1000,100000) &&
+			ct->platoFilter()
+			){	
+				//get contour bounding box
+				boundingRect=cvBoundingRect(ct->getContour(),0);
+				cvRectangle(contourImage,cvPoint(boundingRect.x,boundingRect.y),
+						cvPoint(boundingRect.x+boundingRect.width,
+						boundingRect.y+boundingRect.height),
+						_GREEN,1,8,0);
+							
+				//if passed filters
+				ct->printContour(3,cvScalar(127,127,0,0),
+					contourImage);
+								
+				centroid=ct->getCentroid();
+				
+				//build garbage List
+				utils::MinimalBoundingRectangle * r = new utils::MinimalBoundingRectangle(boundingRect.x,
+					boundingRect.y,boundingRect.width,boundingRect.height);
 
+				utils::Garbage * aGarbage = new utils::Garbage(r,centroid,ct);
+				//benchmark purposes
+				aGarbage->isVisualized=true;
+				aGarbage->isPredicted=false;
+				aGarbage->isFocused=false;
+				
 
+				garbageList.push_back(aGarbage);
 			}
 
 		//delete ct;
@@ -364,15 +370,14 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 			1){	
 				//get contour bounding box
 				boundingRect=cvBoundingRect(ct->getContour(),0);
-				cvRectangle(contourImageV,cvPoint(boundingRect.x,boundingRect.y),
+				cvRectangle(contourImage,cvPoint(boundingRect.x,boundingRect.y),
 						cvPoint(boundingRect.x+boundingRect.width,
 						boundingRect.y+boundingRect.height),
 						_GREEN,1,8,0);
-						
-				
+										
 				//if passed filters
 				ct->printContour(3,cvScalar(127,127,0,0),
-					contourImageV);
+					contourImage);
 								
 				centroid=ct->getCentroid();
 				
@@ -385,36 +390,29 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 				aGarbage->isVisualized=true;
 				aGarbage->isPredicted=false;
 				aGarbage->isFocused=false;
-				
-				//test
-				//traversePoints(ct->getContour(),src);
 
 				garbageList.push_back(aGarbage);
-
-
 			}
 
-		//delete ct;
+		delete ct;
 		cvReleaseMemStorage( &aContour->storage );
 		contours=contours->h_next;
 		cont_index++;
 	}
 
+	//display found contours
     cvShowImage("drawContours",contourImage);
-    cvShowImage("drawContours2",contourImageV);
-
-	//~ delete h;
 	
+	
+	//release temp images and data
 	if(contoursCopy!=NULL)
 		cvReleaseMemStorage( &contoursCopy->storage );
 	
-	//~ cvReleaseHist(&testImageHistogram);
 	cvReleaseImage(&threshImage);
 	cvReleaseImage(&morphImage);
 	cvReleaseImage(&contourImage);
 	cvReleaseImage(&threshImageV);
 	cvReleaseImage(&morphImageV);
-	cvReleaseImage(&contourImageV);
 	cvReleaseImage(&hsv);
 	cvReleaseImage(&h_planeV);
 	cvReleaseImage(&s_plane);

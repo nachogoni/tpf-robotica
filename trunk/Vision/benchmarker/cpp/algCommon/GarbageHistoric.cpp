@@ -14,7 +14,6 @@ namespace utils{
 	 }
 	GarbageHistoric::~GarbageHistoric(){
 		 delete &(this->deltaPos);
-		 //~ delete this->garbage;
 	 }
 	 
 	GarbageHistoric::GarbageHistoric(Garbage * newGarbage){
@@ -61,8 +60,6 @@ namespace utils{
 		
 		this->deltaPos[0]=deltax;
 		this->deltaPos[1]=deltay;
-		//~ this->currentPos[0]+=deltaPos[0];
-		//~ this->currentPos[1]+=deltaPos[1];
 		this->currentPos[0]=newCentroid[0];
 		this->currentPos[1]=newCentroid[1];
 		
@@ -101,11 +98,9 @@ namespace utils{
 	bool GarbageHistoric::compareContour(Garbage * foundGarbage){
 		double selfArea,selfPer,areaDiff,perDiff;
 		
-		//~ return true;
-		
 		if(foundGarbage==NULL)
 			return true;
-			
+		//area and perimeter should match previous values	
 		selfArea=this->garbage->area;
 		selfPer=this->garbage->perimeter;
 		
@@ -115,7 +110,6 @@ namespace utils{
 		if(areaDiff < 0.25 * selfArea && perDiff < 0.25 * selfPer)
 			return true;
 		else{
-			//~ printf("areaDiff %g perDiff %g\n",areaDiff,perDiff);
 			return false;
 		}
 		
@@ -145,16 +139,16 @@ namespace utils{
 		newCentroid[0]=centroid[0] +deltax;
 		newCentroid[1]=centroid[1] +deltay;
 	
-		
 		MinimalBoundingRectangle * oldMbr=this->garbage->boundingBox();
 		int x=oldMbr->x;
 		int y=oldMbr->y;
 		int h=oldMbr->getHeight();
 		int w=oldMbr->getWidth();
 		
-		MinimalBoundingRectangle * mbr= new MinimalBoundingRectangle(x+deltax,y+deltay,h,w);
+		MinimalBoundingRectangle * mbr= new MinimalBoundingRectangle(x+deltax,y+deltay,w,h);
 		Garbage * newGarbage=new  Garbage(mbr,newCentroid);
-		
+	
+		//benchmark purposes
 		newGarbage->isFocused=this->garbage->isFocused;
 		newGarbage->isPredicted=this->garbage->isPredicted;
 		newGarbage->isVisualized=this->garbage->isVisualized;

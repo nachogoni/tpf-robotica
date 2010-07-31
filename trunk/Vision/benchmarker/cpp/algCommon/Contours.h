@@ -14,6 +14,8 @@ bool equalsCvPoint(CvPoint * a, CvPoint * b);
 bool equalsEdge(CvPoint * head, CvPoint * tail,CvPoint * head2, CvPoint * tail2);
 CvPoint * getLongestEdge2(CvSeq * points,CvPoint * excludedHead,CvPoint * excludedTail,int * shorterEdges);
 
+const double PI = 3.141592;
+
 
 namespace utils {
 
@@ -89,6 +91,11 @@ namespace utils {
  * Checks if contour is a glass
  */
 	int vasoFilter();
+	
+/*
+ * Checks if contour is a dish
+ */
+	int platoFilter();
 
 		private :
 			CvSeq * c;

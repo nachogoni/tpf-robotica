@@ -23,13 +23,10 @@ namespace utils{
 		
 		
 		for (itHist = gHistCopy.begin(); itHist != gHistCopy.end(); itHist++)
-		{
-			//~ (*itHist)->printPrediction();
-			
+		{	
 			//check for removal
 			if( (*itHist)->age - (*itHist)->lastAppeareance >= (*itHist)->maxNumberOfFramesNoAppear){
 				(*itHist)->state=DEAD;
-				//delete (*itHist);
 				this->ghist.remove(*itHist);
 				
 			}
@@ -42,7 +39,8 @@ namespace utils{
 			
 			if(((*itHist)->age % PREDICTION_REFRESH_AGE) ==0){
 				if((*itHist)->state==SHOW){
-					(*itHist)->maxNumberOfFramesNoAppear=10*((*itHist)->appeareances/(double) (*itHist)->age);
+					double appeareanceRate=((double)(*itHist)->appeareances/(double) (*itHist)->age);
+					(*itHist)->maxNumberOfFramesNoAppear=(int) (PREDICTION_DEFAULT_FRAMES_NOAPPEAR*appeareanceRate);
 				}					
 			}
 
