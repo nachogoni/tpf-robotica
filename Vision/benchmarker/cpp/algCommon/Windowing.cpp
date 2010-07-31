@@ -36,7 +36,6 @@ namespace utils{
 		int h=(mbr->height*1.2)<100?100:(mbr->height*1.2);
 		int x=mbr->x;
 		int y=mbr->y;
-		//~ printf("height %d  h:%d\n",mbr->height,h);
 		
 
 		this->window=cvRect(x,y,w,h);
@@ -83,8 +82,6 @@ namespace utils{
 			this->window=this->adjustWindow(this->window);
 		}
 		
-		
-		
 		if(this->window.width < 10|| 
 			this->window.height <10 ){
 				return NULL;
@@ -94,20 +91,13 @@ namespace utils{
 				return NULL;
 		}
 		
-		//~ printf("new window (%d,%d) %d %d \n",this->window.x,this->window.y,this->window.width,this->window.height);
 
-		
-		//~ bk=cvCreateImage(cvSize(this->window.height,this->window.width),8,3);
-		
-		//~ tmp =cvCreateMat(this->window.height, this->window.width,CV_8UC1);
 		
 		cvGetSubRect(src, this->tmpMat , this->window);
 		
 		this->windowImage=cvGetImage(this->tmpMat, this->windowImage);
 		
 		
-		//~ cvReleaseMat(&tmp);
-		//delete newGarbage;
 		return this->windowImage;
 	}
 	
@@ -125,7 +115,7 @@ namespace utils{
 			int y=oldMbr->y;
 			int h=oldMbr->getHeight();
 			int w=oldMbr->getWidth();
-			newMbr=new MinimalBoundingRectangle(x+this->window.x,y+this->window.y,h,w);
+			newMbr=new MinimalBoundingRectangle(x+this->window.x,y+this->window.y,w,h);
 			
 			newCentroid=(*itGar)->getCentroid();
 			

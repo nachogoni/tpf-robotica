@@ -23,24 +23,17 @@ int main(int argc, char** argv)
 		perror("Invalid capture");
 		return 0;
 	}
-	
-	//~ if( argc != 1 || (capture=cvCreateCameraCapture(0))== 0 ){
-		//~ perror("Invalid capture");
-		//~ return 0;
-	//~ }
-	
+		
 	int i=0;
-	//	while(i<2000){
-	//	src=cvQueryFrame(capture);
-	//	i++;
-	//}
+
 	
 	
 	
 	utils::GarbageRecognition * gr= new utils::GarbageRecognition();
 	//~ gr->disablePrediction();
-	gr->disableWindowing();
-	//~ gr->enableWindowing();
+	//~ gr->disableWindowing();
+	gr->enableWindowing();
+	gr->enablePrediction();
 	
 	
 	
