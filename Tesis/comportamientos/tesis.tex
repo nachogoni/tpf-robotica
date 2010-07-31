@@ -347,10 +347,65 @@ de una secuencia de im\'agenes es muy complejo y pesado, como se muestra en la s
 \newpage
 \subsection{Resultados obtenidos}
 \label{results}
+En \'esta secci\'on se describen los par\'ametros utilizados en la
+simulaci\'on para la obtenci\'on de resultados sobre los diferentes
+comportamientos. Luego se presentan dichos resultados y se sacan
+conclusiones sobre los mismos.
+\\
+A lo largo del proceso de desarrollo se fueron realizando diferentes simulaciones,
+de las cuales observamos defectos en las implementaciones de los comportamientos
+as\'i como retardo y detalles que se podr\'ian mejorar en algunos de los mismos
+y los fuimos corregiendo. \\
+La arena utilizada en dichas simulaciones se puede ver en la figura \ref{fig:arena_sim}.
+A lo largo de la misma est\'an ubicadas 15 basuras, un \'area de recarga de bater\'ia
+y un \'area de descarga de basura, marcadas por el cilindro naranja. Los valores de
+los par\'ametros utilizados se pueden observar en el cuadro \ref{sim_params}. Los
+\'angulos est\'an expresados en radianes y las distancias est\'an expresadas en metros,
+as\'i como tambi\'en los radios, correcciones y separaciones. La resoluci\'on de la
+c\'amara est\'a expresada en pixeles, la de la grilla en unidades y los tiempos est\'an
+en milisegundos.
+\begin{table}[ht]
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+			\hline
+			Par\'ametro & Descripci\'on del par\'ametro & Valor \\
+			\hline
+			$P_r(0)$ & Posici\'on Inicial del robot & (-0.295,-0.4) \\
+			$O_r(0)$ & Orientaci\'on Inicial del robot & 0 \\
+			$R_r$ & Radio del robot & 0.026 \\
+			$dbw$ & Distancia entre ruedas & 0.052 \\
+			$c_{dbw}$ & Correcci\'on de la distancia entre ruedas & 1.09217109 \\
+			$R_l$, $R_r$ & Radios de las ruedas & 0.0205 0.0205 \\
+			$c_l$, $c_r$ & Correcciones de los radios de las ruedas & 0.99998702 1.00001297 \\
+			$EncRes$ & Resoluci\'on del encoder & 159.23 \\
+			$Cd$ & Distancia de la c\'amara al centro del robot & 0.0355 \\
+			$Ch$ $C_h$ & Altura de la c\'amara & 0.038 \\
+			$FOV_h$ & Field of view horizontal & 1.1 \\
+			$ac$ & \'Angulo de la c\'amara & -0.5 \\
+			$C_{rw}$, $C_{rh}$ & Resoluci\'on de la c\'amara & 640 x 480 \\
+			$A_w$, $A_h$ & Dimensiones del arena & 2 x 1.2 \\
+			$A_{rw}$, $A_{rh}$ & Resoluci\'on de la grilla & 100 38\\
+			$Fsd$ & Dist. s.de piso del medio al centro del robot & 0.03 \\
+			$Fss$ & Separaci\'on entre sensores de piso & 0.01 \\
+			$Ts$ & Time Step & 32 \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Par\'ametros utilizados para las simulaciones}
+	\label{sim_params}
+\end{table}
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.3]{comportamientos/graphics/areaCoveredVsTimeUse.png}
+\includegraphics[scale=0.25]{comportamientos/arenaSim.png}
+\caption{Arena utilizada para las simulaciones}
+\label{fig:arena_sim}
+\end{center}
+\end{figure}
+
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.25]{comportamientos/graphics/areaCoveredVsTimeUse.png}
 \caption{\'Area vista y \'Area no vista a lo largo de la simulaci\'on}
 \label{fig:seenArea}
 \end{center}
@@ -366,7 +421,7 @@ de una secuencia de im\'agenes es muy complejo y pesado, como se muestra en la s
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.3]{comportamientos/graphics/CollectUse.png}
+\includegraphics[scale=0.25]{comportamientos/graphics/CollectUse.png}
 \caption{Progreso del comportamiento \emph{Recolectar Basura}}
 \label{fig:collectEvolution}
 \end{center}
@@ -374,7 +429,7 @@ de una secuencia de im\'agenes es muy complejo y pesado, como se muestra en la s
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.3]{comportamientos/graphics/AllUse.png}
+\includegraphics[scale=0.25]{comportamientos/graphics/AllUse.png}
 \caption{Evoluci\'on de los comportamientos a lo largo de la simulaci\'on}
 \label{fig:behaviourEvolution}
 \end{center}
@@ -392,7 +447,7 @@ de una secuencia de im\'agenes es muy complejo y pesado, como se muestra en la s
 
 \begin{table}[ht]
 	\begin{center}
-		\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+		\begin{tabular}{|c|c|c|}
 			\hline
 			Comportamiento & \# total de steps activo & \# veces que se activ\'o \\
 			\hline
@@ -413,7 +468,7 @@ de una secuencia de im\'agenes es muy complejo y pesado, como se muestra en la s
 
 \begin{table}[ht]
 	\begin{center}
-		\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+		\begin{tabular}{|c|c|c|c|}
 			\hline
 			Comportamiento & Promedio & Desv\'io Est\'andard & \# m\'aximo \\
 			\hline
@@ -474,13 +529,29 @@ de una secuencia de im\'agenes es muy complejo y pesado, como se muestra en la s
 %esp_cub / (e\sp_cub + esp_nocub)
 \begin{table}
 	\begin{center}
-		\begin{tabular}{|c||c|c|c|c|c|c|c|c|c|c|}
+		\begin{tabular}{|c||c|c|}
 		\hline
-			$N^\circ$ muestra & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+			$N^\circ$ muestra & (\%) & (\%) Acumulado \\
 		\hline
-			(\%) & 0.246 &  0.258 &  0.081 &  0.167 &  0.044 &  0.011 &  0.017 &  0.003 &  0.038 &  0.130 \\
+			1 & 0.246 & 0.246 \\
 		\hline
-			$\sum$(\%) & 0.246 &  0.505 &  0.586 &  0.754 &  0.798 &  0.809 &  0.827 &  0.830 &  0.869 &  1 \\
+			2 & 0.258 & 0.505 \\
+		\hline
+			3 & 0.081 & 0.586 \\
+		\hline
+			4 & 0.167 & 0.754 \\
+		\hline
+			5 & 0.044 & 0.798 \\
+		\hline
+			6 & 0.011 & 0.809 \\
+		\hline
+			7 & 0.017 & 0.827 \\
+		\hline
+			8 & 0.003 & 0.830 \\
+		\hline
+			9 & 0.038 & 0.869 \\
+		\hline
+			10 & 0.130 & 1 \\
 		\hline
 		\end{tabular}
 	\end{center}
