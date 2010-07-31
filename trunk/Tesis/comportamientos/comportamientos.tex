@@ -96,7 +96,7 @@ por cada paso
     velocidades = calcular_velocidades_de_ruedas(ultimazonavisitada)
     poner_velocidades_en_ruedas(velocidades)
 \end{verbatim}
-Para obtener la zona vista por la c\'amara, necesitamos de la altura $c_h$ a la cual est\'a ubicada
+Para obtener la zona vista por la c\'amara, necesitamos de la altura $C_h$ a la cual est\'a ubicada
 la c\'amara en el robot, el campo de visi\'on (de ahora en adelante \emph{Field of View o FOV})
 horizontal $FOV_h$ o vertical $FOV_v$ y el \'angulo de inclinaci\'on de la c\'amara $ac$. Viendo la figura
 \ref{fig:angleCamera} podemos ver que:
@@ -110,10 +110,10 @@ horizontal $FOV_h$ o vertical $FOV_v$ y el \'angulo de inclinaci\'on de la c\'am
 \end{figure}
 
 \begin{eqnarray}
-ac + \frac{FOV_v}{2} + \theta = \frac{\pi}{2}\\
+ac + \frac{FOV_v}{2} + \gamma = \frac{\pi}{2}\\
 \gamma + FOV_v + \theta = \frac{\pi}{2}\\
-\tan(\gamma) = \frac{d}{c_h}\\
-\tan(\gamma+FOV_v) = \frac{d+h}{c_h}
+\tan(\gamma) = \frac{d}{C_h}\\
+\tan(\gamma+FOV_v) = \frac{d+h}{C_h}
 \end{eqnarray}
 
 %En caso de no disponer del $FOV_v$, el mismo se puede obtener de:
@@ -125,9 +125,9 @@ Organizando las ecuaciones, podemos deducir que:
 \begin{eqnarray}
 \gamma = \frac{\pi}{2} + ac - \frac{FOV_v}{2}\\
 \label{eqn:distance_d}
-d = \tan(\gamma) * c_h \\
+d = \tan(\gamma) * C_h \\
 \label{eqn:distance_dh}
-d+h = \tan(\gamma+FOV_v) * c_h
+d+h = \tan(\gamma+FOV_v) * C_h
 \end{eqnarray}
 
 Por lo que obtenemos el \'angulo hasta el inicio de la im\'agen de la c\'amara $\gamma$ y como consecuencia,
@@ -277,15 +277,15 @@ a la basura como si estuviera sobre el mismo (asumiendo que la coordenada X de l
 basura en la imagen es 0).
 
 Como muestran las figuras \ref{fig:image_coord_conv} y \ref{fig:angleCamera},
-el \'angulo vertical hacia el punto m\'as alto de la imagen $(0,h)$ es 
+el \'angulo vertical hacia el punto m\'as alto de la imagen $(0,C_{rh})$ es 
 $\gamma+FOV_v$ y hacia el m\'as bajo, $(0,0)$, el \'angulo es $\gamma$.
 De las ecuaciones \eqref{eqn:distance_d} y \eqref{eqn:distance_dh} sabemos
-las distancias a los puntos $(0,0)$ (DIST\_MIN) y $(0,h)$ (DIST\_MAX). 
+las distancias a los puntos $(0,0)$ (DIST\_MIN) y $(0,C_{rh})$ (DIST\_MAX). 
 Entonces, para obtener la distancia $dy$ hacia el punto $(0,y)$ basta con
 calcular:
 \begin{eqnarray}
 y_{angle} = FOV_v * \frac{y}{h} \\
-dy = \tan(\gamma + y_{angle}) * c_h \\
+dy = \tan(\gamma + y_{angle}) * C_h \\
 \end{eqnarray}
 
 donde $y_{angle}$ es la proporci\'on de $FOV_v$ hacia $y$.
@@ -406,9 +406,9 @@ se encuentra el cilindro de color verde.
 \\
 Para distinguir si el robot est\'a en una l\'inea o no, utilizamos sensores de piso dispuestos
 como se muestra en la figura \ref{fig:floorSensors}. Los sensores se encuentran a una distancia
-$a$ del centro del robot sobre el eje $Y$ y los de los costados a una distancia $b$ del eje $Y$.
+$Fsd$ del centro del robot sobre el eje $Y$ y los de los costados a una distancia $Fss$ del eje $Y$.
 La distancia del sensor del medio hacia el centro del robot es $a$, mientras que la distancia
-hacia un sensor del costado es $r = \sqrt{a^2 + b^2}$.
+hacia un sensor del costado es $Fsl = \sqrt{Fsd^2 + Fss^2}$.
 
 \begin{figure}[htp]
 \begin{center}
@@ -518,7 +518,7 @@ sobre la l\'inea. Como mostramos en la figura \ref{fig:floorSensorsStates}, en e
 el robot girar\'a de forma tal que llegue un caso parecido al (c) ya posiblemente el sensor del
 medio no estar\'a en la l\'inea. Notar que si el sensor del medio est\'a en
 la l\'inea, entonces el robot no gira, cualquiera sea el estado de los sensores de los costados.
-El \'angulo que debe girar est\'a dado por $\theta = \arctan (\frac{b}{a})$ (Ver figura
+El \'angulo que debe girar est\'a dado por $\theta = \arctan (\frac{Fss}{Fsd})$ (Ver figura
 \ref{fig:floorSensors}) o $-\theta$ seg\'un cual sea el sensor que est\'e sobre la l\'inea.
 
 \begin{figure}[htp]
@@ -534,7 +534,7 @@ El \'angulo que debe girar est\'a dado por $\theta = \arctan (\frac{b}{a})$ (Ver
 
 %% Explicar el porque del recorrido de la distancia - relacionarlo con la figura fig:floorSensors
 Luego del posible giro para lograr que el sensor de piso del medio quede sobre la l\'inea, 
-se recorre una distancia de $a$, en el caso que el robot no haya girado anteriormente, o $r$ en
+se recorre una distancia de $Fsd$, en el caso que el robot no haya girado anteriormente, o $Fsl$ en
 el caso que s\'i lo haya hecho. El motivo de este trayecto es que el centro del robot quede
 sobre la l\'inea, como muestra la figura \ref{fig:positioned}. De \'esta forma, s\'olo queda
 girar nuevamente hacia el \'angulo que se quiera. Si la l\'inea es la izquierda, entonces el
