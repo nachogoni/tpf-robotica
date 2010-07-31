@@ -348,6 +348,38 @@ de una secuencia de im\'agenes es muy complejo y pesado, como se muestra en la s
 \subsection{Resultados obtenidos}
 \label{results}
 
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.3]{comportamientos/graphics/areaCoveredVsTimeUse.png}
+\caption{\'Area vista y \'Area no vista a lo largo de la simulaci\'on}
+\label{fig:seenArea}
+\end{center}
+\end{figure}
+
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.3]{comportamientos/graphics/BehaviourDistributionPieUse.png}
+\caption{Distribuci\'on de tiempos de los comportamientos en la simulaci\'on}
+\label{fig:behaviourDistribution}
+\end{center}
+\end{figure}
+
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.3]{comportamientos/graphics/CollectUse.png}
+\caption{Progreso del comportamiento \emph{Recolectar Basura}}
+\label{fig:collectEvolution}
+\end{center}
+\end{figure}
+
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.3]{comportamientos/graphics/AllUse.png}
+\caption{Evoluci\'on de los comportamientos a lo largo de la simulaci\'on}
+\label{fig:behaviourEvolution}
+\end{center}
+\end{figure}
+
 \subsubsection{Tiempo promedio en recolectar basura}
 %Calcular t min, con un escenario donde las basuras las pongo apenas sale de la base
 %Calcular t max, con un escenario donde las basuras estan lo m\'as lejos de la base posible
@@ -439,9 +471,25 @@ de una secuencia de im\'agenes es muy complejo y pesado, como se muestra en la s
 %T busqueda basura/ ( t a base + tiempo carga bateria + t salir base )
 
 \subsubsection{Porcentaje de espacio cubierto}
-%esp_cub / (esp_cub + esp_nocub)
+%esp_cub / (e\sp_cub + esp_nocub)
+\begin{table}
+	\begin{center}
+		\begin{tabular}{|c||c|c|c|c|c|c|c|c|c|c|}
+		\hline
+			$N^\circ$ muestra & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+		\hline
+			(\%) & 0.246 &  0.258 &  0.081 &  0.167 &  0.044 &  0.011 &  0.017 &  0.003 &  0.038 &  0.130 \\
+		\hline
+			$\sum$(\%) & 0.246 &  0.505 &  0.586 &  0.754 &  0.798 &  0.809 &  0.827 &  0.830 &  0.869 &  1 \\
+		\hline
+		\end{tabular}
+	\end{center}
+	\caption{Porcentaje de arena cubierta}
+	\label{arena:covered}
+\end{table}
 
 \subsubsection{Tiempo cubrir toda la arena}
+aaa
 
 \newpage
 \subsection{Conclusi\'on}
