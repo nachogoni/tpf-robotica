@@ -51,7 +51,7 @@ Las distintas caracter\'isticas de la c\'amara como su resoluci\'on, refresco, n
 mejoras de la im\'agen y su velocidad de respuesta nos determinar\'ian la elecci\'on de la misma.
 
 La detecci\'on de obst\'aculos implicaba otras caracter\'istcas de sensores.
-Principalmente de necesitabamos sensores de distancia con la apertura necesaria para cubrir lo
+Principalmente necesitabamos sensores de distancia con la apertura necesaria para cubrir lo
 mejor posible, el per\'imetro del robot, otorgando un rango de detecci\'on lo suficientemente olgado
 que permitiera una adecuada velocidad de respuesta al controlador principal para reacci\'onar y poder
 evitar objetos desconocidos o marcados como obst\'aculos.
@@ -63,18 +63,17 @@ en la zona de detecci\'on y un \'angulo de apertura variable seg\'un la distanci
 El tiempo de espera que debemos tener entre disparo y disparo del sensor por posibles rebotes del pulso
 de sonido es relativamente elevado, lo que no lo hace el m\'as adecuado para colocarlo a lo largo del
 per\'imetro del robot.
-En contraparte los tel\'emetros infrarrojos no poseen esta limitaci\'on debido a que no tiene esta
-limitaci\'on en cuanto a los rebotes.
+En contraparte los tel\'emetros infrarrojos no poseen esta limitaci\'on en cuanto a los rebotes.
 Pero los rangos efectivos de detecci\'on de objetos no cubrian completamente nuestras necesidades.
 
-Debido a las caracter\'isticas de los sensores decidimos combinarlos para aprovechar los beneficios de
-cada uno de ellos y suplir las falencias de un tipo con otro el tipo.
+Debido a las caracter\'isticas de cada sensor decidimos combinarlos para aprovechar los beneficios y
+suplir las falencias de un tipo con otro el tipo.
 Un anillo de 8 tel\'emetros distribuidos de forma tal que haya una mayor resoluci\'on en la zona frontal
 del robot contra la zona trasera y lateral y un \'unico sensor de distancia por ultrasonido al frente
 para captar objetos a mayor distancia fue nuestra elecci\'on.
 
 El uso de un scanner l\'aser hubiera sido ideal para un an\'alisis topogr\'afico del terreno esto no era
-un requerimiento de nuestro proyecto y el elevado costo sal\'a de nuestra escala.
+un requerimiento de nuestro proyecto y el elevado costo se escapaba de nuestra escala.
 
 La detecci\'on de una l\'inea en el suelo la resolvimos mediante el uso de sensores opticos reflectivos
 apuntando hacia el piso de manera tal que permitieran diferenciar entre distintos niveles de reflexi\'on
@@ -85,7 +84,7 @@ En la secci\'on \ref{h_sensado} explicamos con m\'as detalle cada uno de los sen
 \subsection{Controlador}
 \label{h_ideas_controlador}
 
-Teniamos especificaciones que nos generaban la necesidad de ejercer control sobre los distitnos dispositivos
+Ten\'iamos especificaciones que nos generaban la necesidad de ejercer control sobre los distinos dispositivos
 presentes en el robot, ya sea para configurar o obtener la informaci\'on que proveen los sensores, para
 controlar la velocidad de las ruedas o mismo para comunicar las distintas partes.
 No exist\'ia una \'unica forma para realizar esto.
@@ -109,7 +108,7 @@ por simplicidad el uso de una computadora preferentemente de arquitectura x86 pa
 a nivel software.
 De manera conjunta decidimos el uso de una webcam con puerto USB como principal dispositivo de captura de im\'agenes.
 Por poseer una bater\'ia propia de gran capacidad, facilidad de uso, disponibilidad de sistema operativo, entorno
-de desarrollo, costos y soporte a nivel repuestos, eligiimos una netbook como controlador principal del robot.
+de desarrollo, costos y soporte a nivel repuestos, eligimos una netbook como controlador principal del robot.
 
 \subsection{M\'etodo de recolecci\'on}
 \label{h_ideas_recoleccion}
@@ -141,17 +140,20 @@ Estas cuestiones son las que analizamos en este apartado.
 \subsection{Motores de cont\'inua}
 \label{h_actuadores_motorDC}
 
-Para la tracci\'on principal de las ruedas necesitabamos motores que tuvieran el torque suficiente para mover el robot, pero que pudieramos medir y
-controlar la velocidad era la principal necesidad. Para esta tarea utilizamos motores de cont\'inua con caja reductora y encoder.
-Con dos de estos motores logramos poder garantizar una velocidad determinada en las ruedas, controlar de la cantidad de movimiento en forma
-independiente en cada rueda y entre otras cosas conocer la cantidad de las vueltas dadas por cada una de las ruedas.
+Para la tracci\'on principal de las ruedas necesitabamos motores que tuvieran el torque suficiente
+para mover el robot, pero que pudieramos medir y controlar la velocidad era la principal necesidad.
+Para esta tarea utilizamos motores de cont\'inua con caja reductora y encoder.
+Con dos de estos motores lograbamos poder garantizar una velocidad determinada en las ruedas, controlar
+la cantidad de movimiento en forma independiente en cada rueda y entre otras cosas conocer la cantidad
+de vueltas dadas por cada una de las ruedas.
 
 \subsubsection{Caracter\'isticas}
 \label{h_actuadores_motorDC_caracteristicas}
 
-Los motores que elegimos son de la marca Ignis\footnote{http://www.ignis.com.ar} modelo \emph{MR-2FA} con caracter\'isticas expresadas en el cuadro
-\ref{hT_motorDC}, est\'an provistos de una caja reductora, poseen un encoder de $4$ estados por vuelta en el eje del motor y un sensor de de efecto
-de campo para determinar una vuelta en la salida de la caja reductora.
+Los motores que elegimos son de la marca Ignis\footnote{http://www.ignis.com.ar} modelo \emph{MR-2FA}
+con caracter\'isticas expresadas en el cuadro \ref{hT_motorDC}, est\'an provistos de una caja reductora,
+poseen un encoder de $4$ estados por vuelta en el eje del motor y un sensor de efecto de campo para
+determinar una vuelta en la salida de la caja reductora.
 En la figura \ref{hF_motorDC} mostramos las dimensiones exteriores del motor.
 
 \begin{table}
@@ -309,7 +311,7 @@ La alimentaci\'on y consumo depende del modelo espec\'ifico, variando tambi\'en 
 No es necesario el uso de un driver para manejarlos, simplemente con la alimentaci\'on y una se\~nal con el \'angulo es suficiente.
 La forma de comunicar el \'angulo var\'ia entre los distintos servos y fabricantes.
 Hay servos anal\'ogicos y servos digitales.
-En los primeros la posici\'on se determina mediante un voltaje que varia seg\'un cierto rango y si es digital, se setea mediante el ancho de
+En los primeros la posici\'on se determina mediante un voltaje que var\'ia seg\'un cierto rango y si es digital, se setea mediante el ancho de
 un pulso que tiene un tiempo m\'inimo y m\'aximo para mapear los \'angulos m\'inimo y m\'aximo respectivamente.
 
 Dentro del modo de uso, podemos hacer que queden sueltos o que se queden fijos en cierta posici\'on indicando, de forma cont\'inua, el valor
@@ -338,7 +340,7 @@ En la secci\'on \ref{h_placas_sensado} explicamos el dise\~no y construcci\'on d
 \label{h_sensado_telemetros}
 
 El principio de funcionamiento de estos sensores es mediante un haz de luz infrarroja que es emitido hacia el objetivo, el cual
-es reflejado y captado a traves de un lente por un sensor de posici\'on relativa en el interior del sensor.
+es reflejado y captado a trav\'es de un lente por un sensor de posici\'on relativa en el interior del sensor.
 En base a esta medici\'on calculamos la distancia entre el sensor y el objeto reflectivo que se encuentra frente a \'el.
 
 \subsubsection{Caracter\'isticas}
@@ -503,8 +505,8 @@ Un tiempo obtenido mayor a los $25ms$ indica que no se detect\'o ning\'un objeto
 \subsection{Sensor reflectivo de piso}
 \label{h_sensado_piso}
 
-Estos sensores opticos reflectivos emiten luz infrarroja y captan el nivel de luz reflejada sobre la superf\'icie a sensar como muestramos
-en la figura \ref{hF_cny70_diagrama}.
+Estos sensores opticos reflectivos emiten luz infrarroja y captan el nivel de luz reflejada sobre la superf\'icie a sensar
+como mostramos en la figura \ref{hF_cny70_diagrama}.
 En la figura \ref{hF_cny70_dim} mostramos las dimensiones del sensor.
 La intensidad de luz captada depende de la distancia al objetivo y del color y nivel de reflectividad de la superficie.
 Es por esto que usamos estos sensores para identificar una l\'inea en el piso.
@@ -589,15 +591,15 @@ son, para que podamos mantener un giro constante, $60$ y $300$ cuentas por segun
 Estos c\'alculos son usando uno de los dos fototransistores del encoder.
 
 Dependiendo el tama\~no de las ruedas ser\'a la velocidad de final del robot.
-La relacio\'on de caja de $94:1$ del motor.
+La relaci\'on de caja de $94:1$ del motor.
 
 \subsubsection{Circuito de control}
 \label{h_sensado_encoder_circuito}
 
-Conectamos una resistencia pull-up a $5V$ para la salida de sensado de los fototransistores y del sensor de efecto
-Hall.
+Conectamos una resistencia pull-up a $5V$ para la salida de sensado de los fototransistores y del
+sensor de efecto Hall.
 Tambi\'en incluimos un switch doble inversor para elegir cu\'al de los dos encoders usar.
-El punto com\'un del switch est\'a conectado al pin de entrada de clock externo de uno de los Timers del
+El punto com\'un del switch est\'a conectado al pin de entrada de clock externo de uno de los timers del
 microcontrolador.
 
 La alimentaci\'on de los encoders es directa y permanecen encendidos en todo momento.
@@ -699,7 +701,7 @@ En el cuadro \ref{hT_consumo} comparamos el consumo en el motor, el voltaje sens
 
 Ademas de los sensores que describimos, pensamos que nos podr\'ian hacer falta pulsadores para controlar funciones
 simples por ejemplo saber cuando una parte de alg\'un mecanismo llega a cierto punto o detectar finales de carrera
-de un servo o sin fin.
+de un servo o tornillo sin fin.
 Tambi\'en pueden ser otro tipo de sensores que generen un cambio de estado en el pin de sensado que se conecta al
 microcontrolador.
 
@@ -724,8 +726,9 @@ Estas cuestiones son las que explicamos en este cap\'itulo.
 \label{h_controlador_netbook}
 
 Elegimos como controlador principal la netbook \emph{EeePC 1005-HA} de la marca Asus\footnote{http://www.asus.com/}.
-Como caracter\'isticas principales cuenta con un procesador Intel\footnote{http://www.intel.com/} Atom N280 1.66 GHz, 1GB DDR-2, un disco de
-250GB, una pantalla de 10 pulgadas y una bater\'ia de 48Wh que nos da una autonom\'ia de aproximadamente 8 horas.
+Como caracter\'isticas principales cuenta con un procesador Intel\footnote{http://www.intel.com/} Atom N280 1.66 GHz,
+1GB DDR-2, un disco de 250GB, una pantalla de 10 pulgadas y una bater\'ia de 48Wh que nos da una autonom\'ia de 
+aproximadamente 8 horas.
 Cuenta con una c\'amara integrada de 0.3MP, placa de red inal\'ambrica y ethernet, placa de sonido y 3 puertos USB.
 Pesa aproximadamente 1.27Kg y sus dimensiones son $26.2$ x $17.8$ x $3.7$ cent\'imetros.
 
@@ -798,7 +801,7 @@ El \emph{TIMER2} lo usamos en conjunto con el m\'odulo de \emph{PWM} para determ
 que provee de energ\'ia a los motores.
 
 El m\'odulo conversor anal\'ogico digital nos dio la posibilidad de medir tensiones anal\'ogicas como por ejemplo
-las salidas de los sensores, tensi\'on en la bateria o el consumo de los motores.
+las salidas de los sensores, tensi\'on en la bater\'ia o el consumo de los motores.
 Tiene $7$ canales o pines distintos y podemos configurarlo para que genere un valor de $8$ o $10$bits.
 Tambi\'en podemos determinar si se debe usar el valor de \emph{Vcc} y \emph{GND} como referencia o podemos proveer
 de forma externa de los voltajes de referencia para generar un rango de voltajes diferente y aumentar o disminuir
@@ -824,9 +827,9 @@ Utilizamos los pines de uso general para realizar otras funciones como habilitac
 El firmware de cada microcontrolador lo escribimos en C y usamos la IDE de programaci\'on 
 \emph{Microchip MPLAB}\footnote{http://www.microchip.com/} con el compilador \emph{CCS PCM V4.023}\footnote{http://www.ccsinfo.com/}.
 Usamos el programador \emph{ICD2} de la empresa \emph{Microchip} para descargar c\'odigo compilado al microcontrolador.
-El cual nos dio la posibilidad de debuguear el c\'odigo en m\'as de una oportunidad.
+El cual nos dio la posibilidad de depurar el c\'odigo en m\'as de una oportunidad.
 Mediante el header de programaci\'on en circuito que detallamos en el cuadro \ref{hT_header_icd2}, establecemos la
-interface con el programador \emph{ICD2} para cargar el firmware en el microcontrolador o para debuguearlo.
+interface con el programador \emph{ICD2} para cargar el firmware en el microcontrolador o para depurarlo.
 
 \begin{table}
 	\begin{center}
@@ -855,7 +858,7 @@ interface con el programador \emph{ICD2} para cargar el firmware en el microcont
 \label{h_comm}
 
 La comunicaci\'on interna entre los controladores de cada perif\'erico y el controlador principal, donde concentramos
-la l\'ogica de los comportamientos era vital.
+la l\'ogica de los comportamientos, era vital.
 Para poder tomar las decisiones adecuadas la telemetr\'ia deb\'ia tener toda la informaci\'on requerida, la frecuencia
 suficiente para que las reacciones sean lo m\'as din\'amicas y r\'apidas posibles y poseer la menor cantidad de errores
 para evitar retransmisiones.
@@ -866,9 +869,9 @@ comunicaci\'on interna del proyecto.
 \subsection{Conectividad entre m\'odulos}
 \label{h_comm_conectividad}
 
-Para establecer el canal de comunicaciones decidimos emplear una configuraci\'on basada en el m\'etodo 
+Para establecer el canal de comunicaciones decidimos emplear una configuraci\'on basada en el m\'etodo
 \emph{Daisy-Chain}\footnote{Patente US20090316836A1} entre los controladores.
-Creando un anillo donde cada nodo de la cadena se comunica con su vecino retransmitiendo cada paquete hacia adenlante 
+Creando un anillo donde cada nodo de la cadena se comunica con su vecino retransmitiendo cada paquete
 hasta su destinatario como mostramos en la figura \ref{hF_comm_daisychain}.
 
 \begin{figure}[ht]
@@ -878,8 +881,8 @@ hasta su destinatario como mostramos en la figura \ref{hF_comm_daisychain}.
 	\label{hF_comm_daisychain}
 \end{figure}
 
-La configuraci\'on que elegimos para realizar la comunicaci\'on fue una velocidad de $115200$ baudios, $8$ bits, con $1$ bit de parada,
-sin bit de paridad y sin control de flujo.
+La configuraci\'on que elegimos para realizar la comunicaci\'on fue una velocidad de $115200$ baudios, $8$ bits, con $1$
+bit de parada, sin bit de paridad y sin control de flujo.
 Logramos una gran velocidad de respuesta a los comandos de esta forma.
 
 En los cuadros \ref{hT_comm_conexionLink} y \ref{hT_comm_conexionRS232} especificamos el conexionado entre las placas
@@ -925,7 +928,7 @@ y contra el controlador principal.
 	\end{center}
 \end{table}
 
-Como terminaci\'on de la cadena, debemos o colocar una ficha nula que interconecte \emph{TX} con \emph{RX} o
+Como terminaci\'on de la cadena, debemos colocar una ficha nula que interconecte \emph{TX} con \emph{RX} o
 cambiar el switch de configuraci\'on de \emph{LINK} a \emph{LAST}.
 
 \subsection{Protocolo de comunicaci\'on}
@@ -954,7 +957,7 @@ En el cuadro \ref{hF_comm_paquete_tabla} mostramos la estructura interna de un p
 
 Tanto los paquetes de env\'io de datos como los de respuesta tienen el mismo formato y comparten el valor en el campo de comando.
 
-El campo \emph{LARGO} indica el tama\~no en bytes del paquete que viene detras, consta de 1 byte.
+El campo \emph{LARGO} indica el tama\~no en bytes del paquete que viene detr\'as, consta de 1 byte.
 Necesario porque el campo \emph{DATO} es de longitud variable, si la longitud del campo \emph{DATO} es cero, es 0x04.
 
 El campo \emph{DESTINO} identifica al destinatario del paquete y consta de 1 byte.
@@ -976,7 +979,7 @@ En el caso que el comando no los requiera, el campo debe ser nulo y el campo \em
 El control de errores lo realizamos mediante un checksum calculado, haciendo un \emph{XOR} con cada byte del contenido del paquete
 y colocandolo en el campo \emph{CRC}.
 Cuando un paquete se encuentre con errores o est\'e mal formado, el destinarario deber\'ia pedir la retrasmisi\'on.
-De igual forma, creimos necesaria la creaci\'on de un control adicional por medio de una lista de paquetes no confirmados mantenida
+De igual forma, cre\'imos necesaria la creaci\'on de un control adicional por medio de una lista de paquetes no confirmados mantenida
 por el controlador principal para evitar la p\'erdida de comandos.
 
 \subsubsection{Comandos comunes}
@@ -1817,6 +1820,9 @@ De igual forma, aunque no esten implementados reservamos y especificamos los com
 \label{h_comm_protocolo_estadisticas}
 
 analisis de paquetes por segundo, bytes de datos vs bytes de header, retransmisiones, etc
+
+***************************************************************************************
+***************************************************************************************
 
 \section{Placas controladoras}
 \label{h_placas}
