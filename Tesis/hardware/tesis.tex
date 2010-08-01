@@ -1850,7 +1850,7 @@ durante nuestro proyecto.
 \label{h_placas_generica}
 
 Durante el dise\~no nos surgi\'o la necesidad de establecer un m\'odulo com\'un de comunicaci\'on y una base de prueba para
-los testeos con los distintos sensores y perif\'ericos que utilizar\'iamos en el robot.
+las pruebas con los distintos sensores y perif\'ericos que utilizar\'iamos en el robot.
 Es por esto que luego de pruebas aisladas, creamos una placa para estas cuestiones.
 Nos ayud\'o y aceler\'o en gran medida el dise\~no de las placas definitivas y nos di\'o la posibilidad de dise\~nar futuras
 actualizaciones a nuestro proyecto.
@@ -1858,10 +1858,10 @@ actualizaciones a nuestro proyecto.
 \subsubsection{Caracter\'isticas principales}
 \label{h_placas_generica_caracteristicas}
 
-Las caracter\'isticas principales eran proveer de una interfaz com\'un entre todas las placas para la comunicaci\'on y exportar
-todos los pines y perif\'ericos del microcontrolador que elegimos para placas con las conexiones a los sensores o motores.
-Todo esto nos serv\'ia realizar pruebas de concepto para la conexi\'on con los sensores, valores de componente pasivos ideales,
-comportamiento e interacci\'on entre placas, para optimizar el c\'odigo del firmware o crear nuevas expansiones.
+La necesidad principal era proveer de una interfaz com\'un entre todas las placas para la comunicaci\'on y exportar
+los puertos y perif\'ericos del microcontrolador que elegimos a circuitos nuevos.
+Esto nos serv\'ia para realizar pruebas de concepto para la conexi\'on con los sensores, valores de componente pasivos
+ideales, comportamiento e interacci\'on entre placas, para optimizar el c\'odigo del firmware o crear nuevas expansiones.
 
 \subsubsection{M\'odulo de comunicaci\'on}
 \label{h_placas_generica_comm}
@@ -1933,7 +1933,8 @@ microcontrolador los leds 1 y 2 respectivamente.
 El header de programaci\'on \emph{P1} lo utilizamos para conectar la placa con el programador y debuguear
 de c\'odigo \emph{ICD2} como explicamos en en apartado \ref{h_controlador_micro_programacion}.
 El switch \emph{S2} lo usamos para asociar los pines del microcontrolador con los canales de clock
-y data del header de programaci\'on (modo \emph{ICD2}) o con los pines del header \emph{P2}.
+y data del header de programaci\'on (modo \emph{ICD2}) o con los pines \emph{RB6} y \emph{RB7 }del header
+\emph{P2}.
 
 \subsubsection{Esquem\'atico}
 \label{h_placas_generica_esquematicos}
@@ -1945,8 +1946,8 @@ En la figura \ref{hF_placa_gen_schema3} mostramos el diagrama de la fuente de al
 
 \begin{figure}
 	\centering
-	\includegraphics[scale=.3]{figuras/gen_schemaMicro.png}
-	\includegraphics[scale=.3]{figuras/gen_schemaHeaders.png}
+	\includegraphics[scale=.32]{figuras/gen_schemaMicro.png}
+	\includegraphics[scale=.32]{figuras/gen_schemaHeaders.png}
 	\caption{Microcontrolador y headers}
 	\label{hF_placa_gen_schema1}
 \end{figure}
@@ -2008,15 +2009,15 @@ De esta s\'olo nos concentr\'abamos en la prueba que est\'abamos realizando.
 
 Son varias las extensiones que se podr\'ian realizar a estas placas pero teniendo en cuenta que deb\'ian ser
 lo m\'as gen\'ericas posibles como para probar nuevas funcionalidades o componentes, creemos que aportan mucho
-valor en la fase de testeo.
-Aunque usar componentes de montaje superficial nos permitir\'ian tener una placa mas compacta.
+valor en la fase de testeo; sin embargo usar componentes de montaje superficial nos hubieran permitido tener
+una placa mas compacta.
 
 \subsection{Placa controladora de motores DC}
 \label{h_placas_motorDC}
 
-Nuestro proyecto implicaba, entre otras cosas, el dise\~no y construcci\'on de un robot movil el cual dev\'ia poder
+Nuestro proyecto implicaba, entre otras cosas, el dise\~no y construcci\'on de un robot movil el cual deb\'ia poder
 trasladarse por el terreno como primer requerimiento.
-Y debido a que el desplazamiento iba a ser mediante ruedas, el control de los motores que las impulran era cr\'itico.
+Y debido a que el desplazamiento iba a ser mediante ruedas, el control de los motores que las impulsar\'an era cr\'itico.
 
 Creamos una placa especializada para esta tarea sobredimensionando los requerimientos para no tener acotadas las opciones
 a futuro sobre qu\'e modelo de motores usar\'iamos.
@@ -2030,7 +2031,7 @@ de corriente continua para el robot.
 La funci\'on principal es entre otros, mantener una velocidad estable en el motor de cont\'inua, pero tambi\'en poder sensar la cantidad
 y sentido del movimiento que realiz\'o la rueda, informar el consumo y poder determinar el desplazamiento a realizar.
 Este \'ultimo requerimiento era de vital importancia si quer\'iamos tener precisi\'on en el movimiento que realizar\'ia la rueda
-ya que el control de alta resoluci\'on hubiera sido imposible hacerlo desde el controlador principal.
+ya que este control de r\'apida respuesta hubiera sido imposible hacerlo desde el controlador principal.
 
 Todos los comandos desde y hacia el controlador principal viajan por la red de comunicaci\'on como explicamos en la secci\'on
 \ref{h_comm} coloc\'andose como un eslab\'on m\'as en la cadena.
@@ -2040,7 +2041,7 @@ el control del motor como explicamos en el punto \ref{h_placas_motorDC_circuito}
 \subsubsection{Comunicaci\'on}
 \label{h_placas_motorDC_comm}
 
-Al utilizar la placa gen\'erica como base mantuvimos la secci\'on de comunicaci\'on de la misma intecta, pues
+Al utilizar la placa gen\'erica como base mantuvimos la secci\'on de comunicaci\'on de la misma intacta, pues
 en principio, era un m\'odulo probado y funcional, adem\'as manten\'iamos la misma estructura f\'isica que
 facilitaba el conexionado para futuros usuarios.
 
@@ -2060,7 +2061,7 @@ hacer c\'alculos sobre el tiempo restante de bater\'ia.
 Como explicamos en la subsecci\'on \ref{h_placas_generica}, la alimentaci\'on principal de la l\'ogica es
 de 7 a 20 voltios, con la posibilidad de alimentarla directamente con 5 voltios por uno de los pines del conector.
 La alimentaci\'on del motor es por una bornera de 2 pines como listamos en el cuadro \ref{hT_placa_dc_alimentacion},
-aislada completamente para disminuir as\'i el ruido generado por el funcionamiente del motor sobre de la l\'ogica.
+aislada completamente para disminuir as\'i el ruido generado por el funcionamiente del motor sobre la l\'ogica.
 
 \begin{table}
 	\begin{center}
@@ -2082,7 +2083,7 @@ Como la alimentaci\'on del motor se hace mediante el \emph{puente H}, no puede s
 m\'aximo que puede operar el \emph{L298}.
 
 Cabe aclarar tambi\'en que al estar ambos circuitos completamente aislados, se necesita unificar ambas masas
-para establecer un punto de referencia com\'un para poder ejercer el contro del \emph{puente H} y lectura
+para establecer un punto de referencia com\'un para poder ejercer el control del \emph{puente H} y lectura
 del consumo, de forma correcta.
 Recomendamos hacer esto lo m\'as cerca posible de la bater\'ia para disminuir al m\'aximo el ruido que pueda
 generarse debido a los motores.
@@ -2103,7 +2104,7 @@ Las se\~nales \emph{MOTOR\_B} y \emph{MOTOR\_A} son para la alimentaci\'on del m
 de circulaci\'on la corriente entre estos pines ser\'a el sentido de giro del motor.
 Esto se controla desde el puente H \emph{L298}.
 
-Los sensores dentro del motor est\'an reciben tensi\'on mediante los pines \emph{$5v$ VCC} y \emph{GND}.
+Los sensores dentro del motor  reciben tensi\'on mediante los pines \emph{$5v$ VCC} y \emph{GND}.
 La se\~nal \emph{IDX} genera pulsos seg\'un las vueltas en el eje de salida de la caja de reducci\'on del
 motor.
 En cambio las se\~nales \emph{Encoder\_A} o \emph{Encoder\_B} generan pulsos en base a las vueltas del motor
@@ -2116,8 +2117,8 @@ con la se\~nal de lectura del encoder.
 La se\~nal del encoder proviene a su vez del switch \emph{S4}, el cual nos da la posibilidad de elegir entre
 alguna de las dos se\~nales \emph{Encoder\_A} o \emph{Encoder\_B}.
 
-Los pines \emph{P2} y \emph{P3} los usamos como referencia del conversor anal\'ogico digital respectivamente,
-un puente a \emph{GND} y \emph{VCC}, o al divisor de tensi\'on formado por las resistencias \emph{R5} y \emph{R6}.
+Podemos usar a los pines \emph{P2} y \emph{P3} para tomar como referencia del conversor anal\'ogico digital
+a \emph{GND} y \emph{VCC}, o al divisor de tensi\'on formado por las resistencias \emph{R5} y \emph{R6}.
 
 \begin{table}
 	\begin{center}
@@ -2240,7 +2241,7 @@ Es por estas razones que decidimos esta configuraci\'on y dejarlo como futura ex
 los conocimientos y experiencias adquiridas en el desarrollo de la actual.
 
 Otra posible extensi\'on que es recurrente en todas las placas es el uso de componentes de montaje superficial
-lo que disminuir\'ia el tamaño de la misma en gran medida pero a su vez implicaba cierta complejidad que preferimos
+lo que disminuir\'ia el tama\~no de la misma en gran medida pero a su vez implicaba cierta complejidad que preferimos
 evitar en el desarrollo del prototipo.
 
 \subsection{Placas de sensado}
@@ -2265,7 +2266,7 @@ distancia con el objeto.
 Los sensores reflectivos de piso que usamos miden el nivel de luz infrarroja que refleja la superficie
 que tienen debajo de ellos y en base al valor sensado inferimos su color.
 
-Los sensores que devuelven el valor sensado mediante un voltaje utilizamos el conversos anal\'ogico
+Para los sensores que devuelven el valor sensado mediante un voltaje, utilizamos el conversor anal\'ogico
 digital para tomar las muestras necesarias.
 Salvo que se indique lo contrario, tomamos $5$ muestras y luego las promediamos para evitar un muestreo
 err\'oneo.
@@ -2310,7 +2311,8 @@ Como en todas las placas que dise\~namos s\'olo tenemos que elegir el modo \emph
 para determinar si es la terminaci\'on o un eslab\'on m\'as en la cadena.
 
 Debemos saber que no podemos conectar m\'as de $5$ sensores de los cuales debamos medir una tensi\'on
-para obtener el valor y s\'olo un sensor de distancia por ultrasonido o switch en el puerto para
+para obtener el valor.
+S\'olo un sensor de distancia por ultrasonido o switch en el puerto para
 medir estados l\'ogicos y tiempo del pulso.
 
 Con la llave \emph{S2} cambiamos al modo programaci\'on vinculando el microcontrolador con el header
@@ -2372,7 +2374,7 @@ Una observaci\'on importante en el circuito de esta placa es que al momento de m
 observamos una gran inestabilidad en el microcontrolador cuando hac\'iamos lecturas simult\'aneas
 en m\'as de 2 tel\'emetros.
 Luego de varios intentos para solucionar este inconveniente, descubrimos que era un problema
-en cuanto a un consumo instant\'eneo de los tel\'emetros que generaba que se reseteara el
+en cuanto a un consumo instant\'aneo de los tel\'emetros que generaba que se reseteara el
 microcontrolador.
 Para solucionar esto colocamos un capacitor de $100\mu F$ entre las pistas de \emph{+5V} y
 \emph{GND} en medio de los puertos de los sensores 1 y 2.
@@ -2425,7 +2427,7 @@ De igual forma, incorporar otro tipo de sensores nos parece una interesante mejo
 \label{h_placas_servos}
 
 Para los mecanismos que implicaran alg\'un tipo de movimiento y control de la posici\'on elegimos usar
-de servo motores, ya sea para el mecanismo de recolecci\'on de basura, inclinar el robor, reclinar el
+de servo motores, ya sea para el mecanismo de recolecci\'on de basura, inclinar el robot, reclinar el
 cesto interno de basura o realizar alg\'un movimiento de paneo o foco con la c\'amara.
 
 Dise\~namos esta placa teniendo en cuenta que usar\'iamos varios servos en el robot y que tambi\'en
@@ -2497,7 +2499,7 @@ Todas las dem\'as configuraciones ser\'ian a nivel software.
 \label{h_placas_servos_esquematico}
 
 En la figura \ref{hF_placa_servo_schema} mostramos el esquem\'atico del microcontrolador y el conexionado
-el header de programaci\'on.
+del header de programaci\'on.
 En la figura \ref{hF_placa_servo_schema2} detallamos el m\'odulo de comunicaci\'on y el conexionado con
 los conectores entre placas.
 
@@ -2538,7 +2540,6 @@ En la figura \ref{hF_placa_servo_schema4} la fuente de alimentaci\'on y bornera.
 \subsubsection{Circuito}
 \label{h_placas_servos_circuito}
 
-circuito de la placa
 En la figura \ref{hF_placa_servo_componentes} mostramos la m\'ascara de componentes de la placa.
 En la figura \ref{hF_placa_servo_capas} mostramos ambas capas de la placa.
 
@@ -2575,8 +2576,7 @@ agregar las funciones de control en el ciclo principal de nuestro c\'odigo.
 \label{h_placas_servos_extensiones}
 
 Posiblemente haya necesidades que no contemplamos en es dise\~no de esta placa aunque por no
-haberla construido no tenemos la experiencia para recapacitar qu\'e cosas hubieramos hecho de
-alguna otra forma.
+haberla construido no tenemos la experiencia para recapacitar qu\'e cosas hubieramos hecho.
 
 \section{Armado del prototipo}
 \label{h_prototipo}
