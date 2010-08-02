@@ -167,7 +167,6 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	IplImage* s_plane = cvCreateImage( srcSize, 8, 1 );
 	IplImage* v_plane = cvCreateImage( srcSize, 8, 1 );
 
-
 	//Image for filtering
 	IplImage * andImage=cvCreateImage(srcSize,8,1);	
 	IplImage * andImageV=cvCreateImage(srcSize,8,1);	
@@ -243,9 +242,6 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	
 	cvAnd(h_planeV, v_plane, andImageV);
 	//apply morphologic operations
-	element = cvCreateStructuringElementEx( MORPH_KERNEL_SIZE*2+1,
-		MORPH_KERNEL_SIZE*2+1, MORPH_KERNEL_SIZE, MORPH_KERNEL_SIZE,
-		CV_SHAPE_RECT, NULL);
 
 	cvDilate(andImageV,morphImageV,element,MORPH_DILATE_ITER);
 	cvErode(morphImageV,morphImageV,element,MORPH_ERODE_ITER);
@@ -344,6 +340,10 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 		cont_index++;
 	}
 		//2nd pipeline
+		//release temp images and data
+		if(contoursCopy!=NULL)
+			cvReleaseMemStorage( &contoursCopy->storage );
+		
 		contours=myFindContours(threshImageV);
 		contoursCopy=contours;
 		cont_index=0;
@@ -408,16 +408,20 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	if(contoursCopy!=NULL)
 		cvReleaseMemStorage( &contoursCopy->storage );
 	
+	
+	cvReleaseStructuringElement(&element);
 	cvReleaseImage(&threshImage);
-	cvReleaseImage(&morphImage);
-	cvReleaseImage(&contourImage);
 	cvReleaseImage(&threshImageV);
+	cvReleaseImage(&morphImage);
 	cvReleaseImage(&morphImageV);
+	cvReleaseImage(&contourImage);
 	cvReleaseImage(&hsv);
+	cvReleaseImage(&h_plane);
 	cvReleaseImage(&h_planeV);
 	cvReleaseImage(&s_plane);
 	cvReleaseImage(&v_plane);
 	cvReleaseImage(&andImageV);
+	cvReleaseImage(&andImage);
 	
 	
 	return garbageList;

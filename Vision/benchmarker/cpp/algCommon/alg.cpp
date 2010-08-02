@@ -31,8 +31,8 @@ int main(int argc, char** argv)
 	
 	utils::GarbageRecognition * gr= new utils::GarbageRecognition();
 	//~ gr->disablePrediction();
-	//~ gr->disableWindowing();
-	gr->enableWindowing();
+	gr->disableWindowing();
+//	gr->enableWindowing();
 	gr->enablePrediction();
 	
 	
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
 						}
 						
 		cvShowImage("output",src);
-		cvWaitKey(1000/20);
+		cvWaitKey(1000/30);
 		//~ cvWaitKey(0);
 		
 	}

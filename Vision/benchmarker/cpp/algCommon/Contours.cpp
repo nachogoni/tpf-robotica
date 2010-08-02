@@ -533,12 +533,18 @@ int Contours::vasoFilter(){
 			return false;
 			
 		
-	if(!minSeparationBetweenLongestEdges(longestEdge[0],longestEdge[1],sndLongestEdge[0],sndLongestEdge[1]))
+	if(!minSeparationBetweenLongestEdges(longestEdge[0],longestEdge[1],sndLongestEdge[0],sndLongestEdge[1])){
+		free(longestEdge);
+		free(sndLongestEdge);
 		return false;
+	}
+		
 	
 	double l1=edgeLength(longestEdge[0],longestEdge[1]);
 	double l2=edgeLength(sndLongestEdge[0],sndLongestEdge[1]);
 	
+	free(longestEdge);
+	free(sndLongestEdge);
 	
 	
 	//length of the two longest edges should be similar
@@ -565,6 +571,8 @@ int Contours::platoFilter(){
 		
 	CvBox2D box=cvMinAreaRect2(this->c,mem);
 	CvBox2D box2=cvFitEllipse2(this->c);
+	
+	cvReleaseMemStorage(&mem);
 	
 	double majorAxis,minorAxis;
 	double majorAxis2,minorAxis2;
