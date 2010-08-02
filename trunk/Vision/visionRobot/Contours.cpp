@@ -92,6 +92,8 @@ Contours::Contours(CvSeq * contour){
 	CvPoint * p=CV_GET_SEQ_ELEM(CvPoint ,contour,0);
 	this->x=p->x;
 	this->y=p->y;
+	this->per=-1;
+	this->area=-1;
 }
 
 
@@ -325,12 +327,21 @@ double Contours::getEccentricity(){
 
 /*retuns Area of the contour*/
 double Contours::getArea(){
-	return fabs(cvContourArea(this->c,CV_WHOLE_SEQ));
+	if(this->area==-1){
+		this->area=fabs(cvContourArea(this->c,CV_WHOLE_SEQ));
+	}
+
+	return this->area;
+		
 }
 
 /*retuns Perimeter of the contour*/	
 double Contours::getPerimeter(){
-	return cvContourPerimeter(this->c);
+	if(this->per==-1){
+		this->per=cvContourPerimeter(this->c);
+	}
+	
+	return this->per;
 	
 }
 /*Filter by the number of points that conform the polygon */
