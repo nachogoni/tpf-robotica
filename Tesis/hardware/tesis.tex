@@ -1,10 +1,13 @@
-\section{Requerimientos}
+\section{Hardware}
+\label{h_hardware}
+
+\subsection{Requerimientos}
 \label{h_requerimientos}
 
 Nuestro proyecto...
 
 
-\section{Ideas de implementaci\'on}
+\subsection{Ideas de implementaci\'on}
 \label{h_ideas}
 
 Evaluamos distintos factores para la elecci\'on de cada dispositivo o m\'odulo presente en el robot.
@@ -12,7 +15,7 @@ Desde la forma de desplazamiento hasta el m\'etodo de sensado, pasando por el co
 de im\'agenes y m\'etodo de recolecci\'on de residuos.
 Estos son los factores que explicamos y detallamos en este apartado.
 
-\subsection{Locomoci\'on}
+\subsubsection{Locomoci\'on}
 \label{h_ideas_locomocion}
 
 Un robot movil se caracteriza por su capacidad de desplazarse por el entorno.
@@ -35,7 +38,7 @@ equilibrio fue nuestra elecci\'on de dise\~no.
 En la secci\'on \ref{h_actuadores} explicamos detalladamente la elecci\'on de los actuadores
 para esta tarea.
 
-\subsection{Sensado del entorno}
+\subsubsection{Sensado del entorno}
 \label{h_ideas_sensado}
 
 El sensado del ambiente englobaba varios puntos que deb\'iamos tener en cuenta a la hora de elegir
@@ -50,10 +53,10 @@ explicado en el documento.
 Las distintas caracter\'isticas de la c\'amara como su resoluci\'on, refresco, nivel de ruido,
 mejoras de la im\'agen y su velocidad de respuesta nos determinar\'ian la elecci\'on de la misma.
 
-La detecci\'on de obst\'aculos implicaba otras caracter\'istcas de sensores.
+La detecci\'on de obst\'aculos implicaba sensore con caracter\'isticas diferentes.
 Principalmente necesitabamos sensores de distancia con la apertura necesaria para cubrir lo
 mejor posible, el per\'imetro del robot, otorgando un rango de detecci\'on lo suficientemente olgado
-que permitiera una adecuada velocidad de respuesta al controlador principal para reacci\'onar y poder
+que permitiera una adecuada velocidad de respuesta al controlador principal para poder
 evitar objetos desconocidos o marcados como obst\'aculos.
 
 Entre los distintos tipos de sensores de distancia estaban los de ultrasonido, tel\'emetros infrarrojos
@@ -81,7 +84,7 @@ y por ende, diferenciar una l\'inea del piso.
 
 En la secci\'on \ref{h_sensado} explicamos con m\'as detalle cada uno de los sensores elegidos.
 
-\subsection{Controlador}
+\subsubsection{Controlador}
 \label{h_ideas_controlador}
 
 Ten\'iamos especificaciones que nos generaban la necesidad de ejercer control sobre los distinos dispositivos
@@ -110,7 +113,7 @@ De manera conjunta decidimos el uso de una webcam con puerto USB como principal 
 Por poseer una bater\'ia propia de gran capacidad, facilidad de uso, disponibilidad de sistema operativo, entorno
 de desarrollo, costos y soporte a nivel repuestos, eligimos una netbook como controlador principal del robot.
 
-\subsection{M\'etodo de recolecci\'on}
+\subsubsection{M\'etodo de recolecci\'on}
 \label{h_ideas_recoleccion}
 
 La necesidad de recolecci\'on de basura del robot nos suger\'ia la existencia de un mecanismo que permitiera
@@ -130,14 +133,14 @@ A\'un as\'i consideramos su existencia durante todo el desarrollo del proyecto y
 para ejercer el control tanto desde los comportamientos del robot, como tambi\'en a nivel protocolo de
 comunicaci\'on y placas controladoras para los actuadores f\'isicos.
 
-\section{Actuadores}
+\subsection{Actuadores}
 \label{h_actuadores}
 
 La principal forma en que el robot puede interactuar activamente con el ambiente que lo rodea son los motores y
 cada tarea que deb\'iamos realizar requer\'ia de actuadores acordes.
 Estas cuestiones son las que analizamos en este apartado.
 
-\subsection{Motores de cont\'inua}
+\subsubsection{Motores de cont\'inua}
 \label{h_actuadores_motorDC}
 
 Para la tracci\'on principal de las ruedas necesitabamos motores que tuvieran el torque suficiente
@@ -147,7 +150,7 @@ Con dos de estos motores lograbamos poder garantizar una velocidad determinada e
 la cantidad de movimiento en forma independiente en cada rueda y entre otras cosas conocer la cantidad
 de vueltas dadas por cada una de las ruedas.
 
-\subsubsection{Caracter\'isticas}
+\paragraph{Caracter\'isticas}
 \label{h_actuadores_motorDC_caracteristicas}
 
 Los motores que elegimos son de la marca Ignis\footnote{http://www.ignis.com.ar} modelo \emph{MR-2FA}
@@ -185,7 +188,7 @@ Una ventaja que encontramos en este modelo es que ya trae el encoder integrado a
 Los encoders los explicamos m\'as en detalle en la secci\'on \ref{h_sensado_encoder}.
 La caja reductora provee una relaci\'on de $94$ vueltas del motor por cada $1$ vuelta del eje de salida de la caja.
 
-\subsubsection{Circuito de control}
+\paragraph{Circuito de control}
 \label{h_actuadores_motorDC_circuito}
 
 Para alimentar y poder controlar los motores elegimos el driver \emph{L298} de la marca ST\footnote{http://www.st.com}.
@@ -253,7 +256,7 @@ Usando otro \emph{Timer} para tener una base de tiempo fija y con el valor del c
 
 En la secci\'on \ref{h_placas_motorDC} explicamos el desarrollo de la placa controladora de estos motores.
 
-\subsubsection{Rutinas de control}
+\paragraph{Rutinas de control}
 \label{h_actuadores_motorDC_rutinas}
 
 Desde el punto de vista del c\'odigo, tuvimos que desarrollar las rutinas necesarias para el manejo de los motores seg\'un las intrucciones del
@@ -268,7 +271,7 @@ Cada $200$ms ($32$ interrupciones) tomamos la cantidad de cuentas del encoder, c
 ancho del pulso generado por el PWM.
 Luego borramos el contador y esperamos otros $200$ms.
 
-\subsection{Servo motores}
+\subsubsection{Servo motores}
 \label{h_actuadores_servo}
 
 Para el movimiento de las partes del m\'odulo de recolecci\'on, una c\'amara con paneo y giro o un senor de ultrasonido colocado
@@ -303,7 +306,7 @@ con caracteristicas que expresamos en el cuadro \ref{hT_hx5010}
 	\label{hT_hx5010}
 \end{table}
 
-\subsubsection{Circuito de control}
+\paragraph{Circuito de control}
 \label{h_actuadores_servo_circuito}
 
 La alimentaci\'on y consumo depende del modelo espec\'ifico, variando tambi\'en el torque que posee el servo.
@@ -318,7 +321,7 @@ Dentro del modo de uso, podemos hacer que queden sueltos o que se queden fijos e
 del \'angulo requerido.
 La frecuencia a la que debemos setear la posici\'on depende el modelo.
 
-\subsubsection{Rutinas de control}
+\paragraph{Rutinas de control}
 \label{h_actuadores_servo_rutinas}
 
 Debido a que pensamos usar servos digitales y por lo menos \'ibamos a necesitar $3$ servos, necesitabamos contar con varios m\'odulos de PWM.
@@ -328,7 +331,7 @@ Usamos el timer de $16$bits del microcontrolador configurado con el clock intern
 pulsos que var\'ian su ancho en forma independiente cada una.
 Definimos un ancho m\'inimo y m\'aximo, pudiendo configurar pasos intermedios de $1^{\circ}$ (aproximadamente $69.4\mu s$).
 
-\section{Sensado}
+\subsection{Sensado}
 \label{h_sensado}
 
 En este apartado explicamos detalladamente cada uno de los sensores que utilizamos para realizar tanto las mediciones externas como las internas al robot.
@@ -336,14 +339,14 @@ Analizamos las ventajas de cada uno, problemas que encontramos y sus soluciones.
 
 En la secci\'on \ref{h_placas_sensado} explicamos el dise\~no y construcci\'on de las placas que controlan todos los sensores del robot.
 
-\subsection{Tel\'emetros infrarrojos}
+\subsubsection{Tel\'emetros infrarrojos}
 \label{h_sensado_telemetros}
 
 El principio de funcionamiento de estos sensores es mediante un haz de luz infrarroja que es emitido hacia el objetivo, el cual
 es reflejado y captado a trav\'es de un lente por un sensor de posici\'on relativa en el interior del sensor.
 En base a esta medici\'on calculamos la distancia entre el sensor y el objeto reflectivo que se encuentra frente a \'el.
 
-\subsubsection{Caracter\'isticas}
+\paragraph{Caracter\'isticas}
 \label{h_sensado_telemetros_caracteristicas}
 
 Los tel\'emetros infrarrojos que elegimos son de la marca Sharp\footnote{http://sharp-world.com/products/device}, modelo \emph{GP2D120}.
@@ -379,7 +382,7 @@ En la figura \ref{hF_gp2d120_pulse} mostramos el diagrama de tiempos.
 	\label{hF_gp2d120_pulse}
 \end{figure}
 
-\subsubsection{Circuito de control}
+\paragraph{Circuito de control}
 \label{h_sensado_telemetros_circuito}
 
 No necesit\'abamos un driver para manejar los tel\'emetros, pero decidimos usar un transistor para poder habilitarlos o no,
@@ -408,7 +411,7 @@ En la figura \ref{hF_gp2d120_distancia} mostramos el cuadro de conversi\'on entr
 	\end{minipage}
 \end{figure}
 
-\subsubsection{Rutinas de control}
+\paragraph{Rutinas de control}
 \label{h_sensado_telemetros_rutinas}
 
 Controlar los tel\'emetros es relativamente sencillo.
@@ -418,14 +421,14 @@ deb\'iamos tomar las muestras con el ADC y simplemente realizamos un promedio en
 Para hacer esto desarrollamos una peque\~na m\'aquina de estados que controla y maneja los tiempos para tomar las muestras que
 explicamos m\'as en detalle en la secci\'on \ref{h_placas_sensado_codigo}.
 
-\subsection{Sensor de distancia por ultrasonido}
+\subsubsection{Sensor de distancia por ultrasonido}
 \label{h_sensado_ultrasonido}
 
 Estos sensores de distancia se basan en la velocidad del sonido para calcular la distancia al objetivo.
 Genera un tren de $8$ pulsos ultras\'onicos y luego se espera como respuesta, el mismo tren de pulsos que deber\'ia haber rebotado contra el objetivo.
 En base a la diferencia de tiempo entre la emisi\'on del tren de pulsos y la respuesta, se calcula la distancia a la que se encuentra el objetivo.
 
-\subsubsection{Caracter\'isticas}
+\paragraph{Caracter\'isticas}
 \label{h_sensado_ultrasonido_caracteristicas}
 
 El sensor de distancia por ultrasonido que elegimos es el modelo \emph{SRF05} de la marca Devantech Ltd\footnote{http://www.robot-electronics.co.uk/}.
@@ -467,7 +470,7 @@ del sensor.
 	\label{hF_srf05}
 \end{figure}
 
-\subsubsection{Circuito de control}
+\paragraph{Circuito de control}
 \label{h_sensado_ultrasonido_circuito}
 
 No necesitamos de un driver para manejar al sensor ya que lo conectamos directo a los $5v$ de la placa.
@@ -487,7 +490,7 @@ En la figura \ref{hF_srf05_pulse} mostramos el diagrama de tiempos.
 Para evitar que el rebote de otros sensores o sensados anteriores influya en la lectura, se debe esperar un m\'inimo de $50ms$ antes de
 generar otro medici\'on.
 
-\subsubsection{Rutinas de control}
+\paragraph{Rutinas de control}
 \label{h_sensado_ultrasonido_rutinas}
 
 Usamos uno de los pines con interrupci\'on externa en el que conectamos el pin de \emph{TRIGGER} y el timer de $16$bits del microcontrolador
@@ -502,7 +505,7 @@ entre el valor actual del timer y la muestra que tomamos al principio para conoc
 
 Un tiempo obtenido mayor a los $25ms$ indica que no se detect\'o ning\'un objeto dentro del rango del sensor.
 
-\subsection{Sensor reflectivo de piso}
+\subsubsection{Sensor reflectivo de piso}
 \label{h_sensado_piso}
 
 Estos sensores opticos reflectivos emiten luz infrarroja y captan el nivel de luz reflejada sobre la superf\'icie a sensar
@@ -518,7 +521,7 @@ Es por esto que usamos estos sensores para identificar una l\'inea en el piso.
 	\label{hF_cny70_dim}
 \end{figure}
 
-\subsubsection{Caracter\'isticas}
+\paragraph{Caracter\'isticas}
 \label{h_sensado_piso_caracteristicas}
 
 Los sensores que elegimos para son del modelo \emph{CNY70} de la marca Vishay Semiconductor\footnote{http://www.vishay.com/}.
@@ -545,7 +548,7 @@ En la figura \ref{hF_cny70_ID} mostramos la corriente que circula por el colecto
 	\end{minipage}
 \end{figure}
 
-\subsubsection{Circuito de control}
+\paragraph{Circuito de control}
 \label{h_sensado_piso_circuito}
 
 De igual forma que en los tel\'emetros utilizamos un transistor como habilitaci\'on de la tensi\'on de alimentaci\'on en el sensor.
@@ -555,7 +558,7 @@ Nuevamente la l\'ogica de habilitaci\'on es invertida por tratarse de un transis
 Agragamos una resistencia para limitar la corriente que circulaba por el emisor y otra como pull-up en el emisor del fototransistor
 que a su vez, conectamos al m\'odulo de \emph{ADC} del microcontrolador para efectuar las mediciones.
 
-\subsubsection{Rutinas de control}
+\paragraph{Rutinas de control}
 \label{h_sensado_piso_rutinas}
 
 El c\'odigo que desarrollamos para obtener las muestras de estos sensores es sencillo, simplemente debemos habilitar el
@@ -566,14 +569,14 @@ Deshabilitamos el sensor y enviamos el valor.
 Debido al circuito que armamos con un nivel alto de reflexi\'on leemos un valor bajo en el conversor anal\'ogico digital y
 con un nivel bajo de luz, un valor alto.
 
-\subsection{Encoders}
+\subsubsection{Encoders}
 \label{h_sensado_encoder}
 
 Los encoders son sensores que convierten una posici\'on lineal o angular en se\~nal el\'ectrica o pulsos.
 Pueden determinar una posici\'on de forma absoluta o simplemente informar que hubo un movimiento.
 El m\'etodo de sensado y la resoluci\'on del \'angulo de giro que detectan var\'ia seg\'un el modelo.
 
-\subsubsection{Caracter\'isticas}
+\paragraph{Caracter\'isticas}
 \label{h_sensado_encoder_caracteristicas}
 
 Los motores \emph{MR-2FA} tienen encoders de cuadratura conectados al eje, previo a la caja reductora.
@@ -593,7 +596,7 @@ Estos c\'alculos son usando uno de los dos fototransistores del encoder.
 Dependiendo el tama\~no de las ruedas ser\'a la velocidad de final del robot.
 La relaci\'on de caja de $94:1$ del motor.
 
-\subsubsection{Circuito de control}
+\paragraph{Circuito de control}
 \label{h_sensado_encoder_circuito}
 
 Conectamos una resistencia pull-up a $5V$ para la salida de sensado de los fototransistores y del
@@ -604,7 +607,7 @@ microcontrolador.
 
 La alimentaci\'on de los encoders es directa y permanecen encendidos en todo momento.
 
-\subsubsection{Rutinas de control}
+\paragraph{Rutinas de control}
 \label{h_sensado_encoder_rutinas}
 
 Como explicamos en la secci\'on \ref{h_actuadores_motorDC_rutinas}, en cada interrupci\'on del actualizamos
@@ -613,7 +616,7 @@ el hist\'orico de cuentas del motor adicionando o restando el \'ultimo valor del
 Tambi\'en comparamos contra las cuentas esperadas por intervalo de tiempo que fueron determinadas desde el controlador
 principal para poder determinar si debemos incrementar o disminuir la potencia del motor y por ende la velocidad de las ruedas.
 
-\subsection{Sensado de la bateria}
+\subsubsection{Sensado de la bateria}
 \label{h_sensado_bateria}
 
 El sensado del nivel de tensi\'on en la bater\'ia lo hacemos mediante un divisor de tensi\'on entre los polos de la bater\'ia.
@@ -660,7 +663,7 @@ y sabiendo que con una tensi\'on menor a $5 V$ la l\'ogica del prototipo que con
 La conexi\'on es simple, los cables de entrada del divisor los conectamos a los polos de la bater\'ia y la salida al ADC.
 Luego s\'olo debemos realizar las lecturas en el ADC y promediarlas para poder realizar los c\'alculos de la tensi\'on en la bater\'ia.
 
-\subsection{Consumo del motor}
+\subsubsection{Consumo del motor}
 \label{h_sensado_consumo}
 
 El consumo de los motores de corriente cont\'inua lo medimos leyendo el pin de sensado que se encuentra en el puente H que alimenta al motor.
@@ -696,7 +699,7 @@ En el cuadro \ref{hT_consumo} comparamos el consumo en el motor, el voltaje sens
 	\label{hT_consumo}
 \end{table}
 
-\subsubsection{Pulsador u otro dispositivo disparador}
+\paragraph{Pulsador u otro dispositivo disparador}
 \label{h_sensado_pulsador}
 
 Ademas de los sensores que describimos, pensamos que nos podr\'ian hacer falta pulsadores para controlar funciones
@@ -708,21 +711,21 @@ microcontrolador.
 Agregamos la posibilidad de usarlos en las distintas placas como explicamos en detalle en las secciones
 \ref{h_placas_sensado} y \ref{h_placas_servos}.
 
-\subsubsection{Rutinas de control}
+\paragraph{Rutinas de control}
 \label{h_sensado_pulsador_rutinas}
 
 La lectura en el estado de los pulsadores puede ser bajo demanda con solo leer el estado del pin en el que estan
 conectados o puede ser ante una interrupci\'on por cambio de estado.
 Estas cuestiones las tuvimos en cuenta a la hora de dise\~nar las placas.
 
-\section{Controladores}
+\subsection{Controladores}
 \label{h_controlador}
 
 Todas las funciones del robot las deb\'iamos controlar mediante alg\'un tipo de dispositivo.
 Decidimos utilizar una netbook y microcontroladores para esta tarea.
 Estas cuestiones son las que explicamos en este cap\'itulo.
 
-\subsection{Netbook}
+\subsubsection{Netbook}
 \label{h_controlador_netbook}
 
 Elegimos como controlador principal la netbook \emph{EeePC 1005-HA} de la marca Asus\footnote{http://www.asus.com/}.
@@ -735,7 +738,7 @@ Pesa aproximadamente 1.27Kg y sus dimensiones son $26.2$ x $17.8$ x $3.7$ cent\'
 Usamos Ubuntu\footnote{http://www.ubuntu.com/} como sistema operativo y programamos tanto la l\'ogica de comportamientos
 como la captura y an\'alisis de im\'agenes en C/C++.
 
-\subsection{Microcontrolador}
+\subsubsection{Microcontrolador}
 \label{h_controlador_micro}
 
 Para el control de la velocidad de los motores, lectura de los encoders y los sensores de distancia usamos un
@@ -746,7 +749,7 @@ La raz\'on por la cual lo armamos as\'i fue para simplificar cada placa controla
 
 Explicamos la comunicaci\'on entre los distintos controladores en la secci\'on \ref{h_comm}.
 
-\subsubsection{Caracter\'isticas}
+\paragraph{Caracter\'isticas}
 \label{h_controlador_micro_caracteristicas}
 
 El microcontrolador que elegimos para realizar las tareas de control, configucari\'on y comunicaci\'on a bajo nivel
@@ -768,7 +771,7 @@ Utilizamos con un cristal externo de 20MHz como clock.
 El microcontrolador tiene 2 puertos de 8 entradas y salidas cada uno de tipo TTL y CMOS.
 Como mostramos en la figura \ref{hF_pic16f88_diagrama} cada pin se encuentra multiplexado con uno o m\'as perif\'ericos internos.
 
-\subsubsection{M\'odulos internos}
+\paragraph{M\'odulos internos}
 \label{h_controlador_micro_modulos}
 
 Internamente el microcontrolador tiene una serie de perif\'ericos que proveen de funciones extras y que utilizamos para lograr
@@ -821,7 +824,7 @@ El microcontrolador dispone de otros perif\'ericos como un comparador \emph{CCP}
 Utilizamos los pines de uso general para realizar otras funciones como habilitaci\'on, conmutaci\'on o las se\~nales de
 \emph{PWM} por software para determinar la posici\'on de los servo motores, por ejemplo.
 
-\subsubsection{Programaci\'on del firmware}
+\paragraph{Programaci\'on del firmware}
 \label{h_controlador_micro_programacion}
 
 El firmware de cada microcontrolador lo escribimos en C y usamos la IDE de programaci\'on 
@@ -854,7 +857,7 @@ interface con el programador \emph{ICD2} para cargar el firmware en el microcont
 \end{table}
 
 
-\section{Comunicaci\'on}
+\subsection{Comunicaci\'on}
 \label{h_comm}
 
 La comunicaci\'on interna entre los controladores de cada perif\'erico y el controlador principal, donde concentramos
@@ -866,7 +869,7 @@ para evitar retransmisiones.
 En esta secci\'on analizamos todo lo referente al medio de transmisi\'on, protocolo y comandos que forman parte de la
 comunicaci\'on interna del proyecto.
 
-\subsection{Conectividad entre m\'odulos}
+\subsubsection{Conectividad entre m\'odulos}
 \label{h_comm_conectividad}
 
 Para establecer el canal de comunicaciones decidimos emplear una configuraci\'on basada en el m\'etodo
@@ -931,7 +934,7 @@ y contra el controlador principal.
 Como terminaci\'on de la cadena, debemos colocar una ficha nula que interconecte \emph{TX} con \emph{RX} o
 cambiar el switch de configuraci\'on de \emph{LINK} a \emph{LAST}.
 
-\subsection{Protocolo de comunicaci\'on}
+\subsubsection{Protocolo de comunicaci\'on}
 \label{h_comm_protocolo}
 
 El protocolo de comuncaci\'on est\'a formado por paquetes que tienen un formato espec\'ifico y representan un pedido de
@@ -982,7 +985,7 @@ Cuando un paquete se encuentre con errores o est\'e mal formado, el destinarario
 De igual forma, cre\'imos necesaria la creaci\'on de un control adicional por medio de una lista de paquetes no confirmados mantenida
 por el controlador principal para evitar la p\'erdida de comandos.
 
-\subsubsection{Comandos comunes}
+\paragraph{Comandos comunes}
 \label{h_comm_protocolo_comandosComunes}
 
 Creamos comandos que son comunes a cualquier placa sea cual sea su grupo.
@@ -1063,7 +1066,7 @@ En el cuadro \ref{hT_comm_comandos_comunes} listamos y explicamos brevemente los
 	\end{center}
 \end{table}
 
-\subsubsection{Comandos espec\'ificos}
+\paragraph{Comandos espec\'ificos}
 \label{h_comm_protocolo_comandosEspecificos}
 
 Cada grupo de placas tiene comandos propios y espec\'ificos dependiendo de la funci\'on que deban desempe\~nar en el sistema.
@@ -1073,8 +1076,8 @@ Los comandos espec\'ificos para cada grupo deben ser desde 0x40 hasta el valor 0
 El \emph{MAIN CONTROLLER} no posee por ahora ning\'un comando escpec\'ifico pero le reservamos el espacio en el protocolo.
 En los cuadros \ref{hT_comm_comandos_motordc_a} y \ref{hT_comm_comandos_motordc_b} enumeramos los comandos para el
 controlador \emph{DC MOTOR}.
-El controlador \emph{SERVO MOTOR} responde a los comandos de los cuadros \label{hT_comm_comandos_servo_a}
-y \label{hT_comm_comandos_servo_b}
+El controlador \emph{SERVO MOTOR} responde a los comandos de los cuadros \ref{hT_comm_comandos_servo_a}
+y \ref{hT_comm_comandos_servo_b}
 En el cuadro \ref{hT_comm_comandos_distance} listamos los comandos del controlador \emph{DISTANCE SENSOR}.
 De igual forma, aunque no esten implementados reservamos y especificamos los comandos para \emph{BATTERY CONTROLLER} y
 \emph{TRASH BIN} en los cuadros \ref{hT_comm_comandos_bateria} y \ref{hT_comm_comandos_basura} respectivamente.
@@ -1816,7 +1819,7 @@ De igual forma, aunque no esten implementados reservamos y especificamos los com
 	\end{center}
 \end{table}
 
-\subsubsection{Estad\'isticas}
+\paragraph{Estad\'isticas}
 \label{h_comm_protocolo_estadisticas}
 
 analisis de paquetes por segundo, bytes de datos vs bytes de header, retransmisiones, etc
@@ -1824,7 +1827,7 @@ analisis de paquetes por segundo, bytes de datos vs bytes de header, retransmisi
 ***************************************************************************************
 ***************************************************************************************
 
-\section{Placas controladoras}
+\subsection{Placas controladoras}
 \label{h_placas}
 
 Las funciones y requerimientos de nuestro proyecto ten\'ian partes que eran comunes a otros trabajos en rob\'otica o quiz\'as
@@ -1846,7 +1849,7 @@ La modularizaci\'on fue un factor importante y muy presente durante todo el desa
 En este apartado explicamos el dise\~no, desarrollo, programaci\'on y especificaciones de las distintas placas que creamos
 durante nuestro proyecto.
 
-\subsection{Placa gen\'erica}
+\subsubsection{Placa gen\'erica}
 \label{h_placas_generica}
 
 Durante el dise\~no nos surgi\'o la necesidad de establecer un m\'odulo com\'un de comunicaci\'on y una base de prueba para
@@ -1855,7 +1858,7 @@ Es por esto que luego de pruebas aisladas, creamos una placa para estas cuestion
 Nos ayud\'o y aceler\'o en gran medida el dise\~no de las placas definitivas y nos di\'o la posibilidad de dise\~nar futuras
 actualizaciones a nuestro proyecto.
 
-\subsubsection{Caracter\'isticas principales}
+\paragraph{Caracter\'isticas principales}
 \label{h_placas_generica_caracteristicas}
 
 La necesidad principal era proveer de una interfaz com\'un entre todas las placas para la comunicaci\'on y exportar
@@ -1863,7 +1866,7 @@ los puertos y perif\'ericos del microcontrolador que elegimos a circuitos nuevos
 Esto nos serv\'ia para realizar pruebas de concepto para la conexi\'on con los sensores, valores de componente pasivos
 ideales, comportamiento e interacci\'on entre placas, para optimizar el c\'odigo del firmware o crear nuevas expansiones.
 
-\subsubsection{M\'odulo de comunicaci\'on}
+\paragraph{M\'odulo de comunicaci\'on}
 \label{h_placas_generica_comm}
 
 Como explicamos en la secci\'on \ref{h_comm} para la comunicaci\'on nos basamos en el modelo de \emph{daisy chain} sobre una
@@ -1888,7 +1891,7 @@ En la posici\'on \emph{LINK} la placa act\'ua como nodo intermedio y en la posic
 Es de vital importancia colocar en forma la correcta esta llave porque podemos dejar sin conexi\'on al resto de las placas o mismo
 perder todos los paquetes transmitidos al no cerrar la cadena en el final de la misma.
 
-\subsubsection{Alimentaci\'on de la placa}
+\paragraph{Alimentaci\'on de la placa}
 \label{h_placas_generica_alimentacion}
 
 La alimentaci\'on principal de la placa es 7 a 20 voltios, con la posibilidad de alimentarla directamente con 5 voltios
@@ -1922,7 +1925,7 @@ En la figura \ref{hF_placa_gen_borneras} mostramos la bornera y en el cuadro \re
 
 La regulaci\'on interna de voltaje realiza por medio de un regulador 7805 corriente m\'axima de 1A.
 
-\subsubsection{Configuraci\'on}
+\paragraph{Configuraci\'on}
 \label{h_placas_generica_config}
 
 La fila de pines \emph{P2} exporta todos los pines con funciones dentro del microcontrolador, para realizar
@@ -1936,7 +1939,7 @@ El switch \emph{S2} lo usamos para asociar los pines del microcontrolador con lo
 y data del header de programaci\'on (modo \emph{ICD2}) o con los pines \emph{RB6} y \emph{RB7 }del header
 \emph{P2}.
 
-\subsubsection{Esquem\'atico}
+\paragraph{Esquem\'atico}
 \label{h_placas_generica_esquematicos}
 
 En la figura \ref{hF_placa_gen_schema1} mostramos el esquem\'atico del microcontrolador y el conexionado
@@ -1968,7 +1971,7 @@ En la figura \ref{hF_placa_gen_schema3} mostramos el diagrama de la fuente de al
 	\label{hF_placa_gen_schema3}
 \end{figure}
 
-\subsubsection{Circuito}
+\paragraph{Circuito}
 \label{h_placas_generica_circuito}
 
 En la figura \ref{hF_placa_gen_componentes} mostramos la m\'ascara de componentes de la placa y en
@@ -1989,7 +1992,7 @@ la figura \ref{hF_placa_gen_capas} ambas capas de la placa.
 	\label{hF_placa_gen_capas}
 \end{figure}
 
-\subsubsection{C\'odigo b\'asico}
+\paragraph{C\'odigo b\'asico}
 \label{h_placas_generica_codigo}
 
 Seg\'un el uso que le fuimos dando a las placas gen\'ericas fuimos cambiando el c\'odigo del firmware que le
@@ -2004,7 +2007,7 @@ atienden a los comandos espec\'ificos y funciones de control del protocolo comun
 Tambi\'en generamos un modelo general del programa, con un loop principal y llamadas incializadoras.
 De esta s\'olo nos concentr\'abamos en la prueba que est\'abamos realizando.
 
-\subsubsection{Posibles extensiones}
+\paragraph{Posibles extensiones}
 \label{h_placas_generica_extensiones}
 
 Son varias las extensiones que se podr\'ian realizar a estas placas pero teniendo en cuenta que deb\'ian ser
@@ -2012,7 +2015,7 @@ lo m\'as gen\'ericas posibles como para probar nuevas funcionalidades o componen
 valor en la fase de testeo; sin embargo usar componentes de montaje superficial nos hubieran permitido tener
 una placa mas compacta.
 
-\subsection{Placa controladora de motores DC}
+\subsubsection{Placa controladora de motores DC}
 \label{h_placas_motorDC}
 
 Nuestro proyecto implicaba, entre otras cosas, el dise\~no y construcci\'on de un robot movil el cual deb\'ia poder
@@ -2025,7 +2028,7 @@ a futuro sobre qu\'e modelo de motores usar\'iamos.
 En este apartado explicamos los aspectos que tuvimos en cuenta para dise\~nar y crear la placa controladora de motores
 de corriente continua para el robot.
 
-\subsubsection{Caracter\'isticas principales}
+\paragraph{Caracter\'isticas principales}
 \label{h_placas_motorDC_caracteristicas}
 
 La funci\'on principal es entre otros, mantener una velocidad estable en el motor de cont\'inua, pero tambi\'en poder sensar la cantidad
@@ -2038,7 +2041,7 @@ Todos los comandos desde y hacia el controlador principal viajan por la red de c
 Usamos como base la placa gen\'erica que explicamos en la subsecci\'on \ref{h_placas_generica} y agregamos el circuito necesario para
 el control del motor como explicamos en el punto \ref{h_placas_motorDC_circuito}.
 
-\subsubsection{Comunicaci\'on}
+\paragraph{Comunicaci\'on}
 \label{h_placas_motorDC_comm}
 
 Al utilizar la placa gen\'erica como base mantuvimos la secci\'on de comunicaci\'on de la misma intacta, pues
@@ -2055,7 +2058,7 @@ velocidad debe girar la rueda debe hacerlo.
 Tambi\'en podemos leer la cantidad de cuentas restantes antes de frenar y el consumo actual del motor para
 hacer c\'alculos sobre el tiempo restante de bater\'ia.
 
-\subsubsection{Alimentaci\'on de la placa}
+\paragraph{Alimentaci\'on de la placa}
 \label{h_placas_motorDC_alimentacion}
 
 Como explicamos en la subsecci\'on \ref{h_placas_generica}, la alimentaci\'on principal de la l\'ogica es
@@ -2088,7 +2091,7 @@ del consumo, de forma correcta.
 Recomendamos hacer esto lo m\'as cerca posible de la bater\'ia para disminuir al m\'aximo el ruido que pueda
 generarse debido a los motores.
 
-\subsubsection{Configuraci\'on}
+\paragraph{Configuraci\'on}
 \label{h_placas_motorDC_config}
 
 La configuraci\'on de la placa es relativamente sencilla.
@@ -2142,7 +2145,7 @@ a \emph{GND} y \emph{VCC}, o al divisor de tensi\'on formado por las resistencia
 	\end{center}
 \end{table}
 
-\subsubsection{Esquem\'atico}
+\paragraph{Esquem\'atico}
 \label{h_placas_motorDC_esquematico}
 
 En la figura \ref{hF_placa_dc_schema} mostramos el esquem\'atico del microcontrolador y el conexionado el header
@@ -2191,7 +2194,7 @@ digital y en la figura \ref{hF_placa_dc_schema5} la fuente de alimentaci\'on y b
 	\label{hF_placa_dc_schema5}
 \end{figure}
 
-\subsubsection{Circuito}
+\paragraph{Circuito}
 \label{h_placas_motorDC_circuito}
 
 En la figura \ref{hF_placa_dc_componentes} mostramos la m\'ascara de componentes de la placa.
@@ -2212,7 +2215,7 @@ En la figura \ref{hF_placa_dc_capas} mostramos ambas capas de la placa.
 	\label{hF_placa_dc_capas}
 \end{figure}
 
-\subsubsection{C\'odigo b\'asico}
+\paragraph{C\'odigo b\'asico}
 \label{h_placas_motorDC_codigo}
 
 El c\'odigo m\'inimo para ser parte de la cadena de comunicaci\'on es similar al de todas las placas que
@@ -2230,7 +2233,7 @@ Para mantener un hist\'orico de cuentas de encoder realidas nosotros usamos el c
 del motor para sumar o restar el valor calculado por cada intervalo de tiempo en una variable interna del
 microcontrolador.
 
-\subsubsection{Posibles extensiones}
+\paragraph{Posibles extensiones}
 \label{h_placas_motorDC_extensiones}
 
 Un punto recurrente de discusi\'on fue el uso de una placa por cada motor de corriente cont\'inua.
@@ -2244,7 +2247,7 @@ Otra posible extensi\'on que es recurrente en todas las placas es el uso de comp
 lo que disminuir\'ia el tama\~no de la misma en gran medida pero a su vez implicaba cierta complejidad que preferimos
 evitar en el desarrollo del prototipo.
 
-\subsection{Placas de sensado}
+\subsubsection{Placas de sensado}
 \label{h_placas_sensado}
 
 Para sensar el entorno utilizamos distintos tipos de sensores que deb\'iamos leer y controlar seg\'un fuera
@@ -2255,7 +2258,7 @@ Tamb\'ien utilizamos esta placa para realizar las lecturas de la tensi\'on de la
 En este apartado detallamos cada una de las caracter\'isticas que tuvimos en cuenta durante el desarrollo
 de las placas de sensado.
 
-\subsubsection{Caracter\'isticas principales}
+\paragraph{Caracter\'isticas principales}
 \label{h_placas_sensado_caracteristicas}
 
 El uso de diferentes tipos de sensores implicaba un m\'etodo distinto de lectura seg\'un qu\'e sensor
@@ -2286,7 +2289,7 @@ as\'i la autonom\'ia del robot.
 Mediante el uso de un transistor \emph{BC327} por el que puede circular una corriente de hasta $500mA$ para
 alimentar al sensor que sea necesario.
 
-\subsubsection{M\'odulo de comunicaci\'on}
+\paragraph{M\'odulo de comunicaci\'on}
 \label{h_placas_sensado_comm}
 
 De igual forma que las otras placas en el proyecto, mantenemos la misma disposici\'on f\'isica de
@@ -2295,14 +2298,14 @@ a la hora de utilizarlas.
 Tambi\'en respetamos el protocolo de comunicaci\'on definiendo nuevos comandos espec\'ificos para la
 placa y retransmitiendo los paquetes con otro destinatario.
 
-\subsubsection{Alimentaci\'on de la placa}
+\paragraph{Alimentaci\'on de la placa}
 \label{h_placas_sensado_alimentacion}
 
 De igual forma que las otras placas la alimentaci\'on principal de la l\'ogica es de 7 a 20 voltios,
 con la posibilidad de alimentarla directamente con 5 voltios por uno de los pines del conector como
 explicamos en la subsecci\'on \ref{h_placas_generica}.
 
-\subsubsection{Configuraci\'on}
+\paragraph{Configuraci\'on}
 \label{h_placas_sensado_config}
 
 Para la configuraci\'on f\'isica de la placa necesitamos definir primero el rol de la placa dentro de
@@ -2323,7 +2326,7 @@ alimentaci\'on en el sensor.
 En el caso que necesitemos una resistencia \emph{pull-up} conectada con la salida del sensor podemos
 colocar un jumper en el correspondiente header de pull-up del puerto de sensor.
 
-\subsubsection{Esquem\'atico}
+\paragraph{Esquem\'atico}
 \label{h_placas_sensado_esquematico}
 
 En la figura \ref{hF_placa_sense_schema} mostramos el esquem\'atico del microcontrolador y el conexionado
@@ -2364,7 +2367,7 @@ y en la figura \ref{hF_placa_sense_schema4} la fuente de alimentaci\'on y borner
 	\label{hF_placa_sense_schema4}
 \end{figure}
 
-\subsubsection{Circuito}
+\paragraph{Circuito}
 \label{h_placas_sensado_circuito}
 
 En la figura \ref{hF_placa_sense_componentes} mostramos la m\'ascara de componentes de la placa.
@@ -2397,7 +2400,7 @@ mostraron la estabilidad que necesitabamos en el microcontrolador.
 	\label{hF_placa_sense_capas}
 \end{figure}
 
-\subsubsection{C\'odigo b\'asico}
+\paragraph{C\'odigo b\'asico}
 \label{h_placas_sensado_codigo}
 
 Al compartir el m\'odulo de comunicaci\'on entre las placas y para que nuestra placa sea parte de la
@@ -2412,7 +2415,7 @@ deben tomar las muestras de los sensores y los flags del microcontrolador.
 Los pines que exitan a la base de los transistores usan una l\'ogica inversa, es decir, un estado bajo habilita
 la alimentaci\'on del sensor y un estado alto, lo deshabilita.
 
-\subsubsection{Posibles extensiones}
+\paragraph{Posibles extensiones}
 \label{h_placas_sensado_extensiones}
 
 Dentro de las posibles extensiones que creemos que ser\'ian \'utiles a futuro podemos decir que la m\'as
@@ -2423,7 +2426,7 @@ En una implementaci\'on futura tambi\'en agregar\'iamos el uso de componentes de
 aumentar\'iamos la cantidad de puertos para sensores disponibles.
 De igual forma, incorporar otro tipo de sensores nos parece una interesante mejora.
 
-\subsection{Placa controladora de servo motores}
+\subsubsection{Placa controladora de servo motores}
 \label{h_placas_servos}
 
 Para los mecanismos que implicaran alg\'un tipo de movimiento y control de la posici\'on elegimos usar
@@ -2439,7 +2442,7 @@ Al no implementar ning\'un m\'etodo f\'isico de recolecci\'on, no ten\'iamos mec
 usaran, aunque s\'i entendimos que era algo que deb\'iamos hacer para tener el conocimiento y sentar
 una base para futuras implementaciones o proyectos similares.
 
-\subsubsection{Caracter\'isticas principales}
+\paragraph{Caracter\'isticas principales}
 \label{h_placas_servos_caracteristicas}
 
 Dise\~namos la placa pensando en que tendr\'iamos que controlar $5$ servo motores.
@@ -2458,7 +2461,7 @@ digital del microcontrolador.
 De igual forma podr\'iamos extender la rutina que genera el PWM por software, a todos los puertos y
 controlar hasta $11$ servos con una \'unica placa.
 
-\subsubsection{M\'odulo de comunicaci\'on}
+\paragraph{M\'odulo de comunicaci\'on}
 \label{h_placas_servos_comm}
 
 Como utilizamos como base la otras placas y mantuvimos la secci\'on de comunicaci\'on, para ser parte
@@ -2472,7 +2475,7 @@ De igual forma contemplamos el uso de pulsadores en la misma.
 Un mayor cambio a nivel funcional implicar\'ia que hicieramos otros cambios a nivel protocolo, el cual
 lo pensamos para ser expandido creando nuevos comandos o modificando los existentes.
 
-\subsubsection{Alimentaci\'on de la placa}
+\paragraph{Alimentaci\'on de la placa}
 \label{h_placas_servos_alimentacion}
 
 Al igual que las otras placas utilizamos entre 7 y 20 voltios para alimentar la placa, con la posibilidad
@@ -2484,7 +2487,7 @@ de potencia como los \emph{TIP42}.
 Este cambio era importante porque los servo motores que \'ibamos a usar se alimentaban directamente a $5v$
 y el consumo en conjunto superaba la cantidad de corriente que el regulador de tensi\'on entregaba.
 
-\subsubsection{Configuraci\'on}
+\paragraph{Configuraci\'on}
 \label{h_placas_servos_config}
 
 La configuraci\'on f\'isica necesaria en la placa ser\'ia m\'inima.
@@ -2495,7 +2498,7 @@ Usando la llave \emph{S3} establecer\'iamos la posici\'on de la placa dentro de 
 como la terminaci\'on o un eslab\'on m\'as.
 Todas las dem\'as configuraciones ser\'ian a nivel software.
 
-\subsubsection{Esquem\'atico}
+\paragraph{Esquem\'atico}
 \label{h_placas_servos_esquematico}
 
 En la figura \ref{hF_placa_servo_schema} mostramos el esquem\'atico del microcontrolador y el conexionado
@@ -2537,7 +2540,7 @@ En la figura \ref{hF_placa_servo_schema4} la fuente de alimentaci\'on y bornera.
 	\label{hF_placa_servo_schema4}
 \end{figure}
 
-\subsubsection{Circuito}
+\paragraph{Circuito}
 \label{h_placas_servos_circuito}
 
 En la figura \ref{hF_placa_servo_componentes} mostramos la m\'ascara de componentes de la placa.
@@ -2558,7 +2561,7 @@ En la figura \ref{hF_placa_servo_capas} mostramos ambas capas de la placa.
 	\label{hF_placa_servo_capas}
 \end{figure}
 
-\subsubsection{C\'odigo b\'asico}
+\paragraph{C\'odigo b\'asico}
 \label{h_placas_servos_codigo}
 
 Como explicamos en la secci\'on \ref{h_actuadores_servo_rutinas} creamos una rutina de control
@@ -2572,13 +2575,13 @@ rutina de interrupci\'on, que puerto la gener\'o.
 De querer utilizar los puertos para funciones no previstas en nuestro dise\~no deber\'iamos
 agregar las funciones de control en el ciclo principal de nuestro c\'odigo.
 
-\subsubsection{Posibles extensiones}
+\paragraph{Posibles extensiones}
 \label{h_placas_servos_extensiones}
 
 Posiblemente haya necesidades que no contemplamos en es dise\~no de esta placa aunque por no
 haberla construido no tenemos la experiencia para recapacitar qu\'e cosas hubieramos hecho.
 
-\section{Armado del prototipo}
+\subsection{Armado del prototipo}
 \label{h_prototipo}
 
 Una vez dise\~nadas, armadas y probadas cada una de las placas controladoras tanto en forma separada
@@ -2609,15 +2612,15 @@ Netbook:
 Donde ponerla? autonomia? como cargarla?
 
 
-\subsection{Dise\~no}
+\subsubsection{Dise\~no}
 \label{h_prototipo_diseno}
 
-\subsection{Caracter\'isticas}
+\subsubsection{Caracter\'isticas}
 \label{h_prototipo_caracteristicas}
 
 con las ruedas de 10cm y teniendo en cuenta que el motor gira a unas 300 cuentas/segundo (usando un solo sensor en el encoder) llegamos a 50 cm/s de velocidad
 
-\subsection{Desarme}
+\subsubsection{Desarme}
 \label{h_prototipo_desarme}
 
 

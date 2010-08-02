@@ -8,7 +8,7 @@
 \usepackage{color}      % use if color is used in text
 \usepackage{hyperref}   % use for hypertext links, including those to external
 
-\usepackage{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage{fancyhdr}
 \usepackage{subfigure}  % use for side-by-side figures
 \usepackage{moreverb}
@@ -17,6 +17,17 @@
 \pagestyle{fancy}
 
 %% Encabezado y Pie de Pagina %%
+
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+
+\makeatletter
+\renewcommand\paragraph{%
+   \@startsection{paragraph}{4}{0mm}%
+      {-\baselineskip}%
+      {.5\baselineskip}%
+      {\normalfont\normalsize\bfseries}}
+\makeatother
 
 \makeindex
 
