@@ -81,7 +81,7 @@ namespace utils {
 /*
  * Calculates the centroid of the contour
  */
-		std::vector<int> getCentroid();
+	std::vector<int> getCentroid();
 		
 /*
  * Checks if contour is a glass
@@ -97,6 +97,8 @@ namespace utils {
 			CvSeq * c;
 			int x;
 			int y;
+			double area;
+			double per;
 	};
 
 
