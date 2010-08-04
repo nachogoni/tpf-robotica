@@ -318,7 +318,7 @@ CvSeq * Contours::getContour(){
 }
 
 /* returns Circularity of the contour*/
-double Contours::getEccentricity(){
+double Contours::getCircularity(){
 	double area=this->getArea();
 	double per=this->getPerimeter();
 	
@@ -393,10 +393,10 @@ int Contours::vasoFilter(){
 	
 	
 	//length of the two longest edges should be similar
-	if(l2/l1 < 0.8)
+	if(l2/l1 < VASO_LONGEST_EDGE_SIMILARITY)
 		return false;
 	
-	double ecc=this->getEccentricity();
+	double ecc=this->getCircularity();
 	if(ecc<14 || ecc >18)
 		return false;
 	
@@ -453,7 +453,7 @@ int Contours::platoFilter(){
 		return false;
 	
 	//gets circularity
-	double circ=this->getEccentricity();
+	double circ=this->getCircularity();
 	
 	if(circ<10 || circ>20)
 		return false;

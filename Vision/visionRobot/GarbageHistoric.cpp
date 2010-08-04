@@ -42,6 +42,9 @@ namespace utils{
 		this->focus=false;
 	}
 	
+	/*
+	 * Updates the historic of a garbage with the new detection of it
+	 * */
 	void GarbageHistoric::updateHistoricWithGarbage(Garbage * movedGarbage){
 		std::vector<int> newCentroid (movedGarbage->getCentroid());
 		std::vector<int> previousCentroid (this->currentPos);
@@ -69,6 +72,7 @@ namespace utils{
 		
 		
 	}
+	
 	void GarbageHistoric::updateHistoric(){
 		this->age++;
 	}
@@ -79,7 +83,7 @@ namespace utils{
 		std::vector<int> newCentroid (foundGarbage->getCentroid());
 		std::vector<int> previousCentroid (this->currentPos);
 		
-		int factor=3*(this->age - this->lastAppeareance);
+		int factor=DELTA_MOVEMENT_FACTOR*(this->age - this->lastAppeareance);
 		
 		//garbage has to be in previous centroid +- deltaPos
 		int deltax=newCentroid[0]-previousCentroid[0];
@@ -107,7 +111,7 @@ namespace utils{
 		areaDiff=fabs(selfArea-foundGarbage->area);
 		perDiff=fabs(selfPer-foundGarbage->perimeter);
 		
-		if(areaDiff < 0.25 * selfArea && perDiff < 0.25 * selfPer)
+		if(areaDiff < AREA_DELTA_RATIO * selfArea && perDiff < AREA_PER_RATIO * selfPer)
 			return true;
 		else{
 			return false;

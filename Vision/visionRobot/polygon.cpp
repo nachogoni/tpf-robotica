@@ -166,10 +166,10 @@ bool minSeparationBetweenLongestEdges(CvPoint head,CvPoint tail,CvPoint head2,Cv
 	if(a<b){
 		//tail con tail , head con head
 		//the edge connecting longest edges should be at least 30% of 2nd largest edge
-		if(a < 0.3 * len)
+		if(a < SEPARATION_PERCENT * len)
 			return false;
 	}else
-		if(b<0.3*len)
+		if(b<SEPARATION_PERCENT*len)
 			return false;
 			
 	return true;
