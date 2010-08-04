@@ -74,6 +74,12 @@ GarbageRecognition::~GarbageRecognition(){};
 std::list<Garbage*> 
 GarbageRecognition::getGarbageList(IplImage * src)
 {
+		CvSize size=cvGetSize(src);
+		size.width/=2;
+		size.height/=2;
+		IplImage * dst=cvCreateImage(size,8,3);
+		cvPyrDown(src,dst, CV_GAUSSIAN_5x5);
+		src=dst;
 		//~ IplImage * model = cvLoadImage("./colilla-sinBlanco.png",1);
 		IplImage * copy;
 		//windowing
