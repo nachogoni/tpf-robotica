@@ -17,6 +17,10 @@ typedef struct{
 	int visionAndHit;
 	int predictedAndVisualized;
 	int predictedAndVisualizedAndHit;
+	int focused;
+	int focusedAndHit;
+	int notFocused;
+	int notFocusedAndHit;
 } PredictionStats;
 
 
