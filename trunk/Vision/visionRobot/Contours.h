@@ -11,6 +11,7 @@ CvSeq * getPolygon(CvSeq * aContour);
 void traversePoints(CvSeq * contour,IplImage * src);
 
 const double PI = 3.141592;
+const double VASO_LONGEST_EDGE_SIMILARITY=0.8;
 
 
 namespace utils {
@@ -31,7 +32,7 @@ namespace utils {
 
 		CvSeq * getContour();
 		
-		double getEccentricity();
+		double getCircularity();
 		
 		
 

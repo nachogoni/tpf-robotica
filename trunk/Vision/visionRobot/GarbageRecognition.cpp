@@ -159,6 +159,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 
 	//gets a frame for setting  image size
 	CvSize srcSize = cvGetSize(src);
+	CvRect srcRect = cvRect(0,0,srcSize.width,srcSize.height);
 	
 	//images for HSV conversion
 	IplImage* hsv = cvCreateImage( srcSize, 8, 3 );

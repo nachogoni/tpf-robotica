@@ -5,6 +5,9 @@
 #include <vector>
 #include <cv.h>
 
+//percentage of the 2nd largest edge is the minimum distance that
+//must exist between largest edges of a glass
+const double SEPARATION_PERCENT = 0.3;
 
 /*
  * Test equality of two given points

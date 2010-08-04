@@ -6,6 +6,14 @@
 #include <list>
 #include "Garbage.h"
 
+//maximum variation allowed between consecutive areas of a contour
+const double AREA_DELTA_RATIO=0.25;
+//maximum variation allowed between consecutive perimeters of a contour
+const double AREA_PER_RATIO=0.25;
+//when guessing establish the factor by which the delta of the movement 
+//is multiplied
+const double DELTA_MOVEMENT_FACTOR=0.3;
+
 namespace utils{
 	enum gHistState { NOT_SHOW, SHOW, DEAD };
 
