@@ -7,6 +7,7 @@
 #include <vector>
 #include <stdio.h>
 #include <string>
+#include <time.h>
 #include "Contours.h"
 #include "Histogram.h"
 #include "Garbage.h"
@@ -42,16 +43,6 @@
 	extern int focusedFrames;
 #endif
 
-/*
-int main(void)
-{
-	utils::GarbageRecognition * gr= new utils::GarbageRecognition();
-	
-	IplImage * src = cvLoadImage("./colilla-scene.png",1);
-	gr->getGarbageList(src);
-	
-}
-*/
 namespace utils {
 
 void drawPrediction(IplImage * src,std::list<utils::Garbage*> garbagePrediction);
@@ -150,6 +141,8 @@ GarbageRecognition::getGarbageList(IplImage * src)
 std::list<Garbage*> 
 GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 
+    clock_t start = clock();
+
                     
 	std::list<Garbage*> garbageList;
 	std::vector<int> centroid(2);
@@ -182,7 +175,8 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	//image for contour-finding operations
 	IplImage * contourImage=cvCreateImage(srcSize,8,3);
 	
-
+	clock_t  create=clock();
+	printf("Time elapsed create Image: %f\n", ((double)create - start) / CLOCKS_PER_SEC);
 	int frameCounter=1;
 	int cont_index=0;
 
@@ -198,9 +192,11 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	//Main loop
 
 
+	
 	//convert image to hsv
 	cvCvtColor( src, hsv, CV_BGR2HSV );
-
+	clock_t  conv=clock();
+	printf("Time elapsed create Image- convert image: %f\n", ((double)conv - create) / CLOCKS_PER_SEC);
 	
 	cvCvtPixToPlane( hsv, h_plane, s_plane, v_plane, 0 );
 	h_planeV=cvCloneImage(h_plane);
@@ -227,6 +223,9 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 		}
 	}
 	
+	clock_t  color=clock();
+	printf("Time elapsed create Image - color filter: %f\n", ((double)color - conv) / CLOCKS_PER_SEC);
+	
 	//--first pipeline
 	//apply morphologic operations
 	element = cvCreateStructuringElementEx( MORPH_KERNEL_SIZE*2+1,
@@ -237,6 +236,9 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	cvErode(morphImage,morphImage,element,MORPH_ERODE_ITER);
 	
 	cvThreshold(morphImage,threshImage,100,255,CV_THRESH_BINARY);
+	
+	clock_t  pipe1=clock();
+	printf("Time elapsed color filter - first pipeline: %f\n", ((double)pipe1 - color) / CLOCKS_PER_SEC);
 	
 	//-- end first pipeline
 	//-- start 2nd pipeline-----
@@ -250,7 +252,8 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	cvThreshold(morphImageV,threshImageV,100,255,CV_THRESH_BINARY);
 
     //--end second pipeline--
-	
+    clock_t  pipe2=clock();
+	printf("Time elapsed first pipeline - second pipeline: %f\n", ((double)pipe2 - pipe1) / CLOCKS_PER_SEC);
 	//get all contours
 	contours=myFindContours(threshImage);
 	contoursCopy=contours;
@@ -340,6 +343,9 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 		contours=contours->h_next;
 		cont_index++;
 	}
+	clock_t  vasoyplato=clock();
+	printf("Time elapsed first pipe2 - vasos y platos: %f\n", ((double)vasoyplato - pipe2) / CLOCKS_PER_SEC);
+	
 		//2nd pipeline
 		//release temp images and data
 		if(contoursCopy!=NULL)
@@ -400,6 +406,8 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 		contours=contours->h_next;
 		cont_index++;
 	}
+	clock_t  colillas=clock();
+	printf("Time elapsed vasosyplatos - colillas: %f\n", ((double)colillas - vasoyplato) / CLOCKS_PER_SEC);
 
 	//display found contours
     cvShowImage("drawContours",contourImage);
@@ -424,6 +432,8 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	cvReleaseImage(&andImageV);
 	cvReleaseImage(&andImage);
 	
+	clock_t  total=clock();
+	printf("total: %f\n", ((double)total - start) / CLOCKS_PER_SEC);
 	
 	return garbageList;
 }
