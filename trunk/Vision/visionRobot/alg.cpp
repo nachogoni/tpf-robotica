@@ -53,9 +53,9 @@ int main(int argc, char** argv)
 			
 						}
 						
-		cvShowImage("output",src);
+		//cvShowImage("output",src);
 		//~ cvWaitKey(1000/30);
-		cvWaitKey(0);
+		//~ cvWaitKey(0);
 		
 	}
 	
