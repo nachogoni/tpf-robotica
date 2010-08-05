@@ -210,13 +210,15 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	CvScalar colillasL = cvScalar (20, 60, 0);
 	CvScalar colillasU = cvScalar (40, 255,255);
 
-	
+	clock_t  inrange=clock();
+	//~ cvInRangeSalt( hsv,vasosL,vasosU, vasosL1, vasosU1,h_plane );
 	cvInRangeS( hsv, vasosL1, vasosU1, h_plane );
 	cvInRangeS( hsv, vasosL, vasosU, h_plane2 );
 	cvOr(h_plane,h_plane2,h_plane);
-	
+	printf("inRange  %f\n", ((double)clock() - inrange) / CLOCKS_PER_SEC);
+
 	cvInRangeS( hsv, colillasL,colillasU,h_planeV);
-	//~ cvShowImage("inrange vasos",h_plane);
+	cvShowImage("inrange vasos",h_plane);
 	//~ cvShowImage("inrange colillas",h_planeV);
 	//~ for(int x=0;x<srcSize.width;x++){
 		//~ for(int y=0;y<srcSize.height;y++){
