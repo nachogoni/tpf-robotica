@@ -1,45 +1,52 @@
 \section{Arquitectura de Comportamientos}
 
 \subsection{Introducci\'on}
-Como se dijo en las secciones anteriores, el objetivo de \'este trabajo
+Como mencionamos en las secciones anteriores, el objetivo de \'este trabajo
 es desarrollar un robot aut\'onomo y reactivo que recolecte basura en un entorno
-estructurado pero din\'amico, debido a que la arena ( lugar donde se mueve el robot )
-es transitado por personas y es al aire libre.
+estructurado pero din\'amico, debido a que la arena (lugar donde se
+mueve el robot) es transitado por personas y est\'a al aire libre.
 
-En \'esta secci\'on de \emph{Arquitecturas de Comportamientos} se van
-a detallar las acciones que deber\'a hacer el robot y c\'omo organizar las mismas
-para cumplir la meta de recolectar basura y ser aut\'onomo, es decir, decidir por
-s\'i mismo las acciones a realizar en cada momento y ser capaz de mantenerse cargado
-para poder continuar recolectando.
+En esta secci\'on de \emph{Arquitecturas de Comportamientos} detallamos
+las acciones que deber\'a hacer el robot y c\'omo organizar las mismas
+para cumplir la meta de recolectar basura y ser aut\'onomo, es decir, decidir
+por s\'i mismo las acciones a realizar en cada momento y ser capaz de mantenerse
+cargado para poder continuar recolectando.
 
 En la secci\'on \ref{inv_prev} se analizar\'an
-papers relacionados con este desarrollo, desde la forma de organizar los comportamientos,
-la definici\'on y composici\'on de los mismos, hasta su implementaci\'on. En la secci\'on
-\ref{arq_prop} se detallar\'a la arquitectura elegida para llevar a cabo y organizar los
-comportamientos elegidos, y las ventajas y desventajas de usar la misma. La secci\'on
-\ref{comportamientos} detalla uno por uno los comportamientos elegidos que tendr\'a el
-robot, y sus correspondientes implementaciones en pseudoc\'odigo. En la secci\'on
-\ref{odometry} se explicar\'a que es la odometr\'ia, para qu\'e sirve y qu\'e ventajas y desventajas
-tiene usarla. Tambi\'en se detallar\'a el test utilizado para mejorar la eficiencia de la misma.
-La secci\'on \ref{interfaces} se describir\'a c\'omo se estructur\'o el controlador del robot
-para que se pueda ir desarrollando y probando el mismo con un simulador y minimizar el trabajo
-al pasarlo a el robot f\'isico. Los resultados obtenidos de performance y eficiencia del controlador
-desarrollado se obtuvieron de la simulaci\'on, y se pueden ver en la secci\'on \ref{results}. Finalmente,
-en la secci\'on \ref{comp_conclusion} se sacan conclusiones de los resultados obtenidos y las dificultades
-encontradas a lo largo del desarrollo de \'este trabajo pr\'actico final.
+papers relacionados con este desarrollo, desde la forma de organizar los
+comportamientos, la definici\'on y composici\'on de los mismos, hasta su
+implementaci\'on. En la secci\'on \ref{arq_prop} se detallar\'a la arquitectura
+elegida para llevar a cabo y organizar los comportamientos elegidos, y las
+ventajas y desventajas de usar la misma. La secci\'on \ref{comportamientos}
+detalla uno por uno los comportamientos elegidos que tendr\'a el robot, y sus
+correspondientes implementaciones en pseudoc\'odigo. En la secci\'on
+\ref{odometry} se explicar\'a que es la odometr\'ia, para qu\'e sirve y qu\'e
+ventajas y desventajas tiene usarla. Tambi\'en se detallar\'a el test utilizado
+para mejorar la eficiencia de la misma. La secci\'on \ref{interfaces} se
+describir\'a c\'omo se estructur\'o el controlador del robot para que se pueda
+ir desarrollando y probando el mismo con un simulador y minimizar el trabajo
+al pasarlo a el robot f\'isico. Los resultados obtenidos de performance y
+eficiencia del controlador desarrollado se obtuvieron de la simulaci\'on, y se
+pueden ver en la secci\'on \ref{results}. Finalmente, en la secci\'on
+\ref{comp_conclusion} se sacan conclusiones de los resultados obtenidos y las
+dificultades encontradas a lo largo del desarrollo de \'este trabajo pr\'actico
+final.
 
 \newpage
 
 \subsection{Investigaciones previas}
 \label{inv_prev}
 
-A continuaci\'on se van a presentar trabajos realizados por otros autores relacionados en alguna
-forma con el trabajo que nosotros realizamos. Primero se da una breve descripci\'on del trabajo
-del otro autor y luego se comparan con nuestro trabajo, viendo similitudes y diferencias entre ambos.
+A continuaci\'on se van a presentar trabajos realizados por otros autores
+relacionados en alguna forma con el trabajo que nosotros realizamos. Primero se
+da una breve descripci\'on del trabajo del otro autor y luego se comparan con
+nuestro trabajo, viendo similitudes y diferencias entre ambos.
 
-\subsubsection{Desarrollo de comportamientos no triviales en robots reales : Robot recolector de basura - Stefano Nolfi \cite{nolfi:evolving}}
-En \'este paper se muestra el uso de un Khepera con el m\'odulo Gripper en una arena delimitada por
-paredes para la recolecci\'on de "basura". Dicho robot se puede ver en la figura \ref{fig:khepera}.
+\subsubsection{Desarrollo de comportamientos no triviales en robots reales : 
+Robot recolector de basura - Stefano Nolfi \cite{nolfi:evolving}}
+En \'este paper se muestra el uso de un Khepera con el m\'odulo Gripper en una
+arena delimitada por paredes para la recolecci\'on de "basura". Dicho robot se
+puede ver en la figura \ref{fig:khepera}.
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[scale=0.6]{comportamientos/gripperAH.png}
@@ -47,33 +54,40 @@ paredes para la recolecci\'on de "basura". Dicho robot se puede ver en la figura
 \label{fig:khepera}
 \end{center}
 \end{figure}
-La base tiene una fuente de luz asociada y el objetivo del
-robot es llevar peque\~nos objetos a un lugar de dep\'osito. Se utiliza \emph{aprendizaje por refuerzo} para
-asociar las velocidades angulares a los diferentes tama\~nos de las "basuras". Para obtener el comportamiento
-deseado se hace uso de \emph{algoritmos gen\'eticos} y \emph{redes neuronales}. Una vez obtenido el mismo mediante
-simulaci\'on en Webots, se lo prob\'o en el Khepera f\'isico.
+La base tiene una fuente de luz asociada y el objetivo del robot es llevar
+peque\~nos objetos a un lugar de dep\'osito. Se utiliza \emph{aprendizaje por
+refuerzo} para asociar las velocidades angulares a los diferentes tama\~nos de
+las "basuras". Para obtener el comportamiento deseado se hace uso de
+\emph{algoritmos gen\'eticos} y \emph{redes neuronales}. Una vez obtenido el
+mismo mediante simulaci\'on en Webots, se lo prob\'o en el Khepera f\'isico.
 Comparando el trabajo de Stefano Nolfi con el nuestro podemos observar que:
 \begin{itemize}
 
-\item{Existencia de un dep\'osito:} Ambos tienen un dep\'osito en el cual dejar la basura recogida y una forma
-de identificarla: una fuente de luz usada por Nolfi y en nuestro trabajo, al llegar al final de una determinada
-l\'inea de la arena.
+\item{Existencia de un dep\'osito:} Ambos tienen un dep\'osito en el cual dejar
+la basura recogida y una forma de identificarla: una fuente de luz usada por
+Nolfi y en nuestro trabajo, al llegar al final de una determinada l\'inea de la
+arena.
 
-\item{Autonom\'ia:} Ambos son aut\'onomos en el sentido que no son manejados por un ente externo. En cuanto
-a la recarga de la bater\'ia, Nolfi no explicita si es asistida o no; en nuestro caso, el robot se encarga
-de ir a la base de recarga una vez detectada la falta de energ\'ia.
+\item{Autonom\'ia:} Ambos son aut\'onomos en el sentido que no son manejados
+por un ente externo. En cuanto a la recarga de la bater\'ia, Nolfi no explicita
+si es asistida o no; en nuestro caso, el robot se encarga de ir a la base de
+recarga una vez detectada la falta de energ\'ia.
 
-\item{M\'etodo de Recolecci\'on:} En el trabajo de Nolfi se utiliza un m\'odulo agregado al Khepera, que simula
-un brazo con dos dedos, la recolecci\'on se realiza juntando ambos y la liberaci\'on se realiza separando ambos.
-Nuestro trabajo se basa m\'as en la actividad humana que en el comportamiento humano para realizar este comportamiento,
-ya que podr\'ia compararse con un recolector de basura que primero guarda lo encontrado usando una pala en su tacho
-y luego descarga su tacho en un dep\'osito de mayor tama\~no.
+\item{M\'etodo de Recolecci\'on:} En el trabajo de Nolfi se utiliza un m\'odulo
+agregado al Khepera, que simula un brazo con dos dedos, la recolecci\'on se
+realiza juntando ambos y la liberaci\'on se realiza separando ambos. Nuestro
+trabajo se basa m\'as en la actividad humana que en el comportamiento humano
+para realizar este comportamiento, ya que podr\'ia compararse con un recolector
+de basura que primero guarda lo encontrado usando una pala en su tacho y luego
+descarga su tacho en un dep\'osito de mayor tama\~no.
 
-\item{M\'etodo de aprendizaje:} Nuestro trabajo no utiliza alguna forma de aprendizaje por refuerzo o algoritmo
-evolutivo. No es el caso de Nolfi, que utiliza ambas t\'ecnicas para evolucionar el comportamiento deseado.
+\item{M\'etodo de aprendizaje:} Nuestro trabajo no utiliza alguna forma de
+aprendizaje por refuerzo o algoritmo evolutivo. No es el caso de Nolfi, que
+utiliza ambas t\'ecnicas para evolucionar el comportamiento deseado.
 
-\item{Robot Utilizado:} Como ya se dijo, Nolfi utiliz\'o un Khepera en la simulaci\'on. En nuestro trabajo
-utilizamos un E-puck para la simulaci\'on, una versi\'on nueva del Khepera, pero sin el m\'odulo Gripper.
+\item{Robot Utilizado:} Como ya se dijo, Nolfi utiliz\'o un Khepera en la
+simulaci\'on. En nuestro trabajo utilizamos un E-puck para la simulaci\'on,
+una versi\'on nueva del Khepera, pero sin el m\'odulo Gripper.
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[scale=0.6]{comportamientos/e-puck.png}
@@ -84,58 +98,77 @@ utilizamos un E-puck para la simulaci\'on, una versi\'on nueva del Khepera, pero
 
 \end{itemize}
 
-\subsubsection{Arquitectura de control para un Robot Aut\'onomo M\'ovil - Neves And Oliveira \cite{Neves97acontrol}}
-Neves y Oliveira describen en su trabajo una arquitectura de control basada en comportamientos para un
-robot m\'ovil en un ambiente din\'amico, utilizando muchos aspectos de la arquitectura \emph{Subsumption} propuesta
-por \emph{Brooks} y que fue usada por nosotros al realizar \'este trabajo explicada en \ref{arq_prop}.
-La arquitectura propuesta, o \emph{Control System Arquitecture}, se basa tambi\'en en la teor\'ia de
-\emph{The Society of Mind}, escrita por \emph{Minsky}, donde el sistema es visto como una sociedad de agentes,
-cada uno con una particular competencia y que colaboran entre ellos para ayudar a la sociedad a alcanzar
-su meta.
-La arquitectura est\'a compuesta por tres niveles: un nivel reflexivo, uno reactivo, y otro cognitivo, aumentando
-la complejidad al igual que el orden en que fueron presentados.
+\subsubsection{Arquitectura de control para un Robot Aut\'onomo M\'ovil -
+Neves And Oliveira \cite{Neves97acontrol}}
+Neves y Oliveira describen en su trabajo una arquitectura de control basada en
+comportamientos para un robot m\'ovil en un ambiente din\'amico, utilizando
+muchos aspectos de la arquitectura \emph{Subsumption} propuesta por
+\emph{Brooks} y que fue usada por nosotros al realizar \'este trabajo explicada
+en \ref{arq_prop}. La arquitectura propuesta, o
+\emph{Control System Arquitecture}, se basa tambi\'en en la teor\'ia de 
+\emph{The Society of Mind}, escrita por \emph{Minsky}, donde el sistema es
+visto como una sociedad de agentes, cada uno con una particular competencia y
+que colaboran entre ellos para ayudar a la sociedad a alcanzar su meta.
+La arquitectura est\'a compuesta por tres niveles: un nivel reflexivo, uno
+reactivo, y otro cognitivo, aumentando la complejidad al igual que el orden en
+que fueron presentados.
 \\
-El nivel reflexivo incluye aquellos comportamientos
-innatos, es decir, act\'uan directamente como est\'imulo-respuesta. El segundo nivel, el reactivo, est\'a
-compuesto por agentes que responden r\'apidamente a los est\'imulos ya que requieren poco nivel de procesamiento.
-Finalmente, en el nivel cognitivo, se encuentran los agentes encargados de guiar y administrar los comportamientos
+El nivel reflexivo incluye aquellos comportamientos innatos, es decir, act\'uan
+directamente como est\'imulo-respuesta. El segundo nivel, el reactivo, est\'a
+compuesto por agentes que responden r\'apidamente a los est\'imulos ya que
+requieren poco nivel de procesamiento. Finalmente, en el nivel cognitivo, se
+encuentran los agentes encargados de guiar y administrar los comportamientos
 reactivos de forma tal que el robot muestre un comportamiento orientado.
 \\
-Aunque la arquitectura explicada es similar a la utilizada en nuestro trabajo, \'esta organizaci\'on de los
-comportamientos en capas no la utilizamos, aunque podemos divisar que algunos de los comportamientos que propusimos
-corresponden a la primera capa de reflexi\'on, como por ejemplo el evitamiento de
-obst\'aculos; otros podr\'ian incluirse en la segunda capa de comportamientos reactivos, como lo es deambular y
-finalmente en la \'ultima capa estar\'ia el reconocimiento de objectos debido a su gran demanda de procesamiento.
+Aunque la arquitectura explicada es similar a la utilizada en nuestro trabajo,
+\'esta organizaci\'on de los comportamientos en capas no la utilizamos, aunque
+podemos divisar que algunos de los comportamientos que propusimos corresponden
+a la primera capa de reflexi\'on, como por ejemplo el evitamiento de
+obst\'aculos; otros podr\'ian incluirse en la segunda capa de comportamientos
+reactivos, como lo es deambular y finalmente en la \'ultima capa estar\'ia el
+reconocimiento de objectos debido a su gran demanda de procesamiento.
 
-\subsubsection{Path Planning usando Algoritmos Gen\'eticos - Salvatore Candido \cite{salvatore}}
-En este paper se describe la utilizaci\'on de algor\'itmos gen\'eticos para resolver el problema de Path Planning.
-\'Este problema consiste en armar un plan, una secuencia de acciones de forma tal que a partir de un punto de origen y siguiendo
-ese plan, se llegue a un segundo punto, el de destino. Debido a la componente din\'amica de nuestro trabajo, siempre
-tratamos de mantener los comportamientos del robot lo m\'as reactivos posibles, por lo que armar un plan no 
-ser\'ia el mejor approach para ser utilizado. Por el contrario, el uso de algor\'itmos gen\'eticos puede ser
-una herramienta que podr\'ia llegar a ser utilizada en una futura continuaci\'on de nuestro trabajo y que no
-utilizamos por el tiempo que estimamos que nos hubiese demandado.
+\subsubsection{Path Planning usando Algoritmos Gen\'eticos - Salvatore Candido
+\cite{salvatore}}
+En este paper se describe la utilizaci\'on de algor\'itmos gen\'eticos para
+resolver el problema de Path Planning. \'Este problema consiste en armar un
+plan, una secuencia de acciones de forma tal que a partir de un punto de origen
+y siguiendo ese plan, se llegue a un segundo punto, el de destino. Debido a la
+componente din\'amica de nuestro trabajo, siempre tratamos de mantener los
+comportamientos del robot lo m\'as reactivos posibles, por lo que armar un plan
+no ser\'ia el mejor approach para ser utilizado. Por el contrario, el uso de
+algor\'itmos gen\'eticos puede ser una herramienta que podr\'ia llegar a ser
+utilizada en una futura continuaci\'on de nuestro trabajo y que no utilizamos
+por el tiempo que estimamos que nos hubiese demandado.
 
-\subsubsection{Navegaci\'on predictiva de un robot aut\'onomo - Foka And Trahanias \cite{Foka02predictiveautonomous}}
-La navegaci\'on predictiva nace como una posible soluci\'on al problema de un robot navegando en un ambiente
-con muchas personas y obst\'aculos, tal como lo es el ambiente en el cual navegar\'a el robot resultante
-de nuestro trabajo.
+\subsubsection{Navegaci\'on predictiva de un robot aut\'onomo - Foka And
+Trahanias \cite{Foka02predictiveautonomous}}
+La navegaci\'on predictiva nace como una posible soluci\'on al problema de un
+robot navegando en un ambiente con muchas personas y obst\'aculos, tal como lo
+es el ambiente en el cual navegar\'a el robot resultante de nuestro trabajo.
 \\
-La forma en que es implementada por los autores es mediante un \emph{POMDP}, es decir, 
-un proceso de decisi\'on de markov parcialmente observable. Cabe destacar estas dos \'ultimas palabras, ya
-que indican la naturaleza del ambiente: hay incertidumbre o falta de informaci\'on acerca de ciertas variables
-del entorno. En este caso, se utiliza el \emph{POMDP} para manejar tanto la navegaci\'on del robot como el
-evitamiento de obst\'aculos, un punto en que se diferencia de lo propuesto por nosotros, que es tratar el
-\emph{wandering} de forma separada del m\'odulo de evitamiento de obst\'aculos. \'Esto, en parte, se debi\'o
-a la arquitectura utilizada y que desde ese punto de vista, ambos comportamientos son muy lejanos.
+La forma en que es implementada por los autores es mediante un \emph{POMDP}, es
+decir, un proceso de decisi\'on de markov parcialmente observable. Cabe 
+destacar estas dos \'ultimas palabras, ya que indican la naturaleza del
+ambiente: hay incertidumbre o falta de informaci\'on acerca de ciertas
+variables del entorno. En este caso, se utiliza el \emph{POMDP} para manejar
+tanto la navegaci\'on del robot como el evitamiento de obst\'aculos, un punto
+en que se diferencia de lo propuesto por nosotros, que es tratar el 
+\emph{wandering} de forma separada del m\'odulo de evitamiento de obst\'aculos.
+\'Esto, en parte, se debi\'o a la arquitectura utilizada y que desde ese punto
+de vista, ambos comportamientos son muy lejanos.
 
-\subsubsection{Algoritmo de navegaci\'on y evitamiento de obst\'aculos en un entorno desconocido - Clark Et. al \cite{clark}}
-En este paper se presentan dos algoritmos complementarios para la navegaci\'on en ese tipo de entornos.
+\subsubsection{Algoritmo de navegaci\'on y evitamiento de obst\'aculos en un
+entorno desconocido - Clark Et. al \cite{clark}}
+En este paper se presentan dos algoritmos complementarios para la navegaci\'on
+en ese tipo de entornos.
 \\
-El primero consiste en la navegaci\'on y un mapeo del entorno que garantiza una cobertura completa de una arena
-cuyas ubicaciones de la paredes no se conocen \emph{a priori}. Consiste b\'asicamente en un seguimiento de las
-paredes complementado por una variaci\'on de \emph{flood filling} para asesgurarse la cobertura completa de la
-arena. El algoritmo completo se puede apreciar en la figura \ref{fig:clark}
+El primero consiste en la navegaci\'on y un mapeo del entorno que garantiza una
+cobertura completa de una arena cuyas ubicaciones de la paredes no se conocen
+\emph{a priori}. Consiste b\'asicamente en un seguimiento de las paredes
+complementado por una variaci\'on de \emph{flood filling} para asesgurarse la
+cobertura completa de la arena. El algoritmo completo se puede apreciar en la
+figura \ref{fig:clark}.
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[scale=0.8]{comportamientos/clarkDiagram.png}
@@ -144,44 +177,56 @@ arena. El algoritmo completo se puede apreciar en la figura \ref{fig:clark}
 \end{center}
 \end{figure}
 \\
-Un aut\'omata con aprendizaje estoc\'astico es el algoritmo que complementa al primero, y su objetivo es
-el evitamiento de obst\'aculos. Para \'esto, se utiliza un mecanismo de recompensa/castigo de forma tal
-que se adapten las probabilidades de las acciones a tomar. 
+Un aut\'omata con aprendizaje estoc\'astico es el algoritmo que complementa al
+primero, y su objetivo es el evitamiento de obst\'aculos. Para \'esto, se
+utiliza un mecanismo de recompensa/castigo de forma tal que se adapten las
+probabilidades de las acciones a tomar.
 \\
-En relaci\'on con nuestro trabajo, hay ciertas similitudes y diferencias, enumeradas a continuaci\'on:
+En relaci\'on con nuestro trabajo, hay ciertas similitudes y diferencias,
+enumeradas a continuaci\'on:
 \begin{itemize}
-\item{}Ambos presentan un mecanismo de "seguimiento de", en nuestro caso lo hacemos con l\'ineas y basuras, en
-el paper se utiliza con paredes. Sin embargo, se utilizan para objetivos diferentes. Nosotros lo usamos para
-dirigirnos a la base ya que tratamos de mantener el conociemiento que el robot tiene sobre el mundo lo m\'as
-acotado posible, o, en el caso de las basuras, para recolectarlas. En el paper se utiliza el mecanismo de seguir
-las l\'ineas para obtener un modelo del mundo, algo que puede llegar a servir mucho en ambientes no tan din\'amicos
-como el nuestro, raz\'on por la cual no elegimos implementarlo.
-\item{}Tambi\'en se coincide en la existencia de un m\'etodo para evitar obst\'aculos. En el paper se implementa como
-un aut\'omata que va aprendiendo seg\'un los premios o castigos que recibe; en nuestro caso, el comportamiento es puramente
-reactivo y reacciona en base a los valores de los sensores de distancia, pero no tiene memoria.
+\item{}Ambos presentan un mecanismo de "seguimiento de", en nuestro caso lo
+hacemos con l\'ineas y basuras, en el paper se utiliza con paredes. Sin embargo,
+se utilizan para objetivos diferentes. Nosotros lo usamos para dirigirnos a la
+base ya que tratamos de mantener el conociemiento que el robot tiene sobre el
+mundo lo m\'as acotado posible, o, en el caso de las basuras, para
+recolectarlas. En el paper se utiliza el mecanismo de seguir las l\'ineas para
+obtener un modelo del mundo, algo que puede llegar a servir mucho en ambientes
+no tan din\'amicos como el nuestro, raz\'on por la cual no elegimos
+implementarlo.
+\item{}Tambi\'en se coincide en la existencia de un m\'etodo para evitar
+obst\'aculos. En el paper se implementa como un aut\'omata que va aprendiendo
+seg\'un los premios o castigos que recibe; en nuestro caso, el comportamiento
+es puramente reactivo y reacciona en base a los valores de los sensores de
+distancia, pero no tiene memoria.
 \end{itemize}
 
 \newpage
 \subsection{Arquitectura propuesta}
 \label{arq_prop}
-Una arquitectura basada en comportamientos define la forma en que los mismos son especificados, desde
-su granularidad ( que tan complejo o simple es un comportamiento ), la base para su especificaci\'on,
-el tipo de respuesta y la forma en que se coordinan.
+Una arquitectura basada en comportamientos define la forma en que los mismos
+son especificados, desde su granularidad (que tan complejo o simple es un
+comportamiento), la base para su especificaci\'on, el tipo de respuesta y la
+forma en que se coordinan.
 \\
-La arquitectura que elegimos para desarrollar nuestro trabajo es \emph{Subsumption}, desarrollada por
-Rodney Brooks a mediados de 1980. \'Esta arquitectura est\'a basada en comportamientos puramente reactivos,
-rompiendo as\'i con el esquema que estaba de moda en la \'epoca de \emph{sensar-planear-actuar}. Algunos
-de los principios propuestos que fueron tenidos en cuenta durante el desarrollo de nuestro trabajo son:
+La arquitectura que elegimos para desarrollar nuestro trabajo es
+\emph{Subsumption}, desarrollada por Rodney Brooks a mediados de 1980.
+\'Esta arquitectura est\'a basada en comportamientos puramente reactivos,
+rompiendo as\'i con el esquema que estaba de moda en la \'epoca de
+\emph{sensar-planear-actuar}. Algunos de los principios propuestos que fueron
+tenidos en cuenta durante el desarrollo de nuestro trabajo son:
 \begin{itemize}
-\item{}Un comportamiento complejo no es necesariamente el producto de un complejo sistema de control
+\item{}Un comportamiento complejo no es necesariamente el producto de un
+complejo sistema de control
 \item{}El mundo es el mejor modelo del mismo
 \item{}La simplicidad es una virtud
 \item{}Los sistemas deben ser construidos incrementalmente
 \end{itemize}
-Cada comportamiento es un par est\'imulo-respuesta. Tal como se observa en la Figura \ref{fig:behaviour},
-cada est\'imulo o respuesta puede ser inhibido o suprimida por otros comportamientos activos.
-Adem\'as, cada comportamiento recibe una se\~nal de reset, que vuelve al comportamiento que
-recibi\'o esta se\~nal a su estado original.
+Cada comportamiento es un par est\'imulo-respuesta. Tal como se observa en la
+figura \ref{fig:behaviour}, cada est\'imulo o respuesta puede ser inhibido o
+suprimida por otros comportamientos activos. Adem\'as, cada comportamiento
+recibe una se\~nal de reset, que vuelve al comportamiento que recibi\'o
+esta se\~nal a su estado original.
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[scale=0.85]{comportamientos/behaviour.png}
@@ -189,32 +234,45 @@ recibi\'o esta se\~nal a su estado original.
 \label{fig:behaviour}
 \end{center}
 \end{figure}
-El nombre \emph{Subsumption} proviene de la forma en que los comportamientos son coordinados entre s\'i. Hay
-una jerarqu\'ia donde los comportamientos de la arquitectura tienen mayor o menor prioridad seg\'un su posici\'on.
-Los comportamientos de los menores niveles no tienen conocimiento de los comportamientos de las capas de mayor
-nivel. Gracias a esto, se puede plantear un dise\~no incremental, brindando flexibilidad, adaptaci\'on y paralelismo
+El nombre \emph{Subsumption} proviene de la forma en que los comportamientos
+son coordinados entre s\'i. Hay una jerarqu\'ia donde los comportamientos de la
+arquitectura tienen mayor o menor prioridad seg\'un su posici\'on. Los
+comportamientos de los menores niveles no tienen conocimiento de los
+comportamientos de las capas de mayor nivel. Gracias a esto, se puede plantear
+un dise\~no incremental, brindando flexibilidad, adaptaci\'on y paralelismo
 al desarrollo e implementaci\'on de los comportamientos.
 \\
-La idea a seguir es que el mundo sea el principal medio de comunicaci\'on entre los comportamientos, dado que la respuesta
-de un comportamiento ante est\'imulo resulta en un cambio en el mundo y, por lo tanto, en la relaci\'on del robot con el mismo,
-ya que el robot en su pr\'oximo paso sensar\'a otro estado del mundo.
+La idea a seguir es que el mundo sea el principal medio de comunicaci\'on entre
+los comportamientos, dado que la respuesta de un comportamiento ante est\'imulo
+resulta en un cambio en el mundo y, por lo tanto, en la relaci\'on del robot
+con el mismo, ya que el robot en su pr\'oximo paso sensar\'a otro estado del
+mundo.
 \\
-El procedimiento b\'asico para dise\~nar y desarrollar comportamientos para robots con esta arquitectura es sencillo:
+El procedimiento b\'asico para dise\~nar y desarrollar comportamientos para
+robots con esta arquitectura es sencillo:
 \begin{enumerate}
-\item Especificar cualitativamente la forma en que el mundo responde al mundo, es decir, el comportamiento que realizar\'a.
+\item Especificar cualitativamente la forma en que el mundo responde al mundo,
+es decir, el comportamiento que realizar\'a.
 \item Descomponer la especificaci\'on como un conjunto de acciones disjuntas.
-\item Determinar la granularidad del comportamiento, analizando en que nivel de la jerarqu\'ia existente se encontrar\'a y 
-cu\'antas acciones disjuntas es necesario llevar a cabo para el cumplimiento de la tarea.
+\item Determinar la granularidad del comportamiento, analizando en que nivel de
+la jerarqu\'ia existente se encontrar\'a y cu\'antas acciones disjuntas es
+necesario llevar a cabo para el cumplimiento de
+la tarea.
 \end{enumerate}
 
-Un ejemplo de \'esta arquitectura se puede observar en \ref{fig:subsumptionExample}. En la misma hay 4 comportamientos:
-Homing, Pickup, Avoiding y Wandering. Las l\'ineas que entran a cada comportamiento son los est\'imulos ante los cuales
-se activan y las salidas de los mismos son las se\~nales de respuesta correspondientes. La se\~nal de respuesta de la arquitectura
-es la l\'inea que sale por la derecha de la caja (Arquitectura) que contiene la relaci\'on entre los comportamientos.
-Puede verse como Homing inhibe la salida de Pickup ya que su salida entra al supresor (denotado con un c\'irculo con una S dentro)
-de la salida de Pickup y por lo tanto, las salidas de los dem\'as comportamientos, ya que su prioridad es mayor al resto. En el
-caso que no est\'en presentes los est\'imulos de Homing, Pickup y Avoiding, no hay inhibici\'on en la salida de Wandering, y por lo
-tanto se lleva a cabo el comportamiento de Wandering.
+Un ejemplo de \'esta arquitectura se puede observar en la figura 
+\ref{fig:subsumptionExample}. En la misma hay 4 comportamientos: Homing,
+Pickup, Avoiding y Wandering. Las l\'ineas que entran a cada comportamiento son
+los est\'imulos ante los cuales se activan y las salidas de los mismos son las
+se\~nales de respuesta correspondientes. La se\~nal de respuesta de la
+arquitectura es la l\'inea que sale por la derecha de la caja (Arquitectura)
+que contiene la relaci\'on entre los comportamientos. Puede verse como Homing
+inhibe la salida de Pickup ya que su salida entra al supresor (denotado con un
+c\'irculo con una S dentro) de la salida de Pickup y por lo tanto, las salidas
+de los dem\'as comportamientos, ya que su prioridad es mayor al resto. En el
+caso que no est\'en presentes los est\'imulos de Homing, Pickup y Avoiding,
+no hay inhibici\'on en la salida de Wandering, y por lo tanto se lleva a cabo
+el comportamiento de Wandering.
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[scale=1.0]{comportamientos/subsumptionExample.png}
@@ -230,18 +288,22 @@ tanto se lleva a cabo el comportamiento de Wandering.
 \newpage
 \subsection{Odometr\'ia}
 \label{odometry}
-Para saber donde se encuentra el robot en cierto momento, se utiliza odometr\'ia.
+Para saber donde se encuentra el robot en cierto momento, se utiliza
+odometr\'ia.
 \\
-\'Esta se basa en la medici\'on de las cuentas dadas por un motor para obtener el desplazamiento realizado 
-por la rueda asociada al mismo. Dado que el motor que usamos fue un motor diferencial para cada rueda,
-\'esto es posible de realizar.
+\'Esta se basa en la medici\'on de las cuentas dadas por un motor para obtener
+el desplazamiento realizado por la rueda asociada al mismo. Dado que el motor
+que usamos fue un motor diferencial para cada rueda, \'esto es posible de
+realizar.
 \\
 A diferencia de los m\'etodos de posicionamiento absoluto, la odometr\'ia
-da una estimaci\'on del desplazamiento \emph{local} a la ubicaci\'on anterior del robot, por lo cual \emph{un error}
-en una estimaci\'on \emph{se propaga} hacia las siguientes estimaciones. 
+da una estimaci\'on del desplazamiento \emph{local} a la ubicaci\'on anterior
+del robot, por lo cual \emph{un error} en una estimaci\'on \emph{se propaga}
+hacia las siguientes estimaciones. 
 \\
-Para calcular la posici\'on en el instante n $P_n$ y la orientaci\'on $O_n$ en base a la posici\'on en el 
-instante (n-1) $P_{n-1}$ y la correspondiente orientaci\'on $O_{n-1}$, usamos las siguientes f\'ormulas:
+Para calcular la posici\'on en el instante n $P_n$ y la orientaci\'on $O_n$
+en base a la posici\'on en el instante (n-1) $P_{n-1}$ y la correspondiente
+orientaci\'on $O_{n-1}$, usamos las siguientes f\'ormulas:
 \begin{eqnarray}
 d_l = \frac{(e_l(n) - e_l(n-1)) * R_l}{EncRes} \\
 d_r = \frac{(e_r(n) - e_r(n-1)) * R_r}{EncRes} \\
@@ -249,34 +311,41 @@ lc = \frac{d_r + d_l}{2} \\
 P_n = P_{n-1} + (lc * \cos{O_{n-1}},lc * \sin{O_{n-1}}) \\
 O_n = O_{n-1} + \frac{d_r - d_l}{dbw}
 \end{eqnarray}
-donde $d_l$ y $d_r$ son las distancias recorridas por las ruedas izquierda y derecha respectivamente. Ambas
-son calculadas teniendo en cuenta los valores anteriores y actuales de los encoders $e_i(n)$, el radio de la rueda $R_i$ y
+donde $d_l$ y $d_r$ son las distancias recorridas por las ruedas izquierda y
+derecha respectivamente. Ambas son calculadas teniendo en cuenta los valores
+anteriores y actuales de los encoders $e_i(n)$, el radio de la rueda $R_i$ y
 la resoluci\'on del encoder $EncRes$. $dbw$ es la distancia entre ruedas.
 \\
-Los errores que influyen en el c\'alculo de la odometr\'ia pueden ser de dos tipos:
+Los errores que influyen en el c\'alculo de la odometr\'ia pueden ser de dos
+tipos:
 
 \begin{itemize}
 
-\item{Sistem\'aticos:} Son aquellos que pueden ser corregidos o tenidos en cuenta para disminuir el error.
+\item{Sistem\'aticos:} Son aquellos que pueden ser corregidos o tenidos en
+cuenta para disminuir el error.
 
-\item{No sistem\'aticos:} Son aquellos que pueden intentarse corregir pero \emph{no} eliminar.
+\item{No sistem\'aticos:} Son aquellos que pueden intentarse corregir pero
+\emph{no} eliminar.
 
 \end{itemize}
 
-Decidimos tener en cuenta dos errores sistem\'aticos para disminuir el error en la odometr\'ia :
+Decidimos tener en cuenta dos errores sistem\'aticos para disminuir el error
+en la odometr\'ia :
 \begin{itemize}
 \item{Incerteza sobre la distancia entre las ruedas ($dbw$)}
 \item{Ruedas con radios diferentes ($R_l$ y $R_r$)}
 \end{itemize}
-Tuvimos en cuenta estos errores dado que son los que m\'as contribuyen al error acumulado a lo
-largo del trayecto del robot.
+Tuvimos en cuenta estos errores dado que son los que m\'as contribuyen al error
+acumulado a lo largo del trayecto del robot.
 Para corregir \'estas fuentes de error, utilizamos el \emph{test del camino
-bidireccional describiendo un cuadrado} (UMBmark)\footnote{http://www-personal.umich.edu/~johannb/Papers/umbmark.pdf}.
-Dado que en el momento de realizar el test no hab\'ia un robot f\'isico, decidimos realizar el test sobre
-un e-puck simulado en Webots.
-As\'i fuimos obteniendo los valores de correcci\'on para los di\'ametros de las ruedas $c_i$ y la correci\'on
-sobre la distancia entre las ruedas $c_{dbw}$ hasta que el error sistem\'atico m\'aximo dejara de disminuir. En la
-figura \ref{fig:errsist} se puede ver c\'omo disminuye el error a lo largo de las iteraciones.
+bidireccional describiendo un cuadrado} (UMBmark)
+\footnote{http://www-personal.umich.edu/~johannb/Papers/umbmark.pdf}. Dado que
+en el momento de realizar el test no hab\'ia un robot f\'isico, decidimos
+realizar el test sobre un e-puck simulado en Webots. As\'i fuimos obteniendo
+los valores de correcci\'on para los di\'ametros de las ruedas $c_i$ y la
+correci\'on sobre la distancia entre las ruedas $c_{dbw}$ hasta que el error
+sistem\'atico m\'aximo dejara de disminuir. En la figura \ref{fig:errsist}
+se puede ver c\'omo disminuye el error a lo largo de las iteraciones.
 
 \begin{figure}[htp]
 \begin{center}
@@ -287,9 +356,10 @@ figura \ref{fig:errsist} se puede ver c\'omo disminuye el error a lo largo de la
 \end{center}
 \end{figure}
 
-En la \'ultima iteraci\'on obtuvimos los coeficientes de correcci\'on $c_l = 0.99998703$, $c_r = 1.00001297$
-y $c_{dbw} = 1.092171094$ para ruedas con radio $R_l = R_r = 0.205$, una distancia entre ruedas de $0.052$ y
-una resoluci\'on de encoder $EncRes = 159.23$.
+En la \'ultima iteraci\'on obtuvimos los coeficientes de correcci\'on
+$c_l = 0.99998703$, $c_r = 1.00001297$ y $c_{dbw} = 1.092171094$ para ruedas
+con radio $R_l = R_r = 0.205$, una distancia entre ruedas de $0.052$ y una
+resoluci\'on de encoder $EncRes = 159.23$.
 
 \subsubsection{Problemas con la odometr\'ia}
 \label{odometry:problems}
@@ -298,51 +368,62 @@ A LA LA LALALA
 \newpage
 \subsection{Interfaces con hardware y m\'odulo de reconocimiento de objetos}
 \label{interfaces}
-Decidimos hacer que el controlador encargado de realizar los comportamientos sea independiente
-de la forma con la que se implemente el hardware y la forma con que se implemente el reconocimiento
-de los objetos. Para \'esto definimos interfaces, de forma tal que el controlador las mismas
-y tanto el hardware como el m\'odulo de reconocimiento de objetos puedan cambiar su implementaci\'on
-pero brindando siempre la informaci\'on que necesita el controlador para poder realizar
-los comportamientos. \'Esta decisi\'on nos posibilit\'o realizar un controlador que sea capaz de ser
-ejecutado tanto en Webots, donde se hizo el desarroll\'o, como en la base real del robot. Cabe aclarar
-que el traspaso de la simulaci\'on a la realidad no es instant\'anea, ya que hay que calibrar los dispositivos,
-realizar nuevamente la odometr\'ia, entre otras cosas, pero el trabajo demandado es mucho menor ya
-que una correcci\'on en la l\'ogica de los comportamientos se puede observar tanto en un simulador como
-en la realidad.
+Decidimos hacer que el controlador encargado de realizar los comportamientos
+sea independiente de la forma con la que se implemente el hardware y la forma
+con que se implemente el reconocimiento de los objetos. Para \'esto definimos
+interfaces, de forma tal que el controlador las mismas y tanto el hardware
+como el m\'odulo de reconocimiento de objetos puedan cambiar su
+implementaci\'on pero brindando siempre la informaci\'on que necesita el
+controlador para poder realizar los comportamientos. \'Esta decisi\'on nos
+posibilit\'o realizar un controlador que sea capaz de ser ejecutado tanto en
+Webots, donde se hizo el desarroll\'o, como en la base real del robot. Cabe
+aclarar que el traspaso de la simulaci\'on a la realidad no es instant\'anea,
+ya que hay que calibrar los dispositivos, realizar nuevamente la odometr\'ia,
+entre otras cosas, pero el trabajo demandado es mucho menor ya que una
+correcci\'on en la l\'ogica de los comportamientos se puede observar tanto en
+un simulador como en la realidad.
 
 \subsubsection{Interfaz con hardware}
-La interfaz con el hardware se basa en tener clases encargadas de obtener los valores de los sensores
-o del accionar de los actuadores.
+La interfaz con el hardware se basa en tener clases encargadas de obtener los
+valores de los sensores o del accionar de los actuadores.
 \\En la implementaci\'on de la interfaz que corrimos en Webots, hic\'imos
-llamadas al controlador del simulador, que utiliza sensores y actuadores simulados.
+llamadas al controlador del simulador, que utiliza sensores y actuadores
+simulados.
 \\En la implementaci\'on que se comunica con el robot f\'isico,
-las llamadas las hicimos a un servidor encargado de enviar y recibir paquetes del protocolo descripto
-en la secci\'on \ref{protocolo} a trav\'es del puerto serial.
-\\De est\'a forma es cuesti\'on de decidir que implementaci\'on se usa en base a si se quiere
-correr en un simulador como Webots, o en el robot f\'isico. Si se quisiese usar otro simulador
-u otro tipo de hardware, s\'olo hace falta implementar la interfaz que cumpla con lo establecido e
-indicarle a la capa de comportamientos que la utilice para realizar su ejecuci\'on.
+las llamadas las hicimos a un servidor encargado de enviar y recibir paquetes
+del protocolo descripto en la secci\'on \ref{protocolo} a trav\'es del puerto
+serial.
+\\De est\'a forma es cuesti\'on de decidir que implementaci\'on se usa en base
+a si se quiere correr en un simulador como Webots, o en el robot f\'isico. Si
+se quisiese usar otro simulador u otro tipo de hardware, s\'olo hace falta
+implementar la interfaz que cumpla con lo establecido e indicarle a la capa de
+comportamientos que la utilice para realizar su ejecuci\'on.
 
-\subsubsection{Interfaz con m\'odulo de reconocimiento de objetos usando Visi\'on}
-Dado que el desarrollo de los comportamientos lo hicimos separado del desarrollo del
-m\'odulo que reconoce objetos utilizando una c\'amara, decidimos hacer una interfaz de
-forma tal que se puedan desarrollar de forma paralela.
-Como el controlador de comportamientos es \textbf{usuario} del m\'odulo de reconocimiento,
-necesita saber en un instante de tiempo $t$, que objetos est\'an siendo reconocidos. Para \'esto
-el m\'odulo debe tener una fuente de informaci\'on, en este caso, una c\'amara dado que se usa
-Visi\'on.
+\subsubsection{Interfaz con m\'odulo de reconocimiento de objetos usando
+Visi\'on}
+Dado que el desarrollo de los comportamientos lo hicimos separado del
+desarrollo del m\'odulo que reconoce objetos utilizando una c\'amara, decidimos
+hacer una interfaz de forma tal que se puedan desarrollar de forma paralela.
+Como el controlador de comportamientos es \textbf{usuario} del m\'odulo de
+reconocimiento, necesita saber en un instante de tiempo $t$, que objetos
+est\'an siendo reconocidos. Para \'esto el m\'odulo debe tener una fuente de
+informaci\'on, en este caso, una c\'amara dado que se usa Visi\'on.
 \\
-Desde el punto de vista de la anatom\'ia, \'esto se puede ver como los ojos (c\'amara), la parte del cerebro
-encargada de analizar el est\'imulo recibido por los mismos (m\'odulo de reconocimiento) y la parte del cerebro
-encargada de analizar los est\'imulos y realizar las acciones (controlador de comportamientos). Si se hubiese
-usado alg\'un tipo de conjunto de sensores t\'actiles para reconocer objetos (mano), en vez de visi\'on, 
-el m\'odulo de reconocimiento de objetos bien podr\'ia analizar la informaci\'on que ellos proveen e
-informar al controlador sobre su an\'alisis.
+Desde el punto de vista de la anatom\'ia, \'esto se puede ver como los ojos
+(c\'amara), la parte del cerebro encargada de analizar el est\'imulo recibido
+por los mismos (m\'odulo de reconocimiento) y la parte del cerebro encargada de
+analizar los est\'imulos y realizar las acciones (controlador de
+comportamientos). Si se hubiese usado alg\'un tipo de conjunto de sensores
+t\'actiles para reconocer objetos (mano), en vez de visi\'on, el m\'odulo de
+reconocimiento de objetos bien podr\'ia analizar la informaci\'on que ellos
+proveen e informar al controlador sobre su an\'alisis.
 \\
-\'Esta analog\'ia puede llevar a pensar que los sensores de distancia u otros dispositivos que usamos
-en este desarrollo bien podr\'ian formar parte de otro m\'odulo, y no se estar\'ia equivocado. La raz\'on
-por la cual el m\'odulo de visi\'on est\'a separado y el resto de los sensores no, es que el procesamiento
-de una secuencia de im\'agenes es muy complejo y pesado, como se muestra en la secci\'on \ref{vision}.
+\'Esta analog\'ia puede llevar a pensar que los sensores de distancia u otros
+dispositivos que usamos en este desarrollo bien podr\'ian formar parte de otro
+m\'odulo, y no se estar\'ia equivocado. La raz\'on por la cual el m\'odulo de
+visi\'on est\'a separado y el resto de los sensores no, es que el procesamiento
+de una secuencia de im\'agenes es muy complejo y pesado, como se muestra en la
+secci\'on \ref{vision}.
 
 \newpage
 \subsection{Resultados obtenidos}
@@ -352,18 +433,19 @@ simulaci\'on para la obtenci\'on de resultados sobre los diferentes
 comportamientos. Luego se presentan dichos resultados y se sacan
 conclusiones sobre los mismos.
 \\
-A lo largo del proceso de desarrollo se fueron realizando diferentes simulaciones,
-de las cuales observamos defectos en las implementaciones de los comportamientos
-as\'i como retardo y detalles que se podr\'ian mejorar en algunos de los mismos
-y los fuimos corregiendo. \\
-La arena utilizada en dichas simulaciones se puede ver en la figura \ref{fig:arena_sim}.
-A lo largo de la misma est\'an ubicadas 15 basuras, un \'area de recarga de bater\'ia
-y un \'area de descarga de basura, marcadas por el cilindro naranja. Los valores de
-los par\'ametros utilizados se pueden observar en el cuadro \ref{sim_params}. Los
-\'angulos est\'an expresados en radianes y las distancias est\'an expresadas en metros,
-as\'i como tambi\'en los radios, correcciones y separaciones. La resoluci\'on de la
-c\'amara est\'a expresada en pixeles, la de la grilla en unidades y los tiempos est\'an
-en milisegundos.
+A lo largo del proceso de desarrollo se fueron realizando diferentes
+simulaciones, de las cuales observamos defectos en las implementaciones de los
+comportamientos as\'i como retardo y detalles que se podr\'ian mejorar en
+algunos de los mismos y los fuimos corregiendo. \\
+La arena utilizada en dichas simulaciones se puede ver en la figura
+\ref{fig:arena_sim}. A lo largo de la misma est\'an ubicadas 15 basuras,
+un \'area de recarga de bater\'ia y un \'area de descarga de basura, marcadas
+por el cilindro naranja. Los valores de los par\'ametros utilizados se pueden
+observar en el cuadro \ref{sim_params}. Los \'angulos est\'an expresados en
+radianes y las distancias est\'an expresadas en metros, as\'i como tambi\'en
+los radios, correcciones y separaciones. La resoluci\'on de la c\'amara est\'a
+expresada en pixeles, la de la grilla en unidades y los tiempos est\'an en 
+milisegundos.
 \begin{table}[ht]
 	\begin{center}
 		\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
@@ -376,7 +458,8 @@ en milisegundos.
 			$dbw$ & Distancia entre ruedas & 0.052 \\
 			$c_{dbw}$ & Correcci\'on de la distancia entre ruedas & 1.09217109 \\
 			$R_l$, $R_r$ & Radios de las ruedas & 0.0205 0.0205 \\
-			$c_l$, $c_r$ & Correcciones de los radios de las ruedas & 0.99998702 1.00001297 \\
+			$c_l$, $c_r$ & Correcciones de los radios de las ruedas & 0.99998702 
+			1.00001297 \\
 			$EncRes$ & Resoluci\'on del encoder & 159.23 \\
 			$Cd$ & Distancia de la c\'amara al centro del robot & 0.0355 \\
 			$Ch$ $C_h$ & Altura de la c\'amara & 0.038 \\
@@ -436,8 +519,10 @@ en milisegundos.
 \end{figure}
 
 \subsubsection{Tiempo promedio en recolectar basura}
-%Calcular t min, con un escenario donde las basuras las pongo apenas sale de la base
-%Calcular t max, con un escenario donde las basuras estan lo m\'as lejos de la base posible
+%Calcular t min, con un escenario donde las basuras las pongo apenas sale de la
+base
+%Calcular t max, con un escenario donde las basuras estan lo m\'as lejos de la
+base posible
 
 \subsubsection{Tiempo promedio de wandering}
 %(Tiempo en que est\'a activo el wandering)/(Tiempo total de simulaci\'on)
@@ -483,7 +568,8 @@ en milisegundos.
 			\hline
 		\end{tabular}
 	\end{center}
-	\caption{Resultados sobre steps que los comportamientos est\'an continuamente activos}
+	\caption{Resultados sobre steps que los comportamientos est\'an continuamente
+					activos}
 	\label{behaviours_stats1}
 \end{table}
 
@@ -494,27 +580,27 @@ en milisegundos.
     	 & W & EB & IAB & RB & DB & R & EO & SSI & Maximo & Ind Max \\
 		\hline
 		\hline
-			W &     0&    303&    176&      1&     12&      5&    833&      0&    833&      7\\
+			W & 0 & 303 & 176 & 1 & 12 & 5 & 833 & 0 & 833 & 7\\
 		\hline
-			EB &   238&      0&   1036&      2&      1&      0&    107&      0&   1036&      3\\
+			EB & 238 & 0 & 1036 & 2 & 1 & 0 & 107 & 0 & 1036 & 3\\
 		\hline
-			IAB &    229&    967&      0&     12&      2&      1&      7&      0&    967&      2\\
+			IAB & 229 & 967 & 0 & 12 & 2 & 1 & 7 & 0 & 967 & 2\\
 		\hline
-			RB &     12&      3&      0&      0&      0&      0&      0&      0&     12&      1\\
+			RB & 12 & 3 & 0 & 0 & 0 & 0 & 0 & 0 & 12 & 1\\
 		\hline
-			DB &     14&      0&      0&      0&      0&      2&    305&      0&    305&      7\\
+			DB & 14 & 0 & 0 & 0 & 0 & 2 & 305 & 0 & 305 & 7\\
 		\hline
-			R &      9&      0&      0&      0&      1&      0&    255&      0&    255&      7\\
+			R & 9 & 0 & 0 & 0 & 1 & 0 & 255 & 0 & 255 & 7\\
 		\hline
-			EO &    828&    111&      6&      0&    305&    257&      0&      0&    828&      1\\
+			EO & 828 & 111 & 6 & 0 & 305 & 257 & 0 & 0 & 828 & 1\\
 		\hline
-			SSI &      0&      0&      0&      0&      0&      0&      0&      0&      0&      0\\
+			SSI & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0\\
 		\hline
 		\noalign{\smallskip}
 		\hline
-			Maximo &    828&    967&   1036&     12&    305&    257&    833&      0&      -&      -\\
+			Maximo & 828 & 967 & 1036 & 12 & 305 & 257 & 833 & 0 & - & -\\
 		\hline
-			Ind Max &      7&      3&      2&      3&      7&      7&      1&      0&      -&      -\\
+			Ind Max & 7 & 3 & 2 & 3 & 7 & 7 & 1 & 0 & - & -\\
 		\hline
 		\end{tabular}
 	\end{center}
@@ -523,7 +609,7 @@ en milisegundos.
 \end{table}
 
 \subsubsection{Relaci\'on (t\_cargando + t\_ir a base) / tiempo total}
-%T busqueda basura/ ( t a base + tiempo carga bateria + t salir base )
+%T busqueda basura/ (t a base + tiempo carga bateria + t salir base)
 
 \subsubsection{Porcentaje de espacio cubierto}
 %esp_cub / (e\sp_cub + esp_nocub)
