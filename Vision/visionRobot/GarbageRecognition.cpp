@@ -157,6 +157,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	//images for HSV conversion
 	IplImage* hsv = cvCreateImage( srcSize, 8, 3 );
 	IplImage* h_plane = cvCreateImage( srcSize, 8, 1 );
+	IplImage* h_plane2 = cvCreateImage( srcSize, 8, 1 );
 	IplImage* h_planeV ;//= cvCreateImage( srcSize, 8, 1 );
 	IplImage* s_plane = cvCreateImage( srcSize, 8, 1 );
 	IplImage* v_plane = cvCreateImage( srcSize, 8, 1 );
@@ -200,28 +201,42 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	
 	cvCvtPixToPlane( hsv, h_plane, s_plane, v_plane, 0 );
 	h_planeV=cvCloneImage(h_plane);
+	h_plane2=cvCloneImage(h_plane);
 	
+	CvScalar vasosL1 = cvScalar (0, 0, 170);
+	CvScalar vasosU1 = cvScalar (20, 255, 255);
+	CvScalar vasosL = cvScalar (40, 0, 170);
+	CvScalar vasosU = cvScalar (255, 255, 255);
+	CvScalar colillasL = cvScalar (20, 60, 0);
+	CvScalar colillasU = cvScalar (40, 255,255);
 
 	
-	for(int x=0;x<srcSize.width;x++){
-		for(int y=0;y<srcSize.height;y++){
-			uchar * hue=&((uchar*) (h_plane->imageData+h_plane->widthStep*y))[x];
-			uchar * hueV=&((uchar*) (h_planeV->imageData+h_plane->widthStep*y))[x];
-			uchar * sat=&((uchar*) (s_plane->imageData+s_plane->widthStep*y))[x];
-			uchar * val=&((uchar*) (v_plane->imageData+v_plane->widthStep*y))[x];
+	cvInRangeS( hsv, vasosL1, vasosU1, h_plane );
+	cvInRangeS( hsv, vasosL, vasosU, h_plane2 );
+	cvOr(h_plane,h_plane2,h_plane);
+	
+	cvInRangeS( hsv, colillasL,colillasU,h_planeV);
+	//~ cvShowImage("inrange vasos",h_plane);
+	//~ cvShowImage("inrange colillas",h_planeV);
+	//~ for(int x=0;x<srcSize.width;x++){
+		//~ for(int y=0;y<srcSize.height;y++){
+			//~ uchar * hue=&((uchar*) (h_plane->imageData+h_plane->widthStep*y))[x];
+			//~ uchar * hueV=&((uchar*) (h_planeV->imageData+h_plane->widthStep*y))[x];
+			//~ uchar * sat=&((uchar*) (s_plane->imageData+s_plane->widthStep*y))[x];
+			//~ uchar * val=&((uchar*) (v_plane->imageData+v_plane->widthStep*y))[x];
 			
-			if((*val>170) && (( (*hue)<20 || (*hue)>40) ))
-				*hue=255;
-			else
-				*hue=0;
+			//~ if((*val>170) && (( (*hue)<20 || (*hue)>40) ))
+				//~ *hue=255;
+			//~ else
+				//~ *hue=0;
 			
 			//filter for cigar filters
-			if((*hueV>20 && *hueV<40 && *sat>60))
-				*hueV=255;
-			else
-				*hueV=0;
-		}
-	}
+			//~ if((*hueV>20 && *hueV<40 && *sat>60))
+				//~ *hueV=255;
+			//~ else
+				//~ *hueV=0;
+		//~ }
+	//~ }
 	
 	clock_t  color=clock();
 	printf("Time elapsed create Image - color filter: %f\n", ((double)color - conv) / CLOCKS_PER_SEC);
@@ -410,7 +425,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	printf("Time elapsed vasosyplatos - colillas: %f\n", ((double)colillas - vasoyplato) / CLOCKS_PER_SEC);
 
 	//display found contours
-    cvShowImage("drawContours",contourImage);
+    //~ cvShowImage("drawContours",contourImage);
 	
 	
 	//release temp images and data
