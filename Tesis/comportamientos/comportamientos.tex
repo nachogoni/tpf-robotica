@@ -86,11 +86,15 @@ realiza un giro cambiando su direcci\'on.
 \\\indent
 Los resultados de la simulaci\'on nos indicaron que el robot no recorr\'ia
 ciertas zonas o las recorr\'ia despu\'es de un largo tiempo, lo que nos llev\'o
-a una segunda implementaci\'on. El mismo tiene en cuenta el hecho de que el
-robot posee una c\'amara y por lo tanto se puede llevar un seguimiento de los
-lugares que m\'as recientemente visit\'o o las zonas que hace mucho tiempo no
-visita.
-\\\indent
+a una segunda implementaci\'on. La misma lleva un seguimiento de los
+lugares que m\'as recientemente recorri\'o el robot. Adem\'as, hicimos uso de la
+c\'amara para redefinir la idea de zona recorrida. Decimos que el robot
+recorri\'o cierta zona si:
+\begin{itemize}
+	\item{}Estuvo f\'isicamente en ella, o
+	\item{}La zona fue alcanzada por la imagen que se ve en la c\'amara
+			(Ver figura \ref{fig:zoneCamera})
+\end{itemize}
 \'Esto, en cierta forma, genera un modelo del mundo, un hecho que
 conflict\'ua con uno de los principios propuestos a seguir en la secci\'on
 \ref{arq_prop}. Para minimizar el conflicto, decidimos mantener al m\'inimo la
@@ -196,7 +200,10 @@ recogerla.
 \begin{center}
 \includegraphics[scale=0.5]{comportamientos/basura.png}
 \includegraphics[scale=0.5]{comportamientos/basuraenfocada.png}
-\caption{Primera aproximaci\'on de ``Ir a la basura''}
+\caption{Primera aproximaci\'on de ``Ir a la basura''. Inicialmente el objeto
+		reconocido como basura se encuentra a un costado del eje vertical de
+		la imagen. Luego el robot gira de forma tal que el objeto quede sobre
+		el eje vertical.}
 \label{fig:papproachgoto}
 \end{center}
 \end{figure}
@@ -204,7 +211,8 @@ recogerla.
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[scale=0.5]{comportamientos/basuraAlt.png}
-\caption{Segunda aproximaci\'on de ``Ir a la basura''}
+\caption{Segunda aproximaci\'on de ``Ir a la basura''. Se traza un arco hacia
+		el objetivo de forma tal que no sea necesario enfocar la basura.}
 \label{fig:sapproachgoto}
 \end{center}
 \end{figure}
@@ -215,7 +223,11 @@ recogerla.
 \includegraphics[scale=0.3]{comportamientos/frentemuylejos.png}
 \includegraphics[scale=0.3]{comportamientos/frentelejos.png}
 \caption{Posible inconveniente con la primera aproximac\'ion de
-				``Ir a la basura''}
+		``Ir a la basura''. La basura se encuentra en una de las
+		esquinas superiores de la im\'agen. El robot la enfoca, girando
+		hacia la derecha y la basura desaparece de la imagen. En el caso
+		que el robot se dirija hacia adelante, la basura volver\'a a
+		aparecer en la im\'agen.}
 \label{fig:papproachgotoproblem}
 \end{center}
 \end{figure}
@@ -352,12 +364,12 @@ La activaci\'on de \emph{recolectar basura} depende de 3 condiciones:
 Aqu\'i se puede observar que tan importantes son los comportamientos anteriores
 para que el robot logre recolectar la basura.
 \\\indent
-Es importante la elecci\'on del umbral: un valor muy chico puede llevar a que el
-comportamiento no se active porque la basura ya no est\'a m\'as en la imagen.
-Por otro lado, un valor muy grande causar\'ia que el robot se disponga a
-recolectar una basura que est\'a muy lejos y podr\'ia llegar a moverse por
-cuestiones propias del ambiente, llevando as\'i a una innecesaria activaci\'on
-del comportamiento.
+Es importante la elecci\'on del umbral: un valor muy chico, cercano a DIST\_MIN,
+puede llevar a que el comportamiento no se active porque la basura ya no est\'a
+m\'as en la imagen. Por otro lado, un valor muy grande, cercano a DIST\_MAX, 
+causar\'ia que el robot se disponga a recolectar una basura que est\'a muy lejos
+y podr\'ia llegar a moverse por cuestiones propias del ambiente, llevando as\'i
+a una innecesaria activaci\'on del comportamiento.
 
 \paragraph{Implementaci\'on del comportamiento}
 El \emph{pseudo-c\'odigo} de este comportamiento es el siguiente:
@@ -473,7 +485,7 @@ no requiere c\'alculos extras:
 \begin{verbatim}
 por cada paso
     angulo_actual = obtener_angulo_actual(odometria)
-    si esta_en_un_entorno_de(angulo_actual,PI/2) entonces
+    si esta_en_un_entorno_de(angulo_actual, PI/2) entonces
         si angulo_actual > PI/2 && angulo_actual < 3PI/2 entonces
             giro_para_la_derecha
         sino
@@ -507,9 +519,11 @@ de la base. Por otro lado, se hubiera tenido que utilizar alg\'un algoritmo de
 \emph{Path Planning} para realizar el recorrido, algo que no concuerda con
 la arquitectura elegida. Es importante destacar el uso de datos calculados por
 la odometr\'ia porque si la misma llega a tener un error grande, puede llevar a
-una activaci\'on err\'onea de comportamientos. En la secci\'on
-\ref{odometry:problems} se puede ver la incidencia de un error grande de la
-odometr\'ia en el comportamiento emergente del robot.
+una activaci\'on err\'onea de comportamientos. Decimos que la odometr\'ia tiene
+un error grande cuando, debido a esa magnitud, el robot no toma las decisiones
+correctas debido al error en la informaci\'on en la cual se bas\'o. En la
+secci\'on \ref{odometry:problems} se puede ver la incidencia de un error grande
+de la odometr\'ia en el comportamiento emergente del robot.
 
 \paragraph{Entrar a l\'inea}
 \label{enter_line}
@@ -677,7 +691,10 @@ de los valores de dos sensores de bater\'ia que indican bater\'ia baja:
 \subsubsection{Cargar Bater\'ia}
 \label{recharge_battery}
 \paragraph{Detalle del comportamiento}
-
+Una vez que el robot logr\'o llegar a la zona de recarga de bater\'ia, debe
+recargarse. Para \'esto, debe posicionarse para lograr ubicarse el cargador
+y esperar hasta que la bater\'ia alcance un valor de carga tal que le
+permita seguir buscando basura sin problemas de bater\'ia.
 
 \paragraph{Implementaci\'on del comportamiento}
 \begin{verbatim}
@@ -707,7 +724,7 @@ del robot es facilitar una tarea sin entorpecer el tr\'ansito de personas.
 \\\indent
 \paragraph{Detalle del comportamiento}
 Para lograr tener conocimiento sobre la proximidad de un obst\'aculo, utilizamos
-sensores de proximidad explicados en \ref{h_sensores}. Dependiendo de la
+sensores de proximidad explicados en \ref{h_sensado}. Dependiendo de la
 proximidad indicada por un determinado sensor, el robot deber\'a alejarse
 de ese lado para evitar un posible choque. La activaci\'on del comportamiento
 depender\'a entonces del valor sensado tal que la distancia
