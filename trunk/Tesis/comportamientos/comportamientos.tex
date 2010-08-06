@@ -41,13 +41,13 @@ el robot:
 El comportamiento de recolectar basura y el requerimiento de la autonom\'ia
 llevan a su vez a la aparici\'on de m\'as comportamientos: \emph{Descargar
 basura} (\ref{unload_garbage}) e \emph{Ir hacia basura} (\ref{go_to_garbage}).
-\\
+\\\indent
 En la figura \ref{fig:architecture} mostramos los comportamientos implementados
 y su orden de jerarqu\'ia. Se puede ver que hay m\'as comportamientos de los
 detallados anteriormente ya que la forma en que implementamos los
 comportamientos b\'asicos del robot requiri\'o el desarrollo de otros
 auxiliares.
-\\
+\\\indent
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[scale=0.5]{comportamientos/behavioursArchitecture2.png}
@@ -55,7 +55,7 @@ auxiliares.
 \label{fig:architecture}
 \end{center}
 \end{figure}
-\\
+\\\indent
 Primero implementamos \emph{Wandering} debido, en una primera aproximaci\'on,
 a su sencillez. Luego implementamos \emph{Evitamiento de obst\'aculos}
 para lograr que el robot pueda navegar sin problemas por el entorno. Como el
@@ -65,7 +65,7 @@ decidimos implementar el comportamiento de \emph{Recargar bater\'ia} y
 \emph{Descargar basura}. Una vez que tuvimos la primera implementaci\'on
 funcional del reconomiento de objetos, procedimos a desarrollar
 \emph{Ir hacia basura} y \emph{Recolectar Basura}.
-\\
+\\\indent
 A continuaci\'on detallamos los comportamientos indicados en la figura
 \ref{fig:architecture}, as\'i como su implementaci\'on en 
 \emph{pseudo-c\'odigo} y detalles tenidos en cuenta para su realizaci\'on.
@@ -79,18 +79,18 @@ Por ser el comportamiento que menor jerarqu\'ia tiene (Ver figura
 \ref{fig:architecture}), es el \'unico comportamiento que est\'a activo
 ante la ausencia de un est\'imulo, asegurandonos que siempre haya por lo menos
 un comportamiento activo.
-\\
+\\\indent
 En una primera aproximaci\'on de \emph{Wandering}, s\'olo nos preocupamos por
 ir hacia adelante ya que eventualmente, el robot encuentra un obst\'aculo y
 realiza un giro cambiando su direcci\'on.
-\\
+\\\indent
 Los resultados de la simulaci\'on nos indicaron que el robot no recorr\'ia
 ciertas zonas o las recorr\'ia despu\'es de un largo tiempo, lo que nos llev\'o
 a una segunda implementaci\'on. El mismo tiene en cuenta el hecho de que el
 robot posee una c\'amara y por lo tanto se puede llevar un seguimiento de los
 lugares que m\'as recientemente visit\'o o las zonas que hace mucho tiempo no
 visita.
-\\
+\\\indent
 \'Esto, en cierta forma, genera un modelo del mundo, un hecho que
 conflict\'ua con uno de los principios propuestos a seguir en la secci\'on
 \ref{arq_prop}. Para minimizar el conflicto, decidimos mantener al m\'inimo la
@@ -168,19 +168,19 @@ la forma en que se va a la basura. En la figura \ref{fig:papproachgoto}
 mostramos una aproximaci\'on. Consiste en primero enfocar la
 basura de forma tal que la misma quede en el centro de la imagen de la
 c\'amara. De aqu\'i surge el comportamiento \emph{Enfocar Basura}.
-\\
+\\\indent
 Una segunda forma de lograr \'esto (figura \ref{fig:sapproachgoto}) no consiste
 en enfocar la basura, sino que se marca un arco hacia la misma. \'Esto requiere
 que se seteen las velocidades correspondientes a las ruedas de forma tal que la
 trayectoria del robot describa dicho arco. Con esta alternativa no
 existir\'ia el comportamiento que se est\'a describiendo.
-\\
+\\\indent
 Dado que la primera aproximaci\'on es levemente m\'as simple de implementar, y
 teniendo en cuenta el principio enunciado en la secci\'on \ref{arq_prop}
 \emph{``La simplicidad es una virtud''}, elegimos implementarlo, a
 pesar de tener un posible inconveniente, como mostramos en la figura
 \ref{fig:papproachgotoproblem}.
-\\
+\\\indent
 Cuando hay una basura en alguna esquina superior de la imagen de la c\'amara,
 y el robot gira sobre s\'i mismo para enfocarla, la basura puede llegar a
 perderse por el fondo de la imagen. \'Esto se debe a que la distancia hacia
@@ -258,7 +258,7 @@ Se puede ver que la velocidad de giro del robot es proporcional al m\'odulo del
 \'angulo es mayor y tener mayor precisi\'on cuando el \'angulo es m\'as chico,
 adem\'as de tener mayor rapidez de enfoque y precisi\'on que si la velocidad de
 giro fuera constante.
-\\
+\\\indent
 
 %%Para obtener el \'angulo y distancia hacia una basura....
 %%pasamos de una posicion (x,y) en la imagen a una posicion
@@ -328,12 +328,12 @@ donde $y_{angle}$ es la proporci\'on de $FOV_v$ hacia $y$.
 Una vez que el robot lleg\'o a estar posicionado para recolectar la basura
 deseada, el comportamiento de \emph{recolectar basura} se activa. El mecanismo
 para lograr \'esto fue cambiando a lo largo del desarrollo del proyecto.
-\\
+\\\indent
 En un principio pensamos en usar una rampa interna dentro del robot, de forma
 tal que la basura suba esa rampa para luego caer en un dep\'osito interno.
 Por problemas con la simulaci\'on de este procedimiento, buscamos otro
 mecanismo.
-\\
+\\\indent
 El mecanismo que elegimos para usar en la simulaci\'on tiene estas componentes:
 \begin{itemize}
 	\item El robot tiene un servo en su parte posterior (debajo de la c\'amara)
@@ -351,7 +351,7 @@ La activaci\'on de \emph{recolectar basura} depende de 3 condiciones:
 
 Aqu\'i se puede observar que tan importantes son los comportamientos anteriores
 para que el robot logre recolectar la basura.
-\\
+\\\indent
 Es importante la elecci\'on del umbral: un valor muy chico puede llevar a que el
 comportamiento no se active porque la basura ya no est\'a m\'as en la imagen.
 Por otro lado, un valor muy grande causar\'ia que el robot se disponga a
@@ -400,11 +400,11 @@ Como la capacidad del dep\'osito interno de basura del robot tiene un l\'imite,
 surge como necesidad que el robot sea capaz de ir hacia una zona donde
 descargar\'a la basura que contiene. Entonces, al llenarse el dep\'osito
 surge el est\'imulo necesario para la activaci\'on de este comportamiento.
-\\
+\\\indent
 Para ir hacia dicha zona decidimos imponerle una condici\'on al
 entorno donde el robot actuar\'a. Esta condici\'on consiste en poner l\'ineas
 de forma tal que si el robot la sigue, lo lleve a la zona de descarga.
-\\
+\\\indent
 Por lo tanto para dirigirse a la zona de descarga de basura, es necesario:
 \begin{itemize}
 	\item Buscar la l\'inea e ir a la misma
@@ -426,13 +426,13 @@ que menor distancia se encontraba. \'Esta implementaci\'on, adem\'as de ser
 costosa, ten\'ia un problema: a veces suced\'ia que al ir hacia una l\'inea,
 la distancia hacia otra pasaba a ser m\'as corta y \'esta \'ultima pod\'ia
 estar m\'as lejos de la zona de recarga que la primera.
-\\
+\\\indent
 Luego repensamos el problema y nos dimos cuenta que el objetivo era llegar a la
 zona de descarga, por lo que decidimos dejar s\'olo 2 las l\'ineas que se
 encuentran a la misma distancia, como se puede apreciar en la figura
 \ref{fig:arenafinal}. La zona de descarga se ubica cerca de donde se encuentra
 el cilindro de color verde.
-\\
+\\\indent
 Para distinguir si el robot est\'a en una l\'inea o no, utilizamos sensores de
 piso dispuestos como se muestra en la figura \ref{fig:floorSensors}. Los
 sensores se encuentran a una distancia $Fsd$ del centro del robot sobre el eje
@@ -460,7 +460,7 @@ distancia hacia un sensor del costado es $Fsl = \sqrt{Fsd^2 + Fss^2}$.
 La decisi\'on de dejar s\'olo dos l\'ineas, acompa\~nada por la elecci\'on de
 la ubicaci\'on de la zona de descarga, nos facilit\'o la composici\'on de
 \'este comportamiento.
-\\ Como mostramos en la figura \ref{fig:arenafinal}, para ir a la l\'inea se
+\\\indent Como mostramos en la figura \ref{fig:arenafinal}, para ir a la l\'inea se
 debemos girar hasta tener un \'angulo de $\frac{\pi}{2}$ y luego ir hacia
 adelante.
 
@@ -497,7 +497,7 @@ En el caso que el angulo actual sea $\pi$, el robot girar\'ia un total de
 $\frac{3\pi}{2}$ hasta llegar al \'angulo destino $\frac{\pi}{2}$, cuando en
 realidad girando para el sentido contrario s\'olo tendr\'ia que girar
 $\frac{\pi}{2}$.
-\\
+\\\indent
 Se puede observar en el c\'odigo que usamos datos calculados por la
 odometr\'ia, en este caso, la orientaci\'on actual del robot. El lector se
 podr\'ia preguntar: ``Si la odometr\'ia tiene la posici\'on actual del robot,
@@ -545,27 +545,40 @@ misma (Ver figura \ref{fig:arenafinal}).
 
 % Explicar el porque del primer giro
 % Relacionarlo con la figura fig:floorSensors
-El primer giro del robot es para lograr que el robot quede con el sensor de
-piso del medio sobre la l\'inea. Como mostramos en la figura
-\ref{fig:floorSensorsStates}, en el caso (a) y (b) el robot girar\'a de forma
-tal que llegue un caso parecido al (c) ya posiblemente el sensor del medio no
-estar\'a en la l\'inea. Notar que si el sensor del medio est\'a en la l\'inea,
+El primer giro del robot es para lograr que el segmento que une el sensor de
+piso del medio con el centro del robot quede ortogonal al segmento de l\'inea.
+Como mostramos en la figura \ref{fig:floorSensorsInitialStates}, en el caso
+(a) y (b) el robot girar\'a de forma tal que llegue un caso parecido al que
+mostramos en la figura \ref{fig:floorSensorsFinalState} ya posiblemente el
+sensor del medio no estar\'a en la l\'inea. Notar que si el sensor del medio
+est\'a en la l\'inea, como es el caso de la figura
+\ref{fig:floorSensorsInitialStates}c,
 entonces el robot no gira, cualquiera sea el estado de los sensores de los
 costados. El \'angulo que debe girar est\'a dado por $\theta = \arctan
-(\frac{Fss}{Fsd})$ (Ver figura \ref{fig:floorSensors}) o $-\theta$ seg\'un
-cual sea el sensor que est\'e sobre la l\'inea.
+(\frac{Fss}{Fsd})$ (Ver figura \ref{fig:floorSensors}) si debe girar hacia
+la izquierda, o $-\theta$ en el otro caso.
 
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[scale=0.4]{comportamientos/floorSensorsLine.png}
 \includegraphics[scale=0.4]{comportamientos/floorSensorsLine1.png}
 \includegraphics[scale=0.4]{comportamientos/floorSensorsLine2.png}
-\includegraphics[scale=0.4]{comportamientos/floorSensorsLine4.png}
-\caption{Posibles estados iniciales de entrar a la l\'inea}
-\label{fig:floorSensorsStates}
+\caption{Posibles estados iniciales de ``Entrar a la l\'inea''.
+		En el caso (a) el robot debe girar hacia la derecha. En el
+		caso (b), el robot debe girar hacia la izquierda. En el caso
+		(c) el robot no debe girar}
+\label{fig:floorSensorsInitialStates}
 \end{center}
 \end{figure}
 
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.4]{comportamientos/floorSensorsLine4.png}
+\caption{Posible estado final luego del primer giro del comportamiento
+		``Entrar a la l\'inea''}
+\label{fig:floorSensorsFinalState}
+\end{center}
+\end{figure}
 
 % Explicar el porque del recorrido de la distancia 
 % Relacionarlo con la figura fig:floorSensors
@@ -648,7 +661,7 @@ de aproximadamente $\pi$ para luego poder descargar la basura.
 Ayudados por la elecci\'on que tomamos de poner la zona de descarga de basura
 muy cercana a la zona donde se recarga la bater\'ia, decidimos utilizar la
 misma estrategia de seguir la l\'inea para llegar hacia la misma.
-\\
+\\\indent
 La diferencia
 entre ambos casos es el est\'imulo ante el cual se activan. En el caso de
 ir a la zona de descarga, el est\'imulo proviene del sensor del dep\'osito
@@ -691,7 +704,7 @@ de los valores de dos sensores de bater\'ia que indican bater\'ia baja:
 en la arquitectura que elegimos. Su nivel se debe a la importancia que tiene
 en un ambiente estructurado pero din\'amico como es el nuestro. El objetivo
 del robot es facilitar una tarea sin entorpecer el tr\'ansito de personas.
-\\
+\\\indent
 \paragraph{Detalle del comportamiento}
 Para lograr tener conocimiento sobre la proximidad de un obst\'aculo, utilizamos
 sensores de proximidad explicados en \ref{h_sensores}. Dependiendo de la
@@ -705,7 +718,7 @@ La implementaci\'on de este comportamiento la hicimos utilizando una
 red neuronal sin capas ocultas (ver figura \ref{fig:redN}) usando los sensores
 de distancia como entradas y 2 neuronas de salida indicando los valores a
 ser seteados en los motores de las ruedas.
-\\
+\\\indent
 Debemos notar que hay conexiones tanto inhibitorias como excitatorias. Como es
 de esperarse, ambos sensores traseros (4 y 5) exitan a ambos motores. Distinto
 es el caso de los sensores del lado izquierdo (5, 6 y 7) que exitan el motor
@@ -713,7 +726,7 @@ ubicado de su lado e inhiben el motor del lado opuesto, de forma tal que el
 robot gire para el lado opuesto de la ubicaci\'on de los sensores. La misma
 idea se sigue con los sensores (0, 1 y 2) ubicados en el costado derecho del
 robot.
-\\
+\\\indent
 Luego de entrenar la red, obtuvimos los siguientes valores para los pesos de la
 misma:
 
@@ -734,7 +747,7 @@ misma:
 \end{table}
 Se puede ver que los pesos que influyen en el motor de una rueda influyen
 con igual fuerza pero distinto signo en el motor de la rueda contraria.
-\\
+\\\indent
 Este comportamiento, en \emph{pseudo-c\'odigo} puede verse como:
 \begin{verbatim}
 por cada paso
@@ -760,7 +773,7 @@ para ayudar al objetivo de crear un robot aut\'onomo. Con las sucesivas
 simulaciones observamos que hab\'ia situaciones donde corr\'ia
 peligro la autonom\'ia del robot. Un ejemplo de estas situaciones es el caso
 donde dos comportamientos se ``activan mutuamente''.
-\\
+\\\indent
 Para ver esto m\'as claramente, supongamos dos comportamientos $A$ y $B$ con
 nivel en la jerarqu\'ia $N(A)$ y $N(B)$, siendo $N(A) > N(B)$. Si la respuesta
 a un est\'imulo de $A$ lleva a la activaci\'on de $B$ y a la desactivaci\'on de
@@ -778,7 +791,7 @@ el lado contrario, aproximadamente en la misma magnitud. \'Esto quiere decir
 que la posici\'on del robot se mantiene alrededor de un punto por un per\'iodo
 prolongado de tiempo, por lo que decidimos tomar este hecho como est\'imulo
 para la activaci\'on de este comportamiento.
-\\
+\\\indent
 La respuesta del comportamiento es, girar un \'angulo que cambie la
 direcci\'on del robot y adem\'as que la suma de ese \'angulo repetidas veces no
 sea peri\'odica o lo sea luego de una gran cantidad de giros como por ejemplo,
