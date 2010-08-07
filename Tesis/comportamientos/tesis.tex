@@ -488,14 +488,38 @@ est\'an en milisegundos.
 \end{center}
 \end{figure}
 
-\begin{figure}[htp]
-\begin{center}
-\includegraphics[scale=0.25]{comportamientos/graphics/areaCoveredVsTimeUse.png}
-\caption{\'Area visualizada y \'area no visualizada a lo largo de la
-				simulaci\'on}
-\label{fig:seenArea}
-\end{center}
-\end{figure}
+%\subsubsection{Tiempo promedio en recolectar basura}
+%Calcular t min, con un escenario donde las basuras las pongo apenas sale de la
+%base
+%Calcular t max, con un escenario donde las basuras estan lo m\'as lejos de la
+%base posible
+
+%\subsubsection{Tiempo promedio de wandering}
+%(Tiempo en que est\'a activo el wandering)/(Tiempo total de simulaci\'on)
+
+%\subsubsection{Distribuci\'on de tiempos entre los diferentes comportamientos}
+%(tiempo de comportamiento i)/(Tiempo total de simulaci\'on)
+
+%\subsubsection{Relaci\'on (t\_cargando + t\_ir a base) / tiempo total}
+%T busqueda basura/ (t a base + tiempo carga bateria + t salir base)
+
+%\subsubsection{Porcentaje de espacio cubierto}
+
+%\subsubsection{Tiempo cubrir toda la arena}
+En la figura \ref{fig:behaviourDistribution} mostramos la distribuci\'on
+de time steps en la simulaci\'on de cada comportamiento. Podemos ver que
+\emph{Recargar bater\'ia} y \emph{Descargar basura} en conjunto est\'an
+activos el $54\%$ de la simulaci\'on. Los comportamientos involucrados en la
+recolecci\'on de basura(\emph{Enfocar basura}, \emph{Ir a basura} y
+\emph{Recolectar basura}) abarcan el $10.5\%$ del tiempo total de
+simulaci\'on. El $35.5\%$ restante est\'a repartido en los comportamientos
+encargados de una navegaci\'on libre de obst\'aculos y situaciones peligrosas
+(\emph{Wandering}, \emph{Evitar obst\'aculos} y \emph{Salir de situaciones no
+deseadas}). Todos los comportamientos relacionados con la basura(desde que se
+detecta hasta que se descarga) abarcan un $43\%$ del tiempo total de
+simulaci\'on. Tambi\'en se puede observar que el comportamiento que mayor
+tiempo est\'a activo a lo largo de la simulaci\'on es \emph{Descargar basura}
+y el que menor tiempo est\'a activo es \emph{Salir de situaciones no deseadas}.
 
 \begin{figure}[htp]
 \begin{center}
@@ -503,6 +527,30 @@ est\'an en milisegundos.
 \caption{Distribuci\'on de los tiempos de los comportamientos en la
 				simulaci\'on}
 \label{fig:behaviourDistribution}
+\end{center}
+\end{figure}
+
+En la figura \ref{fig:behaviourEvolution} mostramos el progreso a lo largo
+de la simulaci\'on de todos los comportamientos. Observamos que en el comienzo
+($0 < t < 10000$) \footnote{t es el n\'umero de time step de la simulaci\'on}
+la mayor\'ia de los comportamientos est\'a activo aproximadamente la misma
+cantidad de time steps, salvando el caso de \emph{Descargar Basura}. En el
+per\'iodo ($40000 < t < 50000$), el comportamiento \emph{Wandering} alcanza
+a estar activo la misma cantidad de steps que \emph{Ir a basura}. Podemos
+ver tambi\'en que la forma en que evolucionan \emph{Enfocar basura},
+\emph{Ir a basura} y \emph{Recolectar basura} a lo largo de la simulaci\'on
+es muy similar, salvando la cantidad de steps que est\'an activos. La
+evoluci\'on de \emph{Recargar bater\'ia} es peri\'odica: inicia con
+una meseta de time steps en los cuales no est\'a activo y luego tiene
+una pendiente pronunciada. Diferente es el progreso de \emph{Evitamiento
+de obst\'aculos} ya que sus mesetas son las menos prolongadas y sus
+pendientes son poco abruptas.
+
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.25]{comportamientos/graphics/AllUse.png}
+\caption{Evoluci\'on de los comportamientos a lo largo de la simulaci\'on}
+\label{fig:behaviourEvolution}
 \end{center}
 \end{figure}
 
@@ -514,27 +562,7 @@ est\'an en milisegundos.
 \end{center}
 \end{figure}
 
-\begin{figure}[htp]
-\begin{center}
-\includegraphics[scale=0.25]{comportamientos/graphics/AllUse.png}
-\caption{Evoluci\'on de los comportamientos a lo largo de la simulaci\'on}
-\label{fig:behaviourEvolution}
-\end{center}
-\end{figure}
-
-\subsubsection{Tiempo promedio en recolectar basura}
-%Calcular t min, con un escenario donde las basuras las pongo apenas sale de la
-%base
-%Calcular t max, con un escenario donde las basuras estan lo m\'as lejos de la
-%base posible
-
-\subsubsection{Tiempo promedio de wandering}
-%(Tiempo en que est\'a activo el wandering)/(Tiempo total de simulaci\'on)
-
-\subsubsection{Distribuci\'on de tiempos entre los diferentes comportamientos}
-%(tiempo de comportamiento i)/(Tiempo total de simulaci\'on)
-
-\begin{table}[ht]
+\begin{table}[htp]
 	\begin{center}
 		\begin{tabular}{|c|c|c|}
 			\hline
@@ -556,7 +584,7 @@ est\'an en milisegundos.
 	\label{behaviours_stats}
 \end{table}
 
-\begin{table}[ht]
+\begin{table}[htp]
 	\begin{center}
 		\begin{tabular}{|c|c|c|c|}
 			\hline
@@ -575,14 +603,36 @@ est\'an en milisegundos.
 	\end{center}
 	\caption{Resultados sobre steps que los comportamientos est\'an continuamente
 					activos}
-	\label{behaviours_stats1}
+	\label{behaviours_stats_active}
 \end{table}
 
-\begin{table}
+\begin{table}[htp]
+	\begin{center}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			Comportamiento & Promedio & Desv\'io Est\'andard & \# m\'aximo \\
+			\hline
+			Wandering & 123.4 & 754.4 & 8351 \\
+			Enfocar basura & 163.7 & 1766 & 38000 \\
+			Ir a basura & 175.5 & 1811 & 38040 \\
+			Recolectar basura & 13850 & 9479 & 38400 \\
+			Ir a descargar basura & 473.8 & 2689 & 30520 \\
+			Ir a recargar bater\'ia & 682.5 & 3322 & 23270 \\
+			Evitar obst\'aculos & 140.5 & 724.3 & 9485 \\
+			Salir situaciones indeseadas & - & - & - \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Resultados sobre steps que los comportamientos est\'an continuamente
+					inactivos}
+	\label{behaviours_stats_inactive}
+\end{table}
+
+\begin{table}[htp]
 	\begin{center}
 		\begin{tabular}{|c||c|c|c|c|c|c|c|c||c|c|}
 		\hline
-    	 & W & EB & IAB & RB & DB & R & EO & SSI & Maximo & Ind Max \\
+    	 & W & EB & IAB & RB & DB & R & EO & SSI & M\'aximo & Ind Max \\
 		\hline
 		\hline
 			W & 0 & 303 & 176 & 1 & 12 & 5 & 833 & 0 & 833 & 7\\
@@ -603,7 +653,7 @@ est\'an en milisegundos.
 		\hline
 		\noalign{\smallskip}
 		\hline
-			Maximo & 828 & 967 & 1036 & 12 & 305 & 257 & 833 & 0 & - & -\\
+			M\'aximo & 828 & 967 & 1036 & 12 & 305 & 257 & 833 & 0 & - & -\\
 		\hline
 			Ind Max & 7 & 3 & 2 & 3 & 7 & 7 & 1 & 0 & - & -\\
 		\hline
@@ -613,12 +663,17 @@ est\'an en milisegundos.
 	\label{transitions}
 \end{table}
 
-\subsubsection{Relaci\'on (t\_cargando + t\_ir a base) / tiempo total}
-%T busqueda basura/ (t a base + tiempo carga bateria + t salir base)
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.25]{comportamientos/graphics/areaCoveredVsTimeUse.png}
+\caption{\'Area visualizada y \'area no visualizada a lo largo de la
+				simulaci\'on}
+\label{fig:seenArea}
+\end{center}
+\end{figure}
 
-\subsubsection{Porcentaje de espacio cubierto}
 %esp_cub / (e\sp_cub + esp_nocub)
-\begin{table}
+\begin{table}[htp]
 	\begin{center}
 		\begin{tabular}{|c||c|c|}
 		\hline
@@ -649,9 +704,6 @@ est\'an en milisegundos.
 	\caption{Porcentaje de arena cubierta}
 	\label{arena:covered}
 \end{table}
-
-\subsubsection{Tiempo cubrir toda la arena}
-aaa
 
 \newpage
 \subsection{Conclusi\'on}
