@@ -455,17 +455,21 @@ est\'an en milisegundos.
 			$R_r$ & Radio del robot & 0.026 \\
 			$dbw$ & Distancia entre ruedas & 0.052 \\
 			$c_{dbw}$ & Correcci\'on de la distancia entre ruedas & 1.09217109 \\
-			$R_l$, $R_r$ & Radios de las ruedas & 0.0205 0.0205 \\
-			$c_l$, $c_r$ & Correcciones de los radios de las ruedas & 0.99998702 
-			1.00001297 \\
+			$R_l$ & Radio de la rueda izquierda & 0.0205 \\
+			$R_r$ & Radio de la rueda derecha & 0.0205 \\
+			$c_l$ & Correcci\'on del radio de la rueda izquierda & 0.99998702 \\
+			$c_r$ & Correcci\'on del radio de la rueda derecha & 1.00001297 \\
 			$EncRes$ & Resoluci\'on del encoder & 159.23 \\
 			$Cd$ & Distancia de la c\'amara al centro del robot & 0.0355 \\
-			$Ch$ $C_h$ & Altura de la c\'amara & 0.038 \\
+			$Ch$ \'o $C_h$ & Altura de la c\'amara & 0.038 \\
 			$FOV_h$ & Field of view horizontal & 1.1 \\
 			$ac$ & \'Angulo de la c\'amara & -0.5 \\
-			$C_{rw}$, $C_{rh}$ & Resoluci\'on de la c\'amara & 640 x 480 \\
-			$A_w$, $A_h$ & Dimensiones del arena & 2 x 1.2 \\
-			$A_{rw}$, $A_{rh}$ & Resoluci\'on de la grilla & 100 38\\
+			$C_{rw}$ & Ancho de la im\'agen obtenida de la c\'amara & 640 \\
+			$C_{rh}$ & Alto de la im\'agen obtenida de la c\'amara & 480 \\
+			$A_w$ & Ancho del arena & 2 \\
+			$A_h$ & Alto del arena & 1.2 \\
+			$A_{rw}$ & Ancho de la grilla & 100 \\
+			$A_{rh}$ & Alto de la grilla & 38 \\
 			$Fsd$ & Dist. s.de piso del medio al centro del robot & 0.03 \\
 			$Fss$ & Separaci\'on entre sensores de piso & 0.01 \\
 			$Ts$ & Time Step & 32 \\
@@ -520,9 +524,9 @@ est\'an en milisegundos.
 
 \subsubsection{Tiempo promedio en recolectar basura}
 %Calcular t min, con un escenario donde las basuras las pongo apenas sale de la
-base
+%base
 %Calcular t max, con un escenario donde las basuras estan lo m\'as lejos de la
-base posible
+%base posible
 
 \subsubsection{Tiempo promedio de wandering}
 %(Tiempo en que est\'a activo el wandering)/(Tiempo total de simulaci\'on)
