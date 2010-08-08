@@ -2009,31 +2009,55 @@ haberla construido no tenemos la experiencia sobre qu\'e cosas hubi\'eramos hech
 
 Una vez dise\~nadas, armadas y probadas cada una de las placas controladoras tanto en forma separada
 como en conjunto, procedimos al armado del robot prototipo.
+Como no ten\'iamos las dimensiones o requerimientos de espacio del mecanismo de recolecci\'on
+armamos el prototipo sin estas consideraciones.
 
-fisico:
-tama\~no deb\'ia tener? forma? xq?
-que materiales usar?
+Para darle forma al prototipo tuvimos en consideraci\'on varias cuestiones como
+\begin{inparaenum}[\itshape a\upshape)]
+\item materiales de contrucci\'on;
+\item volumen interior para alojar los distintos componentes;
+\item posici\'on de cada sensor respecto del borde exterior;
+\item posici\'on de las ruedas y la maniobrabilidad que tendr\'ia;
+\item deb\'ia poder pasar por entre las sillas y mesas de la terraza.
+\end{inparaenum}
 
-bateria:
-que autonom\'ia necesitabamos? 
-tama\~no y peso de la bater\'ia? como cargarla?
+Elegimos darle al chasis una forma de oct\'ogono.
+\'Esto eliminaba los \'angulos rectos de los bordes para minimizar la posibilidad de quedar
+atascados en las esquinas.
+A su vez, si coloc\'abamos las ruedas alineadas con el centro geom\'etrico del robot aumentaba la
+maniobrabilidad y pod\'iamos realizar r\'apidas rotaciones sin chocar con el entorno.
 
-Sensores:
-Cuantos telemetros? cuantos sensores de piso? ultrasonido?
-donde ponerlos? A qu\'e distancia entre ellos ponerlos?
+Respetando nuestro dise\~no inicial y sabiendo que la cantidad de sensores era adecuada para cubrir
+nuestros requerimientos, definimos las posiciones de cada sensor.
+Para colocar los tel\'emetros infrarrojos a la altura necesaria creamos un contorno con paredes,
+que a su vez, nos daban el volumen interior para alojar las placas controladoras y bater\'a.
+El sensor de distancia por ultrasonido lo colocamos al frente, centrado y apuntando hacia adelante
+para tener el mayor campo de visi\'on posible.
 
-Motores:
-donde ponerlos?
+Para sostener las placas en el interior colocamos una varilla roscada de lado a lado en el interior
+y afirmamos entre dos tuercas a cada placa.
+Colocamos las placas de sensado en el centro y contra las paredes a las placas controladoras de motor.
+El cableado con los sensores lo hicimos interior a traves de agujeros en las paredes.
+De igual forma, los cables de control para los motores y el cableado para los sensores de piso, los
+pasamos por un agujero en la base del robot.
 
-Ruedas:
-Tama\~no? tipo de rueda? problemas con los ejes
+Elegimos una beter\'ia de gel de 12V 7Ah que seg\'un nuestros c\'alculos nos dar\'ia una autonom\'ia
+de entre 2 y 3 horas de uso cont\'inuo.
+Aprovechando su peso la colocamos lo m\'as atras posible dentro del volumen interior para mover
+el centro de gravedad y en conjunto con la rueda castor trasera, dar mayor estabilidad al robot.
 
-Placas:
-Donde ponerlas? como sostenerlas?
+Colocamos los motores en la parte inferior del robot alineados con el centro geom\'etrico y las
+ruedas dentro del chasis para evitar atascos.
+Las ruedas que elegimos tienen una buje de tefl\'on, con llanta de chapa y cubierta de goma compacta.
+Un problema que encontramos en este punto fue que el eje del motor era cil\'indrico y no presentaba
+ninguna marca o corte para ajustar las ruedas.
+Debido a \'esto nos fue muy dif\'icil realizar este ajuste.
 
-Netbook:
-Donde ponerla? autonomia? como cargarla?
-
+En la parte superior armamos, con una madera m\'as fina, un segundo piso para cololar la netbook y poder
+controlarla f\'acilmente.
+Pasamos el cable adaptador USB a serial RS232 por un agujero en el segundo piso y colocamos a la vista
+un interruptor de encendido desde el cual podemos recargar la bater\'ia del robot con los cables con
+punta de cocodrilo del cargador autom\'atico.
 
 \subsubsection{Dise\~no}
 \label{h_prototipo_diseno}
