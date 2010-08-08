@@ -1,0 +1,2448 @@
+\section{C\'odigo fuente}
+\label{hA_source}
+
+En este apartado mostramos el c\'odigo fuente usado para cada una de las placas controladoras
+del proyecto.
+Peque\~nos cambios existen en \emph{ID} de grupo y placa fueron necesarios para poder lograr que sean
+\'unicas dentro de la cadena de comunicaci\'on.
+
+\subsection{Placa gen\'erica}
+\label{hA_source_gen}
+
+A la placa gen\'erica la pensamos para testeo y como punto de partida de nuevas
+implementaciones, agregamos el c\'odigo que usamos como base para la programaci\'on de las otras
+placas.
+
+{\scriptsize
+\begin{verbatimtab}
+#define CARD_GROUP	MOTOR_DC	// Ver protocol.h
+#define CARD_ID		0		// Valor entre 0 y E
+
+// Descripcion de la placa
+#define DESC		"PLACA GENERICA - 1.0" // Maximo DATA_SIZE bytes
+
+/* Modulo Generico - main.c
+ * PIC16F88 - MAX232 - GENERICO
+ *
+ *                               PIC16F88
+ *                .------------------------------------.
+ *               -|RA2/AN2/CVREF/VREF           RA1/AN1|- LED
+ *               -|RA3/AN3/VREF+/C1OUT          RA0/AN0|- 
+ *           LED -|RA4/AN4/T0CKI/C2OUT    RA7/OSC1/CLKI|- XT CLOCK pin1, 27pF to GND
+ * RST/ICD2:MCLR -|RA5/MCLR/VPP           RA6/OSC2/CLKO|- XT CLOCK pin2, 27pF to GND
+ *           GND -|VSS                              VDD|- +5v
+ *               -|RB0/INT/CCP1       RB7/AN6/PGD/T1OSI|- ICD2:PGD/
+ *               -|RB1/SDI/SDA  RB6/AN5/PGC/T1OSO/T1CKI|- ICD2:PGC/
+ *  MAX232:R1OUT -|RB2/SDO/RX/DT           RB5/SS/TX/CK|- MAX232:T1IN
+ *               -|RB3/PGM/CCP1             RB4/SCK/SCL|- 
+ *                '------------------------------------'
+ *    
+ */
+
+#include <16F88.h>
+#DEVICE ADC = 10
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#fuses HS,NOWDT,NOPROTECT,NOLVP
+#use delay (clock=20000000)
+
+#use rs232(BAUD=115200,PARITY=N,XMIT=PIN_B5,RCV=PIN_B2,BITS=8,ERRORS,TIMEOUT=1,STOP=1,UART1)
+#use fast_io(A)
+#use fast_io(B)
+
+#byte porta=0x05
+#byte portb=0x06
+
+// Led
+#bit led1=porta.1
+#bit led2=porta.4
+
+// MAX232
+#bit tx=portb.5
+#bit rx=portb.2
+
+#include <../../protocolo/src/protocol.c>
+/*
+** Variables definidas en protocol.c
+
+short reset; // Variable para hacer el reset
+short crcOK; // Informa si el CRC del paquete parseado fue correcto
+short sendResponse; // Informa que no debe mandarse la respuesta automatica
+
+char buffer[MAX_BUFFER_SIZE];	// Buffer de recepcion de comandos
+int buffer_write;		// Indice de escritura
+int buffer_read;		// Indice de lectura
+int data_length;		// Largo de los datos en el buffer
+
+struct command_t command; 	// Comando parseado
+struct command_t response; 	// Respuesta
+
+** Implementar las siguientes funciones (usadas por el protocolo)
+
+void init(); // Inicializa puertos y variables
+void doCommand(struct command_t * cmd); // Examina y ejecula el comando
+
+***/
+
+void init()
+{
+	// Inicializa puertos
+	set_tris_a(0b11100101);
+	set_tris_b(0b11100110);
+
+	// Variable para hacer el reset
+	reset = false;
+
+	return;	
+}	
+
+void main()
+{
+	// Placa Generica - Implementacion del protocolo
+	init();
+
+	// Init del protocol
+	initProtocol();
+
+	// FOREVER
+	while(true)
+	{
+		// Hace sus funciones...
+
+		// Protocolo
+		runProtocol(&command);
+	}
+
+	return;
+}
+
+/* Verifica que el comando sea valido y lo ejecuta */
+void doCommand(struct command_t * cmd)
+{
+	int crc, i, len;
+		
+	// Calculo del CRC
+	crc = generate_8bit_crc((char *)cmd, cmd->len, CRC_PATTERN);
+	
+	// CRC ok?
+	if (cmd->crc != crc)
+	{		
+		// Creo respuesta de error
+		response.len = MIN_LENGTH + cmd->len + 2 + 1;
+		response.to = cmd->from;
+		response.from = THIS_CARD;
+		response.cmd = COMMON_ERROR;
+		response.data[0] = 0x00;
+		// Agrego el paquete que contiene el error de CRC
+		response.data[1] = cmd->len;
+		response.data[2] = cmd->to;
+		response.data[3] = cmd->from;
+		response.data[4] = cmd->cmd;
+		// Campo data
+		len = cmd->len - MIN_LENGTH;
+		for (i = 0; i < len; i++)
+			response.data[5 + i] = (cmd->data)[i];
+		// CRC erroneo
+		response.data[5 + len] = cmd->crc;
+		// CRC esperado
+		response.data[5 + len + 1] = crc;
+		// CRC de la respuesta
+		response.crc = generate_8bit_crc((char *)(&response), response.len, CRC_PATTERN);
+	
+		crcOK = false;
+		return;
+	}
+
+	crcOK = true;
+	
+	// Minimo todos setean esto
+	response.len = MIN_LENGTH;
+	response.to = cmd->from & 0x77;
+	response.from = THIS_CARD;
+	response.cmd = cmd->cmd | 0x80;
+
+	switch (cmd->cmd)
+	{
+		// Comandos comunes
+		case COMMON_INIT: 
+			init();
+			// Enviar la descripcion de la placa en texto plano
+			strcpy(response.data, DESC);
+			response.len += strlen(response.data);
+		break;
+		case COMMON_RESET: 
+			// Enviar la descripcion de la placa en texto plano
+			strcpy(response.data, DESC);
+			response.len += strlen(response.data);
+			// Reset!
+			reset = true;
+		break;
+		case COMMON_PING: 
+			// No hace falta hacer mas nada
+		break;
+ 		case COMMON_ERROR:
+			// Por ahora se ignora el comando
+		break;
+		
+		/* Comandos especificos */
+
+ 		case 0x40:
+			/* 
+			:DATO:
+			-
+			:RESP:
+			-
+			*/
+		break;
+
+		default:
+			response.len++;
+			response.cmd = COMMON_ERROR;
+			response.data[0] = 0x01; // Comando desconocido
+		break;
+	}	
+
+	// CRC de la respuesta
+	response.crc = generate_8bit_crc((char *)(&response), response.len, CRC_PATTERN);
+
+	return;
+}
+\end{verbatimtab}
+}
+
+\subsection{Archivo \emph{protocolo.c}}
+\label{hA_source_protocolo}
+
+C\'odigo fuente com\'un que genera un buffer c\'iclico con los paquetes entrantes, parsea el
+buffer y llama a la funci\'on que analiza al paquete seg\'un la implementaci\'on propia para
+cada placa.
+
+{\scriptsize
+\begin{verbatimtab}
+#include <../../protocolo/src/protocol.h>
+
+short reset;
+short crcOK;
+short sendResponse;
+
+char buffer[MAX_BUFFER_SIZE];
+int buffer_write;
+int buffer_read;
+int data_length;
+
+// Comando parseado
+struct command_t command;
+// Respuesta
+struct command_t response;
+
+// Interrupcion del RS232
+#INT_RDA
+void RS232()
+{
+	disable_interrupts(INT_RDA);
+	// Un nuevo dato...
+	buffer[buffer_write++] = getc();
+	data_length++;
+	if (buffer_write == MAX_BUFFER_SIZE)
+		buffer_write -= MAX_BUFFER_SIZE;
+	enable_interrupts(INT_RDA);
+	return;
+}
+
+/* Envia los datos por el pto serial */
+void initProtocol()
+{
+	// Variables de comunicacion
+	buffer_write = 0;
+	buffer_read = 0;
+	data_length = 0;
+	crcOK = false;
+	
+	// Interrupcion Rcv
+	enable_interrupts(INT_RDA);
+
+	// Habilito las interrupciones
+	enable_interrupts(GLOBAL);
+}
+
+/* Envia los datos por el pto serial */
+void send(struct command_t * cmd)
+{
+	int i, len;
+	
+	len = cmd->len - 4;
+	putc(cmd->len);
+	putc(cmd->to);
+	putc(cmd->from);
+	putc(cmd->cmd);
+	
+	for (i = 0; i < len; i++)
+	{
+		putc((cmd->data)[i]);
+	}
+	
+	// Enviar el CRC
+	putc(cmd->crc);
+	
+	return;	
+}	
+
+void runProtocol(struct command_t * cmd)
+{
+	// Analiza el buffer
+	if (buffer[buffer_read] < data_length)
+	{
+		data_length -= buffer[buffer_read] + 1;
+	
+		cmd->len = buffer[buffer_read++];
+	
+		if (buffer_read == MAX_BUFFER_SIZE)
+			buffer_read = 0;
+	
+		cmd->to = buffer[buffer_read++];
+	
+		if (buffer_read == MAX_BUFFER_SIZE)
+			buffer_read = 0;
+	
+		cmd->from = buffer[buffer_read++];
+	
+		if (buffer_read == MAX_BUFFER_SIZE)
+			buffer_read = 0;
+	
+		cmd->cmd = buffer[buffer_read++];
+	
+		if (buffer_read == MAX_BUFFER_SIZE)
+			buffer_read = 0;
+	
+		// Obtiene el campo DATA
+		if ((buffer_read + cmd->len - MIN_LENGTH) > MAX_BUFFER_SIZE)
+		{
+			// DATA esta partido en el buffer ciclico
+			memcpy(cmd->data, buffer + buffer_read, MAX_BUFFER_SIZE - buffer_read);
+			memcpy(cmd->data + MAX_BUFFER_SIZE - buffer_read, buffer, 
+				cmd->len - MIN_LENGTH - MAX_BUFFER_SIZE + buffer_read);
+		} else {
+			// DATA esta continuo
+			memcpy(cmd->data, buffer + buffer_read, cmd->len - MIN_LENGTH);
+		}
+	
+		buffer_read += cmd->len - MIN_LENGTH;
+		if (buffer_read >= MAX_BUFFER_SIZE)
+			buffer_read -= MAX_BUFFER_SIZE;
+	
+		cmd->crc = buffer[buffer_read++];
+	
+		if (buffer_read == MAX_BUFFER_SIZE)
+			buffer_read = 0;
+
+		sendResponse = true;
+
+		// Soy el destinatario?
+		if (cmd->to == THIS_CARD)
+		{
+			// Ejecuta el comando
+			doCommand(cmd);
+		} else // Es broadcast?
+			if ((cmd->to & 0xF0) == 0xF0)
+		{
+			// Ejecuta el comando
+			doCommand(cmd);
+
+			if (crcOK == true)
+			{
+				// Envia la respuesta
+				send(&response);
+				// Envia nuevamente el comando recibido
+				response = *cmd;
+			}
+		} else // Es broadcast para mi grupo? 
+			if (((cmd->to & 0x0F) == 0x0F) &&
+			 	((cmd->to & 0xF0) == THIS_GROUP))
+		{
+			// Ejecuta el comando
+			doCommand(cmd);	
+#ifdef RESEND_GROUP_BROADCAST
+			if (crcOK == true)
+			{
+				// Envia la respuesta
+				send(&response);
+				// Envia nuevamente el comando recibido
+				response = *cmd;
+			}
+#endif
+		} else {
+			response = *cmd;
+		}
+	
+		// Envia la respuesta?
+		if (sendResponse == true)
+		{
+			send(&response);
+		}	
+
+	}
+	
+	// Reset del micro
+	if (reset == true)
+	{
+		reset_cpu();
+	}	
+
+}
+
+int generate_8bit_crc(char* data, int length, int pattern)
+{
+	// TODO: reemplazar por el crc?
+	
+	int crc_byte, i;
+
+	crc_byte = data[0];
+			
+	for (i = 1; i < length; i++)
+		crc_byte ^= data[i];
+	
+	return crc_byte;
+}
+\end{verbatimtab}
+}
+
+\subsection{Placa controladora de motor de dc}
+\label{hA_source_dc}
+
+C\'odigo fuente de la placa controladora de motor de corriente cont\'inua.
+
+{\scriptsize
+\begin{verbatimtab}
+//CCS PCM V4.023 COMPILER
+
+#define CARD_GROUP	MOTOR_DC	// Ver protocol.h
+#define CARD_ID		0		// Valor entre 0 y E
+
+// Descripcion de la placa
+#define DESC		"CONTROL MOTOR DC 1.0" // Maximo DATA_SIZE bytes
+
+/* Modulo Motor - main.c
+ * PIC16F88 - MAX232 - L298 - MR-2-60-FA
+ *
+ *                               PIC16F88
+ *                .------------------------------------.
+ *          VREF -|RA2/AN2/CVREF/VREF           RA1/AN1|- MOTOR:CHA_B
+ *           LED -|RA3/AN3/VREF+/C1OUT          RA0/AN0|- L298:SEN
+ *           LED -|RA4/AN4/T0CKI/C2OUT    RA7/OSC1/CLKI|- XT CLOCK pin1, 27pF to GND
+ * RST/ICD2:MCLR -|RA5/MCLR/VPP           RA6/OSC2/CLKO|- XT CLOCK pin2, 27pF to GND
+ *           GND -|VSS                              VDD|- +5v
+ *   L298:ENABLE -|RB0/INT/CCP1       RB7/AN6/PGD/T1OSI|- ICD2:PGD
+ *     MOTOR:IDX -|RB1/SDI/SDA  RB6/AN5/PGC/T1OSO/T1CKI|- ICD2:PGC/MOTOR:CHA_A
+ *  MAX232:R1OUT -|RB2/SDO/RX/DT           RB5/SS/TX/CK|- MAX232:T1IN
+ * L298:INPUT_B/ -|RB3/PGM/CCP1             RB4/SCK/SCL|- L298:INPUT_A
+ *     ICD2:PGM   '------------------------------------'
+ *    
+ */
+
+#include <16F88.h>
+#DEVICE ADC = 10
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#fuses HS,NOWDT,NOPROTECT,NOLVP
+#use delay (clock=20000000)
+
+#use rs232(BAUD=115200,PARITY=N,XMIT=PIN_B5,RCV=PIN_B2,BITS=8,ERRORS,TIMEOUT=1,STOP=1,UART1)
+#use fast_io(A)
+#use fast_io(B)
+
+#byte porta=0x05
+#byte portb=0x06
+
+// MAX232
+#bit tx=portb.5
+#bit rx=portb.2
+
+// Led
+#bit led1=porta.3
+#bit led2=porta.4
+
+// L298
+#bit inputA=portb.4
+#bit inputB=portb.3
+#bit enable=portb.0
+#bit sensor=porta.0
+
+// Motor inuts
+#bit motorIDX=portb.1
+#bit channelA=portb.6
+#bit channelB=porta.1
+
+#include <../../protocolo/src/protocol.c>
+/*
+** Variables definidas en protocol.c
+
+short reset; // Variable para hacer el reset
+short crcOK; // Informa si el CRC del paquete parseado fue correcto
+short sendResponse; // Informa que no debe mandarse la respuesta automatica
+
+char buffer[MAX_BUFFER_SIZE];	// Buffer de recepcion de comandos
+int buffer_write;				// Indice de escritura
+int buffer_read;				// Indice de lectura
+int data_length;				// Largo de los datos en el buffer
+
+struct command_t command; 	// Comando parseado
+struct command_t response; 	// Respuesta
+
+** Implementar las siguientes funciones (usadas por el protocolo)
+
+void init(); // Inicializa puertos y variables
+void doCommand(struct command_t * cmd); // Examina y ejecula el comando
+
+***/
+
+#define MAX_CONSUMPTION	150
+#define MAX_CONSUMPTION_COUNT	5
+
+// Correcion de la cantidad de cuentas por segundo en base al periodo del TMR0
+#define INTERVAL_CORRECTION	5
+
+// Girar -> clockwise or unclockwise
+// Intercambiar entre el motor derecho y el izquierdo
+#define CLOCKWISE	1
+#define UNCLOCKWISE	-1
+
+// Sentido de giro del motor
+signed int turn;
+// Cantidad de overflows del TMR0
+long tmr0_ticks;
+// Valor acumulado del ADC - Consumo aprox
+long adc_value;
+// Ultimo valor del consumo
+long last_consumption;
+// Valor de duty del PWM
+signed long duty;
+// Cantidad de cuentas del encoder medidas por intervalo
+signed long counts_real;
+// Cantidad de cuentas del encoder esperadas por intervalo
+signed long counts_expected;
+// Cantidad de cuentas del encoder historicas (32 bits)
+signed int32 counts_total;
+// Cantidad de cuentas del encoder restantes para deterner el motor
+signed long counts_to_stop;
+// Cantidad de cuentas del encoder desde el ultimo intevalo
+signed long last_counts;
+signed long last_counts2;
+// Tengo una cantidad de cuentas para hacer?
+short counts_check;
+// Corrijo el PWM segun lo esperado?
+short correct_duty;
+// Indica que hay que enviar una alarma de consumo
+short consumption_alarm;
+// Cuenta cuantas alarmas se enviaron
+int alarm_count;
+// Indica que hay que avisar que el motor se detuvo
+short shutdown_alarm;
+// Indica si se apagaron los motores por el alto consumo
+short motor_shutdown;
+
+// Variables temporales
+signed int32 * tmp32;
+signed long * tmp16;
+
+/* Setea el PWM */
+void SetPWM(signed long pwm);
+
+// Interrupcion del Timer0
+#INT_RTCC
+void Timer0_INT()
+{
+	// Seteo el valor para que interrumpa cada 6.25ms
+	set_timer0(12);
+	
+	// Comienza la lectura del ADC
+	read_adc(ADC_START_ONLY);
+	
+	// Agrego al historico de cuentas el ultimo acumulado
+	counts_real = get_timer1();
+	counts_total += (counts_real - last_counts2) * turn;
+	last_counts2 = counts_real;
+	
+	// Tengo una cantidad de cuentas para hacer?
+	if (counts_check == 1)
+	{
+		// Verifico si pasaron las cuentas que se habian pedido
+		if (counts_to_stop < 1)
+		{
+			// Detengo el motor
+			counts_check = 0;
+			counts_to_stop = 0;
+			counts_expected = 0;
+			duty = 0;
+			SetPWM(duty);
+			correct_duty = 0;
+			last_counts = 0;
+		} else {
+			counts_real = get_timer1();
+			counts_to_stop -= (counts_real - last_counts);// * turn;
+			correct_duty = 1;
+			last_counts = counts_real;
+		}
+	} else {
+		correct_duty = 1;
+	}
+	
+	// Tomo la muestra
+	adc_value += read_adc(ADC_READ_ONLY);
+	
+	if (++tmr0_ticks == 32)
+	{
+		// Entra cada 200ms
+
+		// Obtengo la cantidad de cuentas desde la ultima entrada
+		counts_real = get_timer1();
+		set_timer1(0);
+		last_counts = 0;
+		last_counts2 = 0;
+		// Promedio el consumo segun la cantidad de tmr0_ticks
+		last_consumption = adc_value / tmr0_ticks;
+		
+		if (last_consumption >= MAX_CONSUMPTION)
+		{
+			consumption_alarm = 1;
+			if (alarm_count++ == MAX_CONSUMPTION_COUNT)
+			{
+				motor_shutdown = 1;
+				alarm_count = 0;
+				consumption_alarm = 0;
+				shutdown_alarm = 1;
+			}	
+		}
+		
+		tmr0_ticks = 0;
+
+		// Mantengo el consumo promedio desde que arranque y borro el temporal
+		adc_value = 0;
+
+		// Corrijo el PWM segun lo esperado
+		if ((correct_duty == 1) && (counts_real != counts_expected))
+		{
+			duty += (counts_expected - counts_real) * 5;
+			if (duty > 1023L)
+				duty = 1023;
+			else if (duty < 0)
+				duty = 0;
+			SetPWM(duty * turn);
+		} else if ((counts_expected == 0) && (duty != 0)) {		
+			SetPWM(duty = 0);
+		}	
+	}
+	return;
+}
+
+void init()
+{
+	// Inicializa puertos
+	set_tris_a(0b11100111);
+	set_tris_b(0b11100110);
+
+	// ***ADC***
+	setup_port_a(sAN0);//|VSS_VREF);
+	setup_adc(ADC_CLOCK_INTERNAL);
+	set_adc_channel(0);
+	setup_adc_ports(sAN0);
+	// Deberia usar VREF_A2... probar
+	setup_vref(VREF_HIGH | 8); // VREF a 2.5V -> no hay cambios...
+	
+	// ***PWM***
+	setup_ccp1(CCP_PWM);
+	// Seteo al PWM con f: 4.88 kHz, duty = 0
+	set_pwm1_duty(0);
+	setup_timer_2(T2_DIV_BY_4, 255, 1);
+
+	// ***TIMER1 - ENCODER COUNTER***
+	// Seteo el Timer1 como fuente externa y sin divisor
+	setup_timer_1(T1_EXTERNAL | T1_DIV_BY_1);
+	set_timer1(0);
+
+	// ***TIMER0 - TIME BASE***
+	// Seteo el Timer0 como clock -> dt = 6.25ms
+	setup_counters(RTCC_INTERNAL, RTCC_DIV_128);
+	set_timer0(12);
+	// Interrupcion sobre el Timer0
+	enable_interrupts(INT_RTCC);
+
+	// Habilito las interrupciones
+	enable_interrupts(GLOBAL);
+	
+	// Variable para hacer el reset
+	reset = false;
+
+	// Sentido de giro del motor
+	turn = CLOCKWISE;
+	// Cantidad de overflows del TMR0
+	tmr0_ticks = 0;
+	// Valor acumulado del ADC - Consumo aprox
+	adc_value = 0;
+	last_consumption = 0;
+	// Valor de duty del PWM
+	duty = 0;
+	// Cantidad de cuentas del encoder esperadas por intervalo
+	counts_expected = 0;
+	// Cantidad de cuentas del encoder totales
+	counts_total = 0;
+	// Cantidad de cuentas del encoder restantes para deterner el motor
+	counts_to_stop = 0;
+	// Cantidad de cuentas del encoder desde el ultimo intevalo
+	last_counts = 0;
+	last_counts2 = 0;
+	// Tengo una cantidad de cuentas para hacer?
+	counts_check = 0;
+	// Corrijo el PWM segun lo esperado?
+	correct_duty = 1;
+	// Indica que hay que enviar una alarma de consumo
+	consumption_alarm = 0;
+	// Cuenta cuantas alarmas se enviaron
+	alarm_count = 0;
+	// Indica que hay que enviar una alarma de consumo
+	shutdown_alarm = 0;
+	// Indica si se apagaron los motores por el alto consumo
+	motor_shutdown = 0;
+
+	return;	
+}	
+
+/* Setea el duty del PWM segun el valor. Positivo o negativo determina el sentido */
+void setPWM(signed long pwm)
+{
+	if (pwm < 0)
+	{
+		inputA = 0;
+		inputB = 1;
+	} else {
+		inputA = 1;
+		inputB = 0;
+	}
+	
+	if (motor_shutdown == 1)
+	{
+		pwm = 0;
+	} else {
+		pwm = (abs(pwm));
+		
+		if (pwm > 1023L)
+			pwm = 1023;
+	}
+
+	set_pwm1_duty(pwm);
+	
+	return;
+}
+
+void main()
+{
+	// Placa Generica - Implementacion del protocolo
+	init();
+
+	// Init del protocol
+	initProtocol();
+
+counts_expected = 30;
+
+	// FOREVER
+	while(true)
+	{
+		// Hace sus funciones -> interrupcion
+	
+		// Enviar alarma de alto consumo
+		if (consumption_alarm == 1)
+		{
+			/* Indica al controlador principal que hay un consumo extremo en el motor,
+			posiblemente un atasco del motor o de la rueda.
+			:DATO:
+			Numero entero positivo de 16 bits en el rango desde 0x0000 hasta
+			0x03FF, que representa el consumo ante el que sono la alarma.
+			:RESP:
+			-
+			*/
+			command.len = MIN_LENGTH + 2;
+			command.to = MAIN_CONTROLLER;
+			command.from = THIS_CARD;
+			command.cmd = DC_MOTOR_MOTOR_STRESS_ALARM;
+			// A la posicion 0 dentro de command.data la tomo como signed long *
+			tmp16 = (command.data);
+			// Le asigno el valor del ultimo consumo del motor
+			(*tmp16) = last_consumption;
+			command.crc = generate_8bit_crc((char *)(&command), command.len, CRC_PATTERN);
+			consumption_alarm = 0;
+			// Envio del comando
+			send(&command);
+		}
+		
+		// Enviar aviso de motor apagado
+		if (shutdown_alarm == 1)
+		{
+			/* Indica al controlador principal que el motor ha sido apagado debido al alto
+			consumo. Enviado luego de sucesivos avisos del comando DC_MOTOR_MOTOR_STRESS_ALARM.
+			:DATO:
+			Numero entero positivo de 16 bits en el rango desde 0x0000 hasta
+			0x03FF, que representa el consumo ante el que sono la alarma.
+			:RESP:
+			-
+			*/
+			command.len = MIN_LENGTH + 2;
+			command.to = MAIN_CONTROLLER;
+			command.from = THIS_CARD;
+			command.cmd = DC_MOTOR_MOTOR_SHUT_DOWN_ALARM;
+			// A la posicion 0 dentro de response->data la tomo como signed long *
+			tmp16 = (command.data);
+			// Le asigno el valor del ultimo consumo del motor
+			(*tmp16) = last_consumption;
+			command.crc = generate_8bit_crc((char *)(&command), command.len, CRC_PATTERN);
+			shutdown_alarm = 0;
+			// Envio del comando
+			send(&command);
+		}
+			
+		// Protocolo
+		runProtocol(&command);
+	}
+
+	return;
+}
+
+/* Verifica que el comando sea valido y lo ejecuta */
+void doCommand(struct command_t * cmd)
+{
+	int crc, i, len;
+		
+	// Calculo del CRC
+	crc = generate_8bit_crc((char *)cmd, cmd->len, CRC_PATTERN);
+	
+	// CRC ok?
+	if (cmd->crc != crc)
+	{		
+		// Creo respuesta de error
+		response.len = MIN_LENGTH + cmd->len + 2 + 1;
+		response.to = cmd->from;
+		response.from = THIS_CARD;
+		response.cmd = COMMON_ERROR;
+		response.data[0] = 0x00;
+		// Agrego el paquete que contiene el error de CRC
+		response.data[1] = cmd->len;
+		response.data[2] = cmd->to;
+		response.data[3] = cmd->from;
+		response.data[4] = cmd->cmd;
+		// Campo data
+		len = cmd->len - MIN_LENGTH;
+		for (i = 0; i < len; i++)
+			response.data[5 + i] = (cmd->data)[i];
+		// CRC erroneo
+		response.data[5 + len] = cmd->crc;
+		// CRC esperado
+		response.data[5 + len + 1] = crc;
+		// CRC de la respuesta
+		response.crc = generate_8bit_crc((char *)(&response), response.len, CRC_PATTERN);
+	
+		crcOK = false;
+		return;
+	}
+
+	crcOK = true;
+	
+	// Minimo todos setean esto
+	response.len = MIN_LENGTH;
+	response.to = cmd->from & 0x77;
+	response.from = THIS_CARD;
+	response.cmd = cmd->cmd | 0x80;
+
+	switch (cmd->cmd)
+	{
+		// Comandos comunes
+		case COMMON_INIT: 
+			init();
+			// Enviar la descripcion de la placa en texto plano
+			strcpy(response.data, DESC);
+			response.len += strlen(response.data);
+		break;
+		case COMMON_RESET: 
+			// Enviar la descripcion de la placa en texto plano
+			strcpy(response.data, DESC);
+			response.len += strlen(response.data);
+			// Reset!
+			reset = true;
+		break;
+		case COMMON_PING: 
+			// No hace falta hacer mas nada
+		break;
+ 		case COMMON_ERROR:
+			// Por ahora se ignora el comando
+		break;
+		
+		/* Comandos especificos */
+
+ 		case DC_MOTOR_SET_DIRECTION:
+			/* Seteo del sentido de giro del motor
+			:DATO:
+			0x00 para sentido horario o 0x01 para sentido anti-horario.
+			:RESP:
+			-
+			*/
+			if (((cmd->data)[0] & 0x01) == 0)
+			{
+				turn = CLOCKWISE;
+			} else {
+				turn = UNCLOCKWISE;
+			}
+		break;
+ 		case DC_MOTOR_SET_DC_SPEED:
+			/* Seteo de la velocidad del motor en cuentas del encoder por segundo
+			:DATO:
+			0x00 para sentido horario o 0x01 para sentido anti-horario. Numero 
+			entero de 16 bits con signo, que representa la velocidad en cuentas 
+			por segundos.
+			:RESP:
+			-
+			*/
+			if (((cmd->data)[0] & 0x01) == 0)
+			{
+				turn = CLOCKWISE;
+			} else {
+				turn = UNCLOCKWISE;
+			}
+			// A la posicion 1 dentro de cmd->data la tomo como signed long *
+			tmp16 = (cmd->data) + 1;
+			// Le asigno el valor de la velocidad ajustada a 1 segundo
+			counts_expected = (*tmp16) / INTERVAL_CORRECTION;
+			// Habilita el motor
+			motor_shutdown = 0;
+		break;
+ 		case DC_MOTOR_SET_ENCODER:
+			/* Seteo de la cantidad de cuentas historicas del encoder
+			:DATO:
+			Numero entero de 32 bits con signo, con el valor para setear en el
+			historico del encoder.
+			:RESP:
+			-
+			*/
+			// A la posicion 0 dentro de cmd->data la tomo como signed int32 *
+			tmp32 = (cmd->data);
+			// Le asigno el valor de las cuentas historicas
+			counts_total = (*tmp32);
+		break;
+ 		case DC_MOTOR_GET_ENCODER:
+			/* Obtener la cantidad de cuentas historicas del encoder
+			:DATO:
+			-
+			:RESP:
+			Numero entero de 32 bits con signo, que representa el valor historico
+			del encoder.
+			*/
+			// A la posicion 0 dentro de response->data la tomo como signed int32 *
+			tmp32 = (response.data);
+			// Le asigno el valor de las cuentas historicas
+			(*tmp32) = counts_total;
+			// Corrijo el largo del paquete
+			response.len += 4;
+		break;
+ 		case DC_MOTOR_RESET_ENCODER:
+			/* Resetear las cuentas historicas a cero
+			:DATO:
+			-
+			:RESP:
+			-
+			*/
+			counts_total = 0;
+		break;
+ 		case DC_MOTOR_SET_ENCODER_TO_STOP:
+			/* Seteo de cuantas cuentas debe girar hasta detenerse
+			:DATO:
+			Numero entero de 16 bits con signo, que representa la cantidad de
+			cuentas del encoder restantes para que el motor se detenga.
+			:RESP:
+			-
+			*/
+			// A la posicion 0 dentro de cmd->data la tomo como signed long *
+			tmp16 = (cmd->data);
+			// Le asigno el valor de la velocidad ajustada a 1 segundo
+			counts_to_stop = (*tmp16);
+			// Habilito el chequeo de cuentas para detener el motor
+			counts_check = 1;
+		break;
+ 		case DC_MOTOR_GET_ENCODER_TO_STOP:
+			/* Obtener la cantidad de las cuentas restantes que quedan por 
+			realizar hasta detenerse.
+			:DATO:
+			-
+			:RESP:
+			Numero entero de 16 bits con signo, que representa la cantidad
+			de cuentas del encoder restantes para detener el motor.
+			*/
+			// A la posicion 0 dentro de response->data la tomo como signed long *
+			tmp16 = (response.data);
+			// Le asigno el valor de la velocidad ajustada a 1 segundo
+			(*tmp16) = counts_to_stop;
+			// Corrijo el largo del paquete
+			response.len += 2;
+		break;
+ 		case DC_MOTOR_DONT_STOP:
+			/* Deshace los comandos DC_MOTOR_DONT_STOP y DC_MOTOR_GET_ENCODER_TO_STOP, 
+			deshabilita el conteo de cuentas para frenar y sigue en el estado actual.
+			:DATO:
+			-
+			:RESP:
+			-
+			*/
+			counts_check = 0;
+		break;
+ 		case DC_MOTOR_MOTOR_CONSUMPTION:
+			/* Numero entero positivo de 16 bits en el rango desde 0x0000 hasta
+			0x03FF, que representa el consumo promedio del ultimo segundo.
+			:DATO:
+			-
+			:RESP:
+			-
+			*/
+			// A la posicion 0 dentro de response->data la tomo como signed long *
+			tmp16 = (response.data);
+			// Le asigno el valor del ultimo consumo del motor
+			(*tmp16) = last_consumption;
+			// Corrijo el largo del paquete
+			response.len += 2;
+		break;
+ 		/*case DC_MOTOR_MOTOR_STRESS_ALARM:
+		break;
+ 		case DC_MOTOR_MOTOR_SHUT_DOWN_ALARM:
+		break;*/
+ 		case DC_MOTOR_GET_DC_SPEED:
+			/* Obtiene la velocidad del motor en cuentas del encoder por segundo
+			:DATO:
+			0x00 para sentido horario o 0x01 para sentido anti-horario. Numero
+			entero de 16 bits con signo, que representa la velocidad en cuentas
+			por segundos.
+			:RESP:
+			-
+			*/
+			// Sentido de giro del motor
+			if (turn == CLOCKWISE)
+			{
+				(response.data)[0] = 0x00;
+			} else {
+				(response.data)[0] = 0x01;
+			}
+			// A la posicion 1 dentro de response->data la tomo como signed long *
+			tmp16 = (response.data) + 1;
+			// Le asigno el valor de la velocidad ajustada a 1 segundo
+			(*tmp16) = counts_real * INTERVAL_CORRECTION;
+			// Corrijo el largo del paquete
+			response.len += 2;
+		break;
+
+		default:
+			response.len++;
+			response.cmd = COMMON_ERROR;
+			response.data[0] = 0x01; // Comando desconocido
+		break;
+	}	
+
+	// CRC de la respuesta
+	response.crc = generate_8bit_crc((char *)(&response), response.len, CRC_PATTERN);
+
+	return;
+}
+\end{verbatimtab}
+}
+
+\subsection{Placa controladora de sensores}
+\label{hA_source_sense}
+
+C\'odigo fuente de la placa controladora de sensores.
+
+{\scriptsize
+\begin{verbatimtab}
+//CCS PCM V4.023 COMPILER
+
+#define CARD_GROUP	DISTANCE_SENSOR	// Ver protocol.h
+#define CARD_ID		1		// Valor entre 0 y E
+
+// ID:0 -> Placa de telemetros
+// ID:1 -> Placa de sensores de piso y sensor de ultrasonido
+// ID:2 -> Placa de telemetros
+
+// Descripcion de la placa
+#define DESC		"PLACA SENSORES 1.0" // Maximo DATA_SIZE bytes
+
+// Determina el tipo de sensores principales en la placa - CAMBIARLO SEGUN CORRESPONDA
+// Posibles valores: FLOOR_SENSORS o TELEMETERS_SENSORS o NONE
+//#define SENSORS_TYPE	TELEMETERS_SENSORS
+
+// Determina contra que esta conectado el pin TRIGGER - CAMBIARLO SEGUN CORRESPONDA
+// Posibles valores: NONE o ULTRASONIC_SENSOR o SWITCH_SENSOR o LED
+//#define TRIGGER_TYPE	ULTRASONIC_SENSOR
+//#define TRIGGER_TYPE	SWITCH_SENSOR
+
+#if CARD_ID == 0
+	#define SENSORS_TYPE	TELEMETERS_SENSORS
+	#define TRIGGER_TYPE	SWITCH_SENSOR
+	#define DEFAULT_MASK	0x2F
+#elif CARD_ID == 1
+	#define SENSORS_TYPE	FLOOR_SENSORS
+	#define TRIGGER_TYPE	ULTRASONIC_SENSOR
+	#define DEFAULT_MASK	0x37
+#elif CARD_ID == 2
+	#define SENSORS_TYPE	TELEMETERS_SENSORS
+	#define TRIGGER_TYPE	SWITCH_SENSOR
+	#define DEFAULT_MASK	0x2F
+#endif
+
+// Define el estado logico para prender o apagar los sensores - CAMBIARLO SEGUN CORRESPONDA
+#define SENSOR_ON	0
+#define SENSOR_OFF	1
+
+#define SAMPLES_DEFAULT 5
+
+// Ancho del pulso que se debe enviar al sensor de ultrasonido como INIT - CAMBIARLO SEGUN CORRESPONDA
+#define ULTRASONIC_INIT_PULSE_WIDTH_US	15
+
+// Frame de muestreo. Cada este tiempo se realiza una nueva lectura ver CalculoTMR.xls
+#define COMPLEMENT_TIME					12411 // 85ms
+// Tiempo necesario para realizar la lectura en los telemetros - CAMBIARLO SEGUN CORRESPONDA
+#define TELEMETERS_WAITING_TIME_CYCLES	26792 //62ms
+#define TELEMETERS_COMPLEMENT_TIME		51161 //23ms complemento a COMPLEMENT_TIME
+// Tiempo necesario para realizar la lectura en los sensores de piso - CAMBIARLO SEGUN CORRESPONDA
+#define FLOOR_WAITING_TIME_CYCLES		62411 //5ms
+#define FLOOR_COMPLEMENT_TIME			15536 //80ms complemento a COMPLEMENT_TIME
+// Tiempo necesario para realizar la lectura del sensor de ultrasonido - CAMBIARLO SEGUN CORRESPONDA
+#define ULTRASONIC_WAITING_TIME_CYCLES	45536 //32ms
+#define ULTRASONIC_COMPLEMENT_TIME		32411 //53ms complemento a COMPLEMENT_TIME
+
+// Tiempo entre el cambio de canal del ADC y una muestra estable (minimo 10us) - CAMBIARLO SEGUN CORRESPONDA
+#define ADC_DELAY	20
+
+/* Modulo Generico - main.c
+ * PIC16F88 - MAX232 - SENSORES
+ *
+ *                               PIC16F88
+ *                .------------------------------------.
+ *       SENSE_3 -|RA2/AN2/CVREF/VREF           RA1/AN1|- SENSE_2
+ *       SENSE_4 -|RA3/AN3/VREF+/C1OUT          RA0/AN0|- SENSE_1
+ *       SENSE_5 -|RA4/AN4/T0CKI/C2OUT    RA7/OSC1/CLKI|- XT CLOCK pin1, 27pF to GND
+ * RST/ICD2:MCLR -|RA5/MCLR/VPP           RA6/OSC2/CLKO|- XT CLOCK pin2, 27pF to GND
+ *           GND -|VSS                              VDD|- +5v
+ *       TRIGGER -|RB0/INT/CCP1       RB7/AN6/PGD/T1OSI|- ICD2:PGD/SENSOR_5
+ *      SENSOR_1 -|RB1/SDI/SDA  RB6/AN5/PGC/T1OSO/T1CKI|- ICD2:PGC/SENSOR_4
+ *  MAX232:R1OUT -|RB2/SDO/RX/DT           RB5/SS/TX/CK|- MAX232:T1IN
+ *     	SENSOR_2 -|RB3/PGM/CCP1             RB4/SCK/SCL|- SENSOR_3
+ *                '------------------------------------'
+ *    
+ */
+
+#include <16F88.h>
+#DEVICE ADC = 10
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#fuses HS,NOWDT,NOPROTECT,NOLVP
+#use delay (clock=20000000)
+
+#use rs232(BAUD=115200,PARITY=N,XMIT=PIN_B5,RCV=PIN_B2,BITS=8,ERRORS,TIMEOUT=1,STOP=1,UART1)
+#use fast_io(A)
+#use fast_io(B)
+
+#byte porta=0x05
+#byte portb=0x06
+
+// MAX232
+#bit tx=portb.5
+#bit rx=portb.2
+
+// Pin para el control del sensore de ultrasonido, switch on/off o led
+#bit trigger=portb.0
+// Led
+#bit led1=portb.0
+// Pin para switch On/Off
+#bit inOnOff=portb.0
+// Pin de control del sensor de ultrasonido
+#bit ultrasonido=portb.0
+
+// Sensores - Base de los transistores
+#bit sensor1=portb.1
+#bit sensor2=portb.3
+#bit sensor3=portb.4
+#bit sensor4=portb.6
+#bit sensor5=portb.7
+
+// Sensores - Salida de los sensores (SENSE)
+#bit sense1=porta.0
+#bit sense2=porta.1
+#bit sense3=porta.2
+#bit sense4=porta.3
+#bit sense5=porta.4
+
+// Estados para la maquina de estados que controla las funciones de la placa
+#define STATE_FREE			0
+#define STATE_START_READING	1 
+#define STATE_WAIT_TO_READ	2
+#define STATE_READ_VALUES	3
+#define STATE_WAITING		4
+
+// Estados para la lectura del sensor de ultrasonido
+#define USONIC_STATE_START	0
+#define USONIC_STATE_STOP	1 
+
+// Posibles conexiones del pin TRIGGER
+#define NONE			  (0x00)
+#define ULTRASONIC_SENSOR (NONE + 1)
+#define SWITCH_SENSOR     (ULTRASONIC_SENSOR + 1)
+#define LED				  (SWITCH_SENSOR + 1)
+
+// Posibles sensores principales
+#define TELEMETERS_SENSORS (NONE + 1)
+#define FLOOR_SENSORS      (TELEMETERS_SENSORS + 1)
+
+// Tiempo maximo para NONE
+#define NONE_TIME	65530 //0ms
+#define SWITCH_TIME 65530 //0ms
+#define LED_TIME 	65530 //0ms
+
+#if SENSORS_TYPE == FLOOR_SENSORS
+	#if TRIGGER_TYPE == ULTRASONIC_SENSOR
+		#define SENSORS_WAITING_TIME ULTRASONIC_WAITING_TIME_CYCLES
+		#define WAITING_TIME ULTRASONIC_COMPLEMENT_TIME //Complemento 85ms -> 53ms
+	#else
+		#define SENSORS_WAITING_TIME FLOOR_WAITING_TIME_CYCLES
+		#define WAITING_TIME FLOOR_COMPLEMENT_TIME //Complemento 85ms -> 80ms
+	#endif
+#elif SENSORS_TYPE == TELEMETERS_SENSORS
+	#define SENSORS_WAITING_TIME TELEMETERS_WAITING_TIME_CYCLES
+	#define WAITING_TIME TELEMETERS_COMPLEMENT_TIME //Complemento 85ms -> 23ms
+#elif SENSORS_TYPE == NONE
+	#if TRIGGER_TYPE == ULTRASONIC_SENSOR
+		#define SENSORS_WAITING_TIME ULTRASONIC_WAITING_TIME_CYCLES
+		#define WAITING_TIME ULTRASONIC_COMPLEMENT_TIME //Complemento 85ms -> 53ms
+	#else
+		#define SENSORS_WAITING_TIME NONE_TIME
+		#define WAITING_TIME COMPLEMENT_TIME //85ms
+	#endif
+#endif
+
+#include <../../protocolo/src/protocol.c>
+/*
+** Variables definidas en protocol.c
+
+short reset; // Variable para hacer el reset
+short crcOK; // Informa si el CRC del paquete parseado fue correcto
+short sendResponse; // Informa que no debe mandarse la respuesta automatica
+
+char buffer[MAX_BUFFER_SIZE];	// Buffer de recepcion de comandos
+int buffer_write;				// Indice de escritura
+int buffer_read;				// Indice de lectura
+int data_length;				// Largo de los datos en el buffer
+
+struct command_t command; 	// Comando parseado
+struct command_t response; 	// Respuesta
+
+** Implementar las siguientes funciones (usadas por el protocolo)
+
+void init(); // Inicializa puertos y variables
+void doCommand(struct command_t * cmd); // Examina y ejecula el comando
+
+***/
+
+// IO como entrada o salida
+int trisB_value = 0b00100101;
+// Determina el estado actual
+int state;
+// Vector donde se almacenan los valores de los sensores
+unsigned long values[6];
+// Cantidad de muestras a tomar por sensor
+int samples;
+// Mascara que ignora ciertos sensores
+int sensorMask;
+// Determina cuales sensores estan siendo leidos en este instante
+int actualReadSensor;
+// Determina cuales son los sensores de los que se pide la lectura
+int readSensor;
+// Bufferea el pedido de sensores de los que se pide la lectura
+int bufferedReadSensor;
+// Determina el destinatario actual
+int actalTO;
+// Informa quien hizo el pedido
+int requestFrom;
+// Informa de quien vino el ultimo pedido (mientras habia una lectura en curso)
+int bufferedFrom;
+// Determina el comando actual
+int actalCmd;
+// Informa cual fue el comando del pedido
+int requestCmd;
+// Informa cual fue el comando del ultimo pedido (mientras habia una lectura en curso)
+int bufferedCmd;
+// Estado para el sensor de ultrasonido
+short usonic_state;
+// Tiempo para el comienzo del pulso del sensor de ultrasonido
+unsigned long pulseStart;
+// Flag de aviso sobre la interrupcion en TIMER1
+short intTMR;
+// Tipo de alarma en trigger
+int alarmType;
+// Flag de alarma en trigger
+short triggerAlarm;
+
+/* Habilita los sensores segun corresponda para comenzar la lectura */
+void startReading(int sensors);
+/* Realiza la lectura sobre los sensores segun corresponda */
+void readSensors(int sensors);
+/* Interrupcion del TIMER1 */
+void int_timer(void);
+/* Interrupcion de RB0 */
+void int_trigger(void);
+/* Crea la respuesta sobre la lectura de los sensores */
+void sendValues(int to, int cmd, long * values, int sensors);
+
+/* Interrupcion del TIMER1 */
+#INT_TIMER1
+void int_timer(void)
+{
+	// Habilita el flag de aviso que sucedio la interrupcion
+	intTMR = 1;
+	disable_interrupts(INT_TIMER1);
+}
+
+/* Interrupcion de RB0 */
+#INT_EXT
+void int_trigger(void)
+{
+#if TRIGGER_TYPE == ULTRASONIC_SENSOR
+	if (usonic_state == USONIC_STATE_START)
+	{
+		// Tomo el tiempo en que comienza el pulso
+		pulseStart = get_timer1();
+		// Cambio el tipo de flanco
+		ext_int_edge(H_TO_L);
+		// Cambio el estado
+		usonic_state = USONIC_STATE_STOP;
+	} else {
+		// Tomo el tiempo y guardo el valor
+		values[5] = (get_timer1() - pulseStart)/2;
+		// Deshabilita la interupcion
+		disable_interrupts(INT_EXT);
+	}
+#elif TRIGGER_TYPE == SWITCH_SENSOR
+	triggerAlarm = 1;
+#endif
+}
+
+void init()
+{
+	// Inicializa puertos
+	set_tris_a(0b11111111);
+	set_tris_b(trisB_value);
+
+	// ***ADC***
+	setup_port_a(sAN0);
+	setup_adc(ADC_CLOCK_INTERNAL);
+	set_adc_channel(0);
+	setup_adc_ports(sAN0);
+	setup_vref(VREF_HIGH | 8);
+	
+	// Seteo el Timer1 como fuente interna
+	setup_timer_1(T1_INTERNAL | T1_DIV_BY_8);
+	set_timer1(26786);
+	
+	// Interrupcion sobre el Timer1
+	enable_interrupts(INT_TIMER1);
+
+	// Seteo el pin RB0 - Sensor de ultrasonido :)
+	ext_int_edge(L_TO_H);
+	enable_interrupts(INT_EXT);
+
+	// Habilito las interrupciones
+	enable_interrupts(GLOBAL);
+	
+	// Variable para hacer el reset
+	reset = false;
+
+	// Apaga todos los sensores
+	sensor1 = SENSOR_OFF;
+	sensor2 = SENSOR_OFF;
+	sensor3 = SENSOR_OFF;
+	sensor4 = SENSOR_OFF;
+	sensor5 = SENSOR_OFF;
+
+	// Inicializa los valores
+	values[0] = 0x0000;
+	values[1] = 0x0000;
+	values[2] = 0x0000;
+	values[3] = 0x0000;
+	values[4] = 0x0000;
+	values[5] = 0x0000;
+
+	// Muestras iniciales
+	samples = SAMPLES_DEFAULT;
+	
+	// Inicializa la mascara -> todos habilitados (0x3F)
+	sensorMask = DEFAULT_MASK;
+	
+	//Determina el estado actual
+	state = STATE_FREE;
+	
+	// Sin lectura temprana
+	readSensor = 0x00;
+	bufferedReadSensor = 0x00;
+	actalTO = 0x00;
+	requestFrom = 0x00;
+	bufferedFrom = 0x00;
+	actalCmd = 0x00;
+	requestCmd = 0x00;
+	bufferedCmd = 0x00;
+
+	alarmType = 0x00;
+	triggerAlarm = 0;
+#if TRIGGER_TYPE == SWITCH_SENSOR
+	disable_interrupts(INT_EXT);
+#endif
+
+#if TRIGGER_TYPE == LED
+	// TRIGGER como escritura
+	bit_clear(trisB_value, 0);
+	set_tris_b(trisB_value);
+#endif
+
+	return;	
+}	
+
+void sendAlarm()
+{
+	/*TODO: revisar protocolo*/	
+	triggerAlarm = 0;
+	return;
+}	
+
+void main()
+{
+	// Placa Generica - Implementacion del protocolo
+	init();
+
+	// Init del protocol
+	initProtocol();
+
+	// FOREVER
+	while(true)
+	{
+		// Ejecucion de la maquina de estados
+		switch (state)
+		{
+			case STATE_FREE:
+				/*
+				* Analiza los paquetes y retransmite o lanza el pedido de lectura
+				*/
+#if TRIGGER_TYPE == SWITCH_SENSOR
+				// Enviar alarma de trigger
+				if (triggerAlarm == 1)
+					sendAlarm();
+#endif
+				// Protocolo
+				runProtocol(&command);
+
+				if (readSensor != 0x00)
+				{
+					// Almacena el pedido sobre los sensores
+					actualReadSensor = readSensor;
+					readSensor = 0x00;
+					actalTO = requestFrom;
+					actalCmd = requestCmd;
+					// Cambio de estado
+					state = STATE_START_READING;
+				}	
+				break;
+			case STATE_START_READING:
+				/*
+				* Genera un pedido de lectura a los sensores que lo necesiten
+				* y setea los TIMERs para contabilizar los tiempos
+				*/
+				
+				// Limpio la variable
+				bufferedReadSensor = 0x00;
+
+				// Inhabilita los sensores enmascarados
+				actualReadSensor &= sensorMask;
+				
+				// Pedido de -START-
+				startReading(actualReadSensor);
+				
+				// Flag de interrupcion
+				intTMR = 0;
+				
+				// Seteo de TIMERs
+				set_timer1(SENSORS_WAITING_TIME);
+				enable_interrupts(INT_TIMER1);
+				
+				// Cambio de estado
+				state = STATE_WAIT_TO_READ;
+				
+				break;
+			case STATE_WAIT_TO_READ:
+				/*
+				* Espera el tiempo necesario para tomar las muestras en los sensores
+				* Recibe nuevos pedidos y los agraga para una proxima lectura
+				*/
+
+#if TRIGGER_TYPE == SWITCH_SENSOR
+				// Enviar alarma de trigger
+				if (triggerAlarm == 1)
+					sendAlarm();
+#endif
+				// Protocolo
+				runProtocol(&command);
+				
+				// Almacena el pedido sobre los sensores si no hay otro ya
+				if ((readSensor != 0x00) && (bufferedReadSensor == 0x00))
+				{
+					bufferedReadSensor = readSensor;
+					bufferedFrom = requestFrom;
+					bufferedCmd = requestCmd;
+					readSensor = 0x00;
+				}
+				
+				// Cambio de estado?
+				if (intTMR == 1)
+				{
+					// El TIMER1 hizo timeout -> leer sensores
+					state = STATE_READ_VALUES;
+				}	
+				
+				break;
+			case STATE_READ_VALUES:
+				/*
+				* Toma las muestras en los sensores y envia el paquete de respuesta
+				*/
+				
+				// Toma las muestras de los sensores
+				readSensors(actualReadSensor);
+				
+				// Mandar paquete de respuesta
+				sendValues(actalTO, actalCMD, values, actualReadSensor);
+				
+				// Flag de interrupcion
+				intTMR = 0;
+				
+				// Setea el tiempo de espera y pasa al estado de espera
+				set_timer1(WAITING_TIME);
+				enable_interrupts(INT_TIMER1);
+				
+				state = STATE_WAITING;
+				
+				break;
+			case STATE_WAITING:
+				/*
+				* Espera a que pase el tiempo de espera entre lecturas para evitar rebotes
+				* Recibe nuevos pedidos y los agraga para una proxima lectura
+				*/
+				
+#if TRIGGER_TYPE == SWITCH_SENSOR
+				// Enviar alarma de trigger
+				if (triggerAlarm == 1)
+					sendAlarm();
+#endif
+				// Protocolo
+				runProtocol(&command);
+				
+				// Almacena el pedido sobre los sensores si no hay otro ya
+				if ((readSensor != 0x00) && (bufferedReadSensor == 0x00))
+				{
+					bufferedReadSensor = readSensor;
+					bufferedFrom = requestFrom;
+					bufferedCmd = requestCmd;
+					readSensor = 0x00;
+				}
+				
+				// Cambio de estado?
+				if (intTMR == 1)
+				{
+					// El TIMER1 hizo timeout
+					if (bufferedReadSensor != 0x00)
+					{
+						// Hay un pedido pendiente y lo carga
+						actualReadSensor = bufferedReadSensor;
+						bufferedReadSensor = 0x00;
+						actalTO = bufferedFrom;
+						actalCmd = bufferedCmd;
+						// Cambio de estado 
+						state = STATE_START_READING;
+					} else {
+						state = STATE_FREE;
+					}	
+				}
+				break;
+			default:
+				init();
+				break;
+		}
+	}
+	return;
+}
+
+/* Habilita los sensores segun corresponda para comenzar la lectura*/
+void startReading(int sensors)
+{
+	// Sensor1
+	if (bit_test(sensors, 0) == 1)
+		sensor1 = SENSOR_ON;
+	// Sensor2
+	if (bit_test(sensors, 1) == 1)
+		sensor2 = SENSOR_ON;
+	// Sensor3
+	if (bit_test(sensors, 2) == 1)
+		sensor3 = SENSOR_ON;
+	// Sensor4
+	if (bit_test(sensors, 3) == 1)
+		sensor4 = SENSOR_ON;
+	// Sensor5
+	if (bit_test(sensors, 4) == 1)
+		sensor5 = SENSOR_ON;
+	// Sensor6
+#if TRIGGER_TYPE == ULTRASONIC_SENSOR
+	// Sensor6 -> ULTRASONIC_SENSOR
+	if (bit_test(sensors, 5) == 1)
+	{
+		// Comienza el pulso de habilitacion -> TRIGGER como escritura
+		bit_clear(trisB_value, 0);
+		set_tris_b(trisB_value);
+		// Pin en estado habilitado -> envio del pulso INIT
+		trigger = 1;
+		delay_us(ULTRASONIC_INIT_PULSE_WIDTH_US);
+		trigger = 0;
+		// Termina el pulso de habilitacion -> TRIGGER como lectura
+		bit_set(trisB_value, 0);
+		set_tris_b(trisB_value);
+		// Setea la interrupcion sobre RB0 en flanco ascendente
+		ext_int_edge(L_TO_H);
+		// Seteo el estado actual del pulso del sensor de ultrasonido
+		usonic_state = USONIC_STATE_START;
+		// Habilita la interrupcion
+		enable_interrupts(INT_EXT);
+	}
+#elif TRIGGER_TYPE == SWITCH_SENSOR
+	// Sensor6 -> SWITCH_SENSOR
+	if (bit_test(sensors, 5) == 1)
+	{
+		if (trigger == 1)
+			values[5] = 0xFFFF;
+		else
+			values[5] = 0;		
+	} 
+#endif
+	return;
+}	
+
+/* Realiza la lectura sobre los sensores segun corresponda */
+void readSensors(int sensors)
+{
+	int i;
+	values[0] = 0;
+	values[1] = 0;
+	values[2] = 0;
+	values[3] = 0;
+	values[4] = 0;
+	
+	for (i = 0; i < samples; i++)
+	{	
+		// Sensor1
+		if (bit_test(sensors, 0) == 1)
+		{
+			// ADC en el pin correcto
+			set_adc_channel(0);
+			// Espera el tiempo necesario
+			delay_us(ADC_DELAY);
+			// Toma la muestra
+			values[0] += read_adc();
+		}
+		// Sensor2
+		if (bit_test(sensors, 1) == 1)
+		{
+			// ADC en el pin correcto
+			set_adc_channel(1);
+			// Espera el tiempo necesario
+			delay_us(ADC_DELAY);
+			// Toma la muestra
+			values[1] += read_adc();
+		}
+		// Sensor3
+		if (bit_test(sensors, 2) == 1)
+		{
+			// ADC en el pin correcto
+			set_adc_channel(2);
+			// Espera el tiempo necesario
+			delay_us(ADC_DELAY);
+			// Toma la muestra
+			values[2] += read_adc();
+		}
+		// Sensor4
+		if (bit_test(sensors, 3) == 1)
+		{
+			// ADC en el pin correcto
+			set_adc_channel(3);
+			// Espera el tiempo necesario
+			delay_us(ADC_DELAY);
+			// Toma la muestra
+			values[3] += read_adc();
+		}
+		// Sensor5
+		if (bit_test(sensors, 4) == 1)
+		{
+			// ADC en el pin correcto
+			set_adc_channel(4);
+			// Espera el tiempo necesario
+			delay_us(ADC_DELAY);
+			// Toma la muestra
+			values[4] += read_adc();
+		}
+	}
+	
+	/*sensor1 = SENSOR_OFF;
+	sensor2 = SENSOR_OFF;
+	sensor3 = SENSOR_OFF;
+	sensor4 = SENSOR_OFF;
+	sensor5 = SENSOR_OFF;*/
+	
+	values[0] /= samples;
+	values[1] /= samples;
+	values[2] /= samples;
+	values[3] /= samples;
+	values[4] /= samples;
+
+	return;
+}	
+
+/* Crea la respuesta sobre la lectura de los sensores */
+void sendValues(int to, int cmd, long * values, int sensors)
+{
+	int idx = 1, i;
+	signed long * tmp16;
+	command.len = MIN_LENGTH + 1;
+	command.to = to;
+	command.from = THIS_CARD;
+	command.cmd = cmd;
+	command.data[0] = sensors;
+
+	// Valores de los sensores en command.data segun corresponda
+	for (i = 0; i < 6; i++)
+	{
+		if (bit_test(sensors, i) == 1)
+		{
+			// A la posicion 0 dentro de command.data la tomo como signed long *
+			tmp16 = (command.data + idx);
+			// Le asigno el valor del sensor
+			(*tmp16) = values[i];
+			idx+=2;
+			command.len += 2;
+		}
+	}
+
+	command.crc = generate_8bit_crc((char *)(&command), command.len, CRC_PATTERN);
+	// Envio del comando
+	send(&command);
+
+	return;
+}
+
+/* Verifica que el comando sea valido y lo ejecuta */
+void doCommand(struct command_t * cmd)
+{
+	int crc, i, len;
+	// Calculo del CRC
+	crc = generate_8bit_crc((char *)cmd, cmd->len, CRC_PATTERN);
+
+	// CRC ok?
+	if (cmd->crc != crc)
+	{		
+		// Creo respuesta de error
+		response.len = MIN_LENGTH + cmd->len + 2 + 1;
+		response.to = cmd->from;
+		response.from = THIS_CARD;
+		response.cmd = COMMON_ERROR;
+		response.data[0] = 0x00;
+		// Agrego el paquete que contiene el error de CRC
+		response.data[1] = cmd->len;
+		response.data[2] = cmd->to;
+		response.data[3] = cmd->from;
+		response.data[4] = cmd->cmd;
+		// Campo data
+		len = cmd->len - MIN_LENGTH;
+		for (i = 0; i < len; i++)
+			response.data[5 + i] = (cmd->data)[i];
+		// CRC erroneo
+		response.data[5 + len] = cmd->crc;
+		// CRC esperado
+		response.data[5 + len + 1] = crc;
+		// CRC de la respuesta
+		response.crc = generate_8bit_crc((char *)(&response), response.len, CRC_PATTERN);
+		crcOK = false;
+		return;
+	}
+
+	crcOK = true;
+	
+	// Minimo todos setean esto
+	response.len = MIN_LENGTH;
+	response.to = cmd->from & 0x77;
+	response.from = THIS_CARD;
+	response.cmd = cmd->cmd | 0x80;
+
+	switch (cmd->cmd)
+	{
+		// Comandos comunes
+		case COMMON_INIT:
+			init();
+			// Enviar la descripcion de la placa en texto plano
+			strcpy(response.data, DESC);
+			response.len += strlen(response.data);
+		break;
+		case COMMON_RESET:
+			// Enviar la descripcion de la placa en texto plano
+			strcpy(response.data, DESC);
+			response.len += strlen(response.data);
+			// Reset!
+			reset = true;
+		break;
+		case COMMON_PING:
+			// No hace falta hacer mas nada
+		break;
+ 		case COMMON_ERROR:
+			// Por ahora se ignora el comando
+		break;
+		
+		/* Comandos especificos */
+
+ 		case DISTANCE_SENSOR_ON_DISTANCE_SENSOR:
+			/* Enciende el sensor de distancia indicado.
+			:DATO:
+			Valor de 0x00 a 0x05 que representa el ID del sensor a encender.
+			El ID 0x05 hace referencia al led de la placa si esta presente, 
+			en caso contrario se ignora.
+			:RESP:
+			-
+			*/
+			// Enciende los sensores segun corresponda
+			if ((cmd->data)[0] == 0)
+				// Sensor1
+				sensor1 = SENSOR_ON;
+			else if ((cmd->data)[0] == 1)
+				// Sensor2
+				sensor2 = SENSOR_ON;
+			else if ((cmd->data)[0] == 2)
+				// Sensor3
+				sensor3 = SENSOR_ON;
+			else if ((cmd->data)[0] == 3)
+				// Sensor4
+				sensor4 = SENSOR_ON;
+			else if ((cmd->data)[0] == 4)
+				// Sensor5
+				sensor5 = SENSOR_ON;
+#if TRIGGER_TYPE == LED
+			else if ((cmd->data)[0] == 5)
+				// Led
+				led1 = 1;
+#endif
+		break;
+ 		case DISTANCE_SENSOR_OFF_DISTANCE_SENSOR:
+			/* Apaga el sensor de distancia indicado.
+			:DATO:
+			Valor de 0x00 a 0x05 que representa el ID del sensor a apagar. El
+			ID 0x05 hace referencia al sensor de ultrasonido o switch de la placa.
+			:RESP:
+			-
+			*/
+			// Apaga los sensores segun corresponda
+			if ((cmd->data)[0] == 0)
+				// Sensor1
+				sensor1 = SENSOR_OFF;
+			else if ((cmd->data)[0] == 1)
+				// Sensor2
+				sensor2 = SENSOR_OFF;
+			else if ((cmd->data)[0] == 2)
+				// Sensor3
+				sensor3 = SENSOR_OFF;
+			else if ((cmd->data)[0] == 3)
+				// Sensor4
+				sensor4 = SENSOR_OFF;
+			else if ((cmd->data)[0] == 4)
+				// Sensor5
+				sensor5 = SENSOR_OFF;
+#if TRIGGER_TYPE == LED
+			else if ((cmd->data)[0] == 5)
+				// Led
+				led1 = 0;
+#endif
+		break;
+ 		case DISTANCE_SENSOR_SET_MASK:
+			/* Habilita o deshabilita cada uno de los sensores de distancia conectados al
+			controlador. Permite identificar los sensores a los que se debera tener en
+			cuenta para futuras lecturas.
+			:DATO:
+			Valor de 0x00 a 0x3F donde cada bit representa el ID del sensor a
+			habilitar o deshabilitar. Si 2^ID = 1 entonces el sensor ID esta habilitado.
+			Si 2^ID = 0 entonces el sensor ID esta deshabilitado.
+			:RESP:
+			-
+			*/
+			sensorMask = (cmd->data)[0];
+		break;
+ 		case DISTANCE_SENSOR_GET_MASK:
+			/* Obtiene el estado de habilitacion de cada uno de los sensores de distancia
+			conectados al controlador.
+			:DATO:
+			-
+			:RESP:
+			Valor de 0x00 a 0x3F donde cada bit representa el ID del sensor a
+			habilitar o deshabilitar. Si 2^ID = 1 entonces el sensor ID esta habilitado.
+			Si 2^ID = 0 entonces el sensor ID esta deshabilitado.
+			*/
+			// Envio la mascara de sensores
+			response.data[0] = sensorMask;
+			// Corrijo el largo del paquete
+			response.len++;
+		break;
+ 		case DISTANCE_SENSOR_GET_VALUE:
+			/* Obtiene el valor promedio de la entrada de los sensores indicados.
+			:DATO:
+			Valor de 0x00 a 0x3F donde cada bit representa el ID del sensor
+			del cual obtener la lectura.
+			:RESP:
+			Valor de 0x00 a 0x3F donde cada bit representa el ID del sensor
+			del cual proviene el la lectura de distancia. Secuencia de numeros enteros
+			positivos de 16 bits en el rango desde 0x0000 hasta 0x03FF, con el valor de
+			la lectura que representa la distancia al objeto. En la secuencia de numeros
+			el orden esta dado de izquierda a derecha comenzando por el bit menos
+			significativo.
+			En el caso del sensor de ultrasonido el rango es desde 0x0000 hasta 0x7594
+			que representa la minima y maxima lectura del sensor.
+			En el caso del switch, un estado logico bajo se lee como 0x0000 y un estado
+			logico alto se lee como 0xFFFF.
+			*/
+			readSensor = (cmd->data)[0];
+			requestFrom = 	response.to;
+			requestCmd = response.cmd;
+			sendResponse = false;
+			samples = SAMPLES_DEFAULT;
+		break;
+ 		case DISTANCE_SENSOR_GET_ONE_VALUE:
+			/* Obtiene el valor de la entrada del sensor indicado. Igual al comando 8.5 pero
+			sin realizar un promedio de lecturas.
+			:DATO:
+			Valor de 0x00 a 0x3F donde cada bit representa el ID del sensor
+			del cual obtener la lectura.
+			:RESP:
+			Valor de 0x00 a 0x3F donde cada bit representa el ID del sensor
+			del cual proviene el la lectura de distancia. Secuencia de numeros enteros
+			positivos de 16 bits en el rango desde 0x0000 hasta 0x03FF, con el valor de
+			la lectura que representa la distancia al objeto. En la secuencia de numeros
+			el orden esta dado de izquierda a derecha comenzando por el bit menos
+			significativo.
+			En el caso del sensor de ultrasonido el rango es desde 0x0000 hasta 0x7594
+			que representa la minima y maxima lectura del sensor.
+			En el caso del switch, un estado logico bajo se lee como 0x0000 y un estado
+			logico alto se lee como 0xFFFF.
+			*/
+			readSensor = (cmd->data)[0];
+			requestFrom = 	response.to;
+			requestCmd = response.cmd;
+			sendResponse = false;
+			samples = 1;
+		break;
+		case DISTANCE_SENSOR_ALARM_ON_STATE:
+			/* Cuando un switch esta presente en el ID: 0x05, establece si se desea o no
+			recibir una alarma ante cierto cambio de estado en el mismo. Puede ser ante
+			cualquier cambio o sobre un flanco ascendente o descendente.
+			:DATO:
+			Valor entre 0x00 y 0x03 con el tipo de cambio ante el cual generar
+			la alarma. Con un 0x00 ignora cualquier cambio en el switch. Se utiliza
+			0x01 para que cualquier cambio en el switch genere el mensaje, 0x02 para
+			que sea solo ante un flanco ascendente y 0x03 para que sea solo ante un
+			flanco descendente.
+			:RESP:
+			-
+			*/
+#if TRIGGER_TYPE == SWITCH_SENSOR
+			switch ((cmd->data)[0])
+			{
+				case 0x00:
+					// Ignorar
+					disable_interrupts(INT_EXT);
+					break;
+				case 0x01:
+					// Cualquier cambio
+					enable_interrupts(INT_EXT);
+					break;
+				case 0x02:
+					// flanco ascendente
+					ext_int_edge(H_TO_L);
+					enable_interrupts(INT_EXT);
+					break;
+				case 0x03:
+					// flanco descendente
+					ext_int_edge(L_TO_H);
+					enable_interrupts(INT_EXT);
+					break;
+				default:
+					(cmd->data)[0] = 0x00;
+					break;
+			}
+			alarmType = (cmd->data)[0];
+#endif
+		break;
+		default:
+			response.len++;
+			response.cmd = COMMON_ERROR;
+			response.data[0] = 0x01; // Comando desconocido
+		break;
+	}	
+
+	// CRC de la respuesta
+	response.crc = generate_8bit_crc((char *)(&response), response.len, CRC_PATTERN);
+
+	return;
+}
+\end{verbatimtab}
+}
+
+\subsection{Placa controladora de servo motores}
+\label{hA_source_servo}
+
+C\'odigo fuente de la placa controladora de servo motores.
+
+{\scriptsize
+\begin{verbatimtab}
+//CCS PCM V4.023 COMPILER
+
+#define CARD_GROUP	SERVO_MOTOR	// Ver protocol.h
+#define CARD_ID		0			// Valor entre 0 y E
+
+// Descripcion de la placa
+#define DESC		"SERVOR CONTROL - 1.0" // Maximo DATA_SIZE bytes
+
+/* Modulo Servo - main.c
+ * PIC16F88 - MAX232 - SERVO
+ *
+ *                               PIC16F88
+ *                .------------------------------------.
+ *       MOTOR_4 -|RA2/AN2/CVREF/VREF           RA1/AN1|- MOTOR_5
+ *           LED -|RA3/AN3/VREF+/C1OUT          RA0/AN0|- 
+ *           LED -|RA4/AN4/T0CKI/C2OUT    RA7/OSC1/CLKI|- XT CLOCK pin1, 27pF to GND
+ * RST/ICD2:MCLR -|RA5/MCLR/VPP           RA6/OSC2/CLKO|- XT CLOCK pin2, 27pF to GND
+ *           GND -|VSS                              VDD|- +5v
+ *       MOTOR_1 -|RB0/INT/CCP1       RB7/AN6/PGD/T1OSI|- ICD2:PGD
+ *       MOTOR_2 -|RB1/SDI/SDA  RB6/AN5/PGC/T1OSO/T1CKI|- ICD2:PGC
+ *  MAX232:R1OUT -|RB2/SDO/RX/DT           RB5/SS/TX/CK|- MAX232:T1IN
+ *     ICD2:PGM/ -|RB3/PGM/CCP1             RB4/SCK/SCL|- 
+ *     MOTOR_3    '------------------------------------'
+ *    
+ */
+
+#include <16F88.h>
+#DEVICE ADC = 10
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#fuses HS,NOWDT,NOPROTECT,NOLVP
+#use delay (clock=20000000)
+
+#use rs232(BAUD=115200,PARITY=N,XMIT=PIN_B5,RCV=PIN_B2,BITS=8,ERRORS,TIMEOUT=1,STOP=1,UART1)
+#use fast_io(A)
+#use fast_io(B)
+
+#byte porta=0x05
+#byte portb=0x06
+
+// Led
+#bit led1=porta.1
+#bit led2=porta.4
+
+// MAX232
+#bit tx=portb.5
+#bit rx=portb.2
+
+// PWMs
+#bit pwm1=portb.0
+#bit pwm2=portb.1
+#bit pwm3=portb.3
+#bit pwm4=porta.2
+#bit pwm5=porta.1
+
+#include <../../protocolo/src/protocol.c>
+/*
+** Variables definidas en protocol.c
+
+short reset; // Variable para hacer el reset
+short crcOK; // Informa si el CRC del paquete parseado fue correcto
+short sendResponse; // Informa que no debe mandarse la respuesta automatica
+
+char buffer[MAX_BUFFER_SIZE];	// Buffer de recepcion de comandos
+int buffer_write;				// Indice de escritura
+int buffer_read;				// Indice de lectura
+int data_length;				// Largo de los datos en el buffer
+
+struct command_t command; 	// Comando parseado
+struct command_t response; 	// Respuesta
+
+** Implementar las siguientes funciones (usadas por el protocolo)
+
+void init(); // Inicializa puertos y variables
+void doCommand(struct command_t * cmd); // Examina y ejecuta el comando
+
+***/
+
+// Software PWM - Minimo 1750 (~0.71ms)
+#define PULSE_MIN	1750
+// Tiempo maximo que puede durar un pulso - Maximo 6755(~2.71ms)
+#define PULSE_MAX	6755
+// Tiempo entre pulsos (~25ms -> ~22.29ms fijos de espera)
+#define PWM_MAX		62500
+// 1� ~ 27.8 cuentas ~ 69.4us
+#define DEGREE		27.8f
+
+// Valor que representa el ancho del pulso para cada servo
+long pwm_t[5];
+// Angulo de cada servo
+long pos[5];
+// On/Off de cada servo
+short servo[5];
+
+void init()
+{
+	// Inicializa puertos
+	set_tris_a(0b11100001);
+	set_tris_b(0b11110100);
+
+	// Seteo el Timer1 como fuente interna
+	setup_timer_1(T1_INTERNAL | T1_DIV_BY_2);
+	set_timer1(0);
+
+	// Variable para hacer el reset
+	reset = false;
+
+	// Valor que representa el ancho del pulso para cada servo
+	pwm_t[0] = PULSE_MIN;
+	pwm_t[1] = PULSE_MIN;
+	pwm_t[2] = PULSE_MIN;
+	pwm_t[3] = PULSE_MIN;
+	pwm_t[4] = PULSE_MIN;
+	
+	// Angulo de cada servo
+	pos[0] = 0;
+	pos[1] = 0;
+	pos[2] = 0;
+	pos[3] = 0;
+	pos[4] = 0;
+	
+	// On/Off de cada servo
+	servo[0] = 0;
+	servo[1] = 0;
+	servo[2] = 0;
+	servo[3] = 0;
+	servo[4] = 0;
+	
+	// Activo los servos segun este o no habilitado
+	pwm1 = servo[0];
+	pwm2 = servo[1];
+	pwm3 = servo[2];
+	pwm4 = servo[3];
+	pwm5 = servo[4];
+	
+	return;	
+}	
+
+void main()
+{
+	short check_comm = 0;
+	long tmr1;
+	
+	// Control de servomotores
+	init();
+
+	// Init del protocol
+	initProtocol();
+
+	// FOREVER
+	while(true)
+	{
+		// Software PWM
+
+		// Tomo el tiempo
+		tmr1 = get_timer1();
+		
+		// Es hora de reiniciar el pulso?
+		if (tmr1 >= PWM_MAX)
+		{
+			// Detiene el analisis de comandos
+			check_comm = 0;
+			// Inicio del periodo
+			set_timer1(0);
+			// Activo los servos segun este o no habilitado
+			pwm1 = servo[0];
+			pwm2 = servo[1];
+			pwm3 = servo[2];
+			pwm4 = servo[3];
+			pwm5 = servo[4];
+		} else
+		// Llego al final del pulso?
+		if (tmr1 >= PULSE_MAX)
+		{
+			// Pone las salidas a 0
+			pwm1 = 0;
+			pwm2 = 0;
+			pwm3 = 0;
+			pwm4 = 0;
+			pwm5 = 0;
+			// Analiza si hay comandos para ser atendidos
+			check_comm = 1;
+			
+		} else {
+			// Tomo el tiempo
+			tmr1 = get_timer1();
+
+			// Es tiempo de desactivar el PWM?
+			if (tmr1 >= pwm_t[0])
+				pwm1 = 0;
+			if (tmr1 >= pwm_t[1])
+				pwm2 = 0;
+			if (tmr1 >= pwm_t[2])
+				pwm3 = 0;
+			if (tmr1 >= pwm_t[3])
+				pwm4 = 0;
+			if (tmr1 >= pwm_t[4])
+				pwm5 = 0;
+		}
+		
+		// Protocolo
+		if (check_comm == 1)
+			runProtocol(&command);
+	}
+
+	return;
+}
+
+/* Verifica que el comando sea valido y lo ejecuta */
+void doCommand(struct command_t * cmd)
+{
+	int crc, i, len;
+		
+	// Calculo del CRC
+	crc = generate_8bit_crc((char *)cmd, cmd->len, CRC_PATTERN);
+	
+	// CRC ok?
+	if (cmd->crc != crc)
+	{		
+		// Creo respuesta de error
+		response.len = MIN_LENGTH + cmd->len + 2 + 1;
+		response.to = cmd->from;
+		response.from = THIS_CARD;
+		response.cmd = COMMON_ERROR;
+		response.data[0] = 0x00;
+		// Agrego el paquete que contiene el error de CRC
+		response.data[1] = cmd->len;
+		response.data[2] = cmd->to;
+		response.data[3] = cmd->from;
+		response.data[4] = cmd->cmd;
+		// Campo data
+		len = cmd->len - MIN_LENGTH;
+		for (i = 0; i < len; i++)
+			response.data[5 + i] = (cmd->data)[i];
+		// CRC erroneo
+		response.data[5 + len] = cmd->crc;
+		// CRC esperado
+		response.data[5 + len + 1] = crc;
+		// CRC de la respuesta
+		response.crc = generate_8bit_crc((char *)(&response), response.len, CRC_PATTERN);
+	
+		crcOK = false;
+		return;
+	}
+
+	crcOK = true;
+	
+	// Minimo todos setean esto
+	response.len = MIN_LENGTH;
+	response.to = cmd->from & 0x77;
+	response.from = THIS_CARD;
+	response.cmd = cmd->cmd | 0x80;
+
+	switch (cmd->cmd)
+	{
+		// Comandos comunes
+		case COMMON_INIT: 
+			init();
+			// Enviar la descripcion de la placa en texto plano
+			strcpy(response.data, DESC);
+			response.len += strlen(response.data);
+		break;
+		case COMMON_RESET: 
+			// Enviar la descripcion de la placa en texto plano
+			strcpy(response.data, DESC);
+			response.len += strlen(response.data);
+			// Reset!
+			reset = true;
+		break;
+		case COMMON_PING: 
+			// No hace falta hacer mas nada
+		break;
+ 		case COMMON_ERROR:
+			// Por ahora se ignora el comando
+		break;
+		
+		/* Comandos especificos */
+		
+ 		case SERVO_MOTOR_SET_POSITION:
+			/* Determina la posicion en la que debe colocarse el 
+			servo motor indicado.
+			:DATO:
+			Valor de 0x00 a 0x04 que determina el id del servo al
+			que se le aplicara la posicion. Valor entre 0x00 y 0xB4
+			que representa el rango de 0 a 180 con 1 de presicion.
+			:RESP:
+			-
+			*/
+			i = ((cmd->data)[0] & 0x07); // Servo destinatario
+			if (i < 5)
+			{
+				servo[i] = 1;
+				pos[i] = (unsigned char)((cmd->data)[1]);
+				pwm_t[i] = PULSE_MIN + pos[i] * DEGREE;
+			}	
+		break;
+ 		case SERVO_MOTOR_SET_ALL_POSITIONS:
+			/* Determina las posiciones en la que deben colocarse
+			cada uno de los servomotores
+			:DATO:
+			Consta de 5 valores entre 0x00 y 0xB4 concatenados, uno
+			para cada uno de los servos conectados al controlador.
+			Cada valor representa el rango de 0 a 180 con 1 de presicion.
+			:RESP:
+			-
+			*/
+			for (i = 0; i < 5; i++)
+			{
+				servo[i] = 1;
+				pos[i] = (unsigned char)((cmd->data)[i]);
+				pwm_t[i] = PULSE_MIN + pos[i] * DEGREE;
+			}	
+		break;
+ 		case SERVO_MOTOR_GET_POSITION:
+			/* Obtiene la ultima posicion del servomotor indicado.
+			:DATO:
+			Valor de 0x00 a 0x04 que determina el id del servo del que
+			se requiere la posicion.
+			:RESP:
+			Valor de 0x00 a 0x04 que determina el id del servo del que 
+			se requirio la posicion. Valor entre 0x00 y 0xB4 que representa
+			el rango de 0 a 180 con 1 de presicion.
+			*/
+			i = ((cmd->data)[0] & 0x07); // Servo destinatario
+			if (i < 5)
+			{
+				response.data[0] = pos[i];
+				response.len++;
+			}	
+		break;
+ 		case SERVO_MOTOR_GET_ALL_POSITIONS:
+			/* Obtiene las �ltimas posiciones de todos los servomotor
+			conectados al controlador.
+			:DATO:
+			-
+			:RESP:
+			Consta de 5 valores entre 0x00 y 0xB4 concatenados, uno para 
+			cada uno de los servos conectados al controlador. Cada valor 
+			representa el rango de 0 a 180 con 1 de presicion.
+			*/
+			response.data[0] = pos[0];
+			response.data[1] = pos[1];
+			response.data[2] = pos[2];
+			response.data[3] = pos[3];
+			response.data[4] = pos[4];
+			response.len += 5;
+		break;
+		case SERVO_MOTOR_SET_SERVO_SPEED:
+			/* Determina la velocidad a la que el servomotor indicado 
+			llegara a la posicion.
+			:DATO:
+			Valor de 0x00 a 0x04 que determina el id del servo al que 
+			se le aplicara la velocidad. Valor entre 0x00 y 0xB4, 
+			velocidad en grados por segundo.
+			:RESP:
+			-
+			*/
+		break;
+ 		case SERVO_MOTOR_SET_ALL_SPEEDS:
+			/* Determina las velocidades a la que cada uno de los 
+			servomotores llegara a la posicion indicada.
+			:DATO:
+			Consta de 5 valores entre 0x00 y 0xB4 concatenados, uno 
+			para cada uno de los servos conectados al controlador. 
+			Cada valor representa a la velocidad en grados por segundo.
+			:RESP:
+			-
+			*/
+		break;
+ 		case SERVO_MOTOR_GET_SERVO_SPEED:
+			/* Obtiene la velocidad asignada al servomotor indicado.
+			:DATO:
+			Valor de 0x00 a 0x04 que determina el id del servo del que
+			se requiere la velocidad.
+			:RESP:
+			Valor de 0x00 a 0x04 que determina el id del servo del que 
+			se requirio la velocidad. Valor entre 0x00 y 0xB4, velocidad 
+			en grados por segundo.
+			*/
+		break;
+ 		case SERVO_MOTOR_GET_ALL_SPEEDS:
+			/* Obtiene las velocidades de cada uno de los servomotor 
+			conectados al controlador.
+			:DATO:
+			-
+			:RESP:
+			Consta de 5 valores entre 0x00 y 0xB4 concatenados, uno para 
+			cada uno de los servos conectados al controlador. Cada valor 
+			representa a la velocidad en grados por segundo.
+			*/
+		break;
+ 		case SERVO_MOTOR_FREE_SERVO:
+			/* Deja de aplicar fuerza sobre el servo indicado.
+			:DATO:
+			Valor de 0x00 a 0x04 que determina el id del servo a liberar.
+			:RESP:
+			-
+			*/
+			i = ((cmd->data)[0] & 0x07); // Servo destinatario
+			if ((i < 5) && (i >= 0))
+			{
+				servo[i] = 0;
+			}
+		break;
+ 		case SERVO_MOTOR_FREE_ALL_SERVOS:
+			/* Deja de aplicar fuerza sobre cada uno de los servomotor 
+			conectados al controlador.
+			:DATO:
+			-
+			:RESP:
+			-
+			*/
+			servo[0] = 0;
+			servo[1] = 0;
+			servo[2] = 0;
+			servo[3] = 0;
+			servo[4] = 0;
+		break;
+		default:
+			response.len++;
+			response.cmd = COMMON_ERROR;
+			response.data[0] = 0x01; // Comando desconocido
+		break;
+	}	
+
+	// CRC de la respuesta
+	response.crc = generate_8bit_crc((char *)(&response), response.len, CRC_PATTERN);
+
+	return;
+}
+\end{verbatimtab}
+}
