@@ -554,6 +554,14 @@ pendientes son poco abruptas.
 \end{center}
 \end{figure}
 
+En la figura \ref{fig:collectEvolution} mostramos m\'as en detalle el
+comportamiento vital para nuestro proyecto, \emph{Recolectar basura}. Podemos
+ver que en el per\'iodo ($0<t<50000$) acumula aproximadamente la misma
+cantidad de steps hechos que en el per\'iodo ($50000<t<150000$). El progreso
+describe mesetas cuyas duraciones se van prolongando a medida que se avanza la
+simulaci\'on y las pendientes tienen aproximadamente la misma magnitud a lo
+largo de la misma.
+
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[scale=0.25]{comportamientos/graphics/CollectUse.png}
@@ -562,11 +570,21 @@ pendientes son poco abruptas.
 \end{center}
 \end{figure}
 
+Para que pudieramos ver m\'as en detalle lo que suced\'io con los
+comportamientos, obtuvimos la cantidad de veces que cada uno se
+activ\'o (Ver cuadro \ref{behaviours_stats}). En el mismo observamos
+que el comportamiento que m\'as veces se activ\'o fue \emph{Evitar
+obst\'aculos}, seguido por \emph{Enfocar basura} y \emph{Wandering}.
+En un orden de magnitud menor est\'an \emph{Ir a descargar basura} e
+\emph{Ir a recargar bater\'ia}. Finalmente, \emph{Recolectar basura}
+se activ\'o 15 veces y \emph{Salir de situaciones indeseadas} nunca.
+
 \begin{table}[htp]
 	\begin{center}
 		\begin{tabular}{|c|c|c|}
 			\hline
-			Comportamiento & \# total de steps activo & \# veces que se activ\'o \\
+			Comportamiento & \# total de steps activo
+							& \# veces que se activ\'o \\
 			\hline
 			Wandering & 64476 & 1330 \\
 			Enfocar basura & 2057 & 1384 \\
@@ -583,6 +601,16 @@ pendientes son poco abruptas.
 					activos}
 	\label{behaviours_stats}
 \end{table}
+
+En los cuadros \ref{behaviour_stats1} y \ref{behaviour_stats2} mostramos
+c\'alculos sobre los steps que cada comportamiento estuvo $caa$
+\footnote{caa: continuamente activo. Por continuamente activo se entiende que
+estuvo activo en el time step $t-1$ y en el $t$} y $cai$ \footnote{cai: 
+continuamente inactivo. Por continuamente inactivo se entiende que no estuvo
+activo en el timestep $t-1$ ni en el $t$}, respectivamente. Podemos ver que
+\emph{Recolectar basura} es en promedio el mayor en ambas tablas y que tiene
+el menor desv\'io est\'andar en $caa$. \emph{Wandering} es en promedio el que
+menor tiempo est\'a $cai$
 
 \begin{table}[htp]
 	\begin{center}
