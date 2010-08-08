@@ -315,11 +315,11 @@ coordenada X de la basura en la imagen es 0).
 
 Como mostramos en las figuras \ref{fig:image_coord_conv} y
 \ref{fig:angleCamera}, el \'angulo vertical hacia el punto m\'as alto de la
-imagen $(0,C_{rh})$ es $\gamma+FOV_v$ y hacia el m\'as bajo, $(0,0)$, el
+imagen $(0$,$C_{rh})$ es $\gamma+FOV_v$ y hacia el m\'as bajo, $(0$,$0)$, el
 \'angulo es $\gamma$. De las ecuaciones \eqref{eqn:distance_d} y
-\eqref{eqn:distance_dh} sabemos las distancias a los puntos $(0,0)$ y
-$(0,C_{rh})$ son (DIST\_MIN) y (DIST\_MAX) respectivamente.
-Entonces, para obtener la distancia $dy$ hacia el punto $(0,y)$ basta con
+\eqref{eqn:distance_dh} sabemos las distancias a los puntos $(0$,$0)$ y
+$(0$,$C_{rh})$ son (DIST\_MIN) y (DIST\_MAX) respectivamente.
+Entonces, para obtener la distancia $dy$ hacia el punto $(0$,$y)$ basta con
 calcular:
 \begin{eqnarray}
 y_{angle} = FOV_v * \frac{y}{h} \\
@@ -330,7 +330,9 @@ donde $y_{angle}$ es la proporci\'on de $FOV_v$ hacia $y$.
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[scale=0.5]{comportamientos/imageCoordsConvertion.png}
-\caption{Conversi\'on de coordenadas de imagen de c\'amara}
+\caption{Conversi\'on de coordenadas de imagen de c\'amara.
+	Dado un pixel ($y$,$x$), su nueva coordenada est\'a dada por
+	($x-Crw/2$,$Crh-y$)}
 \label{fig:image_coord_conv}
 \end{center}
 \end{figure}
