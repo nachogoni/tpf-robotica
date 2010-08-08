@@ -4,6 +4,22 @@
 
 Protocolo...
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \newpage
 
 \section{C\'odigo fuente}
@@ -11,7 +27,7 @@ Protocolo...
 
 En este apartado mostramos el c\'odigo fuente usado para cada una de las placas controladoras
 del proyecto.
-Peque\~nos cambios existen en \emph{ID} de grupo y placa fueron necesarios para poder que sean
+Peque\~nos cambios existen en \emph{ID} de grupo y placa fueron necesarios para poder lograr que sean
 \'unicas dentro de la cadena de comunicaci\'on.
 
 \subsection{Placa gen\'erica}
@@ -1258,73 +1274,51 @@ void doCommand(struct command_t * cmd); // Examina y ejecula el comando
 
 // IO como entrada o salida
 int trisB_value = 0b00100101;
-
 // Determina el estado actual
 int state;
-
 // Vector donde se almacenan los valores de los sensores
 unsigned long values[6];
-
 // Cantidad de muestras a tomar por sensor
 int samples;
-
 // Mascara que ignora ciertos sensores
 int sensorMask;
-
 // Determina cuales sensores estan siendo leidos en este instante
 int actualReadSensor;
-
 // Determina cuales son los sensores de los que se pide la lectura
 int readSensor;
-
 // Bufferea el pedido de sensores de los que se pide la lectura
 int bufferedReadSensor;
-
 // Determina el destinatario actual
 int actalTO;
-
 // Informa quien hizo el pedido
 int requestFrom;
-
 // Informa de quien vino el ultimo pedido (mientras habia una lectura en curso)
 int bufferedFrom;
-
 // Determina el comando actual
 int actalCmd;
-
 // Informa cual fue el comando del pedido
 int requestCmd;
-
 // Informa cual fue el comando del ultimo pedido (mientras habia una lectura en curso)
 int bufferedCmd;
-
 // Estado para el sensor de ultrasonido
 short usonic_state;
-
 // Tiempo para el comienzo del pulso del sensor de ultrasonido
 unsigned long pulseStart;
-
 // Flag de aviso sobre la interrupcion en TIMER1
 short intTMR;
-
 // Tipo de alarma en trigger
 int alarmType;
-
 // Flag de alarma en trigger
 short triggerAlarm;
 
 /* Habilita los sensores segun corresponda para comenzar la lectura */
 void startReading(int sensors);
-
 /* Realiza la lectura sobre los sensores segun corresponda */
 void readSensors(int sensors);
-
 /* Interrupcion del TIMER1 */
 void int_timer(void);
-
 /* Interrupcion de RB0 */
 void int_trigger(void);
-
 /* Crea la respuesta sobre la lectura de los sensores */
 void sendValues(int to, int cmd, long * values, int sensors);
 
@@ -1359,8 +1353,6 @@ void int_trigger(void)
 #elif TRIGGER_TYPE == SWITCH_SENSOR
 	triggerAlarm = 1;
 #endif
-
-
 }
 
 void init()
@@ -1460,7 +1452,6 @@ void main()
 	// FOREVER
 	while(true)
 	{
-
 		// Ejecucion de la maquina de estados
 		switch (state)
 		{
@@ -1468,13 +1459,11 @@ void main()
 				/*
 				* Analiza los paquetes y retransmite o lanza el pedido de lectura
 				*/
-				
 #if TRIGGER_TYPE == SWITCH_SENSOR
 				// Enviar alarma de trigger
 				if (triggerAlarm == 1)
 					sendAlarm();
 #endif
-
 				// Protocolo
 				runProtocol(&command);
 
@@ -1526,7 +1515,6 @@ void main()
 				if (triggerAlarm == 1)
 					sendAlarm();
 #endif
-
 				// Protocolo
 				runProtocol(&command);
 				
@@ -1579,7 +1567,6 @@ void main()
 				if (triggerAlarm == 1)
 					sendAlarm();
 #endif
-
 				// Protocolo
 				runProtocol(&command);
 				
@@ -1609,14 +1596,12 @@ void main()
 						state = STATE_FREE;
 					}	
 				}
-
 				break;
 			default:
 				init();
 				break;
 		}
 	}
-
 	return;
 }
 
@@ -1626,23 +1611,18 @@ void startReading(int sensors)
 	// Sensor1
 	if (bit_test(sensors, 0) == 1)
 		sensor1 = SENSOR_ON;
-
 	// Sensor2
 	if (bit_test(sensors, 1) == 1)
 		sensor2 = SENSOR_ON;
-
 	// Sensor3
 	if (bit_test(sensors, 2) == 1)
 		sensor3 = SENSOR_ON;
-
 	// Sensor4
 	if (bit_test(sensors, 3) == 1)
 		sensor4 = SENSOR_ON;
-
 	// Sensor5
 	if (bit_test(sensors, 4) == 1)
 		sensor5 = SENSOR_ON;
-
 	// Sensor6
 #if TRIGGER_TYPE == ULTRASONIC_SENSOR
 	// Sensor6 -> ULTRASONIC_SENSOR
@@ -1675,7 +1655,6 @@ void startReading(int sensors)
 			values[5] = 0;		
 	} 
 #endif
-
 	return;
 }	
 
@@ -1683,7 +1662,6 @@ void startReading(int sensors)
 void readSensors(int sensors)
 {
 	int i;
-	
 	values[0] = 0;
 	values[1] = 0;
 	values[2] = 0;
@@ -1702,7 +1680,6 @@ void readSensors(int sensors)
 			// Toma la muestra
 			values[0] += read_adc();
 		}
-		
 		// Sensor2
 		if (bit_test(sensors, 1) == 1)
 		{
@@ -1713,7 +1690,6 @@ void readSensors(int sensors)
 			// Toma la muestra
 			values[1] += read_adc();
 		}
-		
 		// Sensor3
 		if (bit_test(sensors, 2) == 1)
 		{
@@ -1724,7 +1700,6 @@ void readSensors(int sensors)
 			// Toma la muestra
 			values[2] += read_adc();
 		}
-		
 		// Sensor4
 		if (bit_test(sensors, 3) == 1)
 		{
@@ -1735,7 +1710,6 @@ void readSensors(int sensors)
 			// Toma la muestra
 			values[3] += read_adc();
 		}
-		
 		// Sensor5
 		if (bit_test(sensors, 4) == 1)
 		{
@@ -1759,7 +1733,7 @@ void readSensors(int sensors)
 	values[2] /= samples;
 	values[3] /= samples;
 	values[4] /= samples;
-	
+
 	return;
 }	
 
@@ -1768,7 +1742,6 @@ void sendValues(int to, int cmd, long * values, int sensors)
 {
 	int idx = 1, i;
 	signed long * tmp16;
-	
 	command.len = MIN_LENGTH + 1;
 	command.to = to;
 	command.from = THIS_CARD;
@@ -1800,10 +1773,9 @@ void sendValues(int to, int cmd, long * values, int sensors)
 void doCommand(struct command_t * cmd)
 {
 	int crc, i, len;
-		
 	// Calculo del CRC
 	crc = generate_8bit_crc((char *)cmd, cmd->len, CRC_PATTERN);
-	
+
 	// CRC ok?
 	if (cmd->crc != crc)
 	{		
@@ -1828,7 +1800,6 @@ void doCommand(struct command_t * cmd)
 		response.data[5 + len + 1] = crc;
 		// CRC de la respuesta
 		response.crc = generate_8bit_crc((char *)(&response), response.len, CRC_PATTERN);
-	
 		crcOK = false;
 		return;
 	}
@@ -2058,7 +2029,6 @@ void doCommand(struct command_t * cmd)
 \end{verbatimtab}
 }
 
-
 \subsection{Placa controladora de servo motores}
 \label{hA_source_servo}
 
@@ -2217,7 +2187,6 @@ void main()
 	// Init del protocol
 	initProtocol();
 
-
 	// FOREVER
 	while(true)
 	{
@@ -2231,7 +2200,6 @@ void main()
 		{
 			// Detiene el analisis de comandos
 			check_comm = 0;
-			
 			// Inicio del periodo
 			set_timer1(0);
 			// Activo los servos segun este o no habilitado
@@ -2240,7 +2208,6 @@ void main()
 			pwm3 = servo[2];
 			pwm4 = servo[3];
 			pwm5 = servo[4];
-			
 		} else
 		// Llego al final del pulso?
 		if (tmr1 >= PULSE_MAX)
@@ -2519,35 +2486,35 @@ Principales costos de armado del prototipo.
 			\hline
 			1 & Netbook & 2451 & 2451 \\
 			\hline
+			1 & Adaptador USB - Serial RS232 & 90 & 90 \\
+			\hline
+			10 & Microcontrolador PIC16F88 & 23 & 230 \\
+			\hline
 			4 & Placa gen\'erica & 97 & 388 \\
 			\hline
 			2 & Placa controladora motor DC & 151 & 302 \\
 			\hline
-			4 & Placa controladora de sensores & 106 & 424 \\
-			\hline
 			2 & Motorreductor IGNIS MR2-FA & 50 & 100 \\
 			\hline
-			10 & Tel\'emetro infrarrojo GP2D120 & 35 & 280 \\
+			2 & Driver L298 & 21 & 42 \\
+			\hline
+			4 & Placa controladora de sensores & 106 & 424 \\
+			\hline
+			8 & Tel\'emetro infrarrojo GP2D120 & 35 & 280 \\
 			\hline
 			1 & Sensor de ultrasonido SRF05 & 106 & 106 \\
 			\hline
 			5 & Sensor de piso CNY70 & 10 & 50 \\
 			\hline
-			2 & Rueda 100x26 & 30 & 60 \\
-			\hline
 			1 & Bater\'ia $12v$ $7Ah$  & 85 & 85 \\
-			\hline
-			10 & Microcontrolador PIC16F88 & 23 & 230 \\
-			\hline
-			2 & Driver L298 & 21 & 42 \\
-			\hline
-			1 & Adaptador USB - Serial RS232 & 90 & 90 \\
 			\hline
 			1 & Cargador de bater\'ia autom\'atico & 68 & 68 \\
 			\hline
 			1 & Rueda castor 30C & 11 & 11 \\
 			\hline
 			1 & Rueda castor 40C & 14 & 14 \\
+			\hline
+			2 & Rueda 100x26 & 30 & 60 \\
 			\hline
 		\end{tabular}
 	\end{center}
