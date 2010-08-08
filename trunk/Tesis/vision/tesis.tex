@@ -625,16 +625,18 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	positivas de las negativas \footnote{ Como se trata de imágenes 
 	binarias, llamamos a una región positiva a las que contienen 
 	pixeles con valores mayores a 0 y a las negativas a las que tienen 
-	un valor de 0.}. Por lo tanto para obtener estas secciones hacemos 
+	un valor de 0.}. Por lo tanto para obtener estas regiones hacemos 
 	uso de los algoritmos explicados en esta sub-sección.
 	
 	\paragraph{Algoritmo} 
 	Recordemos que las imágenes binarias se caracterizan por tener solo 
-	dos tipo de pixeles, los que tienen un valor de 0 o los que tienen 
+	dos tipos de pixeles, los que tienen un valor de $0$ y los que tienen 
 	un valor mayor a 0. Denominamos a estos pixeles como 
-	0-pixeles o 1-pixeles respectivamente. Decimos que un conjunto de 0-pixeles o 1-pixeles \textit{conectados} forman una componente. Entendemos dos tipos de conectividad
-	la 4-conectividad y la 8-conectividad: dos pixeles con coordenadas $(x',y')$ y $(x'',y'')$ son 4-conexos si y solo si 
-	$|x' - x''| + |y'-y''| = 1$ y 8-conexos si y solo si $max(|x'-x''|,|y'-y''|)=1$, la figura \ref{fig:conectividad} ilustra estas relaciones.
+	0-pixeles o 1-pixeles respectivamente. Decimos que un conjunto de 
+	0-pixeles o 1-pixeles \textit{conectados} forman una componente. Entendemos dos tipos de conectividad:
+	la 4-conectividad y la 8-conectividad. Dos pixeles con coordenadas 
+	$(x',y')$ y $(x'',y'')$ son 4-conexos si y sólo si 
+	$|x' - x''| + |y'-y''| = 1$ y 8-conexos si y sólo si $max(|x'-x''|,|y'-y''|)=1$, la figura \ref{fig:conectividad} ilustra estas relaciones.
 	Usando este concepto de conectividad se puede segmentar una imagen 
 	binaria en varias componentes 4-conexas u 8-conexas formadas por 
 	 0-pixeles o 1-pixeles. Cada una de estas
@@ -643,11 +645,16 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	4-camino u 8-camino \footnote{ Un 4-camino u 8-camino, es una secuencia 
 	de pixeles tal que cada pixel es 4-conexo u 8-conexo con el pixel 
 	siguiente.} que los
-	conecta. Ya que las 1-componentes( componentes que contienen 1-pixeles) son complementarias con las 0-componentes podemos solo considerar las primeras y asumir que todo
+	conecta. Ya que las 1-componentes (componentes que contienen 
+	1-pixeles) son complementarias con las 0-componentes podemos sólo considerar las primeras y asumir que todo
 	lo demás corresponde a 0-pixels conformando el fondo de la imagen. Cada 
 	1-componente posee un único borde exterior que lo separa de la 0-componente que lo rodea y cero o más bordes interiores que lo separan de las 0-componentes que rodea (agujeros). Un ejemplo de esto puede apreciarse
-	en la figura \ref{fig:contours}. El algoritmo que utilizamos no tiene en cuenta agujeros interiores de un contorno. Definimos entonces un punto de borde a un elemento de una 1-componente que es 4-conexo con una 0-componente y al \textit{borde} o \textit{contorno} de una figura como un conjunto de puntos de borde conectados. 
-	El objetivo de este algoritmo es entonces recolectar todos los 
+	en la figura \ref{fig:contours}. El algoritmo que utilizamos no tiene 
+	en cuenta agujeros interiores de un contorno. Definimos entonces un 
+	punto de borde a un elemento de una 1-componente que es 4-conexo con 
+	una 0-componente y al \textit{borde} o \textit{contorno} de una figura 
+	como un conjunto de puntos de borde conectados.\\
+	\indent El objetivo de este algoritmo es entonces recolectar todos los 
 	puntos de la imagen caracterizados como puntos de borde. Para 
 	hacer esto, recorre la imagen línea por línea buscando nuevos puntos de borde, cuando encuentra
 	uno nuevo, activa un proceso de seguimiento de borde almacenando las 
@@ -656,8 +663,8 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	visitados asignándoles a estos un valor especial para no volver a 
 	incidir en ellos. Finalmente se disponen todos los contornos encontrados en una lista.
 	Este algoritmo de reconocimiento de contornos está basado en la 
-	técnica expuesta por Suzuki y Abe para mayor detalle referimos al 
-	autor a \cite{suzuki85}.
+	técnica expuesta por Suzuki y Abe (para mayor detalle referimos al 
+	autor a \cite{suzuki85}).
 	
 	\begin{figure}[tpb]
 \begin{center}
@@ -672,22 +679,24 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
   \includegraphics[scale=0.6]{figuras/zonas-contours.png}
 \end{center}
   \caption{\small Ejemplo de segmentación en imágenes binarias. Las 1-componentes w1,w2 y w3 se encuentran rodeadas por la componente de fondo b1 y a su vez
-  rodean a 0-componentes b2,b3 y b4 }
+  rodean a 0-componentes b2, b3 y b4 }
   \label{fig:contours}
 \end{figure}
 	
 	
 	\paragraph{Representación}
 	Como se expresa en el trabajo de Zhang y Lu \cite{Zhang02}, existen diversas formas de representar los contornos, cada una con
-	distintas aplicaciones. En nuestro caso se utilizan la codificación encadenada de Freeman, que consiste describir una sucesión de puntos
-	de acuerdo a la posición de un punto con respecto a su predecesor en la secuencia. Para esto se numeran los vecinos de un pixel con 
-	los números del 1 al 7 como indica la figura \ref{fig:freeman}. De esta manera, un contorno puede almacenarse como la coordenada de
-	un punto inicial seguido de una cadena de códigos (del 1 al 7) que indican la posición del próximo punto respecto al actual. Esta 
+	distintas aplicaciones. En nuestro caso utilizamos la codificación 
+	encadenada de Freeman, que consiste en describir una sucesión de puntos
+	de acuerdo a la posición de un punto con respecto a su predecesor en 
+	la secuencia. Para lograr esto se numeran los vecinos de un pixel con 
+	los números del 0 al 7 como indica la figura \ref{fig:freeman}. Así un contorno puede almacenarse como la coordenada de
+	un punto inicial seguido de una cadena de códigos (del 0 al 7) que indican la posición del próximo punto respecto al actual. Esta 
 	es una representación más compacta en comparación con una secuencia 
 	de coordenadas  $(x,y)$ y posibilita la extracción de 
 	características tales como el CCH o NCCH \footnote{ CCH o chain 
 	code histogram es un histograma que se extrae a partir de la 
-	frecuencia de aparición de los números 1 a 7 en un contorno 
+	frecuencia de aparición de los números 0 a 7 en un contorno 
 	codificado con cadenas de Freeman. Este descriptor es invariante 
 	frente a traslaciones y escalamientos pero no frente a rotaciones 
 	para lo que existe su versión normalizada NCCH. Para más detalle 
@@ -725,10 +734,15 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	Luego se recorre el resto de los puntos del contorno buscando a aquel 
 	que se encuentre a mayor distancia de esta línea. A dicho punto se lo 
 	agrega a la aproximación, generando dos nuevas líneas con los dos puntos iniciales. Este proceso se itera agregando siempre el punto que se encuentre más distante de la aproximación hasta que todos los puntos del contorno se encuentren a una distancia menor que cierto parámetro 
-	de precisión establecido. En la figura \ref{fig:polyaprox} podemos apreciar una esquematización de este proceso. Otra ventaja que 
-	otorga la utilización de esta aproximación es que si un contorno presenta una serie de puntos alineados, estos serán remplazados por un 
-	único segmento o lado del polígono, lo que nos permite identificar líneas en los contornos. Esta característica es aprovechada para
-	realizar la detección de vasos como se ve en la próxima sección. En la figura \ref{fig:polyVasos} podemos observar un contorno
+	de precisión establecido. En la figura \ref{fig:polyaprox} podemos 
+	apreciar una esquematización de este proceso.\\
+	\indent Otra ventaja que 
+	otorga la utilización de esta aproximación es que si un contorno 
+	presenta una serie de puntos alineados, estos serán remplazados por 
+	un único segmento o lado del polígono, lo que nos permite 
+	identificar líneas en los contornos. Esta característica es 
+	aprovechada para realizar la detección de vasos como se ve en la  
+	sección \ref{sec:filtros}. En la figura \ref{fig:polyVasos} podemos observar un contorno
 	y su aproximación por polígonos.
 	
 \begin{figure}[htpb]
@@ -753,13 +767,16 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 
 	
 
-	\subsubsection{Filtros}
-	Realizada la etapa de pre-procesamiento y la recolección de contornos de la imagen el paso que sigue es verificar que estos
+	\subsubsection{\label{sec:filtros} Filtros}
+	Realizada la etapa de pre-procesamiento y la recolección de contornos 
+	de la imagen, el paso que sigue es verificar que estos
 	contornos tengan características que correspondan con  los 
 	objetos buscados. Para realizar esto, se implementan una serie de filtros que verifican propiedades
-	puntuales sobre los mismos, si un contorno supera todos los filtros entonces consideramos a tal como un objeto reconocido. \\
-	\indent Los filtros se disponen en cascada, es decir, se prueba un filtro en un contorno solo si este superó todos los filtros 
-	anteriores. De esta forma podemos ordenar los filtros de más general a más específico, optimizando los tiempos de detección. Por ejemplo , conocer 
+	puntuales sobre los mismos de forma tal que , si un contorno supera todos los filtros entonces consideramos a tal como un objeto reconocido. \\
+	\indent Los filtros se disponen en cascada, es decir, se prueba un 
+	filtro en un contorno si y sólo si este superó todos los filtros 
+	anteriores. De esta forma podemos ordenar los filtros de más general 
+	a más específico, optimizando (generalmente) los tiempos de detección. Por ejemplo , conocer 
 	el área que abarca un contorno determina fácil y rápidamente si un contorno corresponde a una colilla o a un plato evitando la ejecución
 	de filtros más específicos. En la figura \ref{fig:desc} se exhiben 
 	los valores obtenidos por algunos de los filtros que detallamos a 
@@ -776,11 +793,13 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	zona a la cual pertenece dependiendo de su ubicación en la imagen y se verifican los valores para dicha zona, si este los satisface entonces
 	el contorno supera al filtro.
 	\paragraph{Filtro de perímetro}
-	El filtro de perímetro calcula , efectivamente, el perímetro cubierto por un contorno. Esto se hace contando la cantidad de pixeles que lo definen.
+	El filtro de perímetro calcula , efectivamente, el perímetro 
+	cubierto por un contorno . Esto se hace contando la cantidad de pixeles que lo definen.
 	Vale remarcar, que el valor del perímetro depende ampliamente de la precisión con la que se obtengan los bordes ya que se ve drásticamente modificado 
 	si se aumenta o disminuye dicha precisión.
 	\paragraph{Filtro de excentricidad}
-	La excentricidad es un parámetro que relaciona la longitud del eje más largo con el del más corto. Esta se define como 
+	La excentricidad es un parámetro que relaciona la longitud del eje 
+	más largo con la del más corto. Esta se define como 
 	\textit { longitud del eje más largo / longitud del eje más corto}  . Algunas figuras pueden caracterizarse por tener valores de excentricidad
 	que se mantienen en cierto rango y permite identificarlas usando este filtro.
 	\paragraph{Filtro de circularidad}
@@ -796,7 +815,8 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	el área según la fórmula $A=\pi a  b$ y se la compara con la 
 	obtenida a través del filtro de área. Se computa como $|A-AReal|/ 
 	AReal < p$ donde p determina el
-	valor de verosimilitud, donde más chico significa más parecido. Si estas dos áreas son lo suficientemente similares consideramos que el contorno supera el filtro. 
+	valor de verosimilitud. Un valor de $p$ mas chico significa mayor 
+	semejanza con una elipse. Si estas dos áreas son lo suficientemente similares consideramos que el contorno supera el filtro. 
 	Para el ajuste de elipse se utiliza el algoritmo Fitzgibbon, Pilu y Fisher \cite{Fitzgibbon99}.
 	\paragraph{Filtro de vaso}
 	El filtro para vasos consiste en varias etapas. Recordando que el contorno se codifica como un polígono, se obtienen los dos segmentos 
@@ -809,13 +829,16 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	\paragraph{Filtro de histograma}
 	El filtro de histograma verifica la similitud de un histograma obtenido a partir del contorno con otro histograma obtenido a partir de 
 	una imagen modelo del objeto a detectar. El histograma modelo se calcula en el inicio de la ejecución mientras que el del contorno se
-	computa en tiempo real. Esto se hace obteniendo el rectángulo contenedor mínimo de dicho contorno y computando un histograma 2d de la imagen
-	utilizando los canales de saturación y tono. Esto permite caracterizar a un objeto por una composición de colores y no por su forma. El 
+	computa en tiempo real. Esto se hace obteniendo el rectángulo 
+	contenedor mínimo de dicho contorno y computando un histograma 2D de la imagen
+	utilizando los canales de saturación y tono. De esta manera, se 
+	puede caracterizar a un objeto por una composición de colores y no por su forma. El 
 	problema de este filtro es que requiere mayor procesamiento.
 	
 	\subsubsection{Reconocimiento de vasos}
 	Para el reconocimiento de vasos se utilizan(en este orden) los filtros de área, perímetro, circularidad y el de vasos.
-	El filtro de área verifica que $500 \leq area \leq 10000 $ , el de perímetro que $100 \leq per \leq 800 $ , el de circularidad
+	El filtro de área verifica que $500 \leq area \leq 10000 $ , el de 
+	perímetro que $100 \leq per \leq 800 $ y el de circularidad
 	que $14 \leq circ \leq 18$. El filtro de vasos no es parametrizado. 
 	
 	\subsubsection{Reconocimiento de colillas}
@@ -829,12 +852,11 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	que $10 \leq circ \leq 16$, el de excentricidad que $0.65 \leq ecc \leq 0.95$ y el de elipse que $|a-aReal|/ aReal < 0.2$.
 	
 	\subsubsection{Centroide}
-	En las siguientes secciones se hacen referencia a los centroides 
-	de un objeto. El centroide es el centro geométrico o centro de 
+	El centroide es el centro geométrico o centro de 
 	gravedad de una figura y 
 	sirve como punto de referencia para la misma. Para calcular dicho 
 	punto hacemos uso de las formulas propuestas por Hu \cite{Hu1962} para la 
-	descripción de figuras. El momento de Hu de un contorno 2d se define como:
+	descripción de figuras. El momento de Hu de un contorno 2D se define como:
 	\begin{equation}
 		m_{pq}=\sum_{x}{\sum_{y}{x^py^qI(x,y)}}
 	\end{equation}
@@ -860,11 +882,12 @@ En imágenes no binarias, la operación de erosión se define tomando el mínimo
 	El algoritmo de visión que hemos descripto hasta aquí funciona 
 	procesando la imagen correspondiente a un único cuadro. Sin embargo, 
 	el sistema de visión del robot debe permitir el reconocimiento de 
-	objetos a medida que esta se desplaza por su entorno y por lo tanto 
+	objetos a medida que éste se desplaza por su entorno y por lo tanto 
 	dicho sistema debe procesar imágenes secuenciales del mismo. Con 
-	esto afirmamos que existe cierta relación entre las imágenes 
+	esto afirmamos que existe cierta relación (tanto temporal como 
+	espacial) entre las imágenes 
 	que el sistema de visión debe procesar y que podemos aprovechar esta 
-	característica para reforzar la detección de objetos.  El mecanismo por el cual buscamos lograr este objetivo es el del sistema de predicción.\\
+	característica para reforzar la detección de objetos. El mecanismo por el cual buscamos lograr este objetivo es el del sistema de predicción.\\
 \indent 	El sistema de predicción consume la información que el 
 sistema de visión le entrega en cada cuadro y, con ella, realiza el 
 seguimiento de objetos a lo largo del tiempo. Es a partir de este 
@@ -875,7 +898,7 @@ menudo, en desacuerdo acerca de presencia u ausencia
 de un objeto.  El sistema de predicción se basa en las siguientes asunciones:
 \begin{enumerate}
 \item{ Los objetos no realizaran grandes desplazamientos entre cuadros 
-consecutivos - esto se debe la proximidad temporal entre cuadros y que el robot no realiza movimientos bruscos.}
+consecutivos - esto se debe a la proximidad temporal entre cuadros y que el robot no realiza movimientos bruscos.}
 \item{ Los objetos no sufrirán grandes alteraciones en su forma, área 
 o perímetro entre cuadros consecutivos - con un razonamiento similar, la perspectiva no cambia lo suficiente como para alterar la figura, área o perímetro de los objetos.}
 \end{enumerate} 
@@ -886,15 +909,16 @@ el cuadro siguiente $c_1$ con coordenadas $(x_1, y_1)$ tal que
 $||(x_1,y_1) - (x_0,y_0)||\leq \alpha$, área $a'$ tal que $|a-a'| \leq 
 \gamma *a$ y perímetro $p'$ tal que $|p-p'|\leq \theta*p$ entonces $A 
 \simeq A'$, donde $\alpha$, $\gamma$ y $\theta$ son parámetros del 
-sistema. Esta aseveración no solo vale para el cuadro subsiguiente 
+sistema. Esta afirmación no solo vale para el cuadro subsiguiente 
 $c_1$ sino también para los siguientes $c_2,c_3 ... c_{0+\eta}$ donde 
-$\eta$, $\alpha$ y $\gamma$ se computan, para este caso, según el 
+$\eta$ y $\alpha$ se computan, para este caso, según el 
 historial de detección de cada objeto.  Basándose en esta regla, el 
 sistema de predicción puede estimar la posición de un objeto que, 
 para un cuadro en particular, no fue detectado por el sistema de 
 visión. Para concretar este mecanismo, cuando un objeto es detectado a lo largo de varios cuadros se persiste la siguiente información:
 \begin{itemize}
-\item{ Última posición, área y perímetro - Se toman los datos de la detección mas reciente del sistema de visión .}
+\item{ Última posición, área y perímetro - Se toman los datos de la 
+detección más reciente del sistema de visión.}
 \item{ Antigüedad del objeto - Cantidad de cuadros transcurridos desde que se comenzó a persistir el objeto en el sistema de predicción.}
 \item{ Cantidad de detecciones - Se mantiene la cantidad de cuadros en la cual el sistema de visión detectó al objeto.}
 \item{ Desplazamiento en la posición - Si el objeto es detectado más 
@@ -902,7 +926,7 @@ de una vez, se almacena el último desplazamiento en la posición $(x_i -
 x_{i-1} , y_i - y_{i-1} )$.}
 \item{ Antigüedad de la última detección - Cantidad de cuadros que transcurrieron desde la última detección por parte del sistema de visión.}  
 \end{itemize}
-Esta información no solo nos permite corregir al sistema de visión 
+Esta información no sólo permite corregir al sistema de visión 
 cuando este no detecta un objeto sino que también podemos corregirlo 
 cuando este no rechaza falsas detecciones de objetos inexistentes. Para 
 implementar estos mecanismos se establecen las siguientes reglas sobre 
@@ -932,8 +956,8 @@ confianza del sistema de predicción apareciendo \footnote{Con
 aparición nos referimos a que el objeto sea reconocido por el sistema 
 de visión.} regularmente en 
 cuadros consecutivos, en concordancia con la asunción número 
-1. De no cumplir con esta asunción, consideramos que no se trata de un 
-objeto de interés e utilizamos la regla 1 para eliminar dicha detección. \\
+1. De no cumplir con esta premisa, consideramos que no se trata de un 
+objeto de interés y utilizamos la regla 1 para eliminar dicha detección. \\
 	Una vez ganada la confianza del sistema de predicción, este 
 	último comienza a tener a estos objetos en consideración 
 	\footnote{Decimos que el sistema de predicción considera a un 
@@ -943,7 +967,7 @@ objeto de interés e utilizamos la regla 1 para eliminar dicha detección. \\
 	todavía no considera a dicho objeto, ignora la detección y no informa de su 
 	presencia.} y veta por su 
 existencia aunque el sistema de visión no los detecte. El grado en que 
-el sistema cree en la existencia de estos objetos se va regulando de 
+el sistema cree en la existencia de estos objetos se regula de 
 acuerdo al historial de apariciones de los mismos. Si estos abusan de 
 la confianza otorgada entonces el sistema de predicción los descarta 
 como indica la regla 2. 
@@ -952,22 +976,24 @@ cuadros que puede pasar un objeto sin ser detectado por el sistema de
 visión y siendo considerado por el sistema de predicción. Dicho 
 número se determina periódicamente utilizando la fórmula de la regla 3.
 Finalmente, durante este lapso de confianza, el sistema de predicción 
-'aproxima' la posición de los objetos si estos no son detectados por el 
+`aproxima' la posición de los objetos si estos no son detectados por el 
 sistema de visión, como dice la regla 4. \\
 \indent La variable $\alpha$ determina la distancia máxima que puede 
 desplazarse un objeto entre cuadros para que el sistema de predicción lo considere 
 como el mismo. Las variables $\gamma$ y $\theta$ determinan el máximo 
-porcentaje de variación en el área y perímetro que puede soportar un 
+porcentaje de variación en el área y perímetro respectivamente, que puede soportar un 
 objeto entre cuadros para ser considerado como el mismo. Valores 
 típicos para la detección de colillas y vasos son de 
 $0.1\leq\gamma\leq0.3$ y $0.1\leq\theta\leq0.3$. Para el caso de 
-$\alpha$ definimos un valor aproximado de 30 pixeles. Sin embargo, la 
+$\alpha$ definimos un valor aproximado de 30 pixeles \footnote{ El 
+valor de 30 pixeles nos dió resultados para imágenes de 640x480, para 
+otras resoluciones habría que buscar el equivalente.}. Sin embargo, la 
 tolerancia en el desplazamiento varía según los cuadros transcurridos desde la última 
 detección. Si en el cuadro anterior fue detectado entonces se utiliza 
 $\alpha$ , si fue detectado hace dos cuadros entonces $2\alpha$, tres 
 cuadros $3\alpha$ y así. La variable $\delta$ establece el umbral de 
 detección de un objeto por parte del sistema de visión para que el 
-sistema de predicción lo empiece  a considerar. $\rho$ establece, 
+sistema de predicción lo empiece  a considerar como basura. $\rho$ establece, 
 independientemente de la  
 regularidad de un objeto, la cantidad máxima de cuadros que puede 
 permanecer este sin ser detectado por el sistema de visión y 
@@ -976,36 +1002,43 @@ considerado por el sistema de predicción. \\
 performance de detección. En el caso de la variable $\delta$, el 
 sistema de visión debe reconocer un objeto $\delta -1$ veces antes de que sea 
 tenido en consideración por el sistema de predicción y, en este lapso, las 
-detecciones serán ignoradas. Sin embargo, las apariciones no sostenidas 
+detecciones serán ignoradas\footnote{El sistema de predicción ignora 
+una detección del sistema de visión en el sentido de que este primero 
+no informa a dicha detección como un objeto residual encontrado para 
+ese cuadro, sino que sólo registra dicha detección para 
+cuadros futuros.} . Sin embargo, las apariciones no sostenidas 
 (de hasta $\delta -1$ cuadros) de elementos que aparentan ser objetos 
 para el sistema de visión pero no lo son, son también ignoradas, 
 disminuyendo el porcentaje de falsos negativos.\\
 \indent La variable $\rho$, en cambio, establece otro tipo de balance. 
-	Siempre que un objeto deja de aparecer en la imagen (por 
-	desplazamiento del objeto o del robot), el sistema de 
-	predicción arriesga la posición de este un máximo de $\rho$ veces 
-	(según la regularidad de detección) y, en esta caso, las equivoca a 
-	todas ya que el objeto no figura más en la imagen. El lado 
-	positivo es que cuando un objeto que tenía un historial de 
-	detección positivo es ocluido o alterado de tal forma que el 
-	sistema de visión no lo reconoce, el sistema de predicción 
+	Siempre que un objeto (de aparición regular) deja de aparecer en la imagen (por 
+	desplazamiento del objeto o del robot), el sistema de visión, 
+	lógicamente, deja de detectarlo. Cuando esto sucede, el sistema de 
+	predicción arriesga la posición del objeto un máximo de $\rho$ veces 
+	(según el grado de regularidad de detección) y, en este caso, las equivoca a 
+	todas ya que el objeto dejo de estar en el rango de visión del 
+	robot. El lado bueno es que cuando un objeto que tenía un historial de 
+	detección positivo es ocluido o sufre alguna alteración de tal 
+	forma que el sistema de visión deja de reconocerlo, el sistema de predicción 
 	arriesgará la posición (hasta $\rho$ veces) pudiéndole acertar o no hasta que el objeto 
 	sea nuevamente detectado por el sistema de visión o sea descartado. 
 	Es en esta última situación es donde se obtienen nuevas detecciones que el sistema de visión 
 	nunca podría obtener por sí solo.\\
 	\indent A partir de estas reflexiones surge la importancia de configurar 
-	estas variables de acuerdo al sistema de visión que estemos 
+	estos parametros de acuerdo al sistema de visión que estemos 
 	usando. Si tenemos un sistema de visión con alto porcentaje de 
 	falsos positivos y bajo porcentaje de falsos negativos entonces es 
 	probable que arriesgar más posiciones de objetos cuando estos no 
-	son detectados mejore la performance. En este caso debemos elegir 
-	valores de $\rho$,no muy pequeños, para afrontar el déficit de 
-	detección del sistema de visión  y valores de $delta$,mas bien 
+	son detectados mejore el rendimiento\footnote{ Decimos que el 
+	rendimiento del algoritmo mejora cuando éste disminuye el 
+	porcentaje de falsos positivos o falsos negativos.}. En este caso debemos elegir 
+	valores de $\rho$, no muy pequeños, para afrontar el déficit de 
+	detección del sistema de visión y valores de $\delta$, más bien 
 	pequeños, para no entorpecer la detección. Es importante remarcar 
 	que el bajo porcentaje de falsos positivos, en este caso, nos 
 	permite confiar en el sistema de visión en el sentido de que las cosas que 
 	este detecte tienen altas probabilidades de ser objetos. \\
-	\indent En el caso reciproco, un sistema de visión con alto 
+	\indent En el caso recíproco, un sistema de visión con alto 
 	porcentaje de falsos negativos y bajo porcentaje de falsos 
 	positivos quizás convenga tener un valor de $\delta$ alto, para 
 	filtrar la mayor cantidad de detecciones falsas. Al hacerlo, puede 
@@ -1013,7 +1046,7 @@ disminuyendo el porcentaje de falsos negativos.\\
 	caso habría que estudiar cuanto se gana y cuanto se pierde y 
 	buscar un balance.\\
 	\indent Otra posibilidad es que el sistema de visión sea muy 
-	confiable ( bajo porcentaje de falsos positivos/negativos). En 
+	confiable (bajo porcentaje de falsos positivos/negativos). En 
 	esta situación conviene configurar al sistema de predicción para 
 	que haga más caso de lo que el sistema de visión le informa. Esto 
 	significa que cuando el sistema de visión no encuentra un objeto 
@@ -1055,8 +1088,8 @@ disminuyendo el porcentaje de falsos negativos.\\
 	una basura y el robot se dirige a recolectarla. En esta circunstancia, 
 	no nos interesan otros objetos que puedan aparecer durante el trayecto 
 	y por lo tanto tratamos de evitar cualquier tipo de procesamiento 
-	innecesario sobre ellos. Con este objetivo, seleccionamos una 
-	sub-imagen a procesar en la cual suponemos que vamos a encontrar al 
+	innecesario sobre ellos. Con este objetivo, el mecanismo selecciona una 
+	sub-imagen a procesar en la cual supone que va a encontrar al 
 	objeto en cuestión. El mecanismo de focalización se encuentra muy 
 	ligado al sistema de predicción ya que debe persistir cierta 
 	información sobre la posición del objeto para poder tomar una 
@@ -1065,7 +1098,8 @@ disminuyendo el porcentaje de falsos negativos.\\
 \begin{itemize}
 \item{ Objeto más cercano - Se estiman las distancias a los objetos y se selecciona aquel que se encuentre más cercano al robot.}
 \item{ Objeto más detectado en los últimos 20 cuadros - Se selecciona al objeto que fue reconocido más veces por el sistema de visión en las últimas 20 imágenes.}
-\item{ Objeto más antiguo - Se elige al objeto que persistieron más cuadros según el sistema de predicción.}
+\item{ Objeto más antiguo - Se elige al objeto que comenzo a ser 
+persistido hace más cuadros según el sistema de predicción.}
 \item{ Combinación ponderada - Se utilizan los  criterios mencionados dándoles mayor o menor peso a cada uno y eligiendo al objeto que obtenga mayor puntuación.}
 \end{itemize}
 Pensamos todos los criterios con el objetivo de maximizar las chances 
@@ -1073,16 +1107,17 @@ de que el robot tenga éxito en la recolección del objeto. El criterio de menor
 	\indent Una vez que seleccionamos el objeto, utilizamos el sistema de 
 	predicción para dar cuenta de la posición del mismo. Con esta 
 	información, tomamos sub-imágenes (ventanas) de la captura original 
-	que solo abarquen un entorno del objeto como se aprecia en la figura 
-	\ref{fig:ventaneo} y \ref{fig:ventaneo_2} . Esto provoca una 
-	disminución en el tiempo de procesamiento requerido ya que solo se procesa una fracción de 
+	que sólo abarquen un entorno del objeto como se aprecia en la figura 
+	\ref{fig:ventaneo} y \ref{fig:ventaneo_2} . Como beneficio, 
+	obtenemos una 
+	disminución en el tiempo de procesamiento requerido ya que sólo se procesa una fracción de 
 	la imagen. El tamaño de la ventana queda determinado por 
 	las dimensiones del contorno del objeto a focalizar. Si consideramos 
 	al sistema de visión como un sensor podríamos decir que este 
 	mecanismo incrementa la frecuencia de muestreo del mismo ya que 
 	permite tomar una mayor cantidad de muestras en menor tiempo. La 
 	focalización sobre un objeto finaliza únicamente cuando este objeto 
-	deja de ser reconocido por el sistema de predicción y entonces 
+	deja de ser considerado por el sistema de predicción y entonces 
 	retomamos al  procesamiento de la imagen completa donde se 
 	seleccionara un nuevo objeto a focalizar. 
 
@@ -1113,7 +1148,7 @@ de que el robot tenga éxito en la recolección del objeto. El criterio de menor
 En esta sección se describen los parámetros utilizados para la 
 medición de la performance y se muestran los resultados obtenidos para 
 el sistema de visión y un sistema de visión con predicción. De este 
-últimos exhibimos dos configuraciones. Tomamos 8 videos de prueba en los cuales 3 pertenecen a 
+último exhibimos dos configuraciones. Tomamos 8 videos de prueba en los cuales 3 pertenecen a 
 colillas, 3 a vasos y 2 a platos. Los videos fueron tomados utilizando 
 una silla de oficina giratoria para poder desplazarse suavemente por 
 el entorno simulando el movimiento del robot. La cámara se ubicó a 30 
@@ -1133,7 +1168,7 @@ medimos los siguientes parámetros:
 \item { Hits\textbf{(H)} : Cantidad de detecciones por parte del algoritmo que se corresponden con rectángulos marcados.}
 \item { Misses o detecciones falsas \textbf{(M)} : Cantidad de detecciones por parte del algoritmo que no se corresponden con rectángulos marcados.}
 \end{itemize}
-Se desprende directamente que la cantidad de detecciones: 
+Se desprende directamente, de estos valores, que la cantidad de detecciones: 
 \textbf{$\#D=H+M$} .
 Con estos datos obtenemos los porcentajes de error , falsos positivos : 
 \[
@@ -1151,7 +1186,7 @@ con \textbf{G} mientras que a las estimaciones que además fueron
 acertadas \textbf{G\&H}.
 
 \subsubsection{Análisis}
-Exhibimos los resultados obtenidos tras utilizar solo el sistema de 
+Exhibimos los resultados obtenidos tras utilizar sólo el sistema de 
 visión en el cuadro \ref{tab:result} e utilizando el sistema de 
 visión con el sistema de predicción, utilizando dos configuraciones 
 distintas, en 
@@ -1160,13 +1195,13 @@ resultados promedios de falsos positivos y falsos negativos agrupados
 por objeto para todas las configuraciones en los cuadros \ref{tab:evo_colillas}, 
 \ref{tab:evo_vasos} y \ref{tab:evo_platos}. Las configuraciones 
 utilizadas fueron seleccionadas para destacar distintos comportamientos del 
-sistema de predicción, estas son:
+sistema de predicción. Éstas son:
 \begin{itemize}
 \item{\textbf{Configuración 1:} $\lambda=10$, $\rho=10$, $\delta=3$}
 	\item{\textbf{Configuración 2:} $\lambda=10$, $\rho=4$, $\delta=2$}
 \end{itemize}
-\indent En los resultados arrojados en el cuadro \ref{tab:result} solo por el sistema de visión 
-observamos problemas en la  detección de colillas ya que posee altos 
+\indent En los resultados arrojados en el cuadro \ref{tab:result} 
+(sólo por el sistema de visión) observamos problemas en la  detección de colillas ya que posee altos 
 porcentajes de falsos negativos. Esto indica que el detector, en el 
 caso de las colillas, tiene
 problemas en distinguir a estas de su entorno ya que comete 
@@ -1176,7 +1211,7 @@ detecciones \#D es siempre mayor que \#O también observado en el
 cuadro \ref{tab:result}. No obstante, al utilizar el sistema de 
 predicción observamos una gran reducción de este porcentaje producto 
 del filtrado realizado por dicho sistema el cual no considera una 
-basura hasta que esta se presente en $\delta$ cuadros consecutivos.  
+basura hasta que esta esté presente en $\delta$ cuadros consecutivos.  
 Esta mejora viene acompañada de efecto negativos ya que la cantidad de 
 hits se ve afectada pero con menor intensidad. Esto prueba que el 
 filtrado realizado es efectivo ya que elimina, sobre el total de las 
@@ -1194,23 +1229,25 @@ reconocerlos y mas difícil confundirlos en relación con estas
 últimas, que poseen un color similar al del fondo y son de tamaño 
 pequeño. En este caso, el sistema de predicción no altera demasiado 
 los resultados como en el caso de las colillas, sin embargo, destacamos un 
-aumento en la cantidad de detecciones falsas en la configuración 1 
-,atribuido a el valor elevado de $\rho$, acompañado de un incremento 
+aumento en la cantidad de detecciones falsas en la configuración 1, 
+atribuido a el valor elevado de $\rho$, acompañado de un incremento 
 similar en el porcentaje de aciertos. Distinto es el caso de 
 la configuración 2 que disminuye levemente el porcentaje de falsas 
 detecciones y el porcentaje de aciertos respecto de los resultados
 obtenidos por el sistema de visión. El comportamiento de la 
-configuración 2 es razonable ya que esta es una configuración menos 
-invasiva y más respetuosa del sistema de visión subyacente en 
+configuración 2 es razonable ya que esta es menos 
+invasiva\footnote{Nos referimos a una configuración menos invasiva en 
+el sentido de que la presencia del sistema de predicción no modifica 
+drásticamente los resultados arrojados por el sistema de visión.} y más respetuosa del sistema de visión subyacente en 
 comparación con la configuración 1. Esto se ve reflejado, en parte, 
 en la cantidad de estimaciones ( \textbf{G} ) y estimaciones correctas 
 (\textbf{G\&H}) cometidas por cada configuración. Podemos 
 apreciar las diferencias entre las distintas configuraciones para los 
 vasos en el cuadro \ref{tab:evo_vasos}.\\
 \indent El caso de los platos es similar al de los vasos. El sistema de visión 
-obtiene buenos resultados por si solo pero se ve perjudicado por la configuración 1 del sistema de 
-predicción ya que este no acierta en gran proporción de las estimaciones que realiza. 
-Sin embargo, en este caso , el aumento en el porcentaje de detecciones 
+obtiene buenos resultados por sí sólo pero se ve perjudicado por la configuración 1 del sistema de 
+predicción ya que éste no acierta en gran proporción de las estimaciones que realiza. 
+Sin embargo, en este caso, el aumento en el porcentaje de detecciones 
 falsas es relativamente mayor que el aumento de aciertos. 
 La configuración 2, por otro lado, aumenta el 
 porcentaje de aciertos y disminuye la cantidad de detecciones falsas 
@@ -1222,7 +1259,7 @@ que se cometen menos errores. Un cuadro comparativo de las
 distintas configuraciones para vasos pueden observarse en el cuadro 
 \ref{tab:evo_platos}.\\
 \indent  Las dos configuraciones del sistema de predicción modifican de 
-distintas manera al algoritmo de visión subyacente. Para cada objeto 
+distintas maneras al algoritmo de visión subyacente. Para cada objeto 
 hemos obtenido resultados y comportamiento particulares lo que 
 justifica la necesidad de ajustar los parámetros del mismo para obtener la mejor 
 performance posible. Para poder realizar este ajuste es necesario 
@@ -1294,8 +1331,8 @@ la sección GUILLE.
 	\hline
 	\hline
 	vasos1 & 5050 & 4880 & 4849 & 31 & 0.6\% & 3.9\% \\
-	vasos3 & 1777 & 1708 & 1696 & 12 & 0.7\% & 4.5\% \\	
-	vasos4 & 6196 & 5354 & 5251 & 103 & 1.9\% & 15.2\% \\
+	vasos2 & 1777 & 1708 & 1696 & 12 & 0.7\% & 4.5\% \\	
+	vasos3 & 6196 & 5354 & 5251 & 103 & 1.9\% & 15.2\% \\
 	\hline
 	colillas1 & 1645 & 1648 & 1282 & 367 & 22.2\% & 22.0\% \\
 	colillas2 & 891 & 1045 & 636 &  409 & 39.1\% & 28.6\% \\
@@ -1316,8 +1353,8 @@ la sección GUILLE.
 	\hline
 	\hline
 	vasos1 & 5050 & 5017 & 4888 & 118 & 2.3\% & 3.2\%  & 245 & 142\\
-	vasos3 & 1777 & 1773 & 1707 & 66 & 3.7\% & 3.9\% & 121 & 60 \\
-	vasos4 & 6196 & 5703 & 5459 & 240 & 4.2\% & 11.8\% & 536 & 373 \\
+	vasos2 & 1777 & 1773 & 1707 & 66 & 3.7\% & 3.9\% & 121 & 60 \\
+	vasos3 & 6196 & 5703 & 5459 & 240 & 4.2\% & 11.8\% & 536 & 373 \\
 	\hline
 	colillas1 & 1645 & 1444 & 1330 & 98 & 6.8\% & 19.1\% & 296 & 229 \\
 	colillas2 & 891 & 687 & 586 & 95 & 13.9\% & 34.2\% & 127 & 57 \\
@@ -1338,8 +1375,8 @@ la sección GUILLE.
 	\hline
 	\hline
 	vasos1 & 5050 & 4866 & 4839 & 27 & 0.5\% & 4.1\%  & 83 & 72\\
-	vasos3 & 1777 & 1700 & 1689 & 11 & 0.6\% & 4.9\% & 32 & 27 \\
-	vasos4 & 6196 & 5318 & 5222 & 96 & 1.8\% & 15.7\% & 241 & 226 \\
+	vasos2 & 1777 & 1700 & 1689 & 11 & 0.6\% & 4.9\% & 32 & 27 \\
+	vasos3 & 6196 & 5318 & 5222 & 96 & 1.8\% & 15.7\% & 241 & 226 \\
 	\hline
 	colillas1 & 1645 & 1220 & 1168 & 53 & 4.3\% & 28.9\% & 142 & 126 \\
 	colillas2 & 891 & 652 & 566 & 86 & 13.1\% & 36.4\% & 78 & 38 \\
@@ -1413,7 +1450,7 @@ la sección GUILLE.
 Presentamos un algoritmo para el reconocimiento de distintos objetos en 
 un ambiente dinámico en el marco de un robot autónomo capaz de 
 recolectar basura. El mismo funciona sobre la librería de visión 
-computacional OpenCv y el lenguaje c++.  El algoritmo cuenta
+computacional OpenCv y el lenguaje C++.  El algoritmo cuenta
 con una etapa de pre-procesado donde se extraen los pixeles de colores de interés y se disminuye el ruido utilizando 
 operaciones morfológicas y de threshold. La etapa de procesamiento extrae los contornos y utiliza una aproximación por polígonos
 para simplificar el análisis posterior. Este consiste en una serie de 
@@ -1432,15 +1469,15 @@ los tiempos de procesamiento.
 
 \subsubsection{Posibles extensiones}
 Existen varios puntos donde consideramos se pude mejorar este sistema 
-de visión. Una de las áreas donde se pueden introducir mejoras es en 
+de reconocimiento de objetos. Una de las áreas donde se pueden introducir mejoras es en 
 la sección de filtros. Como hemos visto, existen novedosas técnicas de 
 descripción y representación de contornos que pueden ser introducidas 
 como un filtro adicional sin necesidad de modificar la estructura del 
-algoritmo. La utilización de dichas técnicas pueden utilizarse para 
+algoritmo. La utilización de dichas técnicas pueden servir para 
 la caracterización de nuevos objetos a reconocer o bien para reforzar 
 los objetos ya tratados. Por otro lado, hallamos al sistema de filtros 
 en cascada un tanto limitado para la tarea propuesta ya que frente a 
-pequeñas perturbaciones que provoquen que un único filtro rechazo un 
+pequeñas perturbaciones que provoquen que un único filtro rechaze un 
 determinado contorno, este último se verá descartado por el sistema. 
 Como alternativas a este sistema se puede implementar un sistema de 
 votación donde se reúnan los resultados de cada filtro y se tome una 
@@ -1471,8 +1508,8 @@ superiores e inferiores en el filtro de área de acuerdo a los
 refuerzos recibidos.\\
 \indent El sistema de predicción puede cometer errores cuando, por 
 efectos de iluminación o oclusión, un objeto cambia su área o 
-perímetro en gran proporción. Por lo tanto , la inclusión de otros 
-descriptores de contorno en este sistema podría resultar en un 
+perímetro en gran proporción. Por lo tanto, la inclusión de otros 
+\emph{descriptores de contorno} en este sistema podría resultar en un 
 seguimiento más efectivo de los mismos a lo largo de los cuadros. 
 También es posible mejorar la estimación de las posiciones utilizando 
 fórmulas que tengan en cuenta no solo el último desplazamiento sino 
