@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm all.aux all.idx all.log all.out all.toc
+rm tesis.aux tesis.idx tesis.log tesis.out tesis.toc tesis.lof tesis.lot tesis.idx tesis.bbl tesis.blg
 
 cat hardware/references.bib > references.bib
 cat comportamientos/references.bib >> references.bib
