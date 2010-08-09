@@ -22,6 +22,15 @@ while( i < n )
 	i++;
 endwhile
 
+i=1;
+percret = zeros(l+2,l+2);
+while( i < l )
+	percret(i,:) = ret(i,:)/sum(ret(i,:));
+	i++;
+endwhile
+
+percret
+
 k = 1
 while( k < l )
 	[aux idx] = max(ret(k,:));
@@ -39,5 +48,7 @@ while( k < l )
 %	ret(l+4,k) = idx;
 	k++;
 endwhile
+
+
 
 endfunction
