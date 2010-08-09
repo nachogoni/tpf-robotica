@@ -1,4 +1,4 @@
-\documentclass[a4paper,10pt]{report}
+\documentclass[a4paper,10pt]{article}
 
 \usepackage[spanish]{babel}
 \usepackage{graphics}
@@ -8,16 +8,43 @@
 \usepackage{color}      % use if color is used in text
 \usepackage{hyperref}   % use for hypertext links, including those to external
 
+\usepackage{epstopdf}
+\usepackage{fancyhdr}
+\usepackage{verbatim}   % useful for program listings
+\usepackage{inputenc}
+\usepackage{subfigure}  % use for side-by-side figures
+\usepackage{moreverb}
+\usepackage{paralist}
+\usepackage{listings}
+
+% \addto\captionsspanish{\def\tablename{Cuadro}}
+
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+
+\makeatletter
+\renewcommand\paragraph{%
+   \@startsection{paragraph}{4}{0mm}%
+      {-\baselineskip}%
+      {.5\baselineskip}%
+      {\normalfont\normalsize\bfseries}}
+\renewcommand\subparagraph{%
+   \@startsection{subparagraph}{4}{0mm}%
+      {-\baselineskip}%
+      {.25\baselineskip}%
+      {\normalfont\normalsize\bfseries}}
+\makeatother
+
+\DeclareMathSymbol{,}{\mathpunct}{letters}{"3A}
+\DeclareMathSymbol{.}{\mathord}{letters}{"3B}
 
 %% Encabezado y Pie de Pagina %%
 
 \makeindex
 
-%opening
 \title{Proyecto Final\\Robot recolector de residuos}
-\author{Guillermo Campelo (46124) \and Juan Ignacio Go\~ni (46383) \and Diego Ezequiel Nul (46448)}
 
-%\thanks{Tutor : Prof. Santos, Juan}
+\author{Guillermo Campelo\\Juan Ignacio Go\~ni\\Diego Nul\\ \\Tutor: Prof. Juan Manuel Santos\\ \\Instituto Tecnol\'ogico de Buenos Aires\\Departamento de Inform\'atica}
 
 \begin{document}
 
@@ -28,6 +55,14 @@
 \newpage
 
 \tableofcontents
+
+\newpage
+
+\listoftables
+
+\newpage
+
+\listoffigures
 
 \newpage
 
@@ -53,5 +88,10 @@
 
 \input{apendice.tex}
 
+\newpage
+
+\bibliography{references}
+\bibliographystyle{plain}
+\nocite{*}
 
 \end{document}
