@@ -602,15 +602,24 @@ se activ\'o 15 veces y \emph{Salir de situaciones indeseadas} nunca.
 	\label{behaviours_stats}
 \end{table}
 
-En los cuadros \ref{behaviour_stats1} y \ref{behaviour_stats2} mostramos
+En los cuadros \ref{behaviours_stats_active} y \ref{behaviours_stats_inactive} mostramos
 c\'alculos sobre los steps que cada comportamiento estuvo $caa$
 \footnote{caa: continuamente activo. Por continuamente activo se entiende que
 estuvo activo en el time step $t-1$ y en el $t$} y $cai$ \footnote{cai: 
 continuamente inactivo. Por continuamente inactivo se entiende que no estuvo
-activo en el timestep $t-1$ ni en el $t$}, respectivamente. Podemos ver que
-\emph{Recolectar basura} es en promedio el mayor en ambas tablas y que tiene
-el menor desv\'io est\'andar en $caa$. \emph{Wandering} es en promedio el que
-menor tiempo est\'a $cai$
+activo en el timestep $t-1$ ni en el $t$}, respectivamente.
+\\\indent
+Podemos ver que \emph{Recolectar basura} es en promedio el mayor en ambos
+cuadros y que tiene el menor desv\'io est\'andar en $caa$. \emph{Wandering} es
+en promedio el que menor tiempo est\'a $cai$, con el segundo menor desv\'io.
+Sucede lo mismo con \emph{Evitar obst\'aculos}, segundo en promedio en estar
+$cai$ y con el menor desv\'io. Ambos, adem\'as, tienen los m\'inimos m\'aximos
+en estar $cai$, con una diferencia de un orden de magnitud con respecto al
+resto de los comportamientos. \emph{Ir a descargar basura} e \emph{Ir a
+recargar bater\'ia} son de los que mayor promedio y desv\'io tienen tanto en
+estar $caa$ como en estar $cai$. Los comportamientos de \emph{Enfocar basura}
+y \emph{Ir a basura} tienen un promedio y desv\'io est\'andar de los m\'as
+bajos en estar $caa$.
 
 \begin{table}[htp]
 	\begin{center}
@@ -625,7 +634,7 @@ menor tiempo est\'a $cai$
 			Ir a descargar basura & 237.25 & 840.49 & 6012 \\
 			Ir a recargar bater\'ia & 178.06 & 647.39 & 3950 \\
 			Evitar obst\'aculos & 11.17 & 54.72 & 1386 \\
-			Salir situaciones indeseadas & 0 & 0 & 0 \\
+			Salir situaciones indeseadas & - & - & - \\
 			\hline
 		\end{tabular}
 	\end{center}
@@ -655,6 +664,18 @@ menor tiempo est\'a $cai$
 					inactivos}
 	\label{behaviours_stats_inactive}
 \end{table}
+
+En el cuadro \ref{transitions} mostramos las transiciones entre los
+comportamientos. \'Estos est\'an abreviados y presentados en el mismo
+orden que en la secci\'on \ref{comportamientos}. El valor en la posici\'on
+$(i$,$j) = t_{ij}$, siendo $i$ y $j$ el n\'umero de fila y columna
+respectivamente, se lee como: ``desde el comportamiento $i$ se pas\'o
+$t_{ij}$ veces al comportamiento $j$''. Tambi\'en se puede leer como:
+``el comportamiento $j$ se activ\'o $t_{ij}$ veces, siendo el
+comportamiento $i$ el que anteriormente estaba activo''. Consideramos
+que hay una transici\'on cuando $i \neq j$, por lo que $t_{ii} = 0$.
+\\\indent
+alla
 
 \begin{table}[htp]
 	\begin{center}
