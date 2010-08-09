@@ -673,9 +673,13 @@ respectivamente, se lee como: ``desde el comportamiento $i$ se pas\'o
 $t_{ij}$ veces al comportamiento $j$''. Tambi\'en se puede leer como:
 ``el comportamiento $j$ se activ\'o $t_{ij}$ veces siendo el
 comportamiento $i$ el que anteriormente estaba activo''. Consideramos
-que hay una transici\'on cuando $i \neq j$, por lo que $t_{ii} = 0$.
+que hay una transici\'on cuando $i \neq j$, por lo que $t_{ii} = 0$. Una
+transici\'on de $i$ a $j$ con $i > j$ puede ser porque el est\'imulo necesario
+para la activaci\'on del comportamiento $i$ ya no est\'a presente. Una
+transici\'on de $i$ a $j$ con $i < j$ puede ser porque el est\'imulo necesario
+para la activaci\'on del comportamiento $j$ pas\'o a ser sensado.
 \\\indent
-El comportamiento que m\'as veces "activ\'o" a otro comportamiento es
+El comportamiento que m\'as veces ``activ\'o'' a otro comportamiento es
 \emph{Enfocar basura}, activando a \emph{Ir a basura}. Observamos tambi\'en
 que el caso contrario es la 2da transici\'on m\'as hecha y ambos valores
 est\'an relativamente cercanos. El caso que los valores de $t_{ij}$ y $t_{ji}$
@@ -688,11 +692,6 @@ Podemos ver que hay transiciones que s\'olo se dan 1 sola vez. \'Estas son:
 	\item{}\emph{Enfocar basura} a \emph{Descargar basura} e
 	\item{}\emph{Ir a basura} a \emph{Recargar bater\'ia}
 \end{itemize}
-
-Mostramos tambi\'en las transiciones en forma de porcentajes en los cuadros
-\ref{transitions_percentages} y \ref{transitions_percentages_ret}. En el
-primero se muestran las transiciones desde $i$ hacia $j$ y en el segundo,
-transiciones de $j$ hacia $i$.
 
 \begin{table}[htp]
 	\begin{center}
@@ -721,6 +720,23 @@ transiciones de $j$ hacia $i$.
 	\label{transitions}
 \end{table}
 
+Mostramos tambi\'en las transiciones en forma de porcentajes en los cuadros
+\ref{transitions_percentages} y \ref{transitions_percentages_ret}. En el
+primero detallamos las transiciones desde $i$ hacia $j$ y en el segundo,
+transiciones de $j$ hacia $i$. Se puede ver que las transiciones que m\'as
+sucedieron fueron desde \emph{Descargar basura} y \emph{Recargar bater\'ia}
+hacia \emph{Evitar obst\'aculos}, con un porcentaje mayor al $95\%$, y que
+el segundo tambi\'en es la causa principal de la activaci\'on de los primeros,
+con porcentajes de $95\%$ y $97\%$ respectivamente.
+\\\indent
+En segundo lugar se ubican las transiciones desde \emph{Enfocar basura} hacia
+\emph{Ir a basura} y el rec\'iproco, con valores cercanos al $75\%$. Algo
+parecido sucede en el segundo cuadro.
+\\\indent
+El $80\%$ de las veces que estuvo activo \emph{Recolectar basura} luego se
+activ\'o \emph{Wandering} y el $80\%$ de las veces que se activ\'o el primero
+fue por parte de \emph{Ir a basura}.
+
 \begin{table}[htp]
 	\begin{center}
 		\begin{tabular}{|c||c|c|c|c|c|c|c|}
@@ -740,13 +756,14 @@ transiciones de $j$ hacia $i$.
 		\hline
 			R & $0.034\%$ & $0\%$ & $0\%$ & $0\%$ & $0.004\%$ & $0\%$ & $0.962\%$ \\
 		\hline
-			EO & $0.549\%$ & $0.074\%$ & $0.004\%$ & $0\%$ & $0.202\%$ & $0.170\%$ & $0\%$ \\
+			EO & $0.55\%$ & $0.074\%$ & $0.004\%$ & $0\%$ & $0.202\%$ & $0.170\%$ & $0\%$ \\
 		\hline
 		\end{tabular}
 	\end{center}
 	\caption{Transiciones desde $i$ hacia $j$ en porcentajes}
 	\label{transitions_percentages}
 \end{table}
+
 
 \begin{table}[htp]
 	\begin{center}
@@ -775,6 +792,19 @@ transiciones de $j$ hacia $i$.
 	\label{transitions_percentages_ret}
 \end{table}
 
+En la figura \ref{fig:seenArea} mostramos el progreso del \'area recorrida por
+el robot a lo largo de la simulaci\'on. El arena estaba dividida en
+$A_{rw}$.$A_{rh} = 3800$ slots. Como es de esperarse, la suma de cantidad de
+slots vistos y slots restantes en un instante de tiempo $t$ es $cte=3800$. El
+tiempo en que se lleg\'o a recorrer todo el arena fue $t_{fv} = 95241$. Dado
+que la duraci\'on de la simulaci\'on fue de $t_{fs} = 228721$, el arena se
+recorri\'o en el $0.42\%$ del tiempo total de simulaci\'on.
+\\\indent
+Se puede ver que al principio de la simulaci\'on ($0<t<17000$) hay pendientes
+abruptas, con mesetas de pocos steps. Luego las pendientes tienen menor valor
+y las mesetas son m\'as prolongadas, salvando el caso del intervalo
+($35000<t<40000$).
+
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[scale=0.25]{comportamientos/graphics/areaCoveredVsTimeUse.png}
@@ -783,6 +813,16 @@ transiciones de $j$ hacia $i$.
 \label{fig:seenArea}
 \end{center}
 \end{figure}
+
+En el cuadro \ref{arena:covered} vemos m\'as en detalle el progreso del
+porcentaje de arena cubierto. Tomamos 10 muestras uniformes en el per\'iodo
+($0<t<t_{fv}$) y obtuvimos el porcentaje cubierto en esa muestra, as\'i
+como tambi\'en el acumulado la misma. Podemos ver que ya en la 2da muestra,
+$0<t<0.042 t_{fs}$, se alcanza a recorrer el $50\%$ del total del arena.
+Despu\'es los incrementos son m\'as peque\~nos en comparaci\'on a los primeros,
+salvando el caso de la cuarta y \'ultima muestra. En la primer muestra el
+robot recorri\'o aproximadamente el $25\%$ de la arena, en la segunda el $50\%$
+y en la cuarta el $75\%$.
 
 %esp_cub / (e\sp_cub + esp_nocub)
 \begin{table}[htp]
