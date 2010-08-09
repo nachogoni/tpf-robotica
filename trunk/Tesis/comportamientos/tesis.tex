@@ -505,7 +505,8 @@ est\'an en milisegundos.
 
 %\subsubsection{Porcentaje de espacio cubierto}
 
-%\subsubsection{Tiempo cubrir toda la arena}
+\subsubsection[Distribuci\'on y progreso de comportamientos]{Distribuci\'on de
+			tiempos y progreso de comportamientos en la simulaci\'on}
 En la figura \ref{fig:behaviourDistribution} mostramos la distribuci\'on
 de time steps en la simulaci\'on de cada comportamiento. Podemos ver que
 \emph{Recargar bater\'ia} y \emph{Descargar basura} en conjunto est\'an
@@ -570,7 +571,7 @@ largo de la misma.
 \end{center}
 \end{figure}
 
-Para que pudieramos ver m\'as en detalle lo que suced\'io con los
+Para que pudieramos ver m\'as en detalle lo que sucedi\'o con los
 comportamientos, obtuvimos la cantidad de veces que cada uno se
 activ\'o (Ver cuadro \ref{behaviours_stats}). En el mismo observamos
 que el comportamiento que m\'as veces se activ\'o fue \emph{Evitar
@@ -602,6 +603,8 @@ se activ\'o 15 veces y \emph{Salir de situaciones indeseadas} nunca.
 	\label{behaviours_stats}
 \end{table}
 
+\subsubsection[Tiempos en $caa$ y $cai$ de comportamientos]{Tiempos en que
+			los comportamientos est\'an continuamente activos e inactivos}
 En los cuadros \ref{behaviours_stats_active} y \ref{behaviours_stats_inactive} mostramos
 c\'alculos sobre los steps que cada comportamiento estuvo $caa$
 \footnote{caa: continuamente activo. Por continuamente activo se entiende que
@@ -665,6 +668,8 @@ bajos en estar $caa$.
 	\label{behaviours_stats_inactive}
 \end{table}
 
+\subsubsection[Transiciones entre comportamientos]{Transiciones hacia y desde
+			un comportamiento a otro}
 En el cuadro \ref{transitions} mostramos las transiciones entre los
 comportamientos. \'Estos est\'an abreviados y presentados en el mismo
 orden que en la secci\'on \ref{comportamientos}. El valor en la posici\'on
@@ -764,7 +769,6 @@ fue por parte de \emph{Ir a basura}.
 	\label{transitions_percentages}
 \end{table}
 
-
 \begin{table}[htp]
 	\begin{center}
 		\begin{tabular}{|c||c|c|c|c|c|c|c|}
@@ -791,6 +795,9 @@ fue por parte de \emph{Ir a basura}.
 	\caption{Transiciones desde $j$ hacia $i$ en porcentajes}
 	\label{transitions_percentages_ret}
 \end{table}
+
+\subsubsection[Arena recorrida]{Progreso de recorrido de la arena a lo largo de
+			la simulaci\'on}
 
 En la figura \ref{fig:seenArea} mostramos el progreso del \'area recorrida por
 el robot a lo largo de la simulaci\'on. El arena estaba dividida en
@@ -860,5 +867,6 @@ y en la cuarta el $75\%$.
 \newpage
 \subsection{Conclusi\'on}
 \label{comp_conclusion}
-Conclusi\'on de comportamientos
+En \'esta secci\'on sacamos conclusiones sobre los resultados obtenidos en la
+secci\'on \ref{results}, as\'i como dar posibles explicaciones a los mismos.
 
