@@ -1,9 +1,12 @@
-﻿\section{Visi\'on}
+﻿\section{\label{sec:vision}Visi\'on}
 
 \subsection{Introducci\'on}
+Como es sabido, el an\'alisis de im\'agenes es una tarea demandante en cuanto a complejidad
+y tiempo de procesamiento requerido ya que involucra, entre otras cosas, operar sobre grandes matrices. Este motivo, nos llev\'o a 
+implementar un m\'odulo de visi\'on separado del resto del software del robot.
 En esta secci\'on exhibimos el sistema de an\'alisis de im\'agenes por 
 el cual el robot en cuesti\'on da cuenta de la existencia o ausencia de 
-elementos residuales en el entorno descripto. El sistema se basa en la 
+elementos residuales en el entorno descripto.  El sistema se basa en la 
 utilizaci\'on de una c\'amara de tipo webcam con una \'unica lente para 
 obtener informaci\'on del ambiente. Esta informaci\'on es luego procesada 
 por una computadora a bordo del robot utilizando un algoritmo de visi\'on 
@@ -14,7 +17,7 @@ el desarrollo del algoritmo utilizamos la librer\'ia de visi\'on
 computacional OpenCV \cite{opencv_library} acompa\~nado de un sistema 
 desarrollado en C++. Como plataforma utilizamos un sistema linux 
 ubuntu corriendo en una netbook con procesador intel atom 
-n450 y 1 gb de memoria RAM como se detalla en ********************************************************************************************************.
+n450 y 1 gb de memoria RAM como se detalla en \ref{h_controlador_netbook}.
 Esta secci\'on se divide en las siguientes partes: en la sub-secci\'on 2 mostramos  
 los trabajos previos estudiados, en la sub-secci\'on 3 describimos el algoritmo de detecci\'on, 
 en las secciones 4 y 5 explicamos los m\'odulos de predicci\'on y focalizaci\'on respectivamente mientras que en la 
@@ -247,7 +250,8 @@ Sin embargo, tambi\'en establece que como solo usan parte de una figura, son m\'
 \begin{center}
   \includegraphics[scale=0.55]{vision/figures/shapess.png}
 \end{center}
-  \caption{Clasificaci\'on de las t\'ecnicas de descripci\'on y representaci\'on de figuras}
+  \caption[t\'ecnicas de descripci\'on de figuras]
+  {Clasificaci\'on de las t\'ecnicas de descripci\'on y representaci\'on de figuras}
   \label{fig:review_shape}
 \end{figure}
 
@@ -390,7 +394,7 @@ pixeles que no coinciden con el rango deseado (ver inciso
 \begin{center}
   \includegraphics[scale=0.6]{vision/figures/vision-flow.png}
 \end{center}
-  \caption{Etapas del algoritmo de visi\'on}
+  \caption[Etapas del algoritmo de visi\'on]{Etapas del algoritmo de visi\'on}
   \label{fig:alg_steps}
 \end{figure}
 
@@ -421,7 +425,7 @@ H= 180+(B - R)*60/S,  if V=G
 
 if H<0 then H=H+360
 \end{verbatim}
-\caption{\label{code:hsv}pseudo-c\'odigo de la conversi\'on RGB-HSV}
+\caption[Conversión RGB-HSV]{\label{code:hsv}pseudo-c\'odigo de la conversi\'on RGB-HSV}
 \end{figure}
 
 Obteniendo el canal H, nos fijamos que los valores de los pixeles 
@@ -454,7 +458,7 @@ se cumpla que el valor del pixel tenga $v>170$.
 \begin{center}
   \includegraphics[scale=0.4]{vision/figures/hsv_triangle.png}
 \end{center}
-  \caption{\small Espacio de color HSV. Los distintos tonos de colores se encuentran dispuestos a lo largo de la circunferencia.}
+  \caption[Espacio de color HSV]{\small Espacio de color HSV. Los distintos tonos de colores se encuentran dispuestos a lo largo de la circunferencia.}
   \label{fig:hsv_space}
 \end{figure}
 
@@ -462,7 +466,7 @@ se cumpla que el valor del pixel tenga $v>170$.
 \begin{center}
   \includegraphics[scale=0.8]{vision/figures/hue.png}
 \end{center}
-  \caption{\small Resultados de aplicar un filtro de color utilizando distintos rangos. (a) Captura original. (b) Resultado de aplicar el filtro $35\le h \le45$, se pierden algunos pixeles. (c) Resultado de aplicar el filtro $20\le h \le40$. (d) Resultado de aplicar el filtro $10 \le h \le 50$, se introducen pixeles extra.} 
+  \caption[Filtro de color con distintos rangos]{\small Resultados de aplicar un filtro de color utilizando distintos rangos. (a) Captura original. (b) Resultado de aplicar el filtro $35\le h \le45$, se pierden algunos pixeles. (c) Resultado de aplicar el filtro $20\le h \le40$. (d) Resultado de aplicar el filtro $10 \le h \le 50$, se introducen pixeles extra.} 
   \label{fig:hue_range}
 \end{figure}
 
@@ -526,7 +530,7 @@ figura \ref{fig:threshold}.
 \begin{center}
   \includegraphics[scale=0.4]{vision/figures/threshold-dif.png}
 \end{center}
-  \caption{\small Distintos valores de umbral. (a) Captura original. 
+  \caption[Distintos valores de umbral]{\small Distintos valores de umbral. (a) Captura original. 
   (b) Threshold binario con umbral 120. Se observan pixeles extra en 
   la detecci\'on. (c) Threshold binario con umbral 160. Se observa la 
   ausencia de pixeles. }
@@ -537,7 +541,7 @@ figura \ref{fig:threshold}.
 \begin{center}
   \includegraphics[scale=0.25]{vision/figures/adaptative.png}
 \end{center}
-  \caption{\small Comparaci\'on de threshold adaptativo con el filtro de 
+  \caption[Comparación threshold con filtro de color]{\small Comparaci\'on de threshold adaptativo con el filtro de 
   color. (b) Imagen obtenida de la c\'amara. 
   (a) Salida del filtro de color. (c) Threshold adaptativo sobre la 
   imagen b previa conversi\'on a blanco y negro utilizando una ventana 
@@ -552,7 +556,7 @@ figura \ref{fig:threshold}.
 \begin{center}
   \includegraphics[scale=0.8]{vision/figures/threshold-ruido.png}
 \end{center}
- \caption{\small Resultados de aplicar thresholding binario. (a) Captura original. (b) Salida del detector de color, se observan algunos pixeles extra cerca de la l\'inea de brea. (c) Salida de la operaci\'on de dilataci\'on-erosi\'on. (d) Salida de la operaci\'on de thresholding binario con un umbral de $100$. La baja intensidad de los pixeles extra en la l\'inea de brea no supera el umbral propuesto y por lo tanto son descartados. El contorno del objeto de inter\'es se conserva aislado.} 
+ \caption[Eliminación de ruido por threshold]{\small Resultados de aplicar thresholding binario. (a) Captura original. (b) Salida del detector de color, se observan algunos pixeles extra cerca de la l\'inea de brea. (c) Salida de la operaci\'on de dilataci\'on-erosi\'on. (d) Salida de la operaci\'on de thresholding binario con un umbral de $100$. La baja intensidad de los pixeles extra en la l\'inea de brea no supera el umbral propuesto y por lo tanto son descartados. El contorno del objeto de inter\'es se conserva aislado.} 
   \label{fig:threshold_ruido}
 \end{figure}
 
@@ -560,7 +564,7 @@ figura \ref{fig:threshold}.
 \begin{center}
   \includegraphics[scale=0.8]{vision/figures/threshold.png}
 \end{center}
-  \caption{\small Resultados de aplicar thresholding. (a) Captura original. (b) Salida del detector de color, se observan algunos pixeles extra debajo del objeto de inter\'es. (c) Salida de la operaci\'on de dilataci\'on-erosi\'on, los pixeles extra se combinaron con los pixeles del objeto.(d) Salida de la operaci\'on de thresholding binario con un umbral de $100$. La baja intensidad de los pixeles extra en la zona debajo del objeto no supera el umbral propuesto y por lo tanto son descartados. El contorno del objeto de inter\'es se conserva aislado.} 
+  \caption[Resultados de aplicar thresholding]{\small Resultados de aplicar thresholding. (a) Captura original. (b) Salida del detector de color, se observan algunos pixeles extra debajo del objeto de inter\'es. (c) Salida de la operaci\'on de dilataci\'on-erosi\'on, los pixeles extra se combinaron con los pixeles del objeto.(d) Salida de la operaci\'on de thresholding binario con un umbral de $100$. La baja intensidad de los pixeles extra en la zona debajo del objeto no supera el umbral propuesto y por lo tanto son descartados. El contorno del objeto de inter\'es se conserva aislado.} 
   \label{fig:threshold}
 \end{figure}
 
@@ -575,7 +579,7 @@ Ilustramos esto en las figuras \ref{fig:dilate-sample} y \ref{fig:erode-sample}.
 \begin{center}
   \includegraphics[scale=0.4]{vision/figures/dilate-sample.png}
 \end{center}
-  \caption{\small Operaci\'on de dilataci\'on en im\'agenes binarias. Se reemplazan los pixeles no vac\'ios por una copia del elemento estructural con punto principal en esa posici\'on. La cruz indica la posici\'on del punto principal dentro del elemento estructural (ee). Imagen obtenida del curso de visi\'on artificial de la Universidad Polit\'ecnica de Madrid.}
+  \caption[Operaci\'on de dilataci\'on]{\small Operaci\'on de dilataci\'on en im\'agenes binarias. Se reemplazan los pixeles no vac\'ios por una copia del elemento estructural con punto principal en esa posici\'on. La cruz indica la posici\'on del punto principal dentro del elemento estructural (ee). Imagen obtenida del curso de visi\'on artificial de la Universidad Polit\'ecnica de Madrid.}
   \label{fig:dilate-sample}
 \end{figure}
 
@@ -583,7 +587,7 @@ Ilustramos esto en las figuras \ref{fig:dilate-sample} y \ref{fig:erode-sample}.
 \begin{center}
   \includegraphics[scale=0.4]{vision/figures/erode-sample.png}
 \end{center}
-  \caption{\small Operaci\'on de erosi\'on en im\'agenes binarias. Se persisten los pixeles no vac\'ios en donde cabe una copia del elemento estructural cuyo punto principal se encuentra en esa posici\'on. La cruz indica la posici\'on del punto principal dentro del elemento estructural (ee). Imagen obtenida del curso de visi\'on artificial de la Universidad Polit\'ecnica de Madrid. } 
+  \caption[Operaci\'on de erosi\'on]{\small Operaci\'on de erosi\'on en im\'agenes binarias. Se persisten los pixeles no vac\'ios en donde cabe una copia del elemento estructural cuyo punto principal se encuentra en esa posici\'on. La cruz indica la posici\'on del punto principal dentro del elemento estructural (ee). Imagen obtenida del curso de visi\'on artificial de la Universidad Polit\'ecnica de Madrid. } 
   \label{fig:erode-sample}
 \end{figure}
 
@@ -595,7 +599,7 @@ tomando el m\'aximo local bajo el elemento estructural y asign\'andole ese valor
 \begin{center}
   \includegraphics[scale=0.8]{vision/figures/dilate1.png}
 \end{center}
-  \caption{\small Efecto de la operaci\'on de dilataci\'on. (a)  Imagen original tomada de la c\'amara. (b) Imagen luego de aplicar dilataci\'on a la imagen c con un elemento estructural cuadrado de 3x3 pixeles, con punto principal en el centro. (c) Salida del filtro de color. La colilla de cigarrillo esta 'partida' en dos componentes conexas. } 
+  \caption[Efecto de la operaci\'on de dilataci\'on]{\small Efecto de la operaci\'on de dilataci\'on. (a)  Imagen original tomada de la c\'amara. (b) Imagen luego de aplicar dilataci\'on a la imagen c con un elemento estructural cuadrado de 3x3 pixeles, con punto principal en el centro. (c) Salida del filtro de color. La colilla de cigarrillo esta 'partida' en dos componentes conexas. } 
   \label{fig:dilate}
 \end{figure}
 
@@ -604,7 +608,7 @@ tomando el m\'aximo local bajo el elemento estructural y asign\'andole ese valor
 
   \includegraphics[scale=0.6]{vision/figures/dilate-ruido.png}
 \end{center}
-  \caption{\small Eliminaci\'on de ruido mediante la operaci\'on de dilataci\'on. (a) Imagen original tomada de la c\'amara. (b) Imagen luego de aplicar dilataci\'on a la imagen c con un elemento estructural cuadrado de 3x3 pixeles, con punto principal en el centro. (c) Salida del filtro de color. Observamos \'areas  oscuras en el interior del vaso. }
+  \caption[Eliminaci\'on de ruido mediante dilataci\'on]{\small Eliminaci\'on de ruido mediante la operaci\'on de dilataci\'on. (a) Imagen original tomada de la c\'amara. (b) Imagen luego de aplicar dilataci\'on a la imagen c con un elemento estructural cuadrado de 3x3 pixeles, con punto principal en el centro. (c) Salida del filtro de color. Observamos \'areas  oscuras en el interior del vaso. }
   \label{fig:dilate-ruido}
 \end{figure}
 
@@ -615,7 +619,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 \begin{center}
   \includegraphics[scale=0.8]{vision/figures/erosion.png}
 \end{center}
-  \caption{\small Ejemplo de erosi\'on. (a) Captura original. (b) Salida del filtro de color. Se observan fallas en la detecci\'on del objeto. (d) Se aplica la operaci\'on de dilataci\'on a la imagen b. Se observa la producci\'on de protuberancias en la figura del objeto. (c) Salida luego de aplicar erosi\'on a c. La figura del objeto se corrige eliminando parte de las protuberancias. Sin embargo, no se observan fallas en la detecci\'on del objeto. }
+  \caption[Ejemplo de erosi\'on]{\small Ejemplo de erosi\'on. (a) Captura original. (b) Salida del filtro de color. Se observan fallas en la detecci\'on del objeto. (d) Se aplica la operaci\'on de dilataci\'on a la imagen b. Se observa la producci\'on de protuberancias en la figura del objeto. (c) Salida luego de aplicar erosi\'on a c. La figura del objeto se corrige eliminando parte de las protuberancias. Sin embargo, no se observan fallas en la detecci\'on del objeto. }
   \label{fig:erode}
 \end{figure}
 
@@ -670,7 +674,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 \begin{center}
   \includegraphics[scale=0.6]{vision/figures/48conexos.png}
 \end{center}
-  \caption{\small Tipos de conectividad entre pixeles de una imagen binaria}
+  \caption[Tipos de conectividad entre pixeles]{\small Tipos de conectividad entre pixeles de una imagen binaria}
   \label{fig:conectividad}
 \end{figure}
 
@@ -678,7 +682,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 \begin{center}
   \includegraphics[scale=0.6]{vision/figures/zonas-contours.png}
 \end{center}
-  \caption{\small Ejemplo de segmentaci\'on en im\'agenes binarias. Las 1-componentes w1,w2 y w3 se encuentran rodeadas por la componente de fondo b1 y a su vez
+  \caption[Ejemplo de segmentaci\'on en im\'agenes binarias]{\small Ejemplo de segmentaci\'on en im\'agenes binarias. Las 1-componentes w1,w2 y w3 se encuentran rodeadas por la componente de fondo b1 y a su vez
   rodean a 0-componentes b2, b3 y b4 }
   \label{fig:contours}
 \end{figure}
@@ -707,7 +711,8 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 \begin{center}
   \includegraphics[scale=0.6]{vision/figures/freeman-sample.png}
 \end{center}	
-  \caption{\small Ejemplo de codificaci\'on de un contorno utilizando los c\'odigos de Freeman. }
+  \caption[Ejemplo de codificaci\'on de un contorno utilizando los c\'odigos de Freeman]
+  {\small Ejemplo de codificaci\'on de un contorno utilizando los c\'odigos de Freeman. }
   \label{fig:freeman_sample}
 \end{figure}
 
@@ -715,8 +720,8 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 \begin{center}
   \includegraphics[scale=0.6]{vision/figures/freeman-codes.png}
 \end{center}
-  \caption{\small Matriz para la codificaci\'on de Freeman. El n\'umero indica la direcci\'on de desplazamiento del pr\'oximo punto respecto del
-  actual (punto negro) }.
+  \caption[Matriz para la codificaci\'on de Freeman]{\small Matriz para la codificaci\'on de Freeman. El n\'umero indica la direcci\'on de desplazamiento del pr\'oximo punto respecto del
+  actual (punto negro) }
   \label{fig:freeman}
 \end{figure}
 		
@@ -749,7 +754,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 \begin{center}
   \includegraphics[scale=0.8]{vision/figures/polyaprox.png}
 \end{center}
-  \caption{\small Aproximaci\'on de contornos mediante pol\'igonos. (a) Se observa que el contorno se encuentra acorde el borde del vaso, las
+  \caption[Aproximaci\'on de contornos mediante pol\'igonos]{\small Aproximaci\'on de contornos mediante pol\'igonos. (a) Se observa que el contorno se encuentra acorde el borde del vaso, las
   partes laterales del mismo se encuentran segmentadas (efecto serrucho) por la cantidad de puntos. (b) El contorno es representado mediante
   8 puntos, los lados laterales solo involucran un segmento posibilitando la detecci\'on de l\'ineas.}
   \label{fig:polyVasos}
@@ -759,7 +764,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 \begin{center}
   \includegraphics[scale=0.6]{vision/figures/douglas-pecker.png}
 \end{center}
-  \caption{\small Iteraciones del algoritmo de aproximaci\'on de pol\'igonos de Douglas-Peucker. (a) Imagen original. (b) Extracci\'on de contorno
+  \caption[Algoritmo de aproximaci\'on de pol\'igonos]{\small Iteraciones del algoritmo de aproximaci\'on de pol\'igonos de Douglas-Peucker. (a) Imagen original. (b) Extracci\'on de contorno
   (c) Se seleccionan dos puntos iniciales y se traza una l\'inea entre ellos (d) Se agrega a la aproximaci\'on el punto m\'as lejano del contorno a esta l\'inea.
   (e) Se repite el proceso agregando siempre el punto m\'as lejano (f) hasta que todos los puntos est\'en a cierta distancia requerida.}
   \label{fig:polyaprox}
@@ -873,7 +878,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 \begin{center}
   \includegraphics[scale=0.4]{vision/figures/filtros.png}
 \end{center}
-  \caption{\small Ejemplo de descriptores de contorno. Se visualiza el \'area, per\'imetro, zona y circularidad del contorno 
+  \caption[Ejemplo de descriptores de contorno]{\small Ejemplo de descriptores de contorno. Se visualiza el \'area, per\'imetro, zona y circularidad del contorno 
   detectado de una colilla y un vaso}
   \label{fig:desc}
 \end{figure}
@@ -999,7 +1004,7 @@ regularidad de detecci\'on de un objeto, la cantidad m\'axima de cuadros que pue
 permanecer este sin ser detectado por el sistema de visi\'on y 
 considerado por el sistema de predicci\'on. \\  	
 \indent Es importante destacar que tanto $\rho$ como $\delta$ repercuten directamente en la 
-performance de detecci\'on. En el caso de la variable $\delta$, el 
+performance de detecci\'on. En el caso del par\'ametro $\delta$, el 
 sistema de visi\'on debe reconocer un objeto $\delta -1$ veces antes de que sea 
 tenido en consideraci\'on por el sistema de predicci\'on y, en este lapso, las 
 detecciones ser\'an ignoradas\footnote{El sistema de predicci\'on ignora 
@@ -1011,51 +1016,54 @@ cuadros futuros.} . Sin embargo, las apariciones no sostenidas
 para el sistema de visi\'on pero no lo son, son tambi\'en ignoradas, 
 disminuyendo el porcentaje de falsos negativos.\\
 \indent La variable $\rho$, en cambio, establece otro tipo de balance. 
-	Siempre que un objeto (de aparici\'on regular) deja de aparecer en la imagen (por 
-	desplazamiento del objeto o del robot), el sistema de visi\'on, 
-	l\'ogicamente, deja de detectarlo. Cuando esto sucede, el sistema de 
-	predicci\'on arriesga la posici\'on del objeto un m\'aximo de $\rho$ veces 
-	(seg\'un el grado de regularidad de detecci\'on) y, en este caso, las equivoca a 
-	todas ya que el objeto dejo de estar en el rango de visi\'on del 
-	robot. El lado bueno es que cuando un objeto que ten\'ia un historial de 
-	detecci\'on positivo es ocluido o sufre alguna alteraci\'on de tal 
-	forma que el sistema de visi\'on deja de reconocerlo, el sistema de predicci\'on 
-	arriesgar\'a la posici\'on (hasta $\rho$ veces) pudi\'endole acertar o no hasta que el objeto 
-	sea nuevamente detectado por el sistema de visi\'on o sea descartado. 
-	Es en esta \'ultima situaci\'on es donde se obtienen nuevas detecciones que el sistema de visi\'on 
-	nunca podr\'ia obtener por s\'i solo.\\
-	\indent A partir de estas reflexiones surge la importancia de configurar 
-	estos parametros de acuerdo al sistema de visi\'on que estemos 
-	usando. Si tenemos un sistema de visi\'on con alto porcentaje de 
-	falsos positivos y bajo porcentaje de falsos negativos entonces es 
-	probable que arriesgar m\'as posiciones de objetos cuando estos no 
-	son detectados mejore el rendimiento\footnote{ Decimos que el 
-	rendimiento del algoritmo mejora cuando \'este disminuye el 
-	porcentaje de falsos positivos o falsos negativos.}. En este caso debemos elegir 
-	valores de $\rho$, no muy peque\~nos, para afrontar el d\'eficit de 
-	detecci\'on del sistema de visi\'on y valores de $\delta$, m\'as bien 
-	peque\~nos, para no entorpecer la detecci\'on. Es importante remarcar 
-	que el bajo porcentaje de falsos positivos, en este caso, nos 
-	permite confiar en el sistema de visi\'on en el sentido de que las cosas que 
-	este detecte tienen altas probabilidades de ser objetos. \\
-	\indent En el caso rec\'iproco, un sistema de visi\'on con alto 
-	porcentaje de falsos negativos y bajo porcentaje de falsos 
-	positivos quiz\'as convenga tener un valor de $\delta$ alto, para 
-	filtrar la mayor cantidad de detecciones falsas. Al hacerlo, puede 
-	suceder que tambi\'en filtremos detecciones positivas pero en ese 
-	caso habr\'ia que estudiar cuanto se gana y cuanto se pierde y 
-	buscar un balance.\\
-	\indent Otra posibilidad es que el sistema de visi\'on sea muy 
-	confiable (bajo porcentaje de falsos positivos/negativos). En 
-	esta situaci\'on conviene configurar al sistema de predicci\'on para 
-	que haga m\'as caso de lo que el sistema de visi\'on le informa. Esto 
-	significa que cuando el sistema de visi\'on no encuentra un objeto 
-	el sistema de predicci\'on no debe arriesgar mucho ya que el objeto 
-	probablemente no se encuentre. Asimismo, unas pocas detecciones de 
-	un objeto bastan para que el sistema de predicci\'on lo tenga 
-	en consideraci\'on ya que existe una alta probabilidad de que 
-	realmente se trate de un objeto. Esto se traduce en valores de 
-	$\delta$ y $\rho$ bajos.
+Supongamos que un objeto que tiene un historial de detecci\'on 
+positivo repentinamente deja de ser detectado, debido a una oclusi\'on 
+o un cambio en la ilumniaci\'on, por el sistema de visi\'on 
+pero permanece en el campo de visi\'on del robot. En esta 
+circunstancia, el sistema de predicci\'on 
+arriesgar\'a la posici\'on (hasta $\rho$ veces) pudi\'endole acertar o no hasta que el objeto 
+sea nuevamente detectado por el sistema de visi\'on o sea descartado.
+En esta situaci\'on es donde se obtienen nuevas detecciones que el 
+sistema de visi\'on nunca podr\'ia obtener por s\'i solo. Sin embargo, 
+esto acarrea el siguiente problema: si un objeto (de aparici\'on regular) deja de aparecer en la imagen (por 
+desplazamiento del objeto o del robot), el sistema de visi\'on, 
+l\'ogicamente, deja de detectarlo. Cuando esto sucede, el sistema de 
+predicci\'on arriesga la posici\'on del objeto un m\'aximo de $\rho$ veces 
+(seg\'un el grado de regularidad de detecci\'on) y, en este caso, no 
+acierta a ninguna ya que el objeto dej\'o de estar en el rango de visi\'on del 
+robot.\\ 
+\indent A partir de estas reflexiones surge la importancia de configurar 
+estos parametros de acuerdo al sistema de visi\'on que estemos 
+usando. Si tenemos un sistema de visi\'on con alto porcentaje de 
+falsos positivos y bajo porcentaje de falsos negativos entonces es 
+probable que arriesgar m\'as posiciones de objetos cuando estos no 
+son detectados mejore el rendimiento\footnote{ Decimos que el 
+rendimiento del algoritmo mejora cuando \'este disminuye el 
+porcentaje de falsos positivos o falsos negativos.}. En este caso debemos elegir 
+valores de $\rho$, no muy peque\~nos, para afrontar el d\'eficit de 
+detecci\'on del sistema de visi\'on y valores de $\delta$, m\'as bien 
+peque\~nos, para no entorpecer la detecci\'on. Es importante remarcar 
+que el bajo porcentaje de falsos positivos, en este caso, nos 
+permite confiar en el sistema de visi\'on en el sentido de que las cosas que 
+este detecte tienen altas probabilidades de ser objetos. \\
+\indent En el caso rec\'iproco, un sistema de visi\'on con alto 
+porcentaje de falsos negativos y bajo porcentaje de falsos 
+positivos quiz\'as convenga tener un valor de $\delta$ alto, para 
+filtrar la mayor cantidad de detecciones falsas. Al hacerlo, puede 
+suceder que tambi\'en filtremos detecciones positivas pero en ese 
+caso habr\'ia que estudiar cuanto se gana y cuanto se pierde y 
+buscar un balance.\\
+\indent Otra posibilidad es que el sistema de visi\'on sea muy 
+confiable (bajo porcentaje de falsos positivos/negativos). En 
+esta situaci\'on conviene configurar al sistema de predicci\'on para 
+que haga m\'as caso de lo que el sistema de visi\'on le informa. Esto 
+significa que cuando el sistema de visi\'on no encuentra un objeto 
+el sistema de predicci\'on no debe arriesgar mucho ya que el objeto 
+probablemente no se encuentre. Asimismo, unas pocas detecciones de 
+un objeto bastan para que el sistema de predicci\'on lo tenga 
+en consideraci\'on ya que existe una alta probabilidad de que 
+realmente se trate de un objeto. Esto se traduce en valores de 
+$\delta$ y $\rho$ bajos.
  
 
 
@@ -1125,7 +1133,7 @@ de que el robot tenga \'exito en la recolecci\'on del objeto. El criterio de men
 \begin{center}
   \includegraphics[scale=0.4]{vision/figures/ventana-1.png}
 \end{center}
-  \caption{\small Se observa un vaso delimitado por un rect\'angulo 
+  \caption[Ventaneo]{\small Se observa un vaso delimitado por un rect\'angulo 
   contenedor m\'inimo rojo. El rect\'angulo se utiliza para calcular el 
   tama\~no de la sub-imagen previo al ventaneo.}
   \label{fig:ventaneo}
@@ -1136,7 +1144,7 @@ de que el robot tenga \'exito en la recolecci\'on del objeto. El criterio de men
 \begin{center}
   \includegraphics[scale=0.6]{vision/figures/ventana-2.png}
 \end{center}
-  \caption{\small Ventana o sub-imagen obtenida de un vaso en 
+  \caption[Ejemplo de ventana]{\small Ventana o sub-imagen obtenida de un vaso en 
   focalizaci\'on. El tama\~no de la ventana es de tama\~no proporcional al 
   contorno del objeto en cuesti\'on.}
   \label{fig:ventaneo_2}
@@ -1342,7 +1350,7 @@ la secci\'on *******************************************************************
 	platos2 & 1128 & 1228 & 1117 & 111& 9.0\% & 0.9\% \\
 	\hline
 	\end{tabular}
-	\caption{\label{tab:result} Performance del sistema sin el algoritmo de predicci\'on}
+	\caption[Performance del algoritmo de visi\'on]{\label{tab:result} Performance del sistema sin el algoritmo de predicci\'on}
 \end{table}
 
 %Con predicci\'on
@@ -1364,7 +1372,7 @@ la secci\'on *******************************************************************
 	platos2 & 1128 & 1228 & 1112 & 167& 13.0\% & 1.4\% & 115 & 16\\
 	\hline
 	\end{tabular}
-	\caption{\label{tab:pred} Performance del sistema con el sistema de predicci\'on para 
+	\caption[Performance con sistema de predicci\'on configuraci\'on 1]{\label{tab:pred} Performance del sistema con el sistema de predicci\'on para 
 	$\lambda=10$, $\rho=10$, $\delta=3$ }
 \end{table}
 
@@ -1386,7 +1394,7 @@ la secci\'on *******************************************************************
 	platos2 & 1128 & 1211 & 1115 & 96 & 7.9\% & 1.1\% & 26 & 8 \\
 	\hline
 	\end{tabular}
-	\caption{\label{tab:pred_2} Performance del sistema con el sistema de predicci\'on con
+	\caption[Performance con sistema de predicci\'on configuraci\'on 2]{\label{tab:pred_2} Performance del sistema con el sistema de predicci\'on con
 	$\lambda=10$, $\rho=4$, $\delta=2$}
 \end{table}
 
@@ -1404,7 +1412,7 @@ la secci\'on *******************************************************************
 	Configuraci\'on 2 & 26.0\% & 9.5\% & 523 & 322 & 61.5\% \\
 	\hline
 	\end{tabular}
-	\caption{\label{tab:evo_colillas} Performance promedio de las colillas 
+	\caption[Performance promedio de las colillas]{\label{tab:evo_colillas} Performance promedio de las colillas 
 	por configuraci\'on y  efectividad de las estimaciones del sistema de predicci\'on}
 \end{table}
 
@@ -1421,7 +1429,7 @@ la secci\'on *******************************************************************
 	Configuraci\'on 2 & 9.7\% &	1.1\% & 356 & 325 & 91.2\%\\
 	\hline
 	\end{tabular}
-	\caption{\label{tab:evo_vasos} Performance promedio de los vasos seg\'un configuraci\'on del 
+	\caption[Performance promedio de los vasos]{\label{tab:evo_vasos} Performance promedio de los vasos seg\'un configuraci\'on del 
 	sistema y efectividad de las estimaciones del sistema de predicci\'on}
 \end{table}
 
@@ -1440,7 +1448,7 @@ la secci\'on *******************************************************************
 	Configuraci\'on 2 & 12.0\% & 6.6\% & 76 & 24 & 31.5\% \\
 	\hline
 	\end{tabular}
-	\caption{\label{tab:evo_platos} Performance promedio de los platos seg\'un configuraci\'on del 
+	\caption[Performance promedio de los platos]{\label{tab:evo_platos} Performance promedio de los platos seg\'un configuraci\'on del 
 	sistema y efectividad de las estimaciones del sistema de predicci\'on}
 \end{table}
 
