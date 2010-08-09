@@ -8,10 +8,10 @@ utilizaci\'on de una c\'amara de tipo webcam con una \'unica lente para
 obtener informaci\'on del ambiente. Esta informaci\'on es luego procesada 
 por una computadora a bordo del robot utilizando un algoritmo de visi\'on 
 cuyo \'unico objetivo es la detecci\'on de residuos 
-en las im\'agenes obtenidas. Probamos este algoritmo diseñandolo para la detecci\'on de 
+en las im\'agenes obtenidas. Probamos este algoritmo dise\~nandolo para la detecci\'on de 
 colillas de cigarrillo, vasos descartables y platos de pl\'astico. Para 
 el desarrollo del algoritmo utilizamos la librer\'ia de visi\'on 
-computacional OpenCV \cite{opencv_library} acompañado de un sistema 
+computacional OpenCV \cite{opencv_library} acompa\~nado de un sistema 
 desarrollado en C++. Como plataforma utilizamos un sistema linux 
 ubuntu corriendo en una netbook con procesador intel atom 
 n450 y 1 gb de memoria RAM como se detalla en ********************************************************************************************************.
@@ -29,14 +29,14 @@ procesamiento de im\'agenes y robots aut\'onomos.
 	%~ \subsubsection{A tale of two object recognition methods for mobile 
 	%~ robots- Arnau Ramisa}
 	%~ Este trabajo trata el problema de reconocimiento de objetos en un 
-	%~ contexto hogareño. El autor introduce este problema argumentando 
+	%~ contexto hogare\~no. El autor introduce este problema argumentando 
 	%~ que existe una gran cantidad de algoritmos para reconocimiento de 
 	%~ objetos pero pocos de estos son apropiados para robots moviles. 
 	%~ Entre estos se destacan el m\'etodo de constelaci\'on utilizado con 
 	%~ los detectores de puntos de interes de SIFT \cite{sift} y la bolsa 
 	%~ de caracteristicas propuesto por Nister y Stewenius \cite[nister]. 
 	%~ Con el objetivo de medir la performance de estos dos algoritmos, 
-	%~ se recrea un ambiente hogareño compuesto por tres categor\'ias de 
+	%~ se recrea un ambiente hogare\~no compuesto por tres categor\'ias de 
 	%~ objetos: texturados, no texturados, y con texturas repetitivas. 
 	%~ Cada objeto utilizado tiene 20 im\'agenes de entrenamiento y cada 
 	%~ categor\'ia contiene 3 objetos distintos. Luego se obtienen im\'agenes 
@@ -55,7 +55,7 @@ procesamiento de im\'agenes y robots aut\'onomos.
 	%~ la bolsa de caracteristicas 
 	\subsubsection{\label{volunteer}Mobile Field Robot with Vision-Based Detection of Volunteer Potato Plants in a Corn Crop - FRITS K. VAN EVERT}
 	El objetivo de este trabajo es la construcci\'on de un robot de 
-	tamaño reducido y de bajo costo capaz de detectar un tipo de 
+	tama\~no reducido y de bajo costo capaz de detectar un tipo de 
 	planta de papas (volunteer potato) en un campo de trigo y proporcionar control autom\'atico de esta planta. El inter\'es en 
 	esta especie se debe a que esta planta resulta dif\'icil de controlar en las cosechas y favorece la 
 	proliferaci\'on de otras sustancias que pueden perjudicar otros 
@@ -113,7 +113,7 @@ procesamiento de im\'agenes y robots aut\'onomos.
 	\item{n\'umero total de pixeles de contorno en la imagen binaria.}
 	\item{n\'umero total de pixeles de borde en la imagen Canny binaria.}
 	\end{enumerate} Estas 
-	caracter\'isticas se relacionan al color (1,2 y 3), tamaño (4), figura 
+	caracter\'isticas se relacionan al color (1,2 y 3), tama\~no (4), figura 
 	(combinaci\'on de 4 y 5) y textura (6).  Utilizando la misma f\'ormula 
 	(2G -B -R) y la operaci\'on de threshold se segment\'o nuevamente la imagen 
 	 en pixeles de planta o fondo. Sobre esta imagen se calcul\'o el 
@@ -128,7 +128,7 @@ procesamiento de im\'agenes y robots aut\'onomos.
 	 utilizando una implementaci\'on del algoritmo de Canny 
 	 \cite{Canny:1986:ACA}. Se esperaba que el n\'umero de pixeles de 
 	 borde sea mayor si se trata de una planta de papa ya que esta 
-	 contiene un n\'umero mayor de hojas pequeñas que se solapan entre s\'i 
+	 contiene un n\'umero mayor de hojas peque\~nas que se solapan entre s\'i 
 	 mientras que las de trigo s\'olo contienen algunas pocas hojas. 
 	 Paraf 
 	 clasificar las im\'agenes se us\'o un set de im\'agenes de entrenamiento
@@ -178,12 +178,12 @@ por dos sets de puntos $A={x_1,x_2...x_n}$ y $B={y_1,y_2...y_n}$ la distancia Ha
 \] 
 
 La comparaci\'on de figuras usando distancia Hausdorff resulta sensible 
-al ruido y a pequeñas alteraciones en dos formas iguales. Existen otros m\'etodos basados
+al ruido y a peque\~nas alteraciones en dos formas iguales. Existen otros m\'etodos basados
 en \textit{firma de contorno} que  representan una figura con una 
 funci\'on uni-dimensional derivada de la informaci\'on del borde de la 
 misma, 
 algunos son \textit{perfil centroidal, coordenadas complejas y distancia al centroide}. Estos m\'etodos deben ser normalizados para compensar
-traslaciones o escalas lo que los hace relativamente costosos. Ésto, sumado a la sensibilidad al ruido y a pequeños cambios en los bordes, hace que el m\'etodo 
+traslaciones o escalas lo que los hace relativamente costosos. Ésto, sumado a la sensibilidad al ruido y a peque\~nos cambios en los bordes, hace que el m\'etodo 
 no sea lo suficientemente robusto y que necesite de procesamiento adicional. Otra familia de descriptores se basa en los 
 \textit{Momentos de borde}. Dada una parametrizaci\'on como una funci\'on 
 uni-dimensional $z (i)$, se define el momento \textit{r}-\'esimo \textit{$m_r$} 
@@ -232,7 +232,7 @@ rendimiento. Otros m\'etodos en esta
 sub-categor\'ia pueden ser \textit{momentos algebraicos} o \textit{descriptor general de Fourier}. En la otra sub-categor\'ia de m\'etodos
 estructurales se destaca la \textit{envoltura convexa}. La 
 \textit{envoltura convexa} de un set de puntos es la m\'inima regi\'on que contiene 
-dichos puntos y es convexa. Este m\'etodo obtiene dicha regi\'on y la compara con el contorno original obteniendo una serie de pequeñas
+dichos puntos y es convexa. Este m\'etodo obtiene dicha regi\'on y la compara con el contorno original obteniendo una serie de peque\~nas
 componentes que marcan las deficiencias de concavidad del contorno. La 
 figura en cuesti\'on puede entonces representarse utilizando estas componentes.
 Finalmente la comparaci\'on entre dos contornos representados con esta 
@@ -241,7 +241,7 @@ deficiencias mencionadas) lo cual es otro
 problema a resolver por s\'i mismo. Adem\'as, m\'etodos en esta familia son dif\'iciles y complejos de implementar.\\
 \indent Como conclusi\'on, el autor establece que los m\'etodos basados en contorno son m\'as populares ya que est\'an m\'as relacionados
 a la percepci\'on humana y que para muchas aplicaciones es s\'olo necesario la informaci\'on sobre el contorno y no sobre el interior del mismo.
-Sin embargo, tambi\'en establece que como solo usan parte de una figura, son m\'as sensibles al ruido y pequeñas variaciones.
+Sin embargo, tambi\'en establece que como solo usan parte de una figura, son m\'as sensibles al ruido y peque\~nas variaciones.
 
 \begin{figure}[tpb]
 \begin{center}
@@ -495,7 +495,7 @@ Una manera de solucionar esto es pre-computando el valor $Val$ para
 distintas zonas de la imagen como lo hace la 
 t\'ecnica de thresholding adaptativo, que computa el valor de $Val$ a 
 medida que recorre la imagen, usando para esto, una ventana cuyo 
-tamaño es definido por el usuario. Siguiendo esta l\'ogica, se utilizan 
+tama\~no es definido por el usuario. Siguiendo esta l\'ogica, se utilizan 
 los valores de los pixeles abarcado por esta ventana para definir un valor 
 de $Val$ (por ejemplo calculando el promedio de intensidad) y luego se 
 aplica alguna de las t\'ecnicas de thresholding simples mencionadas, 
@@ -567,7 +567,7 @@ figura \ref{fig:threshold}.
 	\subsubsection{\label{sec:morph} Operaciones morfol\'ogicas}
 Sombras, luces y otros efectos pueden alterar el resultado del filtro 
 de color introduciendo ruido en los objetos a detectar. Este ruido 
-puede surgir tanto de la omisi\'on de pixeles de inter\'es como  inclusi\'on de pixeles extra. Para subsanar esto, utilizamos las operaciones morfol\'ogicas de dilataci\'on y erosi\'on. Ambas se basan en la utilizaci\'on de un elemento estructural, esto es, una figura de cualquier tamaño y forma que tiene definido un punto principal y que recorre la imagen solap\'andose pixel a pixel. De acuerdo a operaciones locales a este elemento, el pixel que coincide con el punto principal se ve modificado. Usualmente se utilizan como elementos estructurales, pequeños discos o cuadrados, donde el punto principal se encuentra en el centro del mismo. El efecto generado se entiende mejor observ\'andolo en im\'agenes binarias. En el caso de la dilataci\'on, la idea intuitiva es remplazar cada pixel no vac\'io con una copia del elemento estructural cuyo punto principal se encuentra en esa posici\'on. Para la erosi\'on, la idea intuitiva es quedarse con aquellos pixeles tal que podamos hacer caber un elemento estructural cuyo punto principal se encuentra en esa posici\'on y dicho elemento solo cubra pixeles no vac\'ios.
+puede surgir tanto de la omisi\'on de pixeles de inter\'es como  inclusi\'on de pixeles extra. Para subsanar esto, utilizamos las operaciones morfol\'ogicas de dilataci\'on y erosi\'on. Ambas se basan en la utilizaci\'on de un elemento estructural, esto es, una figura de cualquier tama\~no y forma que tiene definido un punto principal y que recorre la imagen solap\'andose pixel a pixel. De acuerdo a operaciones locales a este elemento, el pixel que coincide con el punto principal se ve modificado. Usualmente se utilizan como elementos estructurales, peque\~nos discos o cuadrados, donde el punto principal se encuentra en el centro del mismo. El efecto generado se entiende mejor observ\'andolo en im\'agenes binarias. En el caso de la dilataci\'on, la idea intuitiva es remplazar cada pixel no vac\'io con una copia del elemento estructural cuyo punto principal se encuentra en esa posici\'on. Para la erosi\'on, la idea intuitiva es quedarse con aquellos pixeles tal que podamos hacer caber un elemento estructural cuyo punto principal se encuentra en esa posici\'on y dicho elemento solo cubra pixeles no vac\'ios.
 Ilustramos esto en las figuras \ref{fig:dilate-sample} y \ref{fig:erode-sample}.
 
 
@@ -589,7 +589,7 @@ Ilustramos esto en las figuras \ref{fig:dilate-sample} y \ref{fig:erode-sample}.
 
 	\paragraph{Dilataci\'on}
 En im\'agenes no binarias, la operaci\'on de dilataci\'on se define 
-tomando el m\'aximo local bajo el elemento estructural y asign\'andole ese valor al punto principal. El efecto producido es una reducci\'on general en el brillo de la imagen y un probable aumento el tamaño de las figuras \cite{nasa-dilate-erode}.  Cuando un \'area grande aparece, a causa del ruido, partida en varias componentes, el uso de la operaci\'on de dilataci\'on provoca que  se combinen nuevamente en una sola. Un ejemplo de esto puede ser apreciado en la figura \ref{fig:dilate}. Otro beneficio de utilizar dilataci\'on es la eliminaci\'on del ruido espurio como se aprecia en la figura \ref{fig:dilate-ruido}.
+tomando el m\'aximo local bajo el elemento estructural y asign\'andole ese valor al punto principal. El efecto producido es una reducci\'on general en el brillo de la imagen y un probable aumento el tama\~no de las figuras \cite{nasa-dilate-erode}.  Cuando un \'area grande aparece, a causa del ruido, partida en varias componentes, el uso de la operaci\'on de dilataci\'on provoca que  se combinen nuevamente en una sola. Un ejemplo de esto puede ser apreciado en la figura \ref{fig:dilate}. Otro beneficio de utilizar dilataci\'on es la eliminaci\'on del ruido espurio como se aprecia en la figura \ref{fig:dilate-ruido}.
 
 \begin{figure}[tpb]
 \begin{center}
@@ -609,7 +609,7 @@ tomando el m\'aximo local bajo el elemento estructural y asign\'andole ese valor
 \end{figure}
 
 	\paragraph{Erosi\'on}
-En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'inimo local bajo el elemento estructural y poni\'endole ese valor al punto principal. Contrario a la dilataci\'on, este operador generalmente reduce el brillo de la imagen y disminuye el tamaño de las figuras \cite{nasa-dilate-erode}. Usamos la operaci\'on de erosi\'on para eliminar las protuberancias que pueden surgir de aplicar la operaci\'on de dilataci\'on. En la figura \ref{fig:erode} podemos apreciar el efecto de aplicar dilataci\'on y luego erosi\'on.
+En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'inimo local bajo el elemento estructural y poni\'endole ese valor al punto principal. Contrario a la dilataci\'on, este operador generalmente reduce el brillo de la imagen y disminuye el tama\~no de las figuras \cite{nasa-dilate-erode}. Usamos la operaci\'on de erosi\'on para eliminar las protuberancias que pueden surgir de aplicar la operaci\'on de dilataci\'on. En la figura \ref{fig:erode} podemos apreciar el efecto de aplicar dilataci\'on y luego erosi\'on.
 
 \begin{figure}[tpb]
 \begin{center}
@@ -985,7 +985,7 @@ porcentaje de variaci\'on en el \'area y per\'imetro respectivamente, que puede 
 objeto entre cuadros para ser considerado como el mismo. Valores 
 t\'ipicos para la detecci\'on de colillas y vasos son de 
 $0.1\leq\gamma\leq0.3$ y $0.1\leq\theta\leq0.3$. Para el caso de 
-$\alpha$ definimos un valor aproximado de 30 pixeles \footnote{ El 
+$\alpha$ definimos un valor aproximado de 30 pixeles\footnote{ El 
 valor de 30 pixeles nos di\'o resultados para im\'agenes de 640x480, para 
 otras resoluciones habr\'ia que buscar el equivalente.}. Sin embargo, la 
 tolerancia en el desplazamiento var\'ia seg\'un los cuadros transcurridos desde la \'ultima 
@@ -995,9 +995,9 @@ cuadros $3\alpha$ y as\'i. La variable $\delta$ establece el umbral de
 detecci\'on de un objeto por parte del sistema de visi\'on para que el 
 sistema de predicci\'on lo empiece  a considerar como basura. $\rho$ establece, 
 independientemente de la  
-regularidad de un objeto, la cantidad m\'axima de cuadros que puede 
+regularidad de detecci\'on de un objeto, la cantidad m\'axima de cuadros que puede 
 permanecer este sin ser detectado por el sistema de visi\'on y 
-considerado por el sistema de predicci\'on. \\ 
+considerado por el sistema de predicci\'on. \\  	
 \indent Es importante destacar que tanto $\rho$ como $\delta$ repercuten directamente en la 
 performance de detecci\'on. En el caso de la variable $\delta$, el 
 sistema de visi\'on debe reconocer un objeto $\delta -1$ veces antes de que sea 
@@ -1032,9 +1032,9 @@ disminuyendo el porcentaje de falsos negativos.\\
 	son detectados mejore el rendimiento\footnote{ Decimos que el 
 	rendimiento del algoritmo mejora cuando \'este disminuye el 
 	porcentaje de falsos positivos o falsos negativos.}. En este caso debemos elegir 
-	valores de $\rho$, no muy pequeños, para afrontar el d\'eficit de 
+	valores de $\rho$, no muy peque\~nos, para afrontar el d\'eficit de 
 	detecci\'on del sistema de visi\'on y valores de $\delta$, m\'as bien 
-	pequeños, para no entorpecer la detecci\'on. Es importante remarcar 
+	peque\~nos, para no entorpecer la detecci\'on. Es importante remarcar 
 	que el bajo porcentaje de falsos positivos, en este caso, nos 
 	permite confiar en el sistema de visi\'on en el sentido de que las cosas que 
 	este detecte tienen altas probabilidades de ser objetos. \\
@@ -1111,7 +1111,7 @@ de que el robot tenga \'exito en la recolecci\'on del objeto. El criterio de men
 	\ref{fig:ventaneo} y \ref{fig:ventaneo_2} . Como beneficio, 
 	obtenemos una 
 	disminuci\'on en el tiempo de procesamiento requerido ya que s\'olo se procesa una fracci\'on de 
-	la imagen. El tamaño de la ventana queda determinado por 
+	la imagen. El tama\~no de la ventana queda determinado por 
 	las dimensiones del contorno del objeto a focalizar. Si consideramos 
 	al sistema de visi\'on como un sensor podr\'iamos decir que este 
 	mecanismo incrementa la frecuencia de muestreo del mismo ya que 
@@ -1127,7 +1127,7 @@ de que el robot tenga \'exito en la recolecci\'on del objeto. El criterio de men
 \end{center}
   \caption{\small Se observa un vaso delimitado por un rect\'angulo 
   contenedor m\'inimo rojo. El rect\'angulo se utiliza para calcular el 
-  tamaño de la sub-imagen previo al ventaneo.}
+  tama\~no de la sub-imagen previo al ventaneo.}
   \label{fig:ventaneo}
 \end{figure}
 
@@ -1137,7 +1137,7 @@ de que el robot tenga \'exito en la recolecci\'on del objeto. El criterio de men
   \includegraphics[scale=0.6]{vision/figures/ventana-2.png}
 \end{center}
   \caption{\small Ventana o sub-imagen obtenida de un vaso en 
-  focalizaci\'on. El tamaño de la ventana es de tamaño proporcional al 
+  focalizaci\'on. El tama\~no de la ventana es de tama\~no proporcional al 
   contorno del objeto en cuesti\'on.}
   \label{fig:ventaneo_2}
 \end{figure}
@@ -1212,7 +1212,7 @@ cuadro \ref{tab:result}. No obstante, al utilizar el sistema de
 predicci\'on observamos una gran reducci\'on de este porcentaje producto 
 del filtrado realizado por dicho sistema el cual no considera una 
 basura hasta que esta est\'e presente en $\delta$ cuadros consecutivos.  
-Esta mejora viene acompañada de efecto negativos ya que la cantidad de 
+Esta mejora viene acompa\~nada de efecto negativos ya que la cantidad de 
 hits se ve afectada pero con menor intensidad. Esto prueba que el 
 filtrado realizado es efectivo ya que elimina, sobre el total de las 
 detecciones, en mayor proporci\'on a 
@@ -1224,13 +1224,13 @@ una muy buena performance por s\'i solo, como se ve en el cuadro \ref{tab:result
 donde se muestran valores menores al $10\%$ en falsos positivos y falsos 
 negativos para todos los videos. La diferencia de performance con la 
 detecci\'on de colillas es comprensible ya que los vasos poseen 
-caracter\'isticas como tamaño y color que hacen que sea m\'as f\'acil 
+caracter\'isticas como tama\~no y color que hacen que sea m\'as f\'acil 
 reconocerlos y mas dif\'icil confundirlos en relaci\'on con estas 
-\'ultimas, que poseen un color similar al del fondo y son de tamaño 
-pequeño. En este caso, el sistema de predicci\'on no altera demasiado 
+\'ultimas, que poseen un color similar al del fondo y son de tama\~no 
+peque\~no. En este caso, el sistema de predicci\'on no altera demasiado 
 los resultados como en el caso de las colillas, sin embargo, destacamos un 
 aumento en la cantidad de detecciones falsas en la configuraci\'on 1, 
-atribuido a el valor elevado de $\rho$, acompañado de un incremento 
+atribuido a el valor elevado de $\rho$, acompa\~nado de un incremento 
 similar en el porcentaje de aciertos. Distinto es el caso de 
 la configuraci\'on 2 que disminuye levemente el porcentaje de falsas 
 detecciones y el porcentaje de aciertos respecto de los resultados
@@ -1287,9 +1287,9 @@ la secci\'on *******************************************************************
 %~ caso de los vasos y platos que presentan porcentajes relativamente 
 %~ bajos en todos los casos. La diferencia de performance entre los vasos 
 %~ y platos con las colillas es esperable ya que las colillas son 
-%~ objetos de menor tamaño e incluso poseen un color muy similar al del 
+%~ objetos de menor tama\~no e incluso poseen un color muy similar al del 
 %~ entorno, lo cual dificulta su detecci\'on. En cambio, el color blanco y 
-%~ el gran tamaño de los vasos y platos hace que se distingan f\'acilmente 
+%~ el gran tama\~no de los vasos y platos hace que se distingan f\'acilmente 
 %~ del fondo pero su color los hace m\'as sensibles a la iluminaci\'on.\\
 %~ \indent Utilizando el mismo sistema de visi\'on con el sistema de 
 %~ predicci\'on  obtenemos resultados un tanto distintos indicados en la 
@@ -1303,7 +1303,7 @@ la secci\'on *******************************************************************
 %~ mejora notoria. En los vasos vemos un leve incremento 
 %~ en el porcentaje de falsos positivos producido por $\delta$ pero en 
 %~ este caso, a diferencia de las colillas, la disminuci\'on en el 
-%~ porcentaje de falsos negativos es a\'un m\'as pequeña, resultando en un 
+%~ porcentaje de falsos negativos es a\'un m\'as peque\~na, resultando en un 
 %~ balance no favorable. Algo similar sucede con los platos en donde se 
 %~ reduce notablemente la cantidad de hits sin ver ninguna mejora en la 
 %~ cantidad de detecciones falsas. Esto \'ultimo puede ser atribuido a la 
@@ -1319,7 +1319,7 @@ la secci\'on *******************************************************************
 %~ menos invasivo. En este caso se eligieron valores de $\lambda=10$, $\rho=4$ y $\delta=2$. Tomando un valor
 %~ de $\rho$ y $\delta$ le damos m\'as confianza al sistema de visi\'on como fue explicado previamente. En los vasos y
 %~ platos es notable la reducci\'on en la cantidad de falsas detecciones sin afectar demasiado el n\'umero de hits logrado.
-%~ Esto viene acompañado con el hecho de que el predictor realizo menos estimaciones y aumento su tasa de acierto en todos 
+%~ Esto viene acompa\~nado con el hecho de que el predictor realizo menos estimaciones y aumento su tasa de acierto en todos 
 %~ los casos. Los resultados obtenidos para estos dos objetos son mejores que los obtenidos solo con el sistema de visi\'on. 
 %~ Sin embargo, en el caso de las colillas, el predictor si impacto en la cantidad de hits por lo que no se observa un 
 %~ cambio del todo favorable respecto de la configuraci\'on anterior.\\
@@ -1477,7 +1477,7 @@ algoritmo. La utilizaci\'on de dichas t\'ecnicas pueden servir para
 la caracterizaci\'on de nuevos objetos a reconocer o bien para reforzar 
 los objetos ya tratados. Por otro lado, hallamos al sistema de filtros 
 en cascada un tanto limitado para la tarea propuesta ya que frente a 
-pequeñas perturbaciones que provoquen que un \'unico filtro rechaze un 
+peque\~nas perturbaciones que provoquen que un \'unico filtro rechaze un 
 determinado contorno, este \'ultimo se ver\'a descartado por el sistema. 
 Como alternativas a este sistema se puede implementar un sistema de 
 votaci\'on donde se re\'unan los resultados de cada filtro y se tome una 
