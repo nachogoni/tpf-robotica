@@ -31,6 +31,15 @@ endwhile
 
 percret
 
+i=1;
+apercret = zeros(l+2,l+2);
+while( i < l )
+	apercret(i,:) = ret(:,i)/sum(ret(:,i));
+	i++;
+endwhile
+
+apercret
+
 k = 1
 while( k < l )
 	[aux idx] = max(ret(k,:));
