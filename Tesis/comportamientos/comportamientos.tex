@@ -50,7 +50,7 @@ auxiliares.
 \\\indent
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.5]{comportamientos/behavioursArchitecture2.png}
+\includegraphics[scale=0.5]{comportamientos/figures/behavioursArchitecture2.png}
 \caption{Arquitectura de comportamientos implementada}
 \label{fig:architecture}
 \end{center}
@@ -121,7 +121,7 @@ el \'angulo de inclinaci\'on de la c\'amara $ac$. Analizando la figura
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics{comportamientos/angleCamera.png}
+\includegraphics{comportamientos/figures/angleCamera.png}
 \caption{Diagrama de posici\'on de la c\'amara}
 \label{fig:angleCamera}
 \end{center}
@@ -158,7 +158,7 @@ zona que ve la c\'amara.
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.5]{comportamientos/rectangleWander.png}
+\includegraphics[scale=0.5]{comportamientos/figures/rectangleWander.png}
 \caption{Zona vista por la c\'amara}
 \label{fig:zoneCamera}
 \end{center}
@@ -198,8 +198,8 @@ recogerla.
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.5]{comportamientos/basura.png}
-\includegraphics[scale=0.5]{comportamientos/basuraenfocada.png}
+\includegraphics[scale=0.5]{comportamientos/figures/basura.png}
+\includegraphics[scale=0.5]{comportamientos/figures/basuraenfocada.png}
 \caption{Primera aproximaci\'on de ``Ir a la basura''. Inicialmente el objeto
 		reconocido como basura se encuentra a un costado del eje vertical de
 		la imagen. Luego el robot gira de forma tal que el objeto quede sobre
@@ -210,7 +210,7 @@ recogerla.
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.5]{comportamientos/basuraAlt.png}
+\includegraphics[scale=0.5]{comportamientos/figures/basuraAlt.png}
 \caption{Segunda aproximaci\'on de ``Ir a la basura''. Se traza un arco hacia
 		el objetivo de forma tal que no sea necesario enfocar la basura.}
 \label{fig:sapproachgoto}
@@ -219,9 +219,9 @@ recogerla.
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.3]{comportamientos/esquina.png}
-\includegraphics[scale=0.3]{comportamientos/frentemuylejos.png}
-\includegraphics[scale=0.3]{comportamientos/frentelejos.png}
+\includegraphics[scale=0.3]{comportamientos/figures/esquina.png}
+\includegraphics[scale=0.3]{comportamientos/figures/frentemuylejos.png}
+\includegraphics[scale=0.3]{comportamientos/figures/frentelejos.png}
 \caption{Posible inconveniente con la primera aproximac\'ion de
 		``Ir a la basura''. La basura se encuentra en una de las
 		esquinas superiores de la im\'agen. El robot la enfoca, girando
@@ -329,7 +329,7 @@ dy = \tan(\gamma + y_{angle}) * C_h
 donde $y_{angle}$ es la proporci\'on de $FOV_v$ hacia $y$.
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.5]{comportamientos/imageCoordsConvertion.png}
+\includegraphics[scale=0.5]{comportamientos/figures/imageCoordsConvertion.png}
 \caption{Conversi\'on de coordenadas de imagen de c\'amara.
 	Dado un pixel ($y$,$x$), su nueva coordenada est\'a dada por
 	($x-Crw/2$,$Crh-y$)}
@@ -393,15 +393,15 @@ recolecci\'on de una basura las detallamos en la figura \ref{fig:recollection}.
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.25]{comportamientos/collect1.png}
-\includegraphics[scale=0.25]{comportamientos/collect2.png}
-\includegraphics[scale=0.25]{comportamientos/collect3.png}
-\includegraphics[scale=0.25]{comportamientos/collect4.png}
-\includegraphics[scale=0.25]{comportamientos/collect5.png}
-\includegraphics[scale=0.25]{comportamientos/collect6.png}
-\includegraphics[scale=0.25]{comportamientos/collect7.png}
-\includegraphics[scale=0.25]{comportamientos/collect8.png}
-%\includegraphics[scale=0.3]{comportamientos/unk.jpg}
+\includegraphics[scale=0.25]{comportamientos/figures/collect1.png}
+\includegraphics[scale=0.25]{comportamientos/figures/collect2.png}
+\includegraphics[scale=0.25]{comportamientos/figures/collect3.png}
+\includegraphics[scale=0.25]{comportamientos/figures/collect4.png}
+\includegraphics[scale=0.25]{comportamientos/figures/collect5.png}
+\includegraphics[scale=0.25]{comportamientos/figures/collect6.png}
+\includegraphics[scale=0.25]{comportamientos/figures/collect7.png}
+\includegraphics[scale=0.25]{comportamientos/figures/collect8.png}
+%\includegraphics[scale=0.3]{comportamientos/figures/unk.jpg}
 \caption{Etapas de recolecci\'on de basura}
 \label{fig:recollection}
 \end{center}
@@ -456,7 +456,7 @@ distancia hacia un sensor del costado es $Fsl = \sqrt{Fsd^2 + Fss^2}$.
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.3]{comportamientos/arenafinal.png}
+\includegraphics[scale=0.3]{comportamientos/figures/arenafinal.png}
 \caption{Arena de simulaci\'on y ejes de coordenadas}
 \label{fig:arenafinal}
 \end{center}
@@ -464,7 +464,7 @@ distancia hacia un sensor del costado es $Fsl = \sqrt{Fsd^2 + Fss^2}$.
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=1.0]{comportamientos/floorSensors.png}
+\includegraphics[scale=1.0]{comportamientos/figures/floorSensors.png}
 \caption{Disposici\'on de sensores de piso}
 \label{fig:floorSensors}
 \end{center}
@@ -576,9 +576,9 @@ la izquierda, o $-\theta$ en el otro caso.
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.4]{comportamientos/floorSensorsLine.png}
-\includegraphics[scale=0.4]{comportamientos/floorSensorsLine1.png}
-\includegraphics[scale=0.4]{comportamientos/floorSensorsLine2.png}
+\includegraphics[scale=0.4]{comportamientos/figures/floorSensorsLine.png}
+\includegraphics[scale=0.4]{comportamientos/figures/floorSensorsLine1.png}
+\includegraphics[scale=0.4]{comportamientos/figures/floorSensorsLine2.png}
 \caption{Posibles estados iniciales de ``Entrar a la l\'inea''.
 		En el caso (a) el robot debe girar hacia la derecha. En el
 		caso (b), el robot debe girar hacia la izquierda. En el caso
@@ -589,7 +589,7 @@ la izquierda, o $-\theta$ en el otro caso.
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.4]{comportamientos/floorSensorsLine4.png}
+\includegraphics[scale=0.4]{comportamientos/figures/floorSensorsLine4.png}
 \caption{Posible estado final luego del primer giro del comportamiento
 		``Entrar a la l\'inea''}
 \label{fig:floorSensorsFinalState}
@@ -609,7 +609,7 @@ el caso que la l\'inea sea la derecha.
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.4]{comportamientos/floorSensorsLine3.png}
+\includegraphics[scale=0.4]{comportamientos/figures/floorSensorsLine3.png}
 \caption{Centro del robot sobre la l\'inea y posibles giros}
 \label{fig:positioned}
 \end{center}
@@ -779,7 +779,7 @@ por cada paso
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.4]{comportamientos/red.png}
+\includegraphics[scale=0.4]{comportamientos/figures/red.png}
 \caption{Red neuronal entre los sensores de distancia y los motores}
 \label{fig:redN}
 \end{center}
