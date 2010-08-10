@@ -394,8 +394,6 @@ void runProtocol(struct command_t * cmd)
 
 int generate_8bit_crc(char* data, int length, int pattern)
 {
-	// TODO: reemplazar por el crc?
-	
 	int crc_byte, i;
 
 	crc_byte = data[0];
@@ -1412,7 +1410,6 @@ void init()
 
 void sendAlarm()
 {
-	/*TODO: revisar protocolo*/	
 	triggerAlarm = 0;
 	return;
 }	
@@ -1697,12 +1694,6 @@ void readSensors(int sensors)
 			values[4] += read_adc();
 		}
 	}
-	
-	/*sensor1 = SENSOR_OFF;
-	sensor2 = SENSOR_OFF;
-	sensor3 = SENSOR_OFF;
-	sensor4 = SENSOR_OFF;
-	sensor5 = SENSOR_OFF;*/
 	
 	values[0] /= samples;
 	values[1] /= samples;
@@ -2345,7 +2336,7 @@ void doCommand(struct command_t * cmd)
 			}	
 		break;
  		case SERVO_MOTOR_GET_ALL_POSITIONS:
-			/* Obtiene las �ltimas posiciones de todos los servomotor
+			/* Obtiene las ultimas posiciones de todos los servomotor
 			conectados al controlador.
 			:DATO:
 			-
