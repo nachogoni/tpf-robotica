@@ -1089,7 +1089,7 @@ $\delta$ y $\rho$ bajos.
 %~ de predicci\'on lo descarta. 
 %~ . 
 
-	\subsection{Focalizaci\'on}
+	\subsection{\label{sec:focaliz}Focalizaci\'on}
 	Focalizaci\'on es el mecanismo que busca que el sistema de visi\'on se 
 	concentre en la detecci\'on de un \'unico objeto a lo largo del tiempo. 
 	Esta situaci\'on es deseable cuando el sistema de visi\'on ya detect\'o 
@@ -1279,7 +1279,12 @@ viceversa. En ese sentido el sistema de predicci\'on proporciona los mecanismos 
 permiten lograr estos ajustes sin necesidad de modificar el algoritmo de detecci\'on 
 subyacente. Para nuestro caso, por lo explicado en \ref{comp_conclusion}, priorizamos 
 la disminuci\'on en los errores de tipo I frente a los de tipo II y ,por lo tanto, configurar\'iamos
-el sistema de predicci\'on acorde.
+el sistema de predicci\'on acorde.\\
+\indent En cuanto al tiempo de procesamiento demandado por el algoritmo obtuvimos
+una velocidad de procesamiento de aproximadamente $8.3 cuadros/seg$ s\'olo utilizando
+el sistema de visi\'on en conjunto con el sistema de predicci\'on. No obstante, como hemos explicado
+en \ref{sec:focaliz}, los mecanismos de focalizaci\'on y ventaneo reducen notablemente la
+complejidad del algoritmo una vez que se enfoca un residuo.
  
 
 %~ Esto se lo atribuimos a que esta configuraci\'on tiene un valor de 
@@ -1510,8 +1515,8 @@ actualizar peri\'odicamente.\\
 detectar si efectivamente se ha recolectado un residuo reconocido o no, resulta de 
 gran inter\'es ya que permitir\'ia implementar alg\'un mecanismo de 
 aprendizaje por refuerzo para el sistema de visi\'on. De esta manera, el 
-sistema de visi\'on podr\'ia adaptar par\'ametros como el valor del umbral 
-el rango en el canal de tono para el filtro de color o los l\'imites 
+sistema de visi\'on podr\'ia adaptar par\'ametros como el valor del umbral en las
+operaciones de filtrado, el rango en el canal de tono para el filtro de color o los l\'imites 
 superiores e inferiores en el filtro de \'area de acuerdo a los 
 refuerzos recibidos.\\
 \indent El sistema de predicci\'on puede cometer errores cuando, por 
