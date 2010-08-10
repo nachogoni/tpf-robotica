@@ -1,12 +1,6 @@
 \section{Hardware}
 \label{h_hardware}
 
-% \subsection{Requerimientos}
-% \label{h_requerimientos}
-% 
-% Nuestro proyecto...
-
-
 \subsection{Ideas de implementaci\'on}
 \label{h_ideas}
 
@@ -1887,9 +1881,9 @@ controlar hasta $11$ servos con una \'unica placa.
 \paragraph{M\'odulo de comunicaci\'on}
 \label{h_placas_servos_comm}
 
-Como utilizamos como base las otras placas y mantuvimos la secci\'on de comunicaci\'on, para ser parte
-de la cadena s\'olo debemos incluir el c\'odigo com\'un e implementar las acciones necesarias dentro
-de la funci\'on que interpreta los comandos a los que somos destinatarios.
+Como mantuvimos la secci\'on de comunicaci\'on, para ser parte de la cadena s\'olo debemos incluir el
+c\'odigo que implementa el protocolo e implementar las acciones necesarias dentro de la funci\'on que
+ejecuta los comandos.
 
 Como explicamos en la secci\'on \ref{h_comm_protocolo_comandosEspecificos} creamos ciertos comandos
 o paquetes espec\'ificos para el control de los servos.
@@ -1901,7 +1895,7 @@ pensamos para ser expandido creando nuevos comandos o modificando los existentes
 \paragraph{Alimentaci\'on de la placa}
 \label{h_placas_servos_alimentacion}
 
-Al igual que las otras placas utilizamos entre 7 y 20 volts para alimentar la placa, con la posibilidad
+Al igual que las otras placas utilizamos entre 7 y 20 volts para alimentarla, con la posibilidad
 de entregar $5$ volts en forma directa usando el pin indicado.
 
 Hicimos una modificaci\'on importante para la alimentaci\'on en esta placa que nos permitir\'ia entregar
@@ -1991,7 +1985,7 @@ Como explicamos en la secci\'on \ref{h_actuadores_servo_rutinas} creamos una rut
 que usando el timer del microcontrolador como base de tiempo, genera pulsos del ancho necesario
 en cada puerto para establecer la posici\'on necesaria de cada servo motor.
 
-Para capturar cambios de estado en los puertos de uso generar s\'olo deber\'iamos configurar las
+Para capturar cambios de estado en los puertos de uso general s\'olo deber\'iamos configurar las
 interrupciones del microcontrolador para que se generen ante cualquier cambio y verificar en la
 rutina de interrupci\'on, que puerto la gener\'o.
 
@@ -2033,13 +2027,13 @@ maniobrabilidad y pod\'iamos realizar r\'apidas rotaciones sin chocar con el ent
 Respetando nuestro dise\~no inicial y sabiendo que la cantidad de sensores era adecuada para cubrir
 nuestros requerimientos, definimos las posiciones de cada sensor.
 Para colocar los tel\'emetros infrarrojos a la altura necesaria creamos un contorno con paredes,
-que a su vez, nos daban el volumen interior para alojar las placas controladoras y bater\'a.
+que a su vez, nos daban el volumen interior para alojar las placas controladoras y bater\'ia.
 El sensor de distancia por ultrasonido lo colocamos al frente, centrado y apuntando hacia adelante
 para tener el mayor campo de visi\'on posible.
 
 Para sostener las placas en el interior colocamos una varilla roscada de lado a lado en el interior
 y afirmamos entre dos tuercas a cada placa.
-Colocamos las placas de sensado en el centro y contra las paredes a las placas controladoras de motor.
+Colocamos las placas de sensado en el centro y, contra las paredes, a las placas controladoras de motor.
 El cableado con los sensores lo hicimos interior a traves de agujeros en las paredes.
 De igual forma, los cables de control para los motores y el cableado para los sensores de piso, los
 pasamos por un agujero en la base del robot.
@@ -2053,8 +2047,7 @@ Colocamos los motores en la parte inferior del robot alineados con el centro geo
 ruedas dentro del chasis para evitar atascos.
 Las ruedas que elegimos tienen una buje de tefl\'on, con llanta de chapa y cubierta de goma compacta.
 Un problema que encontramos en este punto fue que el eje del motor era cil\'indrico y no presentaba
-ninguna marca o corte para ajustar las ruedas.
-Debido a \'esto nos fue muy dif\'icil realizar este ajuste.
+ninguna marca o corte para ajustar las ruedas, lo que dificult\'o el armado.
 
 Con las ruedas actuales de $10cm$ de di\'ametro y teniendo en cuenta que el motor gira aproximadamente
 a $300$ cuentas por segundo, logramos una velocidad cercana a $50 cm/s$.
@@ -2069,7 +2062,7 @@ punta de cocodrilo del cargador autom\'atico.
 \label{h_prototipo_desarme}
 
 Para lograr el desarme del prototipo recomendamos desconectar el cable del conversor USB - RS232 y
-retirarde la parte superior la netbook.
+retirar del piso superior la netbook.
 Luego seguir los siguientes pasos seg\'un las referencias en las figuras \ref{hF_desarme_1}, \ref{hF_desarme_2} y \ref{hF_desarme_3}.
 
 \begin{itemize}
