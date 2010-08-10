@@ -146,6 +146,7 @@ Organizando las ecuaciones, podemos deducir que:
 d = \tan(\gamma) * C_h \\
 \label{eqn:distance_dh}
 d+h = \tan(\gamma+FOV_v) * C_h
+\label{wander:ecfov}
 \end{eqnarray}
 
 Por lo que obtenemos el \'angulo hasta el inicio de la im\'agen de la c\'amara
@@ -267,12 +268,59 @@ por cada paso
     poner_velocidades_en_ruedas(veloc_izq, veloc_der)
 \end{verbatim}
 
+
 Se puede ver que la velocidad de giro del robot es proporcional al m\'odulo del
 \'angulo que hay hacia la basura, logrando enfocar m\'as r\'apido cuando el
 \'angulo es mayor y tener mayor precisi\'on cuando el \'angulo es m\'as chico,
 adem\'as de tener mayor rapidez de enfoque y precisi\'on que si la velocidad de
 giro fuera constante.
-\\\indent
+\\\indent Como observamos en el pseudo-c\'odigo del cuadro \ref{focus_garbage:impl},
+el algoritmo selecciona, la basura que se encuentra mas cercana 
+al robot. Para esto realiza una transformaci\'on en la cual obtiene la distancia al objeto seg\'un
+su coordenada $(x,y)$ en la imagen. Observando la figura \ref{fig:altoDiag} apreciamos que 
+la distancia a un objeto $r$ puede calcularse mediante la siguiente ecuaci\'on:
+\begin{equation}
+r=\sqrt{a^2 + c^2}
+\label{eq:posta}
+\end{equation}
+Los valores de $a$ y $c$ no son conocidos. Comenzando con $a$, si observamos la
+figura \ref{fig:trianglesAB} podemos afirmar que:
+\begin{equation}
+a=2b \sin(\frac{\alpha}{2})
+\label{eq:asin}
+\end{equation}
+donde $b$, a su vez, lo calculamos como:
+\begin{equation}
+b=\sqrt{c^2+ Ch^2}
+\label{eq:depc}
+\end{equation}
+$Ch$ representa la altura de la c\'amara y es un valor conocido.\\
+\indent Sin embargo para el calculo de $c$ tenemos que recurrir a la ecuaci\'on 
+\ref{wander:ecfov} donde reemplazamos $FOV_v$ por $\beta$ que es el \'angulo que forma la 
+c\'amara con el objeto en cuesti\'on. \'Este se computa como $\beta=k FOV_v$ donde $k=dist_y / RES_h$ que se corresponden con 
+la distancia en pixels sobre el eje $y$ y la resoluci\'on horizontal de la imagen respectivamente. El calculo de $k$ puede apreciarse 
+mejor en la figura \ref{fig:image_coord_conv}.\\ Para el computo de la ecuaci\'on \ref{eq:asin} tambi\'en es necesario el 
+valor de $\alpha$ el cual lo computamos como $\alpha=kp FOV_h / 2$ donde en este caso $kp$ y $FOV_h$ se corresponden con 
+la distancia en pixeles sobre el eje $x$ y la resoluci\'on horizontal de la imagen. Habiendo obtenido estos valores, estamos en
+condiciones de calcular tanto la ecuaci\'on \ref{eq:depc} como \ref{eq:asin} y finalmente, utilizando estos resultados, 
+reemplazamos en \ref{eq:posta} y obtenemos la distancia hacia el objeto.
+
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.5]{comportamientos/figures/altoDiagram.png}
+\caption[GUILLE COMPLETAR]{GUILLE COMPLETAR.}
+\label{fig:altoDiag}
+\end{center}
+\end{figure}
+
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.5]{comportamientos/figures/trianglesAB.png}
+\caption[GUILLE COMPLETAR]{GUILLE COMPLETAR.}
+\label{fig:trianglesAB}
+\end{center}
+\end{figure}
+
 
 %%Para obtener el \'angulo y distancia hacia una basura....
 %%pasamos de una posicion (x,y) en la imagen a una posicion
