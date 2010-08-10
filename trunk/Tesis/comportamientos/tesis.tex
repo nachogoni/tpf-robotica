@@ -936,10 +936,58 @@ de simulaci\'on. Teniendo en cuenta que los comportamientos relacionados con
 las basuras abarcaron un $43\%$ de $t_{fs}$, es de esperarse que en una
 simulaci\'on sin basuras el protagonismo de \emph{Wandering} sea el mayor
 de todos superando el $70\%$. Su bajo promedio y desv\'io est\'andar en estar
-$cai$ 
+$cai$ puede estar dado por situaciones en que est\'a activo, un comportamiento
+pasa a estar activo por un per\'iodo corto de tiempo(por ejemplo, \emph{Evitar
+obst\'aculos}, que causa el $62\%$ de activaciones) hasta que desaparece el
+est\'imulo que lo activ\'o y el robot vuelve a deambular. En la mayor parte de
+los casos entre una activaci\'on y otra de \emph{Wandering} no hay muchos
+comportamientos que se activan.
+%Se podria hacer un cuadro con la cantidad de comportamientos que se activan
+%entre una activacion y otra de un comportamiento
 \\\indent
-%Hablar de Evitar obstaculos
+\emph{Evitar obst\'aculos} es un comportamiento que tiene ciertas cualidades.
+Una de ellas se puede ver en los cuadros de transiciones. Las transiciones
+hacia \'el y desde \'el se dan en proporciones muy parecidas, esto quiere decir
+que $t^1_{7j} \approx t^2_{7j}$, siendo $t^1$ y $t^2$ transiciones de los
+cuadros \ref{transitions_percentages} y \ref{transitions_percentages_ret}
+respectivamente.
+\\\indent
+\'Esto da la siguiente idea: hay un comportamiento activo $A$ y sus respuestas
+est\'an llevando al robot a una posible colisi\'on. En ese momento se activa
+\emph{Evitar obst\'aculos}, detiene $A$, saca al robot de la posible colisi\'on
+y vuelve a activar a $A$. Cabe aclarar que en realidad no lo activa a $A$, sino
+que desaparece el est\'imulo de \emph{Evitar obst\'aculos} y $A$ toma el
+control nuevamente. Su promedio y desv\'io estandar de $caa$ son bajos y se ven
+reflejados en la figura \ref{fig:behaviourEvolution}. En la misma figura se
+puede observar el efecto de tener un promedio y desvi\'o est\'andar bajos,
+reflejados en la duraci\'on muy corta de las mesetas. El poder de detener a
+otros comportamientos est\'a dado por su nivel en la arquitectura. Es
+importante resaltar que este beneficio viene solo por el hecho de usar
+\emph{Subsumption}, y en el caso de haber utilizado otra arquitectura, nos
+hubiese demandado trabajo.
+\\\indent
+El comportamiento de \emph{Salir de situaciones no deseadas} no se activ\'o
+nunca. \'Este hecho es muy importante: indica que el resto de los
+comportamientos nunca se ``activaron mutuamente'' y por lo tanto no hubo
+situaciones que puedan llevar al robot a quedarse sin carga en la bater\'ia,
+arriesgando su autonom\'ia. El hecho que no se active nunca el comportamiento
+puede llevar a pensar que no es necesario tenerlo. \'Este pensamiento es
+totalmente err\'oneo ya que uno de nuestros objetivos era que la autonom\'ia
+del robot no corra riesgo bajo ning\'un concepto. Cabe aclarar que hay
+situaciones que escapan al alcance de este proyecto, por ejemplo, que se
+rompa una rueda.
+\\\indent
+El funcionamiento de \emph{Salir de situaciones no deseadas} lo probamos
+en diferentes simulaciones anteriores a la que presentamos y el resultado
+fue el esperado.
+
+%Hablar de los odd cases
+% Wandering a Recolectar basura,
+% Enfocar basura a Descargar basura e
+% Ir a basura a Recargar bater
+% aEl 80 % de las veces que estuvo activo Recolectar basura luego se activ ¿Wan- dering 
 
 
-%Al final hablar de salir de situaciones no deseadas, pobrecito
+%Hablar de area recorrida bla bla bla
+
 
