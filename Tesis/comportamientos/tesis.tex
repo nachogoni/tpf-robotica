@@ -307,7 +307,9 @@ Para calcular la posici\'on $P_n$ en el instante de tiempo n y la orientaci\'on
 $O_n$ en base a la posici\'on $P_{n-1}$ en el instante (n-1) y
 la correspondiente orientaci\'on $O_{n-1}$, usamos las siguientes f\'ormulas:
 \begin{eqnarray}
+\label{eqn:left_enc_diff}
 d_l = \frac{(e_l(n) - e_l(n-1)) * R_l}{EncRes} \\
+\label{eqn:right_enc_diff}
 d_r = \frac{(e_r(n) - e_r(n-1)) * R_r}{EncRes} \\
 lc = \frac{d_r + d_l}{2} \\
 P_n = P_{n-1} + (lc * \cos{O_{n-1}},lc * \sin{O_{n-1}}) \\
@@ -365,7 +367,55 @@ resoluci\'on de encoder $EncRes = 159.23$.
 
 \subsubsection{Problemas con la odometr\'ia}
 \label{odometry:problems}
-A LA LA LALALA
+En las simulaciones previas a la presentada en la secci\'on \ref{results}
+observamos que el comportamiento emergente del robot no era el esperado.
+Viendo m\'as en detalle, el robot tomaba decisiones err\'oneas en los
+comportamientos que utilizaban la odometr\'ia. Despu\'es de una extensiva
+revisi\'on de c\'odigo, llegamos a la conclusi\'on que el mismo no ten\'ia
+problemas.
+\\\indent
+Fue entonces que decidimos agregar un GPS(con error m\'inimo y que luego
+eliminamos) al e-puck en la simulaci\'on con Webots, con el objetivo de
+obtener un gr\'afico que indique el error en la odometr\'ia a lo largo de la
+simulaci\'on. El resultado esperado era que la odometr\'ia inicie con un error
+cercano a 0 y vaya creciendo constantemente a medida que avanzaba la
+simulaci\'on. El resultado no fue el esperado pero si iluminativo: el
+crecimiento era en partes constante, pero hab\'ia momentos en los cuales
+crec\'ia abruptamente.
+\\\indent
+Decidimos entonces simular nuevamente y ver que comportamiento estaba activo
+en dichos momentos. Nos sorprendi\'o ver que en esos momentos el
+comportamiento activo era \emph{Evitar obst\'aculos} ya que era uno de los
+m\'as simples y de los que m\'as ten\'iamos confianza que no haya un error
+de l\'ogica de c\'odigo. Nuevamente revisamos el c\'odigo, sin encontrar
+problemas.
+\\\indent
+\'Esto nos llev\'o a pensar qu\'e relaci\'on hab\'ia entre \emph{Evitar
+obst\'aculos} y la odometr\'ia. El comportamiento setea velocidades en las
+ruedas y la odometr\'ia utiliza los valores de los encoders de las ruedas.
+Revisando las ecuaci\'ones \ref{eqn:left_enc_diff} y \ref{eqn:right_enc_diff}
+nos dimos cuenta de lo siguiente: dado que las correcciones $c_l$ y $c_r$
+de los radios $R_l$ y $R_r$ de las ruedas minimizan el error pero no lo
+eliminan, el error de las ecuaciones aumenta proporcionalmente a la diferencia
+entre $e_i(n)$ y $e_i(n-1)$. Y \'esto suced\'ia cuando se activaba el
+evitamiento de obst\'aculos ya que daba velocidades a las ruedas de un orden
+de magnitud mayor a los que ten\'ian anteriormente.
+\\\indent
+Finalmente, teniamos que buscar una soluci\'on a \'este problema, ya sabiendo
+la verdadera causa del mismo. Pensamos en dos opciones:
+\begin{enumerate}
+	\item{}Disminuir las velocidades que \emph{Evitar obst\'aculos} asignada
+			 a las ruedas, dividi\'endolas por una cte.
+	\item{}Hacer que cada vez que se setee una velocidad, se haga un
+			c\'alculo con la velocidad seteada anteriormente, de forma tal que
+			no haya saltos de \'ordenes de magnitud.
+\end{enumerate}
+Por el tiempo que dispon\'iamos en ese momento y por simplicidad y r\'apidez
+de implementaci\'on, elegimos la primer opci\'on. Cabe aclarar que la segunda
+opci\'on es m\'as abarcativa y robusta, ya que sirve para cualquier
+comportamiento. Sin embargo, es invasiva en parte ya que puede que el
+desarrollador quiera, por alg\'un motivo, que haya ese tipo de variaciones y
+no va a poder lograrlo.
 
 \newpage
 \subsection{Interfaces con hardware y m\'odulo de reconocimiento de objetos}
@@ -980,14 +1030,67 @@ rompa una rueda.
 El funcionamiento de \emph{Salir de situaciones no deseadas} lo probamos
 en diferentes simulaciones anteriores a la que presentamos y el resultado
 fue el esperado.
-
+\\\indent
 %Hablar de los odd cases
-% Wandering a Recolectar basura,
-% Enfocar basura a Descargar basura e
-% Ir a basura a Recargar bater
-% aEl 80 % de las veces que estuvo activo Recolectar basura luego se activ ¿Wan- dering 
-
-
-%Hablar de area recorrida bla bla bla
-
+En la secci\'on \ref{results} vimos que algunas transiciones suced\'ian s\'olo
+una vez. A continuaci\'on detallamos posibles causas de las mismas:
+\begin{enumerate}
+	\item{}\emph{Wandering} a \emph{Recolectar basura},
+	\item{}\emph{Enfocar basura} a \emph{Descargar basura} e
+	\item{}\emph{Ir a basura} a \emph{Recargar bater\'ia}
+\end{enumerate}
+El primer caso puede estar dado por el siguiente escenario:
+\begin{itemize}
+	\item{} El robot esquiv\'o un obst\'aculo.
+	\item{} En el time step que desapareci\'o ese est\'imulo, hab\'ia una
+		basura en la imagen detectada por la c\'amara.
+	\item{} En dicho time step, el sistema de reconocimiento no la detect\'o,
+		activando \emph{Wandering}.
+	\item{} En el siguiente time step, el sistema de reconocimiento detecta la
+		basura, y adem\'as se encuentra enfocada y a una distancia en la cual
+		puede activarse el comportamiento de \emph{Recolectar basura}.
+\end{itemize}
+El segundo caso puede estar dado por el siguiente escenario:
+\begin{itemize}
+	\item{} El robot recolect\'o una basura.
+	\item{} En el time step que se desactiv\'o la recolecci\'on, hab\'ia otra
+		basura en la imagen detectada por la c\'amara y por el sistema de
+		reconocimiento que era necesario enfocar para que sea recolectada,
+		pero la basura recolectada no hab\'ia llegado a activar el sensor del
+		dep\'osito de basura. Est\'o llev\'o a la activaci\'on de
+		\emph{Enfocar basura}.
+	\item{} En el siguiente time step, la basura recolectada activa el sensor
+		del dep\'osito y por ende, activa el comportamiento \emph{Descargar
+		basura}.
+\end{itemize}
+El tercer caso es m\'as sencillo de explicar:
+\begin{itemize}
+	\item{} En el time step $t$ el robot se dirig\'ia hacia una basura.
+	\item{} En el time step $t+1$, el valor de la bater\'ia hizo que se active
+		el comportamiento de \emph{Recargar bater\'ia}. \'Esto es posible
+		debido a que el \'ultimo tiene mayor nivel en la arquitectura que el
+		primero.
+\end{itemize}
+Otro dato curioso es que el $80\%$ de las veces que estuvo activo
+\emph{Recolectar basura} luego se activ\'o \emph{Wandering} y
+el restante a \emph{Enfocar basura}. Teniendo un almacenamiento m\'aximo de
+1 basura, es de esperarse que luego de recolectar, se active \emph{Descargar
+basura}. \'Esto no sucede ya que, como explicamos en el escenario del segundo
+caso, hay un per\'iodo de time steps en los cuales la basura recolectada
+est\'a yendo hacia el sensor del dep\'osito, permitiendo la activaci\'on
+de otros comportamientos.
+\\\indent
+Finalmente, el robot recorri\'o toda la arena en el $42\%$ del tiempo total
+de simulaci\'on. \'Este porcentaje disminuye o aumenta dependiendo de si
+aumenta el tiempo de simulaci\'on o disminuye. Es decir, lo importante no
+es el porcentaje del tiempo total, sino el tiempo en que recorri\'o el \'area
+en su totalidad. Dicho tiempo fue de $95241Ts = 50m47s$. Durante \'este tiempo
+el robot no s\'olo recorri\'o un poco menos de $200m^2$(la escala es 10:1),
+sino que recolect\'o 9 basuras de las 15 que hab\'ia en la arena y fue a
+descargarlas(uno de los comportamientos que m\'as tiempo lleva). Adem\'as,
+se recarg\'o 3 veces en ese per\'iodo, como dijimos anteriormente, es otro
+de los comportamientos que m\'as tiempo demanda. Otro factor importante para
+destacar es que el $75\%$ del \'area se recorri\'o en un cuarto del tiempo
+en cuesti\'on, es decir, en aproximadamente $13mins$. Por todo \'esto,
+concluimos que el recorrido de la arena es muy eficiente.
 

@@ -1,7 +1,7 @@
 
 \section{Conclusiones}
-En este trabajo hemos desarollado la construcci\'on e implementaci\'on
-de un robot autonomo, movil, capaz de recolectar residuos en un entorno din\'amico. 
+En este trabajo hemos desarrollado la construcci\'on e implementaci\'on
+de un robot auton\'omo, m\'ovil, capaz de recolectar residuos en un entorno din\'amico. 
 Como mecanismo de locomoci\'on utilizamos dos ruedas de tracci\'on y una 
 tercer rueda de tipo castor para proveer equilibrio, movilizadas por un 
 par de motores de corriente contin\'ua provistos de una caja reductora y encoders. 
@@ -13,29 +13,28 @@ la obtenci\'on de datos como as\'i la interacci\'on con el entorno.
 Los actuadores y sensores son controlados desde una computadora a bordo de tipo
 netbook que utilizamos como unidad principal de procesamiento. 
 Realizamos el interconexionado de las placas de control con el computador
-utilizando una red del tipo daisy-chain en donde la informaci\'on se transmite 
+utilizando una red del tipo \emph{daisy-chain} en donde la informaci\'on se transmite 
 a trav\'es de un protocolo escalable capaz de conectar distintos tipos de 
-placas entre si y con el computador principal.\\
+placas entre s\'i y con el computador principal.\\
 \indent  Implementamos la interacci\'on del 
 robot con su entorno mediante la definici\'on de distintos comportamientos dispuestos 
-bajo un arquitectura de tipo subsumption, los mas importantes son: 
-wandering, evitamiento de obst\'aculos, enfocar residuos, seguimiento de 
-l\'inea y recolectar basura. Para la navegaci\'on, desarollamos
+bajo un arquitectura de tipo \emph{Subsumption}, los m\'as importantes son: 
+wandering, evitamiento de obst\'aculos, recargar bater\'ia, descargar y recolectar basura.
+Para la navegaci\'on, desarollamos
 un sistema de odometr\'ia que permite estimar la posici\'on del robot en 
 el entorno a trav\'es del uso de los encoders de los motores.
 Para el reconocimiento de residuos, instalamos una c\'amara de tipo webcam 
 conectada al computador principal donde corre un sistema de visi\'on que 
-diseñamos para el reconocimiento de colillas de cigarrillo, vasos de pl\'astico 
-y platos descartables. \'Este sistema esta compuesto por una etapa de 
+dise\~namos para el reconocimiento de colillas de cigarrillo, vasos de pl\'astico 
+y platos descartables. \'Este sistema est\'a compuesto por una etapa de 
 pre-procesamiento que consiste en un filtro de color, operaciones morfol\'ogicas 
 y operaciones de tipo umbral para la elimnaci\'on de ruido y una seg\'unda 
 etapa de an\'alisis de contornos en donde el sistema verifica que las figuras encontradas 
 correspondan con los residuos buscados. Agregamos a este sistema de 
 visi\'on un m\'odulo de predicci\'on y un m\'odulo de focalizaci\'on por 
-el cual  aumentamos la confianza y eficiencia del algoritmo. \\ 
+el cual aumentamos la confianza y eficiencia del algoritmo. \\ 
 \indent Realizamos la simulaci\'on de los comportamientos del robot en el 
-ambiente webots en  
-donde se utilizaron versiones virtuales de los sensores, actuadores y entorno 
+ambiente Webots en donde se utilizaron versiones virtuales de los sensores, actuadores y entorno 
 para verificar su buen funcionamiento. \\
 \indent Como posibles extensiones destacamos .... 
 ACA NOSE SI PONER LAS POSIBLES EXTENSIONES QUE YA MENCIONAMOS O PONER ALGUNAS NUEVAS.
