@@ -1,4 +1,5 @@
 \section{Arquitectura de Comportamientos}
+\label{sec:behaviour_architecture_all}
 
 \subsection{Introducci\'on}
 Como mencionamos en las secciones anteriores, el objetivo de \'este trabajo
@@ -472,6 +473,7 @@ est\'an en milisegundos.
 			$A_{rh}$ & Alto de la grilla & 38 \\
 			$Fsd$ & Dist. s.de piso del medio al centro del robot & 0.03 \\
 			$Fss$ & Separaci\'on entre sensores de piso & 0.01 \\
+			$\delta_f$ & \'Angulo umbral de basura enfocada & 0.1 \\
 			$Ts$ & Time Step & 32 \\
 			\hline
 		\end{tabular}
@@ -869,4 +871,74 @@ y en la cuarta el $75\%$.
 \label{comp_conclusion}
 En \'esta secci\'on sacamos conclusiones sobre los resultados obtenidos en la
 secci\'on \ref{results}, as\'i como dar posibles explicaciones a los mismos.
+\\\indent
+Dado que en la simulaci\'on hab\'ia 15 basuras, era esperado que
+\emph{Recolectar basura} se activase la misma cantidad de veces. En promedio,
+el robot recolect\'o $\frac{t_{fs}}{15 basuras} = \frac{1.52x10^5 Ts}
+{basura}$, es decir, 1 basura cada 8 minutos.El mayor tiempo que pas\'o entre
+entre una recolecci\'on y otra fue de $38400 Ts = 20 m 28 s$.
+\\\indent
+Los comportamientos \'intimamente relacionados, \emph{Enfocar basura} e
+\emph{Ir a basura} se activaron m\'as de 15 veces. Ambos comportamientos
+tuvieron un nivel de activac\'ion parecido a la cantidad de steps que
+estuvieron activos, provocando un bajo promedio de steps $caa$. \'Esto pudo
+haber sido causado debido al umbral $\delta_f$ en el cual se decide si una
+basura est\'a enfocada o no(ver figura \ref{fig:focusAngles}). Un valor muy
+grande del mismo, figura (a), cubre m\'as porcentaje de la im\'agen, por lo que
+va a llevar a indicar que la basura se enfoca m\'as r\'apido, disminuyendo el
+tiempo en que el comportamiento est\'a activo. Un valor chico (figura (b)),
+har\'a que la mayor cantidad de veces que se detecte una basura, la misma
+no est\'e enfocada y al cubrir menos porci\'on de la im\'agen, aumentar\'a
+el promedio de time steps en los cuales tiene que enfocar. \'Este caso
+es m\'as sensible a la situaci\'on en la que la basura se mueve, ya que
+va a ocasionar que se tenga que enfocar nuevamente. El primer caso es
+menos sensible al movimiento de la basura, pero tiene el siguiente defecto:
+cuando la basura se sensa como enfocada, la misma \emph{NO} est\'a frente
+al robot, y el comportamiento de \emph{Ir a basura} s\'olo va hacia adelante,
+suponiendo que la basura se encuentra frente al robot, ocasionando que la
+basura pase a no estar enfocada y una nueva activaci\'on de \emph{Enfocar
+basura}. En los cuadros de transiciones \ref{transitions_percentages} y
+\ref{transitions_percentages_ret} podemos ver que ambos comportamientos
+son los mayores proveedores de transiciones de dichos estados al otro.
+\\\indent
+Como ya mencionamos, \emph{Ir a descargar basura} e \emph{Ir a recargar
+bater\'ia} en conjunto abarcan el $54\%$ del tiempo total de simulaci\'on.
+Adem\'as son de los que mayor promedio est\'an $caa$, lo que nos
+lleva a pensar que una activaci\'on incorrecta de los mismos es indeseable,
+ya que son de los que m\'as jerarqu\'ia tienen y por lo tanto inhibir\'ian
+innecesariamente y por un tiempo relativamente prolongado a otros. Una
+activaci\'on incorrecta puede estar dada por:
+\begin{itemize}
+	\item{} Mal funcionamiento de los sensores
+	\item{} Haber juntado un objeto que no era basura
+	\item{} Una falla en la l\'ogica de activaci\'on de comportamientos
+\end{itemize}
+El gran desv\'io est\'andar de ambos en $caa$ se debe a que su acci\'on es
+llevar al robot hacia las l\'ineas, y la distancia y el recorrido por las
+mismas var\'ia seg\'un la posici\'on del robot cuando se hizo presente el
+est\'imulo correspondiente.
+\\\indent
+El promedio en estar $cai$ de \emph{Ir a descargar basura} depende
+directamente de la cantidad de basuras que haya en la arena y la efectividad
+del m\'odulo de reconocimiento. En el caso que no haya basuras en la arena,
+lo ideal es que el comportamiento nunca se active, aunque \'esto depende de
+las posibles activaciones incorrectas. El gran desvi\'o est\'andar en estar
+$cai$ se debe a que al principio de la simulaci\'on hab\'ia m\'as basuras
+para recolectar, disminuyendo el tiempo entre activaci\'ones, y llegando al
+final de la simulaci\'on hab\'ia menos basuras, disminuyendo la probabilidad
+que el robot las encuentre y aumentando el tiempo entre activaciones.
+%Aca puedo hablar del cai de ir a recargar basura tambien
+\\\indent
+Los valores de \emph{Wandering} dependen totalmente de las activaciones de los
+otros comportamientos, ya que est\'a activo si y s\'olo si ning\'un otro
+est\'a activo. En un arena con 15 basuras, estuvo activo un $28\%$ del tiempo
+de simulaci\'on. Teniendo en cuenta que los comportamientos relacionados con
+las basuras abarcaron un $43\%$ de $t_{fs}$, es de esperarse que en una
+simulaci\'on sin basuras el protagonismo de \emph{Wandering} sea el mayor
+de todos superando el $70\%$. Sus bajos des
+\\\indent
+%Hablar de Evitar obstaculos
+
+
+%Al final hablar de salir de situaciones no deseadas, pobrecito
 

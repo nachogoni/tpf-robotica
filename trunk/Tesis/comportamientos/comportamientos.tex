@@ -290,9 +290,22 @@ El est\'imulo necesario para que este comportamiento est\'e presente, est\'a
 dado por dos condiciones:
 \begin{enumerate}
 \item El m\'etodo de reconocimiento de objetos encontr\'o una basura
-\item La basura se encuentra en un entorno del centro del eje horizontal de la
-		imagen obtenida de la c\'amara
+\item La basura se encuentra en un entorno del centro del eje vertical de la
+		im\'agen obtenida de la c\'amara.
 \end{enumerate}
+Para decidir si una basura se encuentra en un entorno del eje vertical,
+utilizamos un umbral $\delta_f$ que determina el \'angulo de abertura.
+Si una basura se encuentra en la zona, entonces se la toma como enfocada.
+En la figura \ref{fig:focusAngles} se pueden ver 2 valores distintos para el
+umbral.
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.5]{comportamientos/figures/garbageFocusAngle.png}
+\includegraphics[scale=0.5]{comportamientos/figures/garbageFocusAngleTwo.png}
+\caption{Distintos $\delta_f$}
+\label{fig:focusAngles}
+\end{center}
+\end{figure}
 
 \paragraph{Implementaci\'on del comportamiento}
 \label{go_to_garbage:impl}
