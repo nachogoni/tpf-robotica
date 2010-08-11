@@ -138,6 +138,27 @@ las que realmente utiliza el controlador para funcionar.
 	\label{fig:handler_specific_2}
 \end{figure}
 
+
+\begin{landscape}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.52]{comportamientos/figures/api1.png}
+	\caption[Diagrama de clases: Handlers 2]{Diagrama de clases. Handlers de paquetes para las placas de sensores de 
+	distancia, servos y recipiente de residuos.}
+	\label{fig:diagclases}
+\end{figure}
+\end{landscape}
+\begin{landscape}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{comportamientos/figures/api2.png}
+	\caption[Diagrama de clases: Handlers 2]{Diagrama de clases. Handlers de paquetes para las placas de sensores de 
+	distancia, servos y recipiente de residuos.}
+	\label{fig:diagclases}
+\end{figure}
+\end{landscape}
+
+
 \subsection{Qu\'e hacer en caso que se modifique el protocolo}
 En el caso que haya una modificaci\'on en el protocolo, se deber\'an
 actualizar las clases afectadas por los cambios, y eventualmente,
@@ -152,6 +173,7 @@ actuador, es necesario modificar el packet y handler asociados a los
 mismos. Lo importante de \'esto es que los cambios est\'an localizados.
 Es decir, un cambio en el protocolo llega como mucho hasta los handlers,
 aislando a la api del controlador de posibles cambios.
+
 
 
 
