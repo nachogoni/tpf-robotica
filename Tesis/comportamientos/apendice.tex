@@ -1,5 +1,71 @@
 
-% \section{Primer ap\'endice Comportamientos}
+\section[Implementaci\'on de arquitectura de software del controlador]
+		{Implementaci\'on de arquitectura de software del controlador}
+La implementaci\'on de la arquitectura de software del controlador la hicimos en C++, tal
+como explicamos en la secci\'on \ref{interfaces}. La relaci\'on explicada en dicha secci\'on
+entre el robot(con sus dispositivos), los comportamientos y el sistema de reconocimiento se
+puede ver m\'as claramente en la figura\ref{fig:theAllTogether}, unidos por la clase que implementa
+la arquitectura \emph{Subsumption}. En la misma tambi\'en est\'a el main-loop. Mostramos en la figura
+\ref{fig:soft_arq_behaviours} que GarbageCleaner posee comportamientos, as\'i como tambi\'en
+un robot y el mismo posee dispositivos que pueden ser sensores o actuadores, tal como se ve
+en la figura \ref{fig:soft_arq_devices}. Tambi\'en posee el m\'odulo de reconocimiento de
+objetos, mostrado en la figura \ref{fig:soft_arq_reconmodule}. La implementaci\'on de GarbageCleaner
+es simple, ya que debe:
+\begin{itemize}
+	\item{} Obtener los sensores y actuadores del robot.
+	\item{} Inicializar el m\'odulo de reconocimiento de basuras.
+	\item{} Instanciar los comportamientos, brind\'andoles los sensores, actuadores y eventualmente
+			el m\'odulo de reconocimiento, necesarios para saber si su est\'imulo est\'a activo y
+			para poder interactuar con el entorno.
+	\item{} Correr el main-loop, utilizando la arquitectura de comportamientos
+			elegida(\emph{Subsumption}), haciendo actuar al comportamiento cuyo est\'imulo
+			est\'e activo en ese instante de tiempo y tenga mayor nivel en la arquitectura.
+\end{itemize}
+\begin{landscape}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.52]{comportamientos/figures/api4.png}
+	\caption[Arquitectura de software: principales componentes]{Diagrama de clases de la arquitectura
+			de sofware. Relaci\'on entre las 3 grandes componentes del proyecto}
+	\label{fig:theAllTogether}
+\end{figure}
+\end{landscape}
+
+
+\subsection{Comportamientos}
+\begin{landscape}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.52]{comportamientos/figures/api1.png}
+	\caption[Arquitectura de software: comportamientos]{Diagrama de clases de la arquitectura
+			de sofware. Paquete de comportamientos}
+	\label{fig:soft_arq_behaviours}
+\end{figure}
+\end{landscape}
+
+\subsection{Dispositivos del robot}
+\begin{landscape}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{comportamientos/figures/api2.png}
+	\caption[Arquitectura de software: api de robot]{Diagrama de clases de la arquitectura
+			de sofware. Paquete de api del robot}
+	\label{fig:soft_arq_devices}
+\end{figure}
+\end{landscape}
+
+\subsection{Reconocimiento de objetos}
+\begin{landscape}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{comportamientos/figures/api3.png}
+	\caption[Arquitectura de software: m\'odulo de reconocimiento]{Diagrama de clases de
+	la arquitectura de software. Paquete de reconocimiento de basuras}
+	\label{fig:soft_arq_reconmodule}
+\end{figure}
+\end{landscape}
+
+
 % Mostrar como est\'a implementada la arquitectura como software,
 % 
 % \section{Segundo ap\'endice Comportamientos}
@@ -137,35 +203,6 @@ las que realmente utiliza el controlador para funcionar.
 	distancia, servos y recipiente de residuos.}
 	\label{fig:handler_specific_2}
 \end{figure}
-
-
-\begin{landscape}
-\begin{figure}[h]
-	\centering
-	\includegraphics[scale=0.52]{comportamientos/figures/api1.png}
-	\caption[Diagrama de clases: Handlers 2]{Diagrama de clases. Handlers de paquetes para las placas de sensores de 
-	distancia, servos y recipiente de residuos.}
-	\label{fig:diagclases}
-\end{figure}
-\end{landscape}
-\begin{landscape}
-\begin{figure}[h]
-	\centering
-	\includegraphics[scale=0.5]{comportamientos/figures/api2.png}
-	\caption[Diagrama de clases: Handlers 2]{Diagrama de clases. Handlers de paquetes para las placas de sensores de 
-	distancia, servos y recipiente de residuos.}
-	\label{fig:diagclases}
-\end{figure}
-\end{landscape}
-\begin{landscape}
-\begin{figure}[h]
-	\centering
-	\includegraphics[scale=0.5]{comportamientos/figures/api3.png}
-	\caption[Diagrama de clases: Handlers 2]{Diagrama de clases. Handlers de paquetes para las placas de sensores de 
-	distancia, servos y recipiente de residuos.}
-	\label{fig:diagclases}
-\end{figure}
-\end{landscape}
 
 
 \subsection{Qu\'e hacer en caso que se modifique el protocolo}
