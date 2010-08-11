@@ -9,9 +9,6 @@
 % \section{Tercer ap\'endice Comportamientos}
 % Que hay que hacer para agregar un sensor o actuador nuevo.
 % 
-% \section{Cuarto ap\'endice Comportamientos}
-% Que hay que hacer en caso que se modifique el protocolo.
-% 
 % \section{Quinto ap\'endice Comportamientos}
 % Como es la interfaz con vision y porque se hizo de esa forma.
 
@@ -116,7 +113,8 @@ sensores de la api del robot pudieran manejar los mismos, sin tener
 conocimiento sobre el protocolo. Hay un handler por default,
 DefaultBoardPacketHandler, para el caso en que no haya registrado un handler
 para determinado id de grupo y placa. La funci\'on handlePacket del mismo
-se encarga de imprimir los campos del paquete en formato hexadecimal.
+se encarga de imprimir por salida est\'andar cada campo del paquete en
+formato hexadecimal.
 \\\indent
 Se puede observar que la cantidad de m\'etodos en los paquetes y en los
 handlers no es la misma, y en algunos casos, hay m\'etodos que en el otro
@@ -139,3 +137,22 @@ las que realmente utiliza el controlador para funcionar.
 	distancia, servos y recipiente de residuos.}
 	\label{fig:handler_specific_2}
 \end{figure}
+
+\subsection{Qu\'e hacer en caso que se modifique el protocolo}
+En el caso que haya una modificaci\'on en el protocolo, se deber\'an
+actualizar las clases afectadas por los cambios, y eventualmente,
+los handlers correspondientes.
+\\\indent
+Supongamos el caso en el que se agrega un campo de 1 byte luego del tama\~no
+total del paquete. \'Este cambio, en principio, s\'olo afecta la clase
+Packet. En el caso que el campo indique algo sobre el grupo o placa,
+tambi\'en afectar\'a a group packet o board packet, respectivamente.
+En el caso que se ampl\'ie el set de comandos de un determinado sensor o
+actuador, es necesario modificar el packet y handler asociados a los
+mismos. Lo importante de \'esto es que los cambios est\'an localizados.
+Es decir, un cambio en el protocolo llega como mucho hasta los handlers,
+aislando a la api del controlador de posibles cambios.
+
+
+
+
