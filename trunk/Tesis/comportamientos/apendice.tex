@@ -60,12 +60,21 @@ que instanciarlo y agregarlo a la lista de comportamientos que posee GarbageClea
 	\centering
 	\includegraphics[scale=0.5]{comportamientos/figures/api2.png}
 	\caption[Arquitectura de software: api de robot]{Diagrama de clases de la arquitectura
-			de sofware. Paquete de api del robot}
+			de sofware. Paquete de api de l robot}
 	\label{fig:soft_arq_devices}
 \end{figure}
 \end{landscape}
 
 \subsection{Reconocimiento de objetos}
+La figura \ref{fig:soft_arq_reconmodule} exhibe la relaci\'on entre el m\'odulo de reconocimiento de 
+objetos y el m\'odulo de comportamientos. El m\'odulo de visi\'on queda encapsulada dentro
+de la clase de \textit{GarbageRecognition}, permitiendo que el m\'odulo de comportamientos funcione en
+forma independiente a \'este. La creaci\'on una interface para la c\'amara nos permite alternar
+entre el entorno de webots y el mundo real. El comportamiento de estas dos clases es el mismo pero 
+su implementaci\'on difiere en que , en el caso de \textit{WebotsCamera}, se pide la imagen a webots mientras
+que en \textit{RealCamera} se toma una imagen del mundo real. Por motivos similares utilizamos una interface para 
+la representaci\'on de las im\'agenes. Ya que OpenCv y Webots codifican las im\'agenes de maneras distintas
+hemos implementado sus respectivas clases. 
 \begin{landscape}
 \begin{figure}[h]
 	\centering
