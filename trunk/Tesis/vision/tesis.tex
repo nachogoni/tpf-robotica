@@ -297,7 +297,7 @@ Sin embargo, tambi\'en establece que como solo usan parte de una figura, son m\'
 	variaci\'on de color de las \'areas transitables pero, sin embargo, no 
 	se lograron clasificar a la zonas cubiertas de sombra como transitables.
 	Bajo condiciones de luz favorables, 2 histogramas fueron 
-	suficientes para clasificar , en promedio, el 50\% del \'area 
+	suficientes para clasificar, en promedio, el 50\% del \'area 
 	transitable. Las posibles mejoras incluyen la incorporaci\'on de 
 	bordes o texturas para el reconocimiento de \'areas transitables 
 	como as\'i la posibilidad de tener \'areas de entrenamiento con 
@@ -777,11 +777,11 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 	de la imagen, el paso que sigue es verificar que estos
 	contornos tengan caracter\'isticas que correspondan con  los 
 	objetos buscados. Para realizar esto, se implementan una serie de filtros que verifican propiedades
-	puntuales sobre los mismos de forma tal que , si un contorno supera todos los filtros entonces consideramos a tal como un objeto reconocido. \\
+	puntuales sobre los mismos de forma tal que, si un contorno supera todos los filtros entonces consideramos a tal como un objeto reconocido. \\
 	\indent Los filtros se disponen en cascada, es decir, se prueba un 
 	filtro en un contorno si y s\'olo si este super\'o todos los filtros 
 	anteriores. De esta forma podemos ordenar los filtros de m\'as general 
-	a m\'as espec\'ifico, optimizando (generalmente) los tiempos de detecci\'on. Por ejemplo , conocer 
+	a m\'as espec\'ifico, optimizando (generalmente) los tiempos de detecci\'on. Por ejemplo, conocer 
 	el \'area que abarca un contorno determina f\'acil y r\'apidamente si un contorno corresponde a una colilla o a un plato evitando la ejecuci\'on
 	de filtros m\'as espec\'ificos. En la figura \ref{fig:desc} se exhiben 
 	los valores obtenidos por algunos de los filtros que detallamos a 
@@ -798,7 +798,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 	zona a la cual pertenece dependiendo de su ubicaci\'on en la imagen y se verifican los valores para dicha zona, si este los satisface entonces
 	el contorno supera al filtro.
 	\paragraph{Filtro de per\'imetro}
-	El filtro de per\'imetro calcula , efectivamente, el per\'imetro 
+	El filtro de per\'imetro calcula, efectivamente, el per\'imetro 
 	cubierto por un contorno . Esto se hace contando la cantidad de pixeles que lo definen.
 	Vale remarcar, que el valor del per\'imetro depende ampliamente de la precisi\'on con la que se obtengan los bordes ya que se ve dr\'asticamente modificado 
 	si se aumenta o disminuye dicha precisi\'on.
@@ -842,7 +842,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 	
 	\subsubsection{Reconocimiento de vasos}
 	Para el reconocimiento de vasos se utilizan(en este orden) los filtros de \'area, per\'imetro, circularidad y el de vasos.
-	El filtro de \'area verifica que $500 \leq area \leq 10000 $ , el de 
+	El filtro de \'area verifica que $500 \leq area \leq 10000 $, el de 
 	per\'imetro que $100 \leq per \leq 800 $ y el de circularidad
 	que $14 \leq circ \leq 18$. El filtro de vasos no es parametrizado. 
 	
@@ -853,7 +853,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 	
 	\subsubsection{Reconocimiento de platos}
 	Para el reconocimiento de platos se utilizan(en este orden) los filtros de \'area, per\'imetro, circularidad, excentricidad y de elipse.
-	El filtro de \'area verifica que $500 \leq area \leq 10000 $ , el de per\'imetro que $500 \leq per \leq 1500 $ , el de circularidad
+	El filtro de \'area verifica que $500 \leq area \leq 10000 $, el de per\'imetro que $500 \leq per \leq 1500 $, el de circularidad
 	que $10 \leq circ \leq 16$, el de excentricidad que $0.65 \leq ecc \leq 0.95$ y el de elipse que $|a-aReal|/ aReal < 0.2$.
 	
 	\subsubsection{Centroide}
@@ -928,7 +928,7 @@ detecci\'on m\'as reciente del sistema de visi\'on.}
 \item{ Cantidad de detecciones - Se mantiene la cantidad de cuadros en la cual el sistema de visi\'on detect\'o al objeto.}
 \item{ Desplazamiento en la posici\'on - Si el objeto es detectado m\'as 
 de una vez, se almacena el \'ultimo desplazamiento en la posici\'on $(x_i - 
-x_{i-1} , y_i - y_{i-1} )$.}
+x_{i-1}, y_i - y_{i-1} )$.}
 \item{ Antigüedad de la \'ultima detecci\'on - Cantidad de cuadros que transcurrieron desde la \'ultima detecci\'on por parte del sistema de visi\'on.}  
 \end{itemize}
 Esta informaci\'on no s\'olo permite corregir al sistema de visi\'on 
@@ -995,7 +995,7 @@ valor de 30 pixeles nos di\'o resultados para im\'agenes de 640x480, para
 otras resoluciones habr\'ia que buscar el equivalente.}. Sin embargo, la 
 tolerancia en el desplazamiento var\'ia seg\'un los cuadros transcurridos desde la \'ultima 
 detecci\'on. Si en el cuadro anterior fue detectado entonces se utiliza 
-$\alpha$ , si fue detectado hace dos cuadros entonces $2\alpha$, tres 
+$\alpha$, si fue detectado hace dos cuadros entonces $2\alpha$, tres 
 cuadros $3\alpha$ y as\'i. La variable $\delta$ establece el umbral de 
 detecci\'on de un objeto por parte del sistema de visi\'on para que el 
 sistema de predicci\'on lo empiece  a considerar como basura. $\rho$ establece, 
@@ -1178,7 +1178,7 @@ medimos los siguientes par\'ametros:
 \end{itemize}
 Se desprende directamente, de estos valores, que la cantidad de detecciones: 
 \textbf{$\#D=H+M$} .
-Con estos datos obtenemos los porcentajes de error , falsos positivos : 
+Con estos datos obtenemos los porcentajes de error, falsos positivos : 
 \[
 	fp=1 - \frac{H}{\# O}
 \]
