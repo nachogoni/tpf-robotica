@@ -45,7 +45,7 @@ procesamiento de im\'agenes y robots aut\'onomos.
 	%~ categor\'ia contiene 3 objetos distintos. Luego se obtienen im\'agenes 
 	%~ de prueba de estos objetos bajo condiciones de oclusi\'on, cambios 
 	%~ de iluminaci\'on, distintas perspectivas y otros tipicos ruidos 
-	%~ encontrados por un robot movil atravesando un entorno. De cada una 
+	%~ encontrados por un robot m\'ovil atravesando un entorno. De cada una 
 	%~ de estas im\'agenes se consideraron dos versiones, una versi\'on con 
 	%~ un recorte rect\'angular del objeto que incluye, inevitablemente, 
 	%~ pixeles correspondientes al entorno de los objetos y una 
@@ -347,7 +347,7 @@ los objetos residuales en las im\'agenes.
 \subsubsection{Estructura general}
 La figura \ref{fig:alg_steps} ilustra las etapas del algoritmo. 
 Programamos a \'este utilizando el lenguaje C++ y la librer\'ia de 
-visi\'on computacional OpenCv.
+visi\'on computacional OpenCV.
 El algoritmo comienza por tomar una imagen nueva de la c\'amara, las 
 im\'agenes capturadas poseen el formato 24-bit RGB. Con el objetivo de 
 minimizar el impacto producido por cambios en la iluminaci\'on 
@@ -1463,7 +1463,7 @@ complejidad del algoritmo una vez que se enfoca un residuo.
 Presentamos un algoritmo para el reconocimiento de distintos objetos en 
 un ambiente din\'amico en el marco de un robot aut\'onomo capaz de 
 recolectar basura. El mismo funciona sobre la librer\'ia de visi\'on 
-computacional OpenCv y el lenguaje C++.  El algoritmo cuenta
+computacional OpenCV y el lenguaje C++.  El algoritmo cuenta
 con una etapa de pre-procesado donde se extraen los pixeles de colores de inter\'es y se disminuye el ruido utilizando 
 operaciones morfol\'ogicas y de threshold. La etapa de procesamiento extrae los contornos y utiliza una aproximaci\'on por pol\'igonos
 para simplificar el an\'alisis posterior. Este consiste en una serie de 
