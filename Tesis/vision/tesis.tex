@@ -76,7 +76,7 @@ procesamiento de im\'agenes y robots aut\'onomos.
 	\indent En los campos de trigo la cosecha se dispone en filas 
 	dejando espacio entre hilera e hilera para el paso del robot. Para 
 	que este pueda navegar correctamente deb\'ia poder reconocer dichas 
-	hileras de modo de orientarse correctamente en el cultivo. Ésto se 
+	hileras de modo de orientarse correctamente en el cultivo. \'Esto se 
 	logr\'o mediante un algoritmo de visi\'on. Este comenzaba 
 	tomando una imagen RGB de 320x240 de la c\'amara. Para separar las 
 	plantas del fondo se tom\'o el doble del valor del canal verde (G)  y se 
@@ -186,7 +186,7 @@ en \textit{firma de contorno} que  representan una figura con una
 funci\'on uni-dimensional derivada de la informaci\'on del borde de la 
 misma, 
 algunos son \textit{perfil centroidal, coordenadas complejas y distancia al centroide}. Estos m\'etodos deben ser normalizados para compensar
-traslaciones o escalas lo que los hace relativamente costosos. Ésto, sumado a la sensibilidad al ruido y a peque\~nos cambios en los bordes, hace que el m\'etodo 
+traslaciones o escalas lo que los hace relativamente costosos. \'Esto, sumado a la sensibilidad al ruido y a peque\~nos cambios en los bordes, hace que el m\'etodo 
 no sea lo suficientemente robusto y que necesite de procesamiento adicional. Otra familia de descriptores se basa en los 
 \textit{Momentos de borde}. Dada una parametrizaci\'on como una funci\'on 
 uni-dimensional $z (i)$, se define el momento \textit{r}-\'esimo \textit{$m_r$} 
@@ -338,7 +338,7 @@ detectadas se determinaba la direcci\'on del robot. El algoritmo se consider\'o 
 	
 \subsection{Algoritmo de detecci\'on}
 En esta secci\'on describimos las distintas etapas del algoritmo de an\'alisis 
-de im\'agenes utilizado. Éstas se pueden separar en una etapa de 
+de im\'agenes utilizado. \'Estas se pueden separar en una etapa de 
 pre-procesamiento donde realizamos un tratamiento de la imagen obtenida 
 para resaltar las caracter\'isticas de inter\'es y  una segunda etapa 
 donde extraemos estas caracter\'isticas para interpretarlas y buscar 
@@ -479,7 +479,7 @@ este objetivo, se crea una imagen binaria asign\'andoles valores 1 o 0
 seg\'un su condici\'on respecto del valor. El algoritmo de thresholding 
 nos puede servir para distinguir un objeto determinado de un contexto o 
 fondo siempre y cuando el objeto posea un mayor brillo que el fondo en 
-el que se encuentra. Ésto significa que los pixeles correspondientes a 
+el que se encuentra. \'Esto significa que los pixeles correspondientes a 
 un objeto se encontrar\'an por encima de cierto valor caracter\'istico, 
 determinado por el fondo. En nuestro caso \'esto no sucede de \'esta forma ya que no siempre la intensidad o brillo de los objetos supera al fondo en el que se encuentra, por lo cual resulta dif\'icil utilizar esta t\'ecnica. Podemos apreciar un ejemplo de este efecto en la figura \ref{fig:thresh-dif}. \\
 \indent Existen diversas variantes de threshold, los par\'ametros 
@@ -794,7 +794,9 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 	\paragraph{Filtro de \'area por zona}
 	Un objeto que posee un \'area determinada puede ocupar m\'as o menos pixeles dependiendo de su ubicaci\'on en la imagen. Este se debe a la 
 	perspectiva de la c\'amara y puede afectar al reconocimiento de un contorno. Para contemplar esta variaci\'on se pueden establecer distintas
-	zonas en la imagen y definir distintos valores de \'area m\'inimos y m\'aximo para cada una de ellas. Al ejecutarse este filtro se calcula la
+	zonas en la imagen y definir distintos valores de \'area m\'inimos y m\'aximo para cada una de ellas. En la figura 
+	\ref{fig:distancias_imagen} podemos apreciar las diferencia entre las distintas zonas de la imagen. 
+	Al ejecutarse este filtro se calcula la
 	zona a la cual pertenece dependiendo de su ubicaci\'on en la imagen y se verifican los valores para dicha zona, si este los satisface entonces
 	el contorno supera al filtro.
 	\paragraph{Filtro de per\'imetro}
@@ -922,9 +924,9 @@ sistema de predicci\'on puede estimar la posici\'on de un objeto que,
 para un cuadro en particular, no fue detectado por el sistema de 
 visi\'on. Para concretar este mecanismo, cuando un objeto es detectado a lo largo de varios cuadros se persiste la siguiente informaci\'on:
 \begin{itemize}
-\item{ Última posici\'on, \'area y per\'imetro - Se toman los datos de la 
+\item{ \'Ultima posici\'on, \'area y per\'imetro - Se toman los datos de la 
 detecci\'on m\'as reciente del sistema de visi\'on.}
-\item{ Antigüedad del objeto - Cantidad de cuadros transcurridos desde que se comenz\'o a persistir el objeto en el sistema de predicci\'on.}
+\item{ Antig\"uedad del objeto - Cantidad de cuadros transcurridos desde que se comenz\'o a persistir el objeto en el sistema de predicci\'on.}
 \item{ Cantidad de detecciones - Se mantiene la cantidad de cuadros en la cual el sistema de visi\'on detect\'o al objeto.}
 \item{ Desplazamiento en la posici\'on - Si el objeto es detectado m\'as 
 de una vez, se almacena el \'ultimo desplazamiento en la posici\'on $(x_i - 
@@ -1162,7 +1164,7 @@ una silla de oficina giratoria para poder desplazarse suavemente por
 el entorno simulando el movimiento del robot. La c\'amara se ubic\'o a 30 
 cm del piso formando un \'angulo de $30^{\circ}$ con el asiento  en direcci\'on 
 hacia el suelo. La c\'amara utilizada es una microsoft lifecam vx-700 del tipo webcam y posee una 
-resoluci\'on de 640x480.
+resoluci\'on de 640x480. Esta misma resoluci\'on es utilizada para el an\'alisis de las im\'agenes.
 
 \subsubsection{Par\'ametros de medici\'on}
 Con el objetivo de  medir la efectividad del algoritmo de detecci\'on, desarrollamos un sistema de benchmarking. Este sistema permite
@@ -1203,7 +1205,7 @@ resultados promedios de falsos positivos y falsos negativos agrupados
 por objeto para todas las configuraciones en los cuadros \ref{tab:evo_colillas}, 
 \ref{tab:evo_vasos} y \ref{tab:evo_platos}. Las configuraciones 
 utilizadas fueron seleccionadas para destacar distintos comportamientos del 
-sistema de predicci\'on. Éstas son:
+sistema de predicci\'on. \'Estas son:
 \begin{itemize}
 \item{\textbf{Configuraci\'on 1:} $\lambda=10$, $\rho=10$, $\delta=3$}
 	\item{\textbf{Configuraci\'on 2:} $\lambda=10$, $\rho=4$, $\delta=2$}
@@ -1280,7 +1282,8 @@ permiten lograr estos ajustes sin necesidad de modificar el algoritmo de detecci
 subyacente. Para nuestro caso, por lo explicado en \ref{comp_conclusion}, priorizamos 
 la disminuci\'on en los errores de tipo I frente a los de tipo II y ,por lo tanto, configurar\'iamos
 el sistema de predicci\'on acorde.\\
-\indent En cuanto al tiempo de procesamiento demandado por el algoritmo obtuvimos
+\indent En cuanto al tiempo de procesamiento demandado por el algoritmo obtuvimos, en la notebook
+cuyas caracteristicas explicamos en la secci\'on \ref{h_controlador_netbook},
 una velocidad de procesamiento de aproximadamente $8.3$ $cuadros/seg$ s\'olo utilizando
 el sistema de visi\'on en conjunto con el sistema de predicci\'on. No obstante, como hemos explicado
 en \ref{sec:focaliz}, los mecanismos de focalizaci\'on y ventaneo reducen notablemente la
@@ -1527,5 +1530,6 @@ seguimiento m\'as efectivo de los mismos a lo largo de los cuadros.
 Tambi\'en es posible mejorar la estimaci\'on de las posiciones utilizando 
 f\'ormulas que tengan en cuenta no solo el \'ultimo desplazamiento sino 
 el desplazamiento promedio del objeto en los \'ultimos cuadros.
+
 
 
