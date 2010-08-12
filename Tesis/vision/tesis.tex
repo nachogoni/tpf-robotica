@@ -801,13 +801,13 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 	el contorno supera al filtro.
 	\paragraph{Filtro de per\'imetro}
 	El filtro de per\'imetro calcula, efectivamente, el per\'imetro 
-	cubierto por un contorno . Esto se hace contando la cantidad de pixeles que lo definen.
+	cubierto por un contorno. Esto se hace contando la cantidad de pixeles que lo definen.
 	Vale remarcar, que el valor del per\'imetro depende ampliamente de la precisi\'on con la que se obtengan los bordes ya que se ve dr\'asticamente modificado 
 	si se aumenta o disminuye dicha precisi\'on.
 	\paragraph{Filtro de excentricidad}
 	La excentricidad es un par\'ametro que relaciona la longitud del eje 
 	m\'as largo con la del m\'as corto. Esta se define como 
-	\textit { longitud del eje m\'as largo / longitud del eje m\'as corto}  . Algunas figuras pueden caracterizarse por tener valores de excentricidad
+	\textit { longitud del eje m\'as largo / longitud del eje m\'as corto}. Algunas figuras pueden caracterizarse por tener valores de excentricidad
 	que se mantienen en cierto rango y permite identificarlas usando este filtro.
 	\paragraph{Filtro de circularidad}
 	La circularidad es un par\'ametro que relaciona \'area con per\'imetro y define la redondez de una figura. Se define como $perimetro^2/area$. Algunas figuras pueden 
@@ -1013,7 +1013,7 @@ detecciones ser\'an ignoradas\footnote{El sistema de predicci\'on ignora
 una detecci\'on del sistema de visi\'on en el sentido de que este primero 
 no informa a dicha detecci\'on como un objeto residual encontrado para 
 ese cuadro, sino que s\'olo registra dicha detecci\'on para 
-cuadros futuros.} . Sin embargo, las apariciones no sostenidas 
+cuadros futuros.}. Sin embargo, las apariciones no sostenidas 
 (de hasta $\delta -1$ cuadros) de elementos que aparentan ser objetos 
 para el sistema de visi\'on pero no lo son, son tambi\'en ignoradas, 
 disminuyendo el porcentaje de falsos negativos.\\
@@ -1089,7 +1089,7 @@ $\delta$ y $\rho$ bajos.
 %~ que solo apareci\'o en 5 de los \'ultimos 12 cuadros. Cuando se agota la 
 %~ cantidad de cuadros que un objeto puede no ser detectado, el sistema 
 %~ de predicci\'on lo descarta. 
-%~ . 
+%~. 
 
 	\subsection{\label{sec:focaliz}Focalizaci\'on}
 	Focalizaci\'on es el mecanismo que busca que el sistema de visi\'on se 
@@ -1118,7 +1118,7 @@ de que el robot tenga \'exito en la recolecci\'on del objeto. El criterio de men
 	predicci\'on para dar cuenta de la posici\'on del mismo. Con esta 
 	informaci\'on, tomamos sub-im\'agenes (ventanas) de la captura original 
 	que s\'olo abarquen un entorno del objeto como se aprecia en la figura 
-	\ref{fig:ventaneo} y \ref{fig:ventaneo_2} . Como beneficio, 
+	\ref{fig:ventaneo} y \ref{fig:ventaneo_2}. Como beneficio, 
 	obtenemos una 
 	disminuci\'on en el tiempo de procesamiento requerido ya que s\'olo se procesa una fracci\'on de 
 	la imagen. El tama\~no de la ventana queda determinado por 
@@ -1190,7 +1190,7 @@ y falsos negativos:
 \]
 En el caso \'optimo, ambas medidas de error tendr\'an un valor de $0\%$.  \\
 \indent A estas estad\'isticas se agregan las particulares para el sistema de predicci\'on. Recolectamos informaci\'on sobre
-cu\'antos casos el sistema de predicci\'on estim\'o la posici\'on y acert\'o . Denominamos
+cu\'antos casos el sistema de predicci\'on estim\'o la posici\'on y acert\'o. Denominamos
 a la cantidad de estimaciones realizada por el sistema de predicci\'on 
 con \textbf{G} mientras que a las estimaciones que adem\'as fueron 
 acertadas \textbf{G\&H}.
