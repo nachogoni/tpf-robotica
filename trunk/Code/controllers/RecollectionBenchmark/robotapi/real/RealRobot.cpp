@@ -165,10 +165,17 @@ ITrashBin & RealRobot::getTrashBin(std::string name){
 }
 
 void RealRobot::step(int ms){
-	return;
+	// Use differential wheels
+	//df->computeOdometry();
+	
+	// Refresh stats
+	if ( gc != NULL )
+		gc->stepWasDone();
+	return ;
 }
 
 void RealRobot::setGC(GarbageCleaner * gc){
+	this->gc = gc;
 }
 
 } /* End of namespace robotapi::real */
