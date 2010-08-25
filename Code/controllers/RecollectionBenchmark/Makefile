@@ -8,7 +8,7 @@ CPP_SOURCES = recollectionbenchmark.cpp GarbageCleaner.cpp WorldInfo.cpp \
 							behaviours/FindLine.cpp behaviours/GoToBase.cpp behaviours/Recharge.cpp \
 							behaviours/GoToBaseGroup.cpp behaviours/PositionInLine.cpp behaviours/Recalibrate.cpp \
 							behaviours/RemoveFromStuck.cpp behaviours/GoToDisposal.cpp behaviours/UnloadGarbage.cpp \
-							behaviours/Wander.cpp \
+							behaviours/Wander.cpp behaviours/BehavioursParameters.cpp\
 							utils/MinimalBoundingRectangle.cpp utils/Garbage.cpp utils/GarbageRecognition.cpp \
 							utils/Contours.cpp utils/Histogram.cpp \
 							utils/MyLine.cpp utils/MyPoint.cpp utils/MyAngle.cpp utils/MyWall.cpp \
@@ -59,7 +59,8 @@ ifeq ($(OSTYPE),linux)
 OPENCVCFLAGS = $(shell $(CVHEADFLAGSCOMMAND) )
 LIBRARIES= -lCppController -lccext2 $(OPENCVLFLAGS)
 else
-LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/OpenCV2.0/lib"
+#LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/OpenCV2.0/lib"
+LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/Archivos de programa/OpenCV/lib"
 endif
 
 #
@@ -73,7 +74,8 @@ ifeq ($(OSTYPE),linux)
 OPENCVLFLAGS = $(shell $(CVLIBFLAGSCOMMAND) )
 CFLAGS= -g -Wall -I"$(HOME)/tpf-robotica/Code/controllers/RecollectionBenchmark" $(OPENCVCFLAGS) -std=c++0x
 else
-CFLAGS= -g -Wall -I"C:\projects\tpf-robotica\Code\controllers\RecollectionBenchmark" -I"C:/OpenCV2.0/include/opencv" 
+#CFLAGS= -g -Wall -I"C:\projects\tpf-robotica\Code\controllers\RecollectionBenchmark" -I"C:/OpenCV2.0/include/opencv" 
+CFLAGS= -g -Wall -I"C:\projects\tpf-robotica\Code\controllers\RecollectionBenchmark" -I"C:/Archivos de programa/OpenCV/include/opencv"
 endif
 
 #-L"C:/Program Files/OpenCV/lib" -lcxcore -lcv -lcvaux -lhighgui -lml -g3

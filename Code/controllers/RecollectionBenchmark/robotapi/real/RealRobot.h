@@ -68,6 +68,7 @@ class RealRobot : virtual public robotapi::IRobot {
 		std::map<std::string, ICamera *> cameras;
 		std::map<std::string, ITrashBin *> trashBins;
 		WorldInfo * wi;
+		GarbageCleaner * gc;
 	};
 
 } /* End of namespace robotapi::real */

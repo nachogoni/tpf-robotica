@@ -1,7 +1,7 @@
 [Project]
 FileName=RecollectionBenchmark.dev
 Name=RecollectionBenchmark
-UnitCount=151
+UnitCount=153
 Type=1
 Ver=1
 ObjFiles=
@@ -1549,6 +1549,26 @@ BuildCmd=
 
 [Unit151]
 FileName=behaviours\RemoveFromStuck.h
+CompileCpp=1
+Folder=behaviours
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit152]
+FileName=behaviours\BehavioursParameters.cpp
+CompileCpp=1
+Folder=behaviours
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit153]
+FileName=behaviours\BehavioursParameters.h
 CompileCpp=1
 Folder=behaviours
 Compile=1
