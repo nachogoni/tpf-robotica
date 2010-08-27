@@ -4,8 +4,7 @@
 #include <string>
 #include <robotapi/IRobot.h>
 #include <behaviours/BehavioursParameters.h>
-
-
+#include <GarbageCleaner.h>
 
 class GarbageCleaner;
 

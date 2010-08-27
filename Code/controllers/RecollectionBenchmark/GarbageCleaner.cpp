@@ -15,7 +15,6 @@
 #include <robotapi/IBattery.h>
 #include <robotapi/IDifferentialWheels.h>
 #include <robotapi/ITrashBin.h>
-#include <robotapi/webts/WebotsRobot.h>
 #include <vector>
 #include <sstream>
 #include <iostream>

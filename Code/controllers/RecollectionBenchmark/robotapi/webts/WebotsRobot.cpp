@@ -11,7 +11,6 @@
 #include <webots/Robot.hpp>
 #include <webots/GPS.hpp>
 #include <utils/Rectangle2D.h>
-#include <GarbageCleaner.h>
 #include <math.h>
 
 namespace robotapi {
@@ -232,7 +231,7 @@ namespace webts {
 		return out;
 	}
 
-	void WebotsRobot::setGC(GarbageCleaner * gc){
+	void WebotsRobot::setGC(IGarbageCleaner * gc){
 		this->gc = gc;
 	}
 } /* End of namespace robotapi::webts */

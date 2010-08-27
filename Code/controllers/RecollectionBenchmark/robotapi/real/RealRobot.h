@@ -27,7 +27,7 @@ class RealRobot : virtual public robotapi::IRobot {
 
 		int getMode();
 
-    	void setGC(GarbageCleaner * gc);
+    	void setGC(IGarbageCleaner * gc);
 
 		bool getSynchronization();
 
@@ -68,7 +68,7 @@ class RealRobot : virtual public robotapi::IRobot {
 		std::map<std::string, ICamera *> cameras;
 		std::map<std::string, ITrashBin *> trashBins;
 		WorldInfo * wi;
-		GarbageCleaner * gc;
+		IGarbageCleaner * gc;
 	};
 
 } /* End of namespace robotapi::real */

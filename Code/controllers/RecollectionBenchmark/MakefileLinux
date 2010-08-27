@@ -1,0 +1,60 @@
+#
+# Makefile for a Webots C++ controller
+#
+# if your controller uses several C++ sources files:
+CPP_SOURCES = main.cpp GarbageCleaner.cpp WorldInfo.cpp \
+							behaviours/AbstractBehaviour.cpp behaviours/AvoidObstacle.cpp \
+							behaviours/CollectGarbage.cpp behaviours/GoToGarbage.cpp behaviours/FocusGarbage.cpp \
+							behaviours/FindLine.cpp behaviours/GoToBase.cpp behaviours/Recharge.cpp \
+							behaviours/GoToBaseGroup.cpp behaviours/PositionInLine.cpp behaviours/Recalibrate.cpp \
+							behaviours/RemoveFromStuck.cpp behaviours/GoToDisposal.cpp behaviours/UnloadGarbage.cpp \
+							behaviours/Wander.cpp behaviours/BehavioursParameters.cpp\
+							utils/MinimalBoundingRectangle.cpp utils/Garbage.cpp utils/GarbageRecognition.cpp \
+							utils/Contours.cpp utils/Histogram.cpp \
+							utils/MyLine.cpp utils/MyPoint.cpp utils/MyAngle.cpp utils/MyWall.cpp \
+							utils/ArenaGrid.cpp utils/ArenaGridSlot.cpp utils/Rectangle2D.cpp \
+							robotapi/DifferentialWheelsWOdometry.cpp \
+							robotapi/real/RealBattery.cpp robotapi/real/RealTrashBin.cpp robotapi/real/RealPCBattery.cpp \
+							robotapi/real/RealCamera.cpp robotapi/real/RealDevice.cpp robotapi/real/RealDeviceTag.cpp \
+							robotapi/real/RealDifferentialWheels.cpp robotapi/real/RealDistanceSensor.cpp \
+							robotapi/real/RealImage.cpp robotapi/real/RealRobot.cpp robotapi/real/RealServo.cpp \
+							protocol/BoardPacketHandler.cpp protocol/packet.cpp protocol/PacketServer.cpp \
+							protocol/packets/batterypacket.cpp protocol/packets/BoardPacket.cpp protocol/packets/DCMotorPacket.cpp \
+							protocol/packets/DistanceSensorPacket.cpp protocol/packets/floorsensorpacket.cpp \
+							protocol/packets/GroupPacket.cpp protocol/packets/ServoMotorPacket.cpp \
+							protocol/packets/trashbinpacket.cpp protocol/packets/ultrasonicsensorpacket.cpp \
+							protocol/handlers/BatteryBoardPacketHandler.cpp protocol/handlers/DCMotorBoardPacketHandler.cpp \
+							protocol/handlers/DistanceSensorBoardPacketHandler.cpp protocol/handlers/ServoBoardPacketHandler.cpp \
+							protocol/handlers/TrashBinBoardPacketHandler.cpp protocol/handlers/DefaultBoardPacketHandler.cpp
+# or
+# CC_SOURCES = my_controller.cc my_clever_algo.cc my_gui.cc
+#
+# if your controller needs additional libraries,add them to the
+# existing LIBRARIES variable:
+#LIBRARIES= -lCppController  -L"C:/Program Files/OpenCV/lib" -L"C:/Program Files/OpenCV/otherlibs/highgui" -lcxcore -lcv -lcvaux -lhighgui -lml -g3
+#LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/OpenCV2.0/lib"
+
+CVLIBFLAGSCOMMAND = pkg-config opencv --libs
+OPENCVLFLAGS = $(shell $(CVLIBFLAGSCOMMAND) )
+LIBRARIES= -lccext2 $(OPENCVLFLAGS)
+
+#
+# if some special CFLAGS need to be passed, for example to find include
+# files, or set optimization level:
+
+#CFLAGS= -g -Wall -I"C:/tpf-robotica/Code/controllers/TCleaner" -I"C:\OpenCV2.0\include\opencv"
+
+CVHEADFLAGSCOMMAND = pkg-config opencv --cflags
+OPENCVCFLAGS = $(shell $(CVHEADFLAGSCOMMAND) )
+CFLAGS= -g -Wall -I. $(OPENCVCFLAGS) -lccext2
+
+#-L"C:/Program Files/OpenCV/lib" -lcxcore -lcv -lcvaux -lhighgui -lml -g3
+#-L"C:/Program Files/OpenCV/lib" 
+# you may want, for example, to use the C API in your C++ program by adding:
+# CFLAGS=-I"$(WEBOTS_HOME)/include/controller/c"
+
+%.o: %.cpp
+	g++ -c -g -o $@ $(CFLAGS) $<
+
+all: $(CPP_SOURCES)
+	g++ -o realController $(CPP_SOURCES) $(CFLAGS) $(LIBRARIES)
