@@ -27,7 +27,7 @@ namespace behaviours {
         this->currentGarbage = this->gr->getClosestGarbage(gs);
         double angleToGarbage = this->gr->angleTo(currentGarbage);
         
-        if ( fabs(angleToGarbage) < GO_TO_GARBAGE_ANGLE_TOLE )
+        if ( fabs(angleToGarbage) < GET_PARAM(GO_TO_GARBAGE_ANGLE_TOLE) )
 	        setStimulusPresent();
 	}
 
@@ -42,7 +42,7 @@ namespace behaviours {
 
 	double GoToGarbage::calculateSpeed(double distanceToGarbage){
 		double coeff = distanceToGarbage/(this->gr->getMaximumDistance() - this->gr->getMinimumDistance());
-		return GO_TO_GARBAGE_MIN_SPD * ( 1 - coeff ) + coeff * GO_TO_GARBAGE_MAX_SPD;
+		return GET_PARAM(GO_TO_GARBAGE_MIN_SPD) * ( 1 - coeff ) + coeff * GET_PARAM(GO_TO_GARBAGE_MAX_SPD);
 	}
 
 }
