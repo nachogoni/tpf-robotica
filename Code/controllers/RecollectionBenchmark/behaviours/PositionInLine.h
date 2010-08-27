@@ -7,11 +7,6 @@
 #include "WorldInfo.h"
 #include <vector>
 
-#define POSITIONING_BASE_SPD 20.0
-#define POSITION_ANGLE_TOLE 0.1
-
-#define POSITION_TURN_FACTOR 2
-#define POSITION_TIME_STEP 32
 
 namespace behaviours {
 

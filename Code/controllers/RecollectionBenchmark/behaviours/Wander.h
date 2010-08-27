@@ -6,9 +6,6 @@
 #include <utils/ArenaGridSlot.h>
 #include "WorldInfo.h"
 
-#define WANDER_SPD 100.0
-#define WANDER_TURN_FACTOR 0.85
-#define WANDER_STEPS_BASE 400
 
 
 namespace behaviours {

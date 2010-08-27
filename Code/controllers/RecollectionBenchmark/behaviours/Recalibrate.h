@@ -6,7 +6,6 @@
 #include "AbstractBehaviour.h" // inheriting class's header file
 #include <utils/MyPoint.h>
 
-#define MIDDLE_LINE_X -0.293
 
 namespace behaviours {
 
