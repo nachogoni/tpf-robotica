@@ -174,7 +174,7 @@ void RealRobot::step(int ms){
 	return ;
 }
 
-void RealRobot::setGC(GarbageCleaner * gc){
+void RealRobot::setGC(IGarbageCleaner * gc){
 	this->gc = gc;
 }
 

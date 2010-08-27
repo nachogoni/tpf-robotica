@@ -9,11 +9,9 @@
 #include "IServo.h"
 #include "ITrashBin.h"
 #include <string>
-//#include <GarbageCleaner.h>
-
-class GarbageCleaner;
-
+#include <IGarbageCleaner.h>
 namespace robotapi {
+
 
 class IRobot {
 
@@ -25,7 +23,7 @@ class IRobot {
 
     virtual int getMode()  = 0;
 
-    virtual void setGC(GarbageCleaner * gc)  = 0;
+    virtual void setGC(IGarbageCleaner * gc)  = 0;
 
     virtual bool getSynchronization()  = 0;
 

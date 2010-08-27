@@ -30,7 +30,7 @@ public:
 
     int getMode();
 
-    void setGC(GarbageCleaner * gc);
+    void setGC(IGarbageCleaner * gc);
 
     bool getSynchronization();
 
@@ -60,7 +60,7 @@ public:
     ~WebotsRobot() { }
     
 	private:
-		GarbageCleaner * gc;
+		IGarbageCleaner * gc;
 		WorldInfo * wi;
 		IDifferentialWheels * df;
 		IBattery * robotBattery;

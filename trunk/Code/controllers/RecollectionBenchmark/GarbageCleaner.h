@@ -6,6 +6,7 @@
 #include <behaviours/AbstractBehaviour.h>
 #include <robotapi/IRobot.h>
 #include <WorldInfo.h>
+#include <IGarbageCleaner.h>
 
 #define FOCUS_GOTO_COLLECT_DISPOSE_GARBAGE 1
 #define GO_TO_RECHARGE 1
@@ -16,7 +17,7 @@
 
 #define MAX_BEHAVIOURS 32
 
-class GarbageCleaner {
+class GarbageCleaner : virtual public IGarbageCleaner {
 
  public:
 
