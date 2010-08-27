@@ -4,9 +4,7 @@
 #include "AbstractBehaviour.h"
 #include <vector>
 
-#define THRESHOLD_OBSTACLE 350
-#define FRONT_THRESHOLD_OBSTACLE 300
-#define SPEED_FACTOR 0.2
+
 
 namespace behaviours {
 

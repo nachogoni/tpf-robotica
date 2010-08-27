@@ -4,13 +4,7 @@
 #include "AbstractBehaviour.h"
 #include <vector>
 
-#define ACTIVATION_STEPS 2000
-#define REMOVE_ANGLE_TOLE 0.05
-#define REMOVE_SPD 20
-#define REMOVE_STEP 32
-#define REMOVE_DESVSTD_ANGLE_THRESHOLD 0.1
-#define REMOVE_DESVSTD_DIST_THRESHOLD 0.01
-#define REMOVE_ANGLE_TO_ADD (PI*3.0/4.0)
+
 
 namespace behaviours {
 

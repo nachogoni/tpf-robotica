@@ -11,39 +11,6 @@
 #include <behaviours/PositionInLine.h>
 #include <behaviours/GoToBase.h>
 
-#define GO_TO_D_ORIENTATION_TOLE 0.3
-
-
-#define BASE_X -0.874047
-#define TOLE 0.2
-#define BASE_POSITION (BASE_X+TOLE)
-
-#define AFTER_ALIGN_ORIENTATION -1.59682 //-1.59917
-
-#define GO_TO_D_LINE_X_POSITION_THRESHOLD -0.34
-
-/*
-4,686365307179586476925286766559
-4.68252
-
--1.59917
-4.6825
-*/
-
-#define PASSAGE_BEGIN_X -0.6
-#define PASSAGE_LINE_Z 0.100174
-
-#define LINE_MARK_X -0.626685
-
-#define LINE_ORIENTATION_CORRECTION (3.142375307)
-
-// FROM Z TO 1
-#define FROM_Z_LEFT (0.382857)
-
-#define X_CORRECTION_LINE (-0.447202)
-
-// FROM Z TO -1
-#define FROM_Z_RIGHT (-0.207086)
 
 namespace behaviours {
 

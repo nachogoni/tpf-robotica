@@ -124,13 +124,15 @@ struct ltstr
 
 namespace behaviours{
 	class BehavioursParameters{
+		
 		public:
-			std::map<char *,double,ltstr> parameters;
-			BehavioursParameters(FILE * config);
 			~BehavioursParameters();
-			double getParameter(char * param);
-			void setParameter(char * param,double val);
 			
+			
+		public:
+			static void setParameter(char * param,double val);
+			static void Init(FILE * config);
+			static double getParameter(char * param);
 	};
 }
 

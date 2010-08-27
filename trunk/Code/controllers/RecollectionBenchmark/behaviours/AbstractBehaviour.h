@@ -3,10 +3,9 @@
 
 #include <string>
 #include <robotapi/IRobot.h>
-#include <robotapi/webts/WebotsRobot.h>
+#include <behaviours/BehavioursParameters.h>
 
-#define LINE_UP_THRESHOLD 350
-#define LINE_DOWN_THRESHOLD 175
+
 
 class GarbageCleaner;
 
