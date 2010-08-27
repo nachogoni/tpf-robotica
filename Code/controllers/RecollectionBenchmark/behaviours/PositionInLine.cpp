@@ -58,7 +58,7 @@ namespace behaviours{
 		}
 		double sDisplX = this->wi->getFloorSensorsDisplacementX();
 		double sDisplY = this->wi->getFloorSensorsDisplacementY();
-		#ifdef behaviours::BehavioursParameters::getParameter(CONTROLLER_DEBUG)
+		#ifdef CONTROLLER_DEBUG
 		printf("%d - %d - %d\n",(*this->fss).at(0)->getValue(),(*this->fss).at(1)->getValue(),(*this->fss).at(2)->getValue());
 		printf("disp X: %g - disp Y: %g\n",sDisplX,sDisplY);
 		#endif
@@ -75,7 +75,7 @@ namespace behaviours{
 		if ( tita != 0 )
 			distanceToGo = sqrt(sDisplY*sDisplY+sDisplX*sDisplX);
 
-		#ifdef behaviours::BehavioursParameters::getParameter(CONTROLLER_DEBUG)
+		#ifdef CONTROLLER_DEBUG
 		printf("distanceToGo : %g\n",distanceToGo);
 		#endif
 
@@ -87,7 +87,7 @@ namespace behaviours{
 		if ( angleToTurn < -PI )
 			angleToTurn += TWO_PI;
 
-		#ifdef behaviours::BehavioursParameters::getParameter(CONTROLLER_DEBUG)
+		#ifdef CONTROLLER_DEBUG
 		printf("tita : %g\n",angleToTurn);
 		#endif
 

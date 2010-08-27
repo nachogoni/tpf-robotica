@@ -74,7 +74,7 @@ void PacketServer::run(void){
 	}
 
     // Set file descriptors
-//    FD_SET(serfd,&readfd);
+    FD_SET(serfd,&readfd);
     FD_SET(this->pipes[PIPE_IN],&readfd);
     maxfd = MAXOF(serfd,this->pipes[PIPE_IN]) + 1;
     readfd_b = readfd;
@@ -135,7 +135,6 @@ void PacketServer::run(void){
 			printf("escribi : %d bytes en el serial\n",write(serfd,pipe_buf,c)+1);
 */
 			read(pipes[PIPE_IN], &c, 1);
-			
 			write(serfd,&c,1);
 		
 		}
@@ -182,8 +181,7 @@ BoardPacketHandler * PacketServer::getHandler(unsigned char groupid , unsigned c
 bool PacketServer::init()
 {
     #ifdef __linux__
-    this->serfd = open(SERIAL_PORT, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-//    this->serfd = open(SERIAL_PORT, O_RDWR | O_NOCTTY | O_NDELAY);
+    this->serfd = open(SERIAL_PORT, O_RDWR | O_NOCTTY | O_NDELAY);
     
     if (this->serfd < 0)
     {
@@ -192,12 +190,7 @@ bool PacketServer::init()
         return false;
     }
     
-    char ini[20] = "\nSesion iniciada\n";
-
-    write(serfd,ini,strlen(ini)+1);
-
-
-/*    struct termios tc; // 115200 baud, 8n1, no flow control
+    struct termios tc; // 115200 baud, 8n1, no flow control
     
     tc.c_iflag = IGNBRK;
     tc.c_oflag = 0;
@@ -210,7 +203,7 @@ bool PacketServer::init()
     tcsetattr(this->serfd, TCSANOW, &tc);
     
     
-  */  
+    
     
 
     
