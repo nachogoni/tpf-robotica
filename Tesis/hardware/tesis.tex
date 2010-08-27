@@ -9,7 +9,7 @@ implementaci\'on, en las secciones \ref{h_actuadores} y \ref{h_sensado} describi
 y sensores utilizados, en la secci\'on \ref{h_controlador} mostramos los dispositivos de control
 elegidos, en la secci\'on \ref{h_comm} detallamos el m\'etodo de comunicaci\'on dise\~nado
 para la comunicaci\'on entre los controladores de cada perif\'erico, en la
-secci\'on \ref{h_placas} exhibimos el dise\~no de las placas controladores realizadas y en
+secci\'on \ref{h_placas} exhibimos el dise\~no de las placas controladoras realizadas y en
 la secci\'on \ref{h_prototipo} explicamos el armado del prototipo.
 
 \subsection{Ideas de implementaci\'on}
@@ -31,11 +31,11 @@ iba a determinar las necesidades de control, equilibrio, capacidad de coordinaci
 y hasta la autonom\'ia.
 
 El uso de orugas era una excelente opci\'on como base para soporte del peso y prove\'ia buen
-equilibrio, pero la fricci\'on de las mismas generaba una posible falta de precisi\'on que nos
-pod\'ia traer problemas para la detecci\'on de la cantidad de giro o desplazamiento y por ende,
-una incorrecta localizaci\'on en el terreno.
+equilibrio, pero tambi\'en implicaba un sistema de actuaci\'on m\'as complejo desde el punto
+de vista mec\'anico respecto al uso de ruedas.
 Por otra parte, la coordinaci\'on de las patas y el equilibrio del cuerpo implicaba una
-complejidad que escapaba el alcance del proyecto.
+complejidad mec\'anica y de control, como as\'i tambi\'en un consumo mayor de energ\'ia
+respecto a las otras posibilidades.
 
 El uso de dos ruedas de tracci\'on y con al menos una tercer rueda de tipo castor para proveer
 equilibrio fue nuestra elecci\'on de dise\~no.
@@ -60,9 +60,9 @@ mejoras de la im\'agen y su velocidad de respuesta nos determinar\'ian la elecci
 
 La detecci\'on de obst\'aculos implicaba sensores con caracter\'isticas diferentes.
 Principalmente necesitabamos sensores de distancia con la apertura necesaria para cubrir lo
-mejor posible, el per\'imetro del robot, otorgando un rango de detecci\'on lo suficientemente olgado
+mejor posible, el per\'imetro del robot, otorgando un rango de detecci\'on lo suficientemente holgado
 que permitiera una adecuada velocidad de respuesta al controlador principal para poder
-evitar objetos desconocidos o marcados como obst\'aculos.
+evitar objetos desconocidos o identificados como obst\'aculos.
 
 Entre los distintos tipos de sensores de distancia estaban los de ultrasonido, tel\'emetros infrarrojos
 y scanners l\'aser.
@@ -94,7 +94,7 @@ En la secci\'on \ref{h_sensado} explicamos con m\'as detalle cada uno de los sen
 
 Ten\'iamos especificaciones que nos generaban la necesidad de ejercer control sobre los distinos dispositivos
 presentes en el robot, ya sea para configurar o obtener la informaci\'on que proveen los sensores, para
-controlar la velocidad de las ruedas o mismo para comunicar las distintas partes.
+controlar la velocidad de las ruedas o para comunicar las distintas partes.
 No exist\'ia una \'unica forma para realizar esto.
 
 Experiencias previas nos daban la idea de tener un \'unico controlador que mantuviera el control sobre cada uno
@@ -151,9 +151,7 @@ Estas cuestiones son las que analizamos en este apartado.
 Para la tracci\'on principal de las ruedas necesitabamos motores que tuvieran el torque suficiente
 para mover el robot, pero que pudieramos medir y controlar la velocidad era la principal necesidad.
 Para esta tarea utilizamos motores de cont\'inua con caja reductora y encoder.
-Con dos de estos motores lograbamos poder garantizar una velocidad determinada en las ruedas, controlar
-la cantidad de movimiento en forma independiente en cada rueda y entre otras cosas conocer la cantidad
-de vueltas dadas por cada una de las ruedas.
+Con dos de estos motoreductores pod\'iamos garantizar la velocidad necesaria en cada una de las ruedas.
 
 \paragraph{Caracter\'isticas}
 \label{h_actuadores_motorDC_caracteristicas}
@@ -201,10 +199,10 @@ Internamente tiene dos puentes H puenteables y puede soportar hasta $4 A$.
 \'Esto lo logramos teniendo las salidas $1$ y $2$ puenteadas con las salidas $4$ y $3$ respectivamente, como
 mostramos en el diagrama de la figura \ref{hF_placa_dc_schema3}.
 
-La principal funci\'on del driver era proveer de la corriente y voltaje necesarios para el funcionamiento del motor, pero la configuraci\'on
+La principal funci\'on del driver es proveer de la corriente y voltaje necesarios para el funcionamiento del motor, pero la configuraci\'on
 del puente H nos di\'o la posibilidad de, con una l\'ogica simple, determinar el sentido de la corriente y potencia que recib\'ia el motor.
 
-Este integrado admite el puenteo de las salidas aumentando as\'i la corriente que circular\'a por el motor.
+Este integrado admite puentear ambas salidas, aumentando as\'i, la m\'axima corriente que puede circular por el motor.
 Para hacer esto, conectamos las salidas \emph{Out1} y \emph{Out4} por un lado y por el otro las salidas \emph{Out2} y \emph{Out3}.
 De igual forma los pines de habilitaci\'on \emph{EnA} y \emph{EnB}, luego la entrada \emph{In1} con la \emph{In4} por un lado y
 por el otro la \emph{In2} con la \emph{In3}.
@@ -247,13 +245,13 @@ Cuanto mayor es el tiempo en estado alto del pulso, mayor la potencia.
 Para contrarrestar la corriente negativa en las salidas del driver usamos los diodos \emph{FR304} que cumplen con las especificaciones del driver
 con $150$ns de tiempo de recuperaci\'on y una corriente de $3 A$.
 
-El consumo del motor lo medimos mediante los pines de sensado en el driver, conectado a masa por una resistencia y al m\'odulo de \emph{ADC} del
+El consumo del motor lo medimos mediante los pines de sensado en el driver, conectados a masa por una resistencia y al m\'odulo de \emph{ADC} del
 microcontrolador, que explicamos en la secci\'on \ref{h_controlador_micro_modulos}.
-Conociendo el valor de la resistencia y el valor le\'ido por el m\'odulo de \emph{ADC}, pudimos determinar cu\'anta corriente que circulaba por la
+Conociendo el valor de la resistencia y el valor le\'ido por el m\'odulo de \emph{ADC}, pudemos determinar cu\'anta corriente circula por la
 resistencia y por ende la corriente consumida por el motor.
 
-Para controlar la velocidad del motor usamos uno de los dos encoders que trae.
-Conectados como entrada para el m\'odulo de \emph{Timer} del microcontrolador, en configuraci\'on de contador, que explicamos m\'as en detalle en la
+Para controlar la velocidad del motor usamos uno de las dos salidas del encoder que trae.
+Conectada como entrada para el m\'odulo de \emph{Timer} del microcontrolador, en configuraci\'on de contador, que explicamos m\'as en detalle en la
 secci\'on \ref{h_controlador_micro_modulos}.
 Usando otro \emph{Timer} para tener una base de tiempo fija y con el valor del contador pudimos determinar y controlar la velocidad de las ruedas.
 Dependiendo el tama\~no de las mismas ser\'a la velocidad de final del robot.
@@ -271,7 +269,7 @@ chequeos y ejercer control sobre el motor.
 Verificamos el consumo del motor para evitar sobrecargar el circuito y los motores ante un posible atasco de las ruedas.
 Tambi\'en actualizamos el acumulado de vueltas realizadas por el motor para la odometr\'ia.
 
-Cada $200$ms ($32$ interrupciones) tomamos la cantidad de cuentas del encoder, corregimos la velocidad de giro del motor ajustando el
+Cada $200$ms ($32$ interrupciones) tomamos la cantidad de cuentas del encoder y corregimos la velocidad de giro del motor ajustando el
 ancho del pulso generado por el PWM.
 Luego borramos el contador y esperamos otros $200ms$.
 
@@ -328,8 +326,8 @@ La frecuencia a la que debemos setear la posici\'on depende del modelo.
 \paragraph{Rutinas de control}
 \label{h_actuadores_servo_rutinas}
 
-Debido a que pensamos usar servos digitales y por lo menos \'ibamos a necesitar $3$ servos, necesitabamos contar con varios m\'odulos de PWM.
-Como s\'olo dispon\'iamos de 1, decidimos realizar la misma funci\'on pero por software.
+Debido a que pensamos usar servos digitales y en una primera etapa del dise\~no se especific\'o el requerimiento
+de $3$ servos, decidimos realizar la misma funci\'on pero por software.
 
 Usamos el timer de $16$bits del microcontrolador configurado con el clock interno como medida del tiempo para crear $5$ salidas con
 pulsos que var\'ian su ancho en forma independiente cada una.
@@ -375,7 +373,7 @@ En la figura \ref{hF_gp2d120_pulse} mostramos el diagrama de tiempos.
 			\hline
 		\end{tabular}
 	\end{center}
-	\caption{Caracter\'isticas del sensor de distancia por ultrasonido SRF05.}
+	\caption{Caracter\'isticas del sensor de distancia infrarrojo GP2D120.}
 	\label{hT_gp2d120}
 \end{table}
 
@@ -420,7 +418,9 @@ En la figura \ref{hF_gp2d120_distancia} mostramos el cuadro de conversi\'on entr
 
 Controlar los tel\'emetros es relativamente sencillo.
 Usamos el timer de $16$bits del microcontrolador configurado con el clock interno para determinar el tiempo en el cual
-deb\'iamos tomar las muestras con el ADC y simplemente realizamos un promedio entre ellas para obtener la distancia al objetivo.
+deb\'iamos tomar las muestras con el ADC.
+Para filtrar el ruido de cada muestra individual, la distancia al objetivo es obtenida mediante el promedio
+de una repetici\'on de mediciones.
 
 Para hacer esto desarrollamos una peque\~na m\'aquina de estados que controla y maneja los tiempos para tomar las muestras que
 explicamos m\'as en detalle en la secci\'on \ref{h_placas_sensado_codigo}.
@@ -463,13 +463,13 @@ del sensor.
 			\hline
 		\end{tabular}
 	\end{center}
-	\caption{Caracter\'isticas del sensor SRF05.}
+	\caption{Caracter\'isticas del sensor de ultrasonido SRF05.}
 	\label{hT_srf05}
 \end{table}
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.5]{hardware/figures/srf05_beam.png}
+	\includegraphics[scale=0.65]{hardware/figures/srf05_beam.png}
 	\caption{Haz ultras\'onico del sensor SRF05.}
 	\label{hF_srf05}
 \end{figure}
@@ -502,9 +502,9 @@ configurado con el clock interno.
 
 Para realizar la medici\'on, generamos un pulso de $15\mu s$ para asegurarnos el disparo del sensor y cambiamos el modo del pin a entrada con
 interrupci\'on ante un flanco ascendente.
-Cuando salta la interrupci\'on significa que comienza al pulso con la distancia codificada en su ancho, por lo que tomamos una muestra del
+Cuando la interrupci\'on es activada significa que comienza al pulso con la distancia codificada en su ancho, por lo que tomamos una muestra del
 timer y configuramos al pin para que genere ahora una interrupci\'on ante un flanco descendente.
-Cuando salte la pr\'oxima vez la interrupci\'on, ser\'a porque termin\'o el pulso con la medici\'on, por lo que s\'olo debemos hacer la resta
+Cuando la interrupci\'on es nuevamente activada, ser\'a porque termin\'o el pulso con la medici\'on, por lo que s\'olo debemos hacer la resta
 entre el valor actual del timer y la muestra que tomamos al principio para conocer la distancia a la que se encuentra el objetivo.
 
 Un tiempo obtenido mayor a los $25ms$ indica que no se detect\'o ning\'un objeto dentro del rango del sensor.
@@ -555,7 +555,7 @@ En la figura \ref{hF_cny70_ID} mostramos la corriente que circula por el colecto
 \paragraph{Circuito de control}
 \label{h_sensado_piso_circuito}
 
-De igual forma que en los tel\'emetros utilizamos un transistor como habilitaci\'on de la tensi\'on de alimentaci\'on en el sensor.
+De igual forma que en los tel\'emetros utilizamos un transistor para conmutar la tensi\'on de alimentaci\'on en el sensor.
 Esto nos di\'o la posibilidad de encenderlo y apagarlo a la hora de tomar las muestras de la luz reflejada por piso o la l\'inea.
 Nuevamente la l\'ogica de habilitaci\'on es invertida por tratarse de un transistor \emph{BC327}.
 
@@ -576,7 +576,7 @@ con un nivel bajo de luz, un valor alto.
 \subsubsection{Encoders}
 \label{h_sensado_encoder}
 
-Los encoders son sensores que convierten una posici\'on lineal o angular en se\~nal el\'ectrica o pulsos.
+Los encoders son sensores que convierten una posici\'on lineal o angular en se\~nal el\'ectrica o tren de pulsos.
 Pueden determinar una posici\'on de forma absoluta o simplemente informar que hubo un movimiento.
 El m\'etodo de sensado y la resoluci\'on del \'angulo de giro que detectan var\'ia seg\'un el modelo.
 
@@ -591,7 +591,7 @@ Adicionalmente el motor cuenta con un sensor de efecto Hall el cual nos permite 
 en el eje de salida de la caja reductora.
 
 Como conocemos el sentido de giro del motor, pues lo determinamos con el puente H, necesitamos s\'olo
-uno de los dos encoders para conocer y controlar la velocidad a la que gira el rotor del motor.
+una de las dos salidas del encoder para conocer y controlar la velocidad a la que gira el rotor del motor.
 
 A la tensi\'on m\'axima los motores superan las 320 cuentas por segundo, el m\'inimo y m\'aximo recomendables
 son, para que podamos mantener un giro constante, $60$ y $300$ cuentas por segundo respectivamente.
@@ -633,7 +633,7 @@ En la figura \ref{hF_bateria_diagrama} mostramos el diagrama del divisor de tens
 
 En el cuadro \ref{hT_bateria_divT} mostramos las posibles tensiones en la bater\'ia y la tensi\'on de salida en el divisor.
 Tambi\'en incluimos el valor aproximado para el ADC con tensi\'on de referencia a $5V$ que leer\'ia la salida del divisor.
-El rango de voltajes que analizamos es tenendo en cuenta la posibilidad de efectuar mediciones durante la carga de la bater\'ia
+El rango de voltajes que analizamos es teniendo en cuenta la posibilidad de efectuar mediciones durante la carga de la bater\'ia
 y sabiendo que con una tensi\'on menor a $5 V$ la l\'ogica del prototipo que construimos comenzar\'ia a fallar.
 
 \begin{table}[h]
@@ -703,8 +703,7 @@ En el cuadro \ref{hT_consumo} comparamos el consumo en el motor, el voltaje sens
 \paragraph{Pulsador u otro dispositivo disparador}
 \label{h_sensado_pulsador}
 
-Adem\'as de los sensores que describimos, pensamos que nos podr\'ian hacer falta pulsadores para controlar funciones
-simples.
+Adem\'as de los sensores que describimos, nos hace falta sensar switches que monitorean diversos estados del robot.
 Por ejemplo saber cu\'ando una parte de alg\'un mecanismo llega a cierto punto o detectar finales de carrera
 de un servo o tornillo sin fin.
 Tambi\'en pueden ser otro tipo de sensores que generen un cambio de estado en el pin de sensado que se conecta al
@@ -761,7 +760,7 @@ programa, una memoria \emph{RAM} de 368 bytes y una memoria \emph{EEPROM} de 256
 Tiene un set de instrucciones b\'asicas reducido y todas con el mismo tiempo de ejecuci\'on.
 En este apartado nombramos algunos de los principales perif\'ericos incluidos en el microcontrolador y la utilidad
 dentro del proyecto que encontramos para ellos.
-Utilizamos con un cristal externo de 20MHz como clock.
+Utilizamos un cristal externo de 20MHz como clock.
 
 \begin{figure}[h]
 	\centering
@@ -771,12 +770,12 @@ Utilizamos con un cristal externo de 20MHz como clock.
 \end{figure}
 
 El microcontrolador tiene 2 puertos de 8 entradas y salidas cada uno de tipo TTL y CMOS.
-Como mostramos en la figura \ref{hF_pic16f88_diagrama} cada pin se encuentra multiplexado con uno o m\'as perif\'ericos internos.
+Como mostramos en la figura \ref{hF_pic16f88_diagrama} cada pin se encuentra multiplexado con uno o m\'as unidades internas.
 
 \paragraph{M\'odulos internos}
 \label{h_controlador_micro_modulos}
 
-Internamente el microcontrolador tiene una serie de perif\'ericos que proveen funciones extras y que utilizamos para lograr
+Internamente el microcontrolador tiene una serie de unidades que proveen funciones extras y que utilizamos para lograr
 cumplir con las necesidades de nuestro proyecto.
 En la figura \ref{hF_pic16f88_modulos} mostramos los distintos m\'odulos internos del microcontrolador.
 
@@ -794,7 +793,7 @@ Pueden ser etapas previas o posteriores al timer y nos dan gran flexibilidad de 
 
 El \emph{TIMER0} lo utilizamos para hacer control del tiempo en nuestros c\'odigos.
 Conectados con el clock principal y configurados para que generen una interrupci\'on al hacer overflow,
-obtenemos una buena medida del paso del tiempo.
+obtenemos una medida del paso del tiempo.
 
 El \emph{TIMER1} configurado como fuente externa a la salida del encoder, lo usamos como contador de pasos para medir la
 velocidad del motor.
@@ -815,7 +814,7 @@ as\'i la resoluci\'on del conversor.
 El m\'odulo de \emph{PWM} nos provee la posibilidad de generar pulsos cont\'inuos de un ancho determinado.
 En nuestro proyecto lo utilizamos como habilitaci\'on del puente H que alimenta a los motores variando as\'i la
 potencia y por lo tanto, la velocidad final de las ruedas.
-Se utiliza en conjunto con el \emph{TIMER2} seteando el prescaler y postscaler para determinar el ancho del
+Se utiliza en conjunto con el \emph{TIMER2} fijando el prescaler y postscaler para determinar el ancho del
 estado alto y del estado bajo de los pulsos.
 
 Gracias al m\'odulo de \emph{AUSART} podemos realizar la comunicaci\'on entre los distintos microcontroladores por hardware.
@@ -833,9 +832,9 @@ Para crear el firmware de cada microcontrolador usamos al IDE de programaci\'on
 \emph{Microchip MPLAB}\footnote{http://www.microchip.com/}.
 Usamos el lenguaje C y lo compilamos con \emph{CCS PCM V4.023}\footnote{http://www.ccsinfo.com/}.
 Usamos el programador \emph{ICD2} de la empresa \emph{Microchip} para descargar c\'odigo compilado al microcontrolador.
-El cual. a su vez, nos di\'o la posibilidad de depurar el c\'odigo en m\'as de una oportunidad.
+Este programador, a su vez, nos di\'o la posibilidad de depurar el c\'odigo en m\'as de una oportunidad.
 
-En el cuadro \ref{hT_header_icd2} detallamos el header de programaci\'on en circuito, con el cual establecemos la
+En el cuadro \ref{hT_header_icd2} detallamos el conector de programaci\'on en circuito, con el cual establecemos la
 interface con el programador \emph{ICD2} para cargar el firmware en el microcontrolador o para depurarlo.
 
 \begin{table}
@@ -944,7 +943,7 @@ cambiar el switch de configuraci\'on de \emph{LINK} a \emph{LAST}.
 El protocolo de comunicaci\'on est\'a formado por paquetes que tienen un formato espec\'ifico y representan un pedido de
 informaci\'on o comando que debe ser ejecutado en el destino.
 
-El paquete consta de un header com\'un con datos que identifican al emisor y receptor del paquete, el comando a enviar y
+El paquete consta de un encabezado com\'un con datos que identifican al emisor y receptor del paquete, el comando a enviar y
 posibles datos extras que sean requeridos.
 Todos los paquetes tienen una respuesta obligatoria de confirmaci\'on de recepci\'on.
 Cuando el paquete requiere una respuesta con datos, la confirmaci\'on va acompa\~nada de la informaci\'on requerida.
@@ -964,14 +963,15 @@ En el cuadro \ref{hF_comm_paquete_tabla} mostramos la estructura interna de un p
 
 Tanto los paquetes de env\'io de datos como los de respuesta tienen el mismo formato y comparten el valor en el campo de comando.
 
-El campo \emph{LARGO} indica el tama\~no en bytes del paquete que viene a continuaci\'on, consta de 1 byte.
-Es necesario porque el campo \emph{DATO} es de longitud variable.
+El campo \emph{LARGO} indica el tama\~no en bytes del paquete que viene a continuaci\'on.
+Consta de 1 byte.
+Esto es necesario porque el campo \emph{DATO} es de longitud variable.
 Si la longitud del campo \emph{DATO} es cero, entonces \emph{LARGO} es 0x04.
 
 El campo \emph{DESTINO} identifica al destinatario del paquete y consta de 1 byte.
 Los 4 bits m\'as significativos indican el grupo y los 4 bits menos significativos, el n\'umero de $ID$ de la placa de destino.
-Si el $ID$ de placa es F, el paquete es broadcast a todos los $ID$s del grupo indicado y si el valor es 0xFF, el paquete
-es broadcast a todas las placas de todos los grupos.
+Si el $ID$ de placa es 0x0F, el paquete es distribuido a todos los $ID$s del grupo indicado y si el valor es 0xFF, el paquete
+es distribuido a todas las placas de todos los grupos.
 En el cuadro \ref{hT_comm_protocolo_grupos} establecemos el $ID$ de cada grupo.
 
 De igual forma, \emph{ORIGEN} determina el emisor del paquete para la respuesta y es de 1 byte.
@@ -1024,8 +1024,8 @@ Para m\'as referencias recomendamos ver el apartado \ref{hA_protocolo}.
 
 Creamos comandos que son comunes a cualquier placa sea cual sea su grupo.
 La intenci\'on fue poder tener un espacio de comunicaci\'on com\'un para poder intercambiar comandos
-de inicializaci\'on, identificaci\'on de controladores, versionado o alg\'una otra necesidad gen\'erica que
-se desarrolle en un futuro y deba ser incluida en el protocolo.
+de inicializaci\'on, identificaci\'on de controladores, identificaci\'on de versi\'on o alg\'una otra necesidad
+gen\'erica que se desarrolle en un futuro y deba ser incluida en el protocolo.
 El controlador principal deber\'ia ser quien env\'ia este tipo de comandos, pero no creamos restricciones al respecto.
 
 En el cuadro \ref{hT_comm_comandos_comunes} listamos y explicamos brevemente los comandos comunes del protocolo.
@@ -1058,7 +1058,7 @@ En el cuadro \ref{hT_comm_comandos_comunes} listamos y explicamos brevemente los
 \label{h_comm_protocolo_comandosEspecificos}
 
 Cada grupo de placas tiene comandos propios y espec\'ificos dependiendo de la funci\'on que deban desempe\~nar en el sistema.
-Existen grupos con comandos predefinidos cada uno se trata en las secciones como se detalla en el cuadro \ref{hT_comm_protocolo_grupos}.
+Existen grupos con sus comandos predefinidos.
 Los comandos espec\'ificos para cada grupo deben estar dentro del rango de valores entre 0x40 y 0x7E.
 
 El \emph{MAIN CONTROLLER} no posee por ahora ning\'un comando espec\'ifico pero le reservamos el espacio en el protocolo.
@@ -1074,21 +1074,21 @@ De igual forma, aunque no est\'en implementados, reservamos y especificamos los 
 		\hline
 		Valor & Comando & Detalle \\
 		\hline
-		0x40 & SET DIRECTION & Seteo del sentido de giro del motor.
+		0x40 & SET DIRECTION & Fija el sentido de giro del motor.
 		Env\'ia el sentido de giro como par\'ametro. \\
 		\hline
-		0x41 & SET DC SPEED & Seteo de la velocidad del motor.
+		0x41 & SET DC SPEED & Fija la velocidad del motor.
 		Env\'ia el sentido de giro y velocidad en cuentas por segundos como par\'ametro. \\
 		\hline
 		0x42 & SET ENCODER & Seteo de las cuentas hist\'oricas del encoder.
-		Env\'ia como par\'ametro el valor para setear en el hist\'orico del encoder. \\
+		Env\'ia como par\'ametro el valor que debe tener el hist\'orico del encoder. \\
 		\hline
 		0x43 & GET ENCODER & Obtener las cuentas hist\'oricas del encoder.
 		Responde con el valor hist\'orico del encoder. \\
 		\hline
-		0x44 & RESET ENCODER & Resetear las cuentas hist\'oricas a cero. \\
+		0x44 & RESET ENCODER & Pone las cuentas hist\'oricas a cero. \\
 		\hline
-		0x45 & SET ENCODER TO STOP & Seteo de cu\'antas cuentas para detenerse.
+		0x45 & SET ENCODER TO STOP & Establece en cu\'antas cuentas debe detenerse el motor.
 		Env\'ia como par\'ametro la cantidad de cuentas del encoder restantes para
 		que el motor se detenga. \\
 		\hline
@@ -1124,7 +1124,7 @@ De igual forma, aunque no est\'en implementados, reservamos y especificamos los 
 		0x40 & SET POSITION & Determina la posici\'on del servo motor indicado.
 		Env\'ia el $ID$ del servo y la posici\'on del eje como par\'ametro. \\
 		\hline
-		0x41 & SET ALL POSITIONS & Setea las posiciones de cada uno de los servo motores.
+		0x41 & SET ALL POSITIONS & Establece la posici\'on de cada uno de los servo motores.
 		Env\'ia las posiciones para cada uno de los $5$ servos como par\'ametro.\\
 		\hline
 		0x42 & GET POSITION & Obtiene la \'ultima posici\'on del servo motor indicado.
@@ -1134,10 +1134,10 @@ De igual forma, aunque no est\'en implementados, reservamos y especificamos los 
 		0x43 & GET ALL POSITIONS & Obtiene todas las \'ultimas posiciones de los servo motor.
 		Responde con la posici\'on para cada uno de los $5$ servos.\\
 		\hline
-		0x44 & SET SERVO SPEED & Setea la velocidad para el servo motor indicado.
+		0x44 & SET SERVO SPEED & Fija la velocidad para el servo motor indicado.
 		Env\'ia como par\'ametro el $ID$ del servo y la velocidad a setear. \\
 		\hline
-		0x45 & SET ALL SPEEDS & Setea la velocidad para cada servo motor.
+		0x45 & SET ALL SPEEDS & Establece la velocidad para cada servo motor.
 		Env\'ia como par\'ametro la velocidad a setear para cada uno de los servos. \\
 		\hline
 		0x46 & GET SERVO SPEED & Obtiene la velocidad para el servo motor indicado.
@@ -1241,7 +1241,7 @@ De igual forma, aunque no est\'en implementados, reservamos y especificamos los 
 		\hline
 		0x41 & BIN FULL ALARM & El cesto de basura se ha completado y debe ser descargado. \\
 		\hline
-		0x42 & SET FULL BIN VALUE & Setea el valor para determinar que el cesto est\'a lleno.
+		0x42 & SET FULL BIN VALUE & Establece el valor para determinar que el cesto est\'a lleno.
 		Valor que especifica que lectura se debe tomar como cesto lleno.\\
 		\hline
 		\end{tabular}
@@ -1263,7 +1263,7 @@ de electr\'onica general.
 Pero ten\'ian peculiaridades y aspectos que no pudimos satisfacer con placas prefabricadas.
 Por ejemplo, un protocolo de comunicaci\'on unificado entre todos los m\'odulos era, de entrada, una barrera que acotaba
 las posibilidades.
-Y mantener distintos modos y protocolos dentro del proyecto generaba una carga de l\'ogica que pod\'iamos evitar.
+Adem\'as mantener distintos modos y protocolos dentro del proyecto generaba una carga de l\'ogica que pod\'iamos evitar.
 
 Analizando las posibilidades y entendiendo que una de las principales razones de nuestro trabajo era generar las bases
 de conocimiento y el punto de partida a un proyecto m\'as grande, decidimos producir nuestra propia versi\'on
@@ -1290,8 +1290,8 @@ actualizaciones a nuestro proyecto.
 \label{h_placas_generica_caracteristicas}
 
 La necesidad principal era proveer de una interface com\'un entre todas las placas para la comunicaci\'on y exportar
-los puertos y perif\'ericos del microcontrolador que elegimos a circuitos nuevos.
-\'Esto nos servi\'o para realizar pruebas de concepto para la conexi\'on con los sensores, valores de componente pasivos
+los puertos y unidades del microcontrolador que elegimos a circuitos nuevos.
+\'Esto nos sirvi\'o para realizar pruebas de concepto para la conexi\'on con los sensores, valores de componente pasivos
 ideales, comportamiento e interacci\'on entre placas, optimizaci\'on del c\'odigo del firmware o crear nuevas expansiones.
 
 \paragraph{M\'odulo de comunicaci\'on}
@@ -1313,17 +1313,17 @@ En los cuadros \ref{hT_comm_conexionLink} y \ref{hT_comm_conexionRS232} explicam
 \end{figure}
 
 Para determinar si la placa es un nodo m\'as dentro de la cadena o es la terminaci\'on, colocamos una llave de dos posiciones
-que setea la configuraci\'on.
+que establece la configuraci\'on.
 En la posici\'on \emph{LINK} la placa act\'ua como nodo intermedio y en la posici\'on \emph{LAST} como terminaci\'on.
 
-Es de vital importancia colocar en forma la correcta esta llave porque podemos dejar sin conexi\'on al resto de las placas o mismo
+Es de vital importancia colocar en forma correcta esta llave porque podemos dejar sin conexi\'on al resto de las placas o mismo
 perder todos los paquetes transmitidos al no cerrar la cadena en el final de la misma.
 
 \paragraph{Alimentaci\'on de la placa}
 \label{h_placas_generica_alimentacion}
 
 La alimentaci\'on principal de la placa es 7 a 20 volts, con la posibilidad de alimentarla directamente con 5 volts
-por uno de los pines del conector.
+por uno de los conectores.
 En la figura \ref{hF_placa_gen_borneras} mostramos la bornera y en el cuadro \ref{hT_placa_gen_alimentacion} el pinout.
 
 \begin{figure}[h]
@@ -1361,17 +1361,18 @@ conexiones con perif\'ericos de prueba o nuevas extensiones.
 Los headers \emph{P3} y \emph{P4} son jumpers que vinculan los pines \emph{RA1} y \emph{RA4} del
 microcontrolador los leds 1 y 2 respectivamente.
 
-El header de programaci\'on \emph{P1} lo utilizamos para conectar la placa con el programador y debuguear
-el c\'odigo \emph{ICD2} como explicamos en en apartado \ref{h_controlador_micro_programacion}.
+El header de programaci\'on \emph{P1} lo utilizamos para conectar la placa con el programador \emph{ICD2} y depurar
+el c\'odigo como explicamos en en apartado \ref{h_controlador_micro_programacion}.
 El switch \emph{S2} lo usamos para asociar los pines del microcontrolador con los canales de clock
-y data del header de programaci\'on (modo \emph{ICD2}) o con los pines \emph{RB6} y \emph{RB7 }del header
+y data del conector de programaci\'on (modo \emph{ICD2}) o con los pines \emph{RB6} y \emph{RB7 }del header
 \emph{P2}.
 
 \paragraph{Esquem\'atico}
 \label{h_placas_generica_esquematicos}
 
 En la figura \ref{hF_placa_gen_schema1} mostramos el esquem\'atico del microcontrolador y el conexionado
-con los headers; el m\'odulo de comunicaci\'on y conectores para conformar la cadena \emph{Daisy-Chain}
+con los conectores.
+El m\'odulo de comunicaci\'on y conectores para conformar la cadena \emph{Daisy-Chain}
 los detallamos en la figura \ref{hF_placa_gen_schema2}.
 En la figura \ref{hF_placa_gen_schema3} mostramos el diagrama de la fuente de alimentaci\'on y bornera.
 
@@ -1427,12 +1428,12 @@ Seg\'un el uso que le fuimos dando a las placas gen\'ericas fuimos cambiando el 
 \'ibamos cargando, pero siempre manten\'iamos partes b\'asicas que nos ayudaban.
 
 \'Estas principalmente inclu\'ian la configuraci\'on de flags de configuraci\'on base del microcontrolador,
-desde la velocidad del clock para los c\'alculos de tiempos hasta determinar que pines eran mapeados a las
+desde la velocidad del clock para los c\'alculos de tiempos hasta determinar qu\'e pines eran mapeados a las
 funciones de RX y TX para la comunicaci\'on serial.
 
-Para hacer pruebas sobre la comunicaci\'on RS232 o del protocolo, armamos maquetas para las funciones que
+Para hacer pruebas sobre la comunicaci\'on RS232 o del protocolo, preparamos placas para las funciones que
 atienden a los comandos espec\'ificos y funciones de control del protocolo comunes para todas las placas.
-Tambi\'en generamos un modelo general del programa, con un loop principal y llamadas incializadoras.
+Tambi\'en generamos un modelo general del programa, con un loop principal y llamadas de inicializaci\'on.
 De esta s\'olo nos concentr\'abamos en la prueba que est\'abamos realizando.
 
 \paragraph{Posibles extensiones}
@@ -1440,8 +1441,10 @@ De esta s\'olo nos concentr\'abamos en la prueba que est\'abamos realizando.
 
 Son varias las extensiones que se podr\'ian realizar a estas placas pero teniendo en cuenta que deb\'ian ser
 lo m\'as gen\'ericas posibles como para probar nuevas funcionalidades o componentes, creemos que aportan mucho
-valor en la fase de testeo; sin embargo usar componentes de montaje superficial nos hubieran permitido tener
-una placa m\'as compacta.
+valor en la fase de testeo.
+El montaje de las placas se realiz\'o con componentes standard.
+En una fase posterior a este proyecto final, el uso de montaje superficial nos permitir\'ia el dise\~no de
+placas m\'as compactas.
 
 \subsubsection{Placa controladora de motores DC}
 \label{h_placas_motorDC}
@@ -1480,8 +1483,8 @@ Como explicamos en la secci\'on \ref{h_comm_protocolo_comandosEspecificos} esta 
 espec\'ificos listados en el cuadro \ref{hT_comm_comandos_motordc}.
 La principal informaci\'on disponible mediante estos comandos es la velocidad de la rueda en cuentas del
 encoder por segundo, el sentido de giro y el hist\'orico de cuentas realizadas.
-Podemos enviar comandos para setear estos valores y otros, como la cantidad de cuentas del encoder y a qu\'e
-velocidad debe girar la rueda debe hacerlo.
+Podemos enviar comandos para establecer estos valores y otros, como la cantidad de cuentas del encoder y a qu\'e
+velocidad debe girar la rueda.
 
 Tambi\'en podemos leer la cantidad de cuentas restantes antes de frenar y el consumo actual del motor para
 hacer c\'alculos sobre el tiempo restante de bater\'ia.
@@ -1490,7 +1493,7 @@ hacer c\'alculos sobre el tiempo restante de bater\'ia.
 \label{h_placas_motorDC_alimentacion}
 
 Como explicamos en la secci\'on \ref{h_placas_generica}, la alimentaci\'on principal de la l\'ogica es
-de 7 a 20 volts, con la posibilidad de alimentarla directamente con 5 volts por uno de los pines del conector.
+de 7 a 20 volts, con la posibilidad de alimentarla directamente con 5 volts a trav\'es de uno de los conectores.
 La alimentaci\'on del motor es por una bornera de 2 pines como listamos en el cuadro \ref{hT_placa_dc_alimentacion},
 aislada completamente para disminuir as\'i el ruido generado por el funcionamiento del motor sobre la l\'ogica.
 
@@ -1528,22 +1531,22 @@ mediante el switch \emph{S3}.
 Podemos colocarlo en modo \emph{LINK} para que sea un eslab\'on m\'as o en modo \emph{LAST} para que sea
 la terminaci\'on de la cadena.
 
-El header del motor comunica la placa con el motor de cont\'inua, en el cuadro \ref{hT_placa_dc_header_motor}
-detallamos la posici\'on de los pines.
+El conector del motor comunica la placa con el motor de cont\'inua (en el cuadro \ref{hT_placa_dc_header_motor}
+detallamos la posici\'on de los pines).
 
-Las se\~nales \emph{MOTOR\_B} y \emph{MOTOR\_A} son para la alimentaci\'on del motor, dependiendo del sentido
-de circulaci\'on de la corriente entre estos pines ser\'a el sentido de giro del motor.
+Las conexiones \emph{MOTOR\_B} y \emph{MOTOR\_A} son para la alimentaci\'on del motor.
+Dependiendo del sentido de circulaci\'on de la corriente entre estos pines ser\'a el sentido de giro del motor.
 \'Esto se controla desde el puente H \emph{L298}.
 
 Los sensores dentro del motor  reciben tensi\'on mediante los pines \emph{$5V$ VCC} y \emph{GND}.
 La se\~nal \emph{IDX} genera pulsos seg\'un las vueltas en el eje de salida de la caja de reducci\'on del
 motor.
-En cambio las se\~nales \emph{Encoder\_A} o \emph{Encoder\_B} generan pulsos en base a las vueltas del motor
+En cambio las se\~nales \emph{Encoder\_A} o \emph{Encoder\_B} son pulsos en base a las vueltas del motor
 antes de entrar en la caja.
 
-El switch \emph{S2} lo utilizamos para asociar los pines del microcontrolador con el canal de datos del header
-de programaci\'on, que explicamos en la secci\'on \ref{h_controlador_micro_programacion}, modo \emph{ICD2} o
-con la se\~nal de lectura del encoder.
+El switch \emph{S2} lo utilizamos para asociar los pines del microcontrolador con el canal de datos del conector
+de programaci\'on, que explicamos en la secci\'on \ref{h_controlador_micro_programacion}, permitiendo el modo
+\emph{ICD2} o el modo de lectura de la se\~nal del encoder.
 
 La se\~nal del encoder proviene a su vez del switch \emph{S4}, el cual nos da la posibilidad de elegir entre
 alguna de las dos se\~nales \emph{Encoder\_A} o \emph{Encoder\_B}.
@@ -1555,7 +1558,7 @@ a \emph{GND} y \emph{VCC}, o al divisor de tensi\'on formado por las resistencia
 	\begin{center}
 		\begin{tabular}{|c|c|c|c|}
 			\hline
-			Pin & Se\~nal & Pin & Se\~nal \\
+			Pin & Conexi\'on & Pin & Conexi\'on \\
 			\hline
 			1 & MOTOR\_B & 2 & MOTOR\_A \\
 			\hline
@@ -1576,11 +1579,11 @@ a \emph{GND} y \emph{VCC}, o al divisor de tensi\'on formado por las resistencia
 \paragraph{Esquem\'atico}
 \label{h_placas_motorDC_esquematico}
 
-En la figura \ref{hF_placa_dc_schema} mostramos el esquem\'atico del microcontrolador y el conexionado el header
+En la figura \ref{hF_placa_dc_schema} mostramos el esquem\'atico del microcontrolador y el conexionado el conector
 de programaci\'on.
 En la figura \ref{hF_placa_dc_schema2} detallamos el m\'odulo de comunicaci\'on y el conexionado con los conectores
 entre placas.
-En la figura \ref{hF_placa_dc_schema3} el esquem\'atico del driver y el header del motor.
+En la figura \ref{hF_placa_dc_schema3} mostramos el esquem\'atico del driver y el header del motor.
 En la figura \ref{hF_placa_dc_schema4} mostramos los pines del divisor de tensi\'on para el conversor anal\'ogico
 digital y en la figura \ref{hF_placa_dc_schema5} la fuente de alimentaci\'on y borneras.
 
@@ -1646,10 +1649,10 @@ En la figura \ref{hF_placa_dc_capas} mostramos ambas capas de la placa.
 \paragraph{C\'odigo b\'asico}
 \label{h_placas_motorDC_codigo}
 
-El c\'odigo m\'inimo para ser parte de la cadena de comunicaci\'on es similar al de todas las placas que
+El c\'odigo m\'inimo para ser parte de la cadena de comunicaci\'on es similar en todas las placas que
 armamos.
-La personalizaci\'on del c\'odigo est\'a dentro de la funci\'on que interpreta el comando recibido y realiza
-las tareas internas necesarias para llevar a cabo dicha acci\'on y depende \'integramente del protocolo.
+La personalizaci\'on del c\'odigo est\'a dentro de la funci\'on que interpreta el comando recibido y que realiza
+las tareas internas necesarias para llevar a cabo dicho comando y depende \'integramente del protocolo.
 
 Para el sensado de la velocidad debemos determinar cu\'ales son los pines de lectura de la se\~nal del encoder
 y debemos generar una base de tiempo que nos permita establecer cu\'antas cuentas del encoder hay por intervalo
@@ -1657,7 +1660,7 @@ de tiempo.
 Con dicha informaci\'on podemos aumentar o disminuir el ancho del pulso que controla al puente H \emph{L298}
 y, en consecuencia, controlar la velocidad del motor de corriente cont\'inua.
 
-Para mantener un hist\'orico de cuentas de encoder realidas nosotros usamos el conocimiento del sentido de giro
+Para mantener un hist\'orico de cuentas de encoder ocurridas nosotros usamos el conocimiento del sentido de giro
 del motor para sumar o restar el valor calculado por cada intervalo de tiempo en una variable interna del
 microcontrolador.
 
@@ -1670,10 +1673,6 @@ placa, pero esto nos tra\'ia una mayor complejidad tanto a nivel f\'isico como a
 tiempo de implementaci\'on superior.
 Es por estas razones que decidimos esta configuraci\'on y dejarlo como futura extensi\'on para la cual usar\'iamos
 los conocimientos y experiencias adquiridas en el desarrollo de la actual.
-
-Otra posible extensi\'on que es recurrente en todas las placas es el uso de componentes de montaje superficial
-lo que disminuir\'ia el tama\~no de la misma en gran medida pero a su vez implicaba cierta complejidad que preferimos
-evitar en el desarrollo del prototipo.
 
 \subsubsection{Placas de sensado}
 \label{h_placas_sensado}
@@ -1693,10 +1692,9 @@ El uso de diferentes tipos de sensores implicaba un m\'etodo distinto de lectura
 estaba conectado.
 Los sensores de distancia por ultrasonido que usamos generan un pulso de ancho variable seg\'un la
 distancia al objetivo.
-De forma similar, los tel\'emetros setean un voltaje en la salida en base a la
-distancia con el objeto.
+De forma similar, los tel\'emetros tienen un voltaje en salida dependiendo de la distancia con el objeto.
 Los sensores reflectivos de piso que usamos miden el nivel de luz infrarroja que refleja la superficie
-que tienen debajo de ellos y en base al valor sensado inferimos su color.
+que tienen debajo de ellos.
 
 Para los sensores que devuelven el valor sensado mediante un voltaje, utilizamos el conversor anal\'ogico
 digital para tomar las muestras necesarias.
@@ -1730,8 +1728,8 @@ placa y retransmitiendo los paquetes con otro destinatario.
 \label{h_placas_sensado_alimentacion}
 
 De igual forma que las otras placas la alimentaci\'on principal de la l\'ogica es de 7 a 20 volts,
-con la posibilidad de alimentarla directamente con 5 volts por uno de los pines del conector como
-explicamos en la secci\'on \ref{h_placas_generica}.
+con la posibilidad de alimentarla directamente con 5 volts como explicamos en la secci\'on
+\ref{h_placas_generica}.
 
 \paragraph{Configuraci\'on}
 \label{h_placas_sensado_config}
@@ -1746,19 +1744,19 @@ para obtener el valor.
 S\'olo un sensor de distancia por ultrasonido o switch en el puerto para
 medir estados l\'ogicos y tiempo del pulso.
 
-Con la llave \emph{S2} cambiamos al modo programaci\'on vinculando el microcontrolador con el header
+Con la llave \emph{S2} cambiamos al modo programaci\'on vinculando el microcontrolador con el conector
 de \emph{ICD2} o con la habilitaci\'on de los puertos de los sensores \emph{3} y \emph{4}.
-Si esta llave esta en la posici\'on incorrecta nunca se exitar\'a el transistor y por ende no habr\'a
+Si esta llave est\'a en la posici\'on incorrecta nunca se excitar\'a el transistor y por ende no habr\'a
 alimentaci\'on en el sensor.
 
 En el caso que necesitemos una resistencia \emph{pull-up} conectada con la salida del sensor podemos
-colocar un jumper en el correspondiente header de pull-up del puerto de sensor.
+colocar un jumper en los pines de pull-up del puerto de sensor.
 
 \paragraph{Esquem\'atico}
 \label{h_placas_sensado_esquematico}
 
-En la figura \ref{hF_placa_sense_schema} mostramos el esquem\'atico del microcontrolador y el conexionado
-del header de programaci\'on.
+En la figura \ref{hF_placa_sense_schema} mostramos el esquem\'atico del microcontrolador y el conector
+de programaci\'on.
 En la figura \ref{hF_placa_sense_schema2} detallamos el m\'odulo de comunicaci\'on y el conexionado con
 los conectores entre placas.
 
@@ -1768,7 +1766,7 @@ y en la figura \ref{hF_placa_sense_schema4} la fuente de alimentaci\'on y borner
 \begin{figure}
 	\centering
 	\includegraphics[scale=.22]{hardware/figures/sense_schemaMicro.png}
-	\caption{Microcontrolador y header de programaci\'on.}
+	\caption{Microcontrolador y conector de programaci\'on.}
 	\label{hF_placa_sense_schema}
 \end{figure}
 
@@ -1804,9 +1802,7 @@ En la figura \ref{hF_placa_sense_capas} mostramos ambas capas de la placa.
 Una observaci\'on importante en el circuito de esta placa es que al momento de montarla
 observamos una gran inestabilidad en el microcontrolador cuando hac\'iamos lecturas simult\'aneas
 en m\'as de 2 tel\'emetros.
-Luego de varios intentos para solucionar este inconveniente, descubrimos que era un problema
-en cuanto a un consumo instant\'aneo de los tel\'emetros que generaba que se reseteara el
-microcontrolador.
+Esto generaba picos de consumo que, a pesar del filtrado, generaban un reset en el microcontrolador.
 Para solucionar esto colocamos un capacitor de $100\mu F$ entre las pistas de \emph{+5V} y
 \emph{GND} en medio de los puertos de los sensores 1 y 2.
 
@@ -1840,7 +1836,7 @@ Dependiendo de la selecci\'on de los sensores a conectar ser\'a la configuraci\'
 Al principio del c\'odigo colocamos una serie de scripts que nos ayudan a configurar los tiempos a los que se
 deben tomar las muestras de los sensores y los flags del microcontrolador.
 
-Los pines que exitan a la base de los transistores usan una l\'ogica inversa, es decir, un estado bajo habilita
+Los pines que excitan a la base de los transistores usan una l\'ogica inversa, es decir, un estado bajo habilita
 la alimentaci\'on del sensor y un estado alto, lo deshabilita.
 
 \paragraph{Posibles extensiones}
@@ -1848,7 +1844,7 @@ la alimentaci\'on del sensor y un estado alto, lo deshabilita.
 
 Dentro de las posibles extensiones que creemos que ser\'ian \'utiles a futuro podemos decir que la m\'as
 significativa ser\'ia usar potenci\'ometros en vez de resistencias fijas para usar como \emph{pull-up} y
-para variar la alimentaci\'on de los sensores de piso por ejemplo.
+para variar la alimentaci\'on de los sensores de piso, por ejemplo.
 
 En una implementaci\'on futura tambi\'en agregar\'iamos el uso de componentes de montaje superficial y
 aumentar\'iamos la cantidad de puertos para sensores disponibles.
@@ -1858,7 +1854,7 @@ De igual forma, incorporar otro tipo de sensores nos parece una interesante mejo
 \label{h_placas_servos}
 
 Para los mecanismos que implicaban alg\'un tipo de movimiento y control de la posici\'on elegimos usar
-de servo motores, ya sea para el mecanismo de recolecci\'on de basura, inclinar el robot, reclinar el
+servo motores, ya sea para el mecanismo de recolecci\'on de basura, inclinar el robot, reclinar el
 cesto interno de basura o realizar alg\'un movimiento de paneo o foco con la c\'amara.
 
 Dise\~namos esta placa teniendo en cuenta que usar\'iamos varios servos en el robot y que tambi\'en
@@ -1879,8 +1875,8 @@ realizar esta tarea.
 Pensamos en el uso de otros microcontroladores que pudieran proveernos de esta facilidad, pero finalmente
 decidimos implementar esta funcionalidad por software.
 
-A los puertos que no estan destinados al control de los servo motores les podemos dar varios usos.
-En un principio los pensamos como generadores interrupciones ante un cambio en el estado y en el
+A los puertos que no est\'an destinados al control de los servo motores les podemos dar varios usos.
+En un principio los pensamos como generadores de interrupciones ante un cambio de estado y en el
 puerto \emph{P9} contamos con la posibilidad de determinar el flanco ante el cual se generar\'a la
 interrupci\'on.
 En el puerto \emph{P8} podemos colocar alg\'un tipo de sensado que haga uso del conversor anal\'ogico
@@ -1898,7 +1894,7 @@ ejecuta los comandos.
 
 Como explicamos en la secci\'on \ref{h_comm_protocolo_comandosEspecificos} creamos ciertos comandos
 o paquetes espec\'ificos para el control de los servos.
-De igual forma contemplamos el uso de pulsadores en la misma.
+De igual forma contemplamos el uso de switches en la misma.
 
 Un mayor cambio a nivel funcional implicar\'ia que hicieramos otros cambios a nivel protocolo, el cual
 pensamos para ser expandido creando nuevos comandos o modificando los existentes.
@@ -1922,7 +1918,7 @@ La configuraci\'on f\'isica necesaria en la placa ser\'ia m\'inima.
 Mediante la llave inversora \emph{S2} tendr\'iamos la posibilidad de conectar el microcontrolador
 con el header de programaci\'on o puertos \emph{P12} y \emph{P13}.
 
-Usando la llave \emph{S3} establecer\'iamos la posici\'on de la placa dentro de la cadena, ya sea
+Usando la llave \emph{S3} establecemos la posici\'on de la placa dentro de la cadena, ya sea
 como la terminaci\'on o un eslab\'on m\'as.
 Todas las dem\'as configuraciones ser\'ian a nivel software.
 
@@ -2006,7 +2002,7 @@ agregar las funciones de control en el ciclo principal de nuestro c\'odigo.
 \paragraph{Posibles extensiones}
 \label{h_placas_servos_extensiones}
 
-Posiblemente haya necesidades que no contemplamos en es dise\~no de esta placa aunque por no
+Posiblemente haya necesidades que no contemplamos en el dise\~no de esta placa aunque por no
 haberla construido no tenemos la experiencia sobre qu\'e cosas hubi\'eramos hecho diferente.
 
 \subsection{Armado del prototipo}
@@ -2045,7 +2041,7 @@ para tener el mayor campo de visi\'on posible.
 Para sostener las placas en el interior colocamos una varilla roscada de lado a lado en el interior
 y afirmamos entre dos tuercas a cada placa.
 Colocamos las placas de sensado en el centro y, contra las paredes, a las placas controladoras de motor.
-El cableado con los sensores lo hicimos interior a traves de agujeros en las paredes.
+El cableado con los sensores lo hicimos interior a trav\'es de agujeros en las paredes.
 De igual forma, los cables de control para los motores y el cableado para los sensores de piso, los
 pasamos por un agujero en la base del robot.
 
