@@ -25,10 +25,10 @@ namespace behaviours {
     void AvoidObstacle::sense(){
 		int j;
 		double thresh;
-		for (j = 0; j < GET_PARAM(DISTANCE_SENSORS); j++){
-			thresh = GET_PARAM(THRESHOLD_OBSTACLE);
-			if ( j == 0 || j == GET_PARAM(DISTANCE_SENSORS)-1 )
-				thresh = GET_PARAM(FRONT_THRESHOLD_OBSTACLE);
+		for (j = 0; j < DISTANCE_SENSORS; j++){
+			thresh = behaviours::BehavioursParameters::getParameter(THRESHOLD_OBSTACLE);
+			if ( j == 0 || j == DISTANCE_SENSORS-1 )
+				thresh = behaviours::BehavioursParameters::getParameter(FRONT_THRESHOLD_OBSTACLE);
 
 			if ( (*this->dss).at(j)->getValue() > thresh ){
 				setStimulusPresent();
@@ -46,7 +46,7 @@ namespace behaviours {
 				speed[i] += braitenberg_coefficients[j][i] * (*this->dss).at(j)->getValue();
 			}
 		}
-		wheels->setSpeed(speed[0]*GET_PARAM(SPEED_FACTOR),speed[1]*GET_PARAM(SPEED_FACTOR));
+		wheels->setSpeed(speed[0]*behaviours::BehavioursParameters::getParameter(SPEED_FACTOR),speed[1]*behaviours::BehavioursParameters::getParameter(SPEED_FACTOR));
 	}
 
 

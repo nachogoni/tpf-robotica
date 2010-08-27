@@ -4,9 +4,6 @@
 #include <string>
 #include <robotapi/IRobot.h>
 #include <behaviours/BehavioursParameters.h>
-#include <GarbageCleaner.h>
-
-class GarbageCleaner;
 
 namespace behaviours {
 
@@ -36,7 +33,6 @@ class AbstractBehaviour {
  public:
     int behaviour_id;
    	std::string s;
-	void setGarbageCleaner(GarbageCleaner * garbageCleaner);
 };
 
 } /* End of namespace behaviours */

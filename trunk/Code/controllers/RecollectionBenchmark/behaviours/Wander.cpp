@@ -8,7 +8,7 @@ namespace behaviours {
 		this->wi = wi;
 		this->isComingFromBase = false;
 		this->leftWasLast = true;
-		this->turnFactor = GET_PARAM(WANDER_TURN_FACTOR);
+		this->turnFactor = behaviours::BehavioursParameters::getParameter(WANDER_TURN_FACTOR);
 		this->steps = 0;
 	}
 
@@ -21,8 +21,8 @@ namespace behaviours {
 	}
 
     void Wander::action(){
-		double leftSpeed = GET_PARAM(WANDER_SPD);
-		double rightSpeed = GET_PARAM(WANDER_SPD);
+		double leftSpeed = behaviours::BehavioursParameters::getParameter(WANDER_SPD);
+		double rightSpeed = behaviours::BehavioursParameters::getParameter(WANDER_SPD);
 		if ( this->isComingFromBase ){
 			if ( this->steps == 0 )
 				this->leftWasLast = !this->leftWasLast;
@@ -36,7 +36,7 @@ namespace behaviours {
 				leftSpeed *= this->turnFactor;
 			}
 			
-			if ( this->steps != 0 && (this->steps % GET_PARAM(WANDER_STEPS_BASE) == 0) ){
+			if ( this->steps != 0 && (this->steps % (int)behaviours::BehavioursParameters::getParameter(WANDER_STEPS_BASE) == 0) ){
 				this->steps = 0;
 				this->isComingFromBase = false;
 			}
@@ -50,10 +50,10 @@ namespace behaviours {
 			utils::ArenaGridSlot * oldestSlot = this->getOldestSlot(nb);
 			int dir = oldestSlot->getDir();
 			if ( dir < 0 )
-				rightSpeed *= (1-GET_PARAM(WANDER_TURN_FACTOR));
+				rightSpeed *= (1-behaviours::BehavioursParameters::getParameter(WANDER_TURN_FACTOR));
 	
 			if ( dir > 0 )
-				leftSpeed *= (1-GET_PARAM(WANDER_TURN_FACTOR));
+				leftSpeed *= (1-behaviours::BehavioursParameters::getParameter(WANDER_TURN_FACTOR));
 		}
 		*/
 		this->wheels->setSpeed(leftSpeed,rightSpeed);

@@ -32,14 +32,14 @@ namespace behaviours {
 
 		// If there is garbage and the distance to the garbage is less than the
 		// bias, then the behaviour is present
-        if ( fabs(angleToGarbage) < GET_PARAM(COLLECT_ANGLE_TOLE) && distanceToGarbage < GET_PARAM(DISTANCE_TOLE) )
+        if ( fabs(angleToGarbage) < behaviours::BehavioursParameters::getParameter(COLLECT_ANGLE_TOLE) && distanceToGarbage < behaviours::BehavioursParameters::getParameter(DISTANCE_TOLE) )
 	        setStimulusPresent();
 
 	}
 
     void CollectGarbage::action(){
 		this->wheels->setSpeed(0,0);
-		this->robot->step(GET_PARAM(COLLECT_TIME_STEP));
+		this->robot->step(behaviours::BehavioursParameters::getParameter(COLLECT_TIME_STEP));
 
 		printf("COLLECTING\n");
 		// Get distance to the garbage
@@ -49,16 +49,16 @@ namespace behaviours {
 		this->shovel->setPosition(1.57);
 		this->cont->setPosition(0);
 
-		for ( int i = 0 ; i < GET_PARAM(COLLECT_WAIT_STEPS_A_LAST) ; i ++ ){
-			this->robot->step(GET_PARAM(COLLECT_TIME_STEP));
+		for ( int i = 0 ; i < behaviours::BehavioursParameters::getParameter(COLLECT_WAIT_STEPS_A_LAST) ; i ++ ){
+			this->robot->step(behaviours::BehavioursParameters::getParameter(COLLECT_TIME_STEP));
 		}
 
-		this->wheels->setSpeed(GET_PARAM(COLLECT_BASE_SPD),GET_PARAM(COLLECT_BASE_SPD));
+		this->wheels->setSpeed(behaviours::BehavioursParameters::getParameter(COLLECT_BASE_SPD),behaviours::BehavioursParameters::getParameter(COLLECT_BASE_SPD));
 
 		/*
-		int numberOfStepsToGarbage = getStepsToGarbage(0,GET_PARAM(BASE_SPD));
+		int numberOfStepsToGarbage = getStepsToGarbage(0,behaviours::BehavioursParameters::getParameter(BASE_SPD));
 		for ( int i = 0 ; i < numberOfStepsToGarbage ; i ++ ){
-			this->robot->step(GET_PARAM(TIME_STEP));
+			this->robot->step(behaviours::BehavioursParameters::getParameter(TIME_STEP));
 		}
 		*/
 		double distanceCovered = 0;
@@ -70,7 +70,7 @@ namespace behaviours {
 		double currentX, currentY;
 		utils::MyPoint * currentPosition;
 		while ( distanceCovered < (distanceToGarbage + 0.001) ){
-			this->robot->step(GET_PARAM(COLLECT_TIME_STEP));
+			this->robot->step(behaviours::BehavioursParameters::getParameter(COLLECT_TIME_STEP));
 			currentPosition = this->wheels->getPosition();
 			currentX = currentPosition->getX();
 			currentY = currentPosition->getY();
@@ -78,16 +78,16 @@ namespace behaviours {
 		}
 		
 		// Turn the shovel in order to put the garbage into the trash bin
-		this->shovel->setPosition(GET_PARAM(SHOVEL_ANGLE));
+		this->shovel->setPosition(behaviours::BehavioursParameters::getParameter(SHOVEL_ANGLE));
 		this->wheels->setSpeed(0,0);
 
-		for ( int i = 0 ; i < GET_PARAM(COLLECT_WAIT_STEPS) ; i ++ ){
-			this->robot->step(GET_PARAM(COLLECT_TIME_STEP));
+		for ( int i = 0 ; i < behaviours::BehavioursParameters::getParameter(COLLECT_WAIT_STEPS) ; i ++ ){
+			this->robot->step(behaviours::BehavioursParameters::getParameter(COLLECT_TIME_STEP));
 		}
 
 		this->shovel->setPosition(0);
-		for ( int i = 0 ; i < GET_PARAM(COLLECT_WAIT_STEPS) ; i ++ ){
-			this->robot->step(GET_PARAM(COLLECT_TIME_STEP));
+		for ( int i = 0 ; i < behaviours::BehavioursParameters::getParameter(COLLECT_WAIT_STEPS) ; i ++ ){
+			this->robot->step(behaviours::BehavioursParameters::getParameter(COLLECT_TIME_STEP));
 		}
 
 		// Make Garbage Recognition take a new image

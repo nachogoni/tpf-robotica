@@ -3,7 +3,7 @@
 
 #include "AbstractBehaviour.h"
 #include <vector>
-
+#define ACTIVATION_STEPS 2000
 
 
 namespace behaviours {

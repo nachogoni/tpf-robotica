@@ -10,7 +10,6 @@ namespace behaviours {
 	int nextid = 0;
     robotapi::IRobot * myIRobot = NULL;
 	int stimuli_present = 0;
-    GarbageCleaner * myGarbageCleaner = NULL;
 
 	AbstractBehaviour::AbstractBehaviour(char * name){
 		behaviour_id = nextid;
@@ -47,7 +46,7 @@ namespace behaviours {
 
 			setLastStimuli(behaviour_id);
 			*/
-			#ifdef GET_PARAM(CONTROLLER_DEBUG)
+			#ifdef CONTROLLER_DEBUG
 			printf("Stimulus Present: %s\n",this->s.c_str());
 			#endif
 			action();
@@ -74,12 +73,7 @@ namespace behaviours {
 		stimuli_present = 0;
 	}
 
-	void AbstractBehaviour::setGarbageCleaner(GarbageCleaner * garbageCleaner){
-		if ( myGarbageCleaner == NULL )
-            myGarbageCleaner = garbageCleaner;
-	}
-
 	bool AbstractBehaviour::inLine(double value){
-		return value > GET_PARAM(LINE_DOWN_THRESHOLD) && value < GET_PARAM(LINE_UP_THRESHOLD);
+		return value > behaviours::BehavioursParameters::getParameter(LINE_DOWN_THRESHOLD) && value < behaviours::BehavioursParameters::getParameter(LINE_UP_THRESHOLD);
 	}
 } /* End of namespace behaviours */

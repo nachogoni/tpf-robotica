@@ -15,8 +15,8 @@ GoToBaseGroup::GoToBaseGroup(WorldInfo * wi,robotapi::IRobot * robot, robotapi::
 	this->fss = &fss;
 	this->wheels = wheels;
 	
-	this->robotBattery->setEmptyBias(GET_PARAM(GO_TO_BASE_EMPTY_BIAS));
-	this->robotBattery->setFullBias(GET_PARAM(GO_TO_BASE_FULL_BIAS));
+	this->robotBattery->setEmptyBias(behaviours::BehavioursParameters::getParameter(GO_TO_BASE_EMPTY_BIAS));
+	this->robotBattery->setFullBias(behaviours::BehavioursParameters::getParameter(GO_TO_BASE_FULL_BIAS));
 	behaviours::AbstractBehaviour * ab = new behaviours::FindLine( wi, wheels, fss );
 	myBehaviours[0] = ab;
 
@@ -42,7 +42,7 @@ void GoToBaseGroup::sense(){
 		this->setStimulusPresent();
 
 /*
-        for (int j = 0; j < GET_PARAM(FLOOR_SENSORS); j++){
+        for (int j = 0; j < behaviours::BehavioursParameters::getParameter(FLOOR_SENSORS); j++){
 			printf("Floor sensor %d: %d\n", j, (*this->fss).at(j)->getValue() );
 		}
 */
@@ -55,7 +55,7 @@ void GoToBaseGroup::action(){
 	
 	double xpos = this->wheels->getPosition()->getX();
 
-	if ( xpos < GET_PARAM(GO_TO_BASE_BASE_POSITION) && fabs( this->wheels->getOrientation() - 3*(PI/2)) < GET_PARAM(GO_TO_BASE_BASE_FIX_ORIENTATION_TOLE) ){
+	if ( xpos < behaviours::BehavioursParameters::getParameter(GO_TO_BASE_BASE_POSITION) && fabs( this->wheels->getOrientation() - 3*(PI/2)) < behaviours::BehavioursParameters::getParameter(GO_TO_BASE_BASE_FIX_ORIENTATION_TOLE) ){
 		this->myBehaviours[3]->action();
 		following = false;
 		return;
@@ -63,7 +63,7 @@ void GoToBaseGroup::action(){
 
 	if ( ! following ){
 		beenOnMark = false;
-		if ( !this->inLine() || xpos > GET_PARAM(GO_TO_BASE_LINE_X_POSITION_THRESHOLD) ){
+		if ( !this->inLine() || xpos > behaviours::BehavioursParameters::getParameter(GO_TO_BASE_LINE_X_POSITION_THRESHOLD) ){
 		    this->myBehaviours[0]->action();
 	    	printf("Going to line\n");
 		    return;
@@ -78,16 +78,16 @@ void GoToBaseGroup::action(){
 	following = true;
 
 	if ( !this->inLine() ){
-		if ( xpos < GET_PARAM(GO_TO_BASE_BASE_POSITION) ){
+		if ( xpos < behaviours::BehavioursParameters::getParameter(GO_TO_BASE_BASE_POSITION) ){
 	    	printf("Recharging\n");
 			this->myBehaviours[3]->action();
 		}
 		following = false;
 	}else{
-		if( xpos < GET_PARAM(GO_TO_BASE_PASSAGE_BEGIN_X) && this->onMark() && ! beenOnMark ){
+		if( xpos < behaviours::BehavioursParameters::getParameter(GO_TO_BASE_PASSAGE_BEGIN_X) && this->onMark() && ! beenOnMark ){
 			printf("On Mark!");
 			beenOnMark = true;
-			this->wheels->setPosition(GET_PARAM(GO_TO_BASE_LINE_MARK_X),GET_PARAM(GO_TO_BASE_PASSAGE_LINE_Z),true);
+			this->wheels->setPosition(behaviours::BehavioursParameters::getParameter(GO_TO_BASE_LINE_MARK_X),behaviours::BehavioursParameters::getParameter(GO_TO_BASE_PASSAGE_LINE_Z),true);
 		}
 	    this->myBehaviours[2]->action();
 		this->correctOrientation();
@@ -99,15 +99,15 @@ void GoToBaseGroup::action(){
 void GoToBaseGroup::correctOrientation(){
 	double z = this->wheels->getPosition()->getY();
 
-	if ( this->wheels->getPosition()->getY() > GET_PARAM(GO_TO_BASE_FROM_Z_LEFT) ){
+	if ( this->wheels->getPosition()->getY() > behaviours::BehavioursParameters::getParameter(GO_TO_BASE_FROM_Z_LEFT) ){
 		this->wheels->setOrientation(0);
-		this->wheels->setPosition(GET_PARAM(GO_TO_BASE_X_CORRECTION_LINE),z,true);
+		this->wheels->setPosition(behaviours::BehavioursParameters::getParameter(GO_TO_BASE_X_CORRECTION_LINE),z,true);
 		printf("correcting left\n");
 	}
 
-	if ( this->wheels->getPosition()->getY() < GET_PARAM(GO_TO_BASE_FROM_Z_RIGHT) ){
-		this->wheels->setOrientation(GET_PARAM(GO_TO_BASE_LINE_ORIENTATION_CORRECTION));
-		this->wheels->setPosition(GET_PARAM(GO_TO_BASE_X_CORRECTION_LINE),z,true);
+	if ( this->wheels->getPosition()->getY() < behaviours::BehavioursParameters::getParameter(GO_TO_BASE_FROM_Z_RIGHT) ){
+		this->wheels->setOrientation(behaviours::BehavioursParameters::getParameter(GO_TO_BASE_LINE_ORIENTATION_CORRECTION));
+		this->wheels->setPosition(behaviours::BehavioursParameters::getParameter(GO_TO_BASE_X_CORRECTION_LINE),z,true);
 		printf("correcting right\n");
 	}
 }
@@ -131,7 +131,7 @@ bool GoToBaseGroup::inPosition(){
 	else if ( this->wheels->getPosition()->getY() > 0.15 )
 	   	targetAngle = 0;
 
-	return fabs( this->wheels->getOrientation() - targetAngle ) < GET_PARAM(GO_TO_BASE_ORIENTATION_TOLE);
+	return fabs( this->wheels->getOrientation() - targetAngle ) < behaviours::BehavioursParameters::getParameter(GO_TO_BASE_ORIENTATION_TOLE);
 }
 
 } /* End of namespace behaviours */

@@ -27,7 +27,7 @@ namespace behaviours {
 	{
 		/*
 		double coveredDistance = this->wheels->getDistanceCovered();
-		if ( coveredDistance > GET_PARAM(RECALIBRATE_MAX_DISTANCE) ){
+		if ( coveredDistance > behaviours::BehavioursParameters::getParameter(RECALIBRATE_MAX_DISTANCE) ){
 	        setStimulusPresent();
 			this->originalPos = new utils::MyPoint(this->wheels->getPosition()->getX(),this->wheels->getPosition()->getY());
 		}
@@ -42,7 +42,7 @@ namespace behaviours {
 		// POSITION
 
 		// CORRECT X AND ANGLE
-		this->wheels->setPosition(GET_PARAM(MIDDLE_LINE_X),this->wheels->getPosition()->getY(),true);
+		this->wheels->setPosition(behaviours::BehavioursParameters::getParameter(MIDDLE_LINE_X),this->wheels->getPosition()->getY(),true);
 
 		// FOLLOW LINE TILL THE ROBOT REACHES A MARK
 
@@ -54,7 +54,7 @@ namespace behaviours {
 		// WITH THE DISTANCE BETWEEN MARKS AND THE ORIENTATION, GET THE CORRESPONDING Z
 
 		// ADJUST Z
-		this->wheels->setPosition(GET_PARAM(MIDDLE_LINE_X),zAdjustment,true);
+		this->wheels->setPosition(behaviours::BehavioursParameters::getParameter(MIDDLE_LINE_X),zAdjustment,true);
 		*/
 		// RESET DISTANCE COVERED
 		this->wheels->resetDistanceCovered();
@@ -73,13 +73,13 @@ namespace behaviours {
 		if ( goingLeft ){
 			while ( angle < currentAngle ){
 				// turn right
-				this->turnEqRight(GET_PARAM(RECALIBRATE_TURN_SPEED));
+				this->turnEqRight(behaviours::BehavioursParameters::getParameter(RECALIBRATE_TURN_SPEED));
 				if ( ! ( angle < currentAngle ) )
 					return;
 			}
 			while ( angle > currentAngle ){
 				// turn left
-				this->turnEqLeft(GET_PARAM(RECALIBRATE_TURN_SPEED));
+				this->turnEqLeft(behaviours::BehavioursParameters::getParameter(RECALIBRATE_TURN_SPEED));
 				if ( ! ( angle > currentAngle ) )
 					return;
 			}
@@ -87,13 +87,13 @@ namespace behaviours {
 		else{
 			while ( angle < currentAngle ){
 				// turn left
-				this->turnEqLeft(GET_PARAM(RECALIBRATE_TURN_SPEED));
+				this->turnEqLeft(behaviours::BehavioursParameters::getParameter(RECALIBRATE_TURN_SPEED));
 				if ( ! ( angle < currentAngle ) )
 					return;
 			}
 			while ( angle > currentAngle ){
 				// turn right
-				this->turnEqRight(GET_PARAM(RECALIBRATE_TURN_SPEED));
+				this->turnEqRight(behaviours::BehavioursParameters::getParameter(RECALIBRATE_TURN_SPEED));
 				if ( ! ( angle > currentAngle ) )
 					return;
 			}

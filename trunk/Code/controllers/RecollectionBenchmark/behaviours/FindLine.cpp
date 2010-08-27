@@ -11,7 +11,7 @@ namespace behaviours {
 	}
 
 	void FindLine::sense(){
-        for (int j = 0; j < GET_PARAM(FLOOR_SENSORS); j++){
+        for (int j = 0; j < FLOOR_SENSORS; j++){
 			printf("Floor sensor %d: %d\n", j, (*this->fss).at(j)->getValue() );
 		}
 	}
@@ -19,12 +19,12 @@ namespace behaviours {
     void FindLine::action(){
 
 		double currentOrientation = wheels->getOrientation();
-		double destinyAngle = GET_PARAM(HALF_PI);
-		double lspd = GET_PARAM(FIND_LINE_BASE_SPD);
-		double rspd = GET_PARAM(FIND_LINE_BASE_SPD);
+		double destinyAngle = HALF_PI;
+		double lspd = behaviours::BehavioursParameters::getParameter(FIND_LINE_BASE_SPD);
+		double rspd = behaviours::BehavioursParameters::getParameter(FIND_LINE_BASE_SPD);
 		
-		if ( fabs(destinyAngle - currentOrientation) >= GET_PARAM(FIND_LINE_ANGLE_TOLE) ){
-			if ( currentOrientation > GET_PARAM(HALF_PI) && currentOrientation < GET_PARAM(THREE_HALF_PI) ){
+		if ( fabs(destinyAngle - currentOrientation) >= behaviours::BehavioursParameters::getParameter(FIND_LINE_ANGLE_TOLE) ){
+			if ( currentOrientation > HALF_PI && currentOrientation < THREE_HALF_PI ){
 			    rspd *= -1;
 			}else{
 			    lspd *= -1;
