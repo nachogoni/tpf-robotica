@@ -46,7 +46,7 @@ void GoToDisposal::sense(){
 	}
 
 	/*
-	for (int j = 0; j < GET_PARAM(FLOOR_SENSORS); j++){
+	for (int j = 0; j < behaviours::BehavioursParameters::getParameter(FLOOR_SENSORS); j++){
 		printf("Floor sensor %d: %d\n", j, (*this->fss).at(j)->getValue() );
 	}
 	*/
@@ -58,7 +58,7 @@ bool dBeenOnMark = false;
 void GoToDisposal::action(){
 	double xpos = this->wheels->getPosition()->getX();
 
-	if ( xpos < GET_PARAM(BASE_POSITION) && fabs( this->wheels->getOrientation() - 3*(PI/2)) < GET_PARAM(GO_TO_D_ORIENTATION_TOLE) ){
+	if ( xpos < behaviours::BehavioursParameters::getParameter(BASE_POSITION) && fabs( this->wheels->getOrientation() - 3*(PI/2)) < behaviours::BehavioursParameters::getParameter(GO_TO_D_ORIENTATION_TOLE) ){
 		this->disposalBehaviours[3]->action();
 		this->cont->setPosition(0);
 		followingLine = false;
@@ -67,7 +67,7 @@ void GoToDisposal::action(){
 
 	if ( ! followingLine ){
 		dBeenOnMark = false;
-		if ( !this->inLine() || xpos > GET_PARAM(GO_TO_D_LINE_X_POSITION_THRESHOLD) ){
+		if ( !this->inLine() || xpos > behaviours::BehavioursParameters::getParameter(GO_TO_D_LINE_X_POSITION_THRESHOLD) ){
 		    this->disposalBehaviours[0]->action();
 	    	printf("Going to line\n");
 		    return;
@@ -83,17 +83,17 @@ void GoToDisposal::action(){
 	followingLine = true;
 
 	if ( !this->inLine() ){
-		if ( xpos < GET_PARAM(BASE_POSITION) ){
+		if ( xpos < behaviours::BehavioursParameters::getParameter(BASE_POSITION) ){
 			printf("Unloading\n");
 			this->disposalBehaviours[3]->action();
 			this->cont->setPosition(0);
 		}
 		followingLine = false;
 	}else{
-		if( xpos < GET_PARAM(PASSAGE_BEGIN_X) && this->onMark() && ! dBeenOnMark ){
+		if( xpos < behaviours::BehavioursParameters::getParameter(PASSAGE_BEGIN_X) && this->onMark() && ! dBeenOnMark ){
 			printf("On Mark!");
 			dBeenOnMark = true;
-			this->wheels->setPosition(GET_PARAM(LINE_MARK_X),GET_PARAM(PASSAGE_LINE_Z),true);
+			this->wheels->setPosition(behaviours::BehavioursParameters::getParameter(LINE_MARK_X),behaviours::BehavioursParameters::getParameter(PASSAGE_LINE_Z),true);
 		}
 	    this->disposalBehaviours[2]->action();
 		this->correctOrientation();
@@ -105,15 +105,15 @@ void GoToDisposal::action(){
 void GoToDisposal::correctOrientation(){
 	double z = this->wheels->getPosition()->getY();
 
-	if ( this->wheels->getPosition()->getY() > GET_PARAM(FROM_Z_LEFT) ){
+	if ( this->wheels->getPosition()->getY() > behaviours::BehavioursParameters::getParameter(FROM_Z_LEFT) ){
 		this->wheels->setOrientation(0);
-		this->wheels->setPosition(GET_PARAM(X_CORRECTION_LINE),z,true);
+		this->wheels->setPosition(behaviours::BehavioursParameters::getParameter(X_CORRECTION_LINE),z,true);
 		printf("correcting left\n");
 	}
 
-	if ( this->wheels->getPosition()->getY() < GET_PARAM(FROM_Z_RIGHT) ){
-		this->wheels->setOrientation(GET_PARAM(LINE_ORIENTATION_CORRECTION));
-		this->wheels->setPosition(GET_PARAM(X_CORRECTION_LINE),z,true);
+	if ( this->wheels->getPosition()->getY() < behaviours::BehavioursParameters::getParameter(FROM_Z_RIGHT) ){
+		this->wheels->setOrientation(behaviours::BehavioursParameters::getParameter(LINE_ORIENTATION_CORRECTION));
+		this->wheels->setPosition(behaviours::BehavioursParameters::getParameter(X_CORRECTION_LINE),z,true);
 		printf("correcting right\n");
 	}
 }
@@ -131,13 +131,13 @@ bool GoToDisposal::inLine(){
 }
 
 bool GoToDisposal::inPosition(){
-	double targetAngle = GET_PARAM(HALF_PI);
+	double targetAngle = HALF_PI;
 	if ( this->wheels->getPosition()->getY() < 0.06 )
 	    targetAngle = PI;
 	else if ( this->wheels->getPosition()->getY() > 0.15 )
 	   	targetAngle = 0;
 
-	return fabs( this->wheels->getOrientation() - targetAngle ) < GET_PARAM(GO_TO_D_ORIENTATION_TOLE);
+	return fabs( this->wheels->getOrientation() - targetAngle ) < behaviours::BehavioursParameters::getParameter(GO_TO_D_ORIENTATION_TOLE);
 }
 
 

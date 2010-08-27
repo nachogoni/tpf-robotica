@@ -37,24 +37,24 @@ namespace behaviours {
 		double desvstdZ = this->desvStd(this->zs, this->sumZ);
 */
 /*
-		printf("Steps : %d - devstdA : %d - devstdX : %d - devstdZ : %d\n",this->steps, desvstdA > GET_PARAM(REMOVE_DESVSTD_ANGLE_THRESHOLD)? 1 : 0,
-			 	desvstdX > GET_PARAM(REMOVE_DESVSTD_DIST_THRESHOLD)? 1 : 0, desvstdZ > GET_PARAM(REMOVE_DESVSTD_DIST_THRESHOLD)? 1 : 0);
+		printf("Steps : %d - devstdA : %d - devstdX : %d - devstdZ : %d\n",this->steps, desvstdA > behaviours::BehavioursParameters::getParameter(REMOVE_DESVSTD_ANGLE_THRESHOLD)? 1 : 0,
+			 	desvstdX > behaviours::BehavioursParameters::getParameter(REMOVE_DESVSTD_DIST_THRESHOLD)? 1 : 0, desvstdZ > behaviours::BehavioursParameters::getParameter(REMOVE_DESVSTD_DIST_THRESHOLD)? 1 : 0);
 */
 		// si es mayor a mi umbral, seteo steps en 0 y la suma
 /*
-		if ( desvstdA > GET_PARAM(REMOVE_DESVSTD_ANGLE_THRESHOLD) ||
-			 desvstdX > GET_PARAM(REMOVE_DESVSTD_DIST_THRESHOLD) ||
-			 desvstdZ > GET_PARAM(REMOVE_DESVSTD_DIST_THRESHOLD)){
+		if ( desvstdA > behaviours::BehavioursParameters::getParameter(REMOVE_DESVSTD_ANGLE_THRESHOLD) ||
+			 desvstdX > behaviours::BehavioursParameters::getParameter(REMOVE_DESVSTD_DIST_THRESHOLD) ||
+			 desvstdZ > behaviours::BehavioursParameters::getParameter(REMOVE_DESVSTD_DIST_THRESHOLD)){
 */
 		this->steps++;
 		printf("%d, %g : %g - %g : %g\n",this->steps,this->lastXMax,this->lastXMin,this->lastZMax,this->lastZMin);
-		if ( fabs(this->lastXMax - this->lastXMin) > GET_PARAM(REMOVE_DESVSTD_DIST_THRESHOLD) ||
-			 fabs(this->lastZMax - this->lastZMin) > GET_PARAM(REMOVE_DESVSTD_DIST_THRESHOLD) ){
+		if ( fabs(this->lastXMax - this->lastXMin) > behaviours::BehavioursParameters::getParameter(REMOVE_DESVSTD_DIST_THRESHOLD) ||
+			 fabs(this->lastZMax - this->lastZMin) > behaviours::BehavioursParameters::getParameter(REMOVE_DESVSTD_DIST_THRESHOLD) ){
 			this->resetCounters();
 		}
 
 		// si "estuvo mucho tiempo" con "el mismo angulo" y "en el mismo lugar", activo el comportamiento
-		if ( this->steps >= GET_PARAM(ACTIVATION_STEPS) ){
+		if ( this->steps >= ACTIVATION_STEPS ){
 			setStimulusPresent();
 			this->resetCounters();
 			//system("pause");
@@ -62,10 +62,10 @@ namespace behaviours {
 	}
 
 	void RemoveFromStuck::resetCounters(){
-		this->lastXMax = -GET_PARAM(DBL_MAX);
-		this->lastXMin = GET_PARAM(DBL_MAX);
-		this->lastZMax = -GET_PARAM(DBL_MAX);
-		this->lastZMin = GET_PARAM(DBL_MAX);
+		this->lastXMax = -DBL_MAX;
+		this->lastXMin = DBL_MAX;
+		this->lastZMax = -DBL_MAX;
+		this->lastZMin = DBL_MAX;
 		this->steps = 0;
 	}
 
@@ -97,13 +97,13 @@ namespace behaviours {
  
 	void RemoveFromStuck::action(){
 		double cAngle = this->wheels->getOrientation();
-		utils::MyAngle * ma = new utils::MyAngle(cAngle+GET_PARAM(REMOVE_ANGLE_TO_ADD));
+		utils::MyAngle * ma = new utils::MyAngle(cAngle+behaviours::BehavioursParameters::getParameter(REMOVE_ANGLE_TO_ADD));
 		double targetAngle = ma->getNormalizedValue();
 		delete ma;
 
-		this->wheels->setSpeed(GET_PARAM(REMOVE_SPD),-GET_PARAM(REMOVE_SPD));
-		while ( fabs(targetAngle - cAngle) > GET_PARAM(REMOVE_ANGLE_TOLE) ){
-			this->robot->step(GET_PARAM(REMOVE_STEP));
+		this->wheels->setSpeed(behaviours::BehavioursParameters::getParameter(REMOVE_SPD),-behaviours::BehavioursParameters::getParameter(REMOVE_SPD));
+		while ( fabs(targetAngle - cAngle) > behaviours::BehavioursParameters::getParameter(REMOVE_ANGLE_TOLE) ){
+			this->robot->step(behaviours::BehavioursParameters::getParameter(REMOVE_STEP));
 			cAngle = this->wheels->getOrientation();
 		}
 	}

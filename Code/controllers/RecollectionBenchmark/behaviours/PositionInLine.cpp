@@ -25,8 +25,8 @@ namespace behaviours{
 	}
 	
 	void PositionInLine::action(){
-	    double rspd = GET_PARAM(POSITIONING_BASE_SPD);
-	    double lspd = GET_PARAM(POSITIONING_BASE_SPD);
+	    double rspd = behaviours::BehavioursParameters::getParameter(POSITIONING_BASE_SPD);
+	    double lspd = behaviours::BehavioursParameters::getParameter(POSITIONING_BASE_SPD);
 		double currentAngle = this->wheels->getOrientation();
 		double targetAngle = PI/2;
 		if ( this->wheels->getPosition()->getY() < 0.06 ){
@@ -58,7 +58,7 @@ namespace behaviours{
 		}
 		double sDisplX = this->wi->getFloorSensorsDisplacementX();
 		double sDisplY = this->wi->getFloorSensorsDisplacementY();
-		#ifdef GET_PARAM(CONTROLLER_DEBUG)
+		#ifdef behaviours::BehavioursParameters::getParameter(CONTROLLER_DEBUG)
 		printf("%d - %d - %d\n",(*this->fss).at(0)->getValue(),(*this->fss).at(1)->getValue(),(*this->fss).at(2)->getValue());
 		printf("disp X: %g - disp Y: %g\n",sDisplX,sDisplY);
 		#endif
@@ -75,19 +75,19 @@ namespace behaviours{
 		if ( tita != 0 )
 			distanceToGo = sqrt(sDisplY*sDisplY+sDisplX*sDisplX);
 
-		#ifdef GET_PARAM(CONTROLLER_DEBUG)
+		#ifdef behaviours::BehavioursParameters::getParameter(CONTROLLER_DEBUG)
 		printf("distanceToGo : %g\n",distanceToGo);
 		#endif
 
-		this->wheels->setSpeed(GET_PARAM(POSITIONING_BASE_SPD),GET_PARAM(POSITIONING_BASE_SPD));	
+		this->wheels->setSpeed(behaviours::BehavioursParameters::getParameter(POSITIONING_BASE_SPD),behaviours::BehavioursParameters::getParameter(POSITIONING_BASE_SPD));	
 		this->goForward(distanceToGo);
 
 		currentAngle = this->wheels->getOrientation();
 		double angleToTurn = targetAngle - currentAngle;
 		if ( angleToTurn < -PI )
-			angleToTurn += GET_PARAM(TWO_PI);
+			angleToTurn += TWO_PI;
 
-		#ifdef GET_PARAM(CONTROLLER_DEBUG)
+		#ifdef behaviours::BehavioursParameters::getParameter(CONTROLLER_DEBUG)
 		printf("tita : %g\n",angleToTurn);
 		#endif
 
@@ -97,8 +97,8 @@ namespace behaviours{
 	}
 
 	void PositionInLine::turnTita(double tita){
-		double lspd = -GET_PARAM(POSITIONING_BASE_SPD);
-		double rspd = GET_PARAM(POSITIONING_BASE_SPD);
+		double lspd = -behaviours::BehavioursParameters::getParameter(POSITIONING_BASE_SPD);
+		double rspd = behaviours::BehavioursParameters::getParameter(POSITIONING_BASE_SPD);
 
 		if ( tita < 0 ){
 			lspd *= -1;
@@ -111,8 +111,8 @@ namespace behaviours{
 		delete ma;
  
 		this->wheels->setSpeed(lspd,rspd);
-		while ( fabs(targetAngle - cAngle) > GET_PARAM(POSITION_ANGLE_TOLE) ){
-			this->robot->step(GET_PARAM(POSITION_TIME_STEP));
+		while ( fabs(targetAngle - cAngle) > behaviours::BehavioursParameters::getParameter(POSITION_ANGLE_TOLE) ){
+			this->robot->step(behaviours::BehavioursParameters::getParameter(POSITION_TIME_STEP));
 			cAngle = this->wheels->getOrientation();
 		}
 	}
@@ -127,7 +127,7 @@ namespace behaviours{
 		double currentX, currentY;
 		utils::MyPoint * currentPosition;
 		while ( distanceCovered < distance ){
-			this->robot->step(GET_PARAM(POSITION_TIME_STEP));
+			this->robot->step(behaviours::BehavioursParameters::getParameter(POSITION_TIME_STEP));
 			currentPosition = this->wheels->getPosition();
 			currentX = currentPosition->getX();
 			currentY = currentPosition->getY();

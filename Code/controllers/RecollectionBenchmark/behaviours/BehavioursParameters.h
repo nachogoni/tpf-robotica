@@ -86,7 +86,6 @@
 #define RECHARGE_SPD_FACTOR "RECHARGE_SPD_FACTOR"
 #define RECHARGE_E_PUCK_DIAMETER "RECHARGE_E_PUCK_DIAMETER"
 
-#define ACTIVATION_STEPS "ACTIVATION_STEPS"
 #define REMOVE_ANGLE_TOLE "REMOVE_ANGLE_TOLE"
 #define REMOVE_SPD "REMOVE_SPD"
 #define REMOVE_STEP "REMOVE_STEP"
@@ -112,6 +111,7 @@
 #define WANDER_TURN_FACTOR "WANDER_TURN_FACTOR"
 #define WANDER_STEPS_BASE "WANDER_STEPS_BASE"
 
+#define GET_PARAM(param) behaviours::BehavioursParameters::getParameter(param)
 //Comparator for map keys
 struct ltstr
 {
