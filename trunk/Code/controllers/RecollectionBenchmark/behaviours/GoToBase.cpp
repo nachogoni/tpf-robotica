@@ -15,18 +15,18 @@ namespace behaviours {
 
     void GoToBase::action(){
 
-		double lspd = GO_TO_BASE_BASE_SPD;
-		double rspd = GO_TO_BASE_BASE_SPD;
+		double lspd = GET_PARAM(GO_TO_BASE_BASE_SPD);
+		double rspd = GET_PARAM(GO_TO_BASE_BASE_SPD);
 		
 		// Left sensor is on line?
 		if ( this->inLine((*this->fss).at(0)->getValue()) ){
-			lspd = lspd * ( 1 - GO_TO_BASE_SPD_FACTOR );
-			rspd = rspd * ( 1 + GO_TO_BASE_SPD_FACTOR );
+			lspd = lspd * ( 1 - GET_PARAM(GO_TO_BASE_SPD_FACTOR) );
+			rspd = rspd * ( 1 + GET_PARAM(GO_TO_BASE_SPD_FACTOR) );
 		}
 		// Right sensor is on line?
 		if ( this->inLine((*this->fss).at(2)->getValue()) ){
-			lspd = lspd * ( 1 + GO_TO_BASE_SPD_FACTOR );
-			rspd = rspd * ( 1 - GO_TO_BASE_SPD_FACTOR );
+			lspd = lspd * ( 1 + GET_PARAM(GO_TO_BASE_SPD_FACTOR) );
+			rspd = rspd * ( 1 - GET_PARAM(GO_TO_BASE_SPD_FACTOR) );
 		}
 		this->wheels->setSpeed(lspd,rspd);
 	}

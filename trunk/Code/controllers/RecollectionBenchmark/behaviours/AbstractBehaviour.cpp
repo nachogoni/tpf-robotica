@@ -47,7 +47,7 @@ namespace behaviours {
 
 			setLastStimuli(behaviour_id);
 			*/
-			#ifdef CONTROLLER_DEBUG
+			#ifdef GET_PARAM(CONTROLLER_DEBUG)
 			printf("Stimulus Present: %s\n",this->s.c_str());
 			#endif
 			action();
@@ -80,6 +80,6 @@ namespace behaviours {
 	}
 
 	bool AbstractBehaviour::inLine(double value){
-		return value > LINE_DOWN_THRESHOLD && value < LINE_UP_THRESHOLD;
+		return value > GET_PARAM(LINE_DOWN_THRESHOLD) && value < GET_PARAM(LINE_UP_THRESHOLD);
 	}
 } /* End of namespace behaviours */
