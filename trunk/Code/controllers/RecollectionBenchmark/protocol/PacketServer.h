@@ -10,8 +10,7 @@
 #include <protocol/BoardPacketHandler.h>
 
 
-//#define SERIAL_PORT "/dev/ttyUSB0"
-#define SERIAL_PORT "out"
+#define SERIAL_PORT "/dev/ttyUSB0"
 #define MAXOF(a,b) (a>b?a:b)
 #define PIPE_IN 0
 #define PIPE_OUT 1
