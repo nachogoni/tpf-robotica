@@ -1,5 +1,7 @@
 #include "RealCamera.h"
 #include "RealImage.h"
+#include <stdio.h>
+
 
 namespace robotapi {
 namespace real {
@@ -8,6 +10,13 @@ namespace real {
 * TODO IMPLEMENT!
 **/
 
+RealCamera::RealCamera(int cameraID){
+	if((capture=cvCaptureFromCAM(cameraID))==0){
+		printf("Error en el id de la camara:%d\n",cameraID);
+	}
+	
+}
+
 void RealCamera::enable(int ms){
 }
 
@@ -15,7 +24,8 @@ void RealCamera::disable(){
 }
 
 IImage & RealCamera::getImage(){
-	IImage * iim = new RealImage();
+	if(iim==NULL)
+		iim = new RealImage(cvQueryFrame(capture));
 	return *iim;
 }
 

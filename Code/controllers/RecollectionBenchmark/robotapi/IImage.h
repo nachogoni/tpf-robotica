@@ -2,6 +2,7 @@
 #define robotapi_IImage_h
 
 #include <highgui.h>
+#include <cv.h>
 
 namespace robotapi {
 class ICamera;

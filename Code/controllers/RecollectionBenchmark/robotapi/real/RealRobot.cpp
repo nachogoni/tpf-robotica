@@ -20,13 +20,18 @@
 #define SERVO_THREE_ID 0x02
 
 #define DISTANCE_SENSOR_GROUP 0x03
-#define DISTANCE_SENSOR_BOARD_ONE 0x00
-#define DISTANCE_SENSOR_BOARD_TWO 0x01
-#define DISTANCE_SENSOR_ONE_ID 0x00
-#define DISTANCE_SENSOR_TWO_ID 0x01
-#define DISTANCE_SENSOR_THREE_ID 0x02
+#define DISTANCE_SENSOR_BOARD_ZERO 0x00
+#define DISTANCE_SENSOR_BOARD_TWO 0x02
+#define DISTANCE_SENSOR_ZERO_ID 0x00
+#define DISTANCE_SENSOR_ONE_ID 0x01
+#define DISTANCE_SENSOR_TWO_ID 0x02
+#define DISTANCE_SENSOR_THREE_ID 0x03
 #define DISTANCE_SENSOR_FOUR_ID 0x03
-#define DISTANCE_SENSOR_FIVE_ID 0x04
+#define DISTANCE_SENSOR_FIVE_ID 0x02
+#define DISTANCE_SENSOR_SIX_ID 0x01
+#define DISTANCE_SENSOR_SEVEN_ID 0x00
+
+
 
 #define BATTERY_GROUP 0x06
 #define BATTERY_BOARD 0x00
@@ -70,21 +75,20 @@ void RealRobot::initBatteries(protocol::PacketServer * ps){
 }
 
 void RealRobot::initDistanceSensors(protocol::PacketServer * ps){
-	protocol::handlers::DistanceSensorBoardPacketHandler * dsbph = new protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCE_SENSOR_GROUP,DISTANCE_SENSOR_BOARD_ONE);
-	this->initDistanceSensor(ps, dsbph, "ds0", DISTANCE_SENSOR_ONE_ID);
-	this->initDistanceSensor(ps, dsbph, "ds1", DISTANCE_SENSOR_TWO_ID);
-	this->initDistanceSensor(ps, dsbph, "ds2", DISTANCE_SENSOR_THREE_ID);
-	this->initDistanceSensor(ps, dsbph, "ds3", DISTANCE_SENSOR_FOUR_ID);
-	this->initDistanceSensor(ps, dsbph, "ds4", DISTANCE_SENSOR_FIVE_ID);
-	dsbph = new protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCE_SENSOR_GROUP,DISTANCE_SENSOR_BOARD_TWO);
-	this->initDistanceSensor(ps, dsbph, "ds5", DISTANCE_SENSOR_ONE_ID);
-	this->initDistanceSensor(ps, dsbph, "ds6", DISTANCE_SENSOR_TWO_ID);
-	this->initDistanceSensor(ps, dsbph, "ds7", DISTANCE_SENSOR_THREE_ID);
-	this->initDistanceSensor(ps, dsbph, "ds8", DISTANCE_SENSOR_FOUR_ID);
-	this->initDistanceSensor(ps, dsbph, "ds9", DISTANCE_SENSOR_FIVE_ID);
-	// IF THERE ARE MORE THAN 10, CREATE ANOTHER BOARDHANDLER WITH SAME GROUP AND ANOTHER BOARDID
-	ps->registerHandler(dsbph,DISTANCE_SENSOR_GROUP,DISTANCE_SENSOR_BOARD_ONE);
+	protocol::handlers::DistanceSensorBoardPacketHandler * dsbph = new protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCE_SENSOR_GROUP,DISTANCE_SENSOR_BOARD_TWO);
+	this->initDistanceSensor(ps, dsbph, "ds0", DISTANCE_SENSOR_ZERO_ID);
+	this->initDistanceSensor(ps, dsbph, "ds1", DISTANCE_SENSOR_ONE_ID);
+	this->initDistanceSensor(ps, dsbph, "ds2", DISTANCE_SENSOR_TWO_ID);
+	this->initDistanceSensor(ps, dsbph, "ds3", DISTANCE_SENSOR_THREE_ID);
 	ps->registerHandler(dsbph,DISTANCE_SENSOR_GROUP,DISTANCE_SENSOR_BOARD_TWO);
+	
+	dsbph = new protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCE_SENSOR_GROUP,DISTANCE_SENSOR_BOARD_ZERO);
+	this->initDistanceSensor(ps, dsbph, "ds4", DISTANCE_SENSOR_FOUR_ID);
+	this->initDistanceSensor(ps, dsbph, "ds5", DISTANCE_SENSOR_FIVE_ID);
+	this->initDistanceSensor(ps, dsbph, "ds6", DISTANCE_SENSOR_SIX_ID);
+	this->initDistanceSensor(ps, dsbph, "ds7", DISTANCE_SENSOR_SEVEN_ID);
+	// IF THERE ARE MORE THAN 10, CREATE ANOTHER BOARDHANDLER WITH SAME GROUP AND ANOTHER BOARDID
+	ps->registerHandler(dsbph,DISTANCE_SENSOR_GROUP,DISTANCE_SENSOR_BOARD_ZERO);
 }
 
 void RealRobot::initDistanceSensor(protocol::PacketServer * ps, protocol::handlers::DistanceSensorBoardPacketHandler * dsbph, std::string name, int id){

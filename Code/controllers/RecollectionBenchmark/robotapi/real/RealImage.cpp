@@ -2,13 +2,18 @@
 
 namespace robotapi {
 namespace real {
+	
+RealImage::RealImage(IplImage * img){
+	this->img=img;
+	this->size=cvGetSize(this->img);
+}
 
 int RealImage::getWidth(){
-	return 0;
+	return size.width;
 }
 
 int RealImage::getHeight(){
-	return 0;
+	return size.height;
 }
 
 int RealImage::getDepth(){
@@ -16,7 +21,7 @@ int RealImage::getDepth(){
 }
 
 IplImage * RealImage::toIPL(){
-	return NULL;
+	return this->img;
 }
 } /* End of namespace robotapi::real */
 } /* End of namespace robotapi */
