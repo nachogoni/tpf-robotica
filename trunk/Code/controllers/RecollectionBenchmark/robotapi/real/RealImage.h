@@ -11,6 +11,8 @@ namespace real {
 class RealImage : virtual public robotapi::IImage {
 
 	public:
+		RealImage(IplImage * img);
+		
 		int getWidth();
 
 		int getHeight();
@@ -18,6 +20,9 @@ class RealImage : virtual public robotapi::IImage {
 		int getDepth();
 
 		IplImage * toIPL();
+	private:
+		IplImage * img;
+		CvSize size;
 	};
 
 } /* End of namespace robotapi::real */
