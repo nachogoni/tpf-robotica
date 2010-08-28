@@ -34,29 +34,10 @@
 
 namespace utils {
 
-robotapi::ICamera * cam;
-
-std::list<utils::Garbage*> garbages;
-time_t lastRequest;
 
 GarbageRecognition::GarbageRecognition(WorldInfo * wi){
 	this->wi = wi;
     this->model = cvLoadImage("./colilla-sinBlanco.png",1);
-}
-
-void GarbageRecognition::setCamera(robotapi::ICamera &camera)
-{
-	cam = &camera;
-	lastRequest = time(NULL);
-	this->pooled = false;
-}
-
-bool GarbageRecognition::thereIsGarbage()
-{
-	if ( ! this->pooled ){
-		this->getGarbageList();
-	}
-    return !garbages.empty();
 }
 
 std::list<Garbage*> GarbageRecognition::getGarbageList()
@@ -70,14 +51,7 @@ std::list<Garbage*> GarbageRecognition::getGarbageList()
 	return garbages;
 }
 
-utils::Garbage * GarbageRecognition::getClosestGarbage(std::list<utils::Garbage*> gs){
-		if ( gs.empty() )
-		    return NULL;
 
-        std::list<utils::Garbage *>::iterator it;
-		it=gs.begin();
-		return *it;
-}
 
 std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	std::list<utils::Garbage*>::iterator it;
@@ -250,70 +224,9 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 	return garbages;
 }
 
-double GarbageRecognition::angleTo(utils::Garbage * g)
-{
-	if ( g == NULL )
-	    return PI;
-	int centerX = g->boundingBox()->getTopX() + g->boundingBox()->getWidth()/2;
-	int centerY = g->boundingBox()->getTopY() + g->boundingBox()->getHeight()/2;
-	
-	int transformedX = centerX - this->wi->getCameraImageWidth()/2;
-	int transformedY = this->wi->getCameraImageHeight() - centerY;
-	
-	double hfov = this->wi->getCameraFOVH();
 
-	if ( transformedY == 0 ){
-		return transformedX < 0 ? (-hfov/2) : (hfov/2);
-	}
-	
-	// Negative if its in the left side of the screen, positive otherwise
-	return atan((double)transformedX/(double)transformedY) * hfov / PI;
-}
 
-double GarbageRecognition::distanceTo(utils::Garbage * g)
-{
-    if ( g == NULL )
-	    return 10000;
 
-	int centerY = g->boundingBox()->getTopY() + g->boundingBox()->getHeight()/2;
 
-	int transformedY = this->wi->getCameraImageHeight() - centerY;
-
-	double vAngleToGarbage = this->wi->getCameraFOVV()*transformedY/this->wi->getCameraImageHeight();
-	double distanceToGarbage = this->getDistance(vAngleToGarbage);
-
-/*
-	printf("Minimum Distance : %g - Maximum Distance : %g\n",minDist,maxDist);
-	printf("Garbage Y: %d - Camera Height : %d - Vertical FOV : %g\n",transformedY,this->wi->getCameraImageHeight(),this->wi->getCameraFOVV());
-	printf("Vertical angle to: %g - Distance to : %g\n",vAngleToGarbage,distanceToGarbage);
-*/
-    return distanceToGarbage;
-}
-
-double GarbageRecognition::getMaximumDistance(){
-	return this->wi->getMaximumDistance();
-}
-
-double GarbageRecognition::getMinimumDistance(){
-	return this->wi->getMinimumDistance();
-}
-
-double GarbageRecognition::getDistance(double angle){
-	return this->wi->getDistance(angle);
-}
-
-void GarbageRecognition::stepDone(){
-	this->pooled = false;
-}
-
-IplImage * GarbageRecognition::loadImage(std::string filename){
-	cam->saveImage(filename, 85);
-    return cvLoadImage(filename.c_str(),1);
-}
-
-IplImage * GarbageRecognition::loadImage(void){
-	IplImage * ret = cam->getImage().toIPL();
-	return ret;
-}
 
 } /* End of namespace utils */

@@ -4,6 +4,7 @@
 #include <list>
 #include <robotapi/ICamera.h>
 #include <utils/Garbage.h>
+#include <WorldInfo.h>
 
 namespace utils {
 
@@ -11,23 +12,39 @@ class IGarbageRecognition {
 
  public:
 
-		virtual void setCamera(robotapi::ICamera &camera)  = 0;
+		void setCamera(robotapi::ICamera &camera) ;
 
-		virtual bool thereIsGarbage()  = 0;
+		bool thereIsGarbage()  ;
 
 		virtual std::list<utils::Garbage*> getGarbageList()  = 0;
 
-		virtual utils::Garbage * getClosestGarbage(std::list<utils::Garbage*> gs)  = 0;
+		utils::Garbage * getClosestGarbage(std::list<utils::Garbage*> gs);
 
-		virtual double angleTo(utils::Garbage * g)  = 0;
+		double angleTo(utils::Garbage * g) ;
 
-		virtual double distanceTo(utils::Garbage * g)  = 0;
+		double distanceTo(utils::Garbage * g) ;
 
-		virtual void stepDone()  = 0;
+		void stepDone() ;
 
-		virtual double getMaximumDistance()  = 0;
+		double getMaximumDistance()  ;
 
-		virtual double getMinimumDistance()  = 0;
+		double getMinimumDistance()  ;
+		
+		double getDistance(double angle);
+		
+		IplImage * loadImage(std::string filename);
+		
+		IplImage * loadImage(void);
+
+
+
+
+		WorldInfo * wi;
+		bool pooled;
+		robotapi::ICamera * cam;
+		std::list<utils::Garbage*> garbages;
+		time_t lastRequest;
+
 
 };
 
