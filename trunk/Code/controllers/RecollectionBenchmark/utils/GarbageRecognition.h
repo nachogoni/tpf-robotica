@@ -16,29 +16,27 @@ class GarbageRecognition : virtual public IGarbageRecognition {
 
 	GarbageRecognition(WorldInfo * wi);
 
-    void setCamera(robotapi::ICamera &camera);
+    //~ void setCamera(robotapi::ICamera &camera);
 
-    bool thereIsGarbage();
+    //~ bool thereIsGarbage();
 
     std::list<utils::Garbage*> getGarbageList();
 
-	utils::Garbage * getClosestGarbage(std::list<utils::Garbage*> gs);
+	//~ utils::Garbage * getClosestGarbage(std::list<utils::Garbage*> gs);
 
-	double angleTo(utils::Garbage * g);
+	//~ double angleTo(utils::Garbage * g);
 
-	double distanceTo(utils::Garbage * g);
+	//~ double distanceTo(utils::Garbage * g);
 
-	void stepDone();
+	//~ void stepDone();
 
-	double getMaximumDistance();
+	//~ double getMaximumDistance();
 	
-	double getMinimumDistance();
+	//~ double getMinimumDistance();
 
  private:
     std::list<Garbage*> garbageList(IplImage * src, IplImage * model);
-	WorldInfo * wi;
-	bool pooled;
-	IplImage * model;
+		IplImage * model;
 	
     double getDistance(double angle);
     IplImage * loadImage(std::string filename);
