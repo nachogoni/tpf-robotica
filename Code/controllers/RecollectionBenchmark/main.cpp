@@ -15,21 +15,15 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
+	FILE * parametersFile = fopen("realParameters.txt","r+");
+	behaviours::BehavioursParameters::Init(parametersFile);
 
 	WorldInfo * wi = new WorldInfo();
-
-//	webots::DifferentialWheels * wdw = new webots::DifferentialWheels();
-
-//	robotapi::webts::WebotsRobot * robot = new robotapi::webts::WebotsRobot(wi, *wdw);
 
     robotapi::real::RealRobot * robot = new robotapi::real::RealRobot(wi);
 
 	GarbageCleaner::GarbageCleaner * gc = new GarbageCleaner::GarbageCleaner(wi, *robot);
 
 	gc->cleanGarbage();
-/*
-  printf("HOLA\n");
-  system("PAUSE");
-  */
     return EXIT_SUCCESS;
 }

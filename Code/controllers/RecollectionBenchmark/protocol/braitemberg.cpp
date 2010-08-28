@@ -160,6 +160,7 @@ int main( int argc, const char **argv)
 		for (j = 0; j < 8; j++) {
 			left += bc[j][0] * sensors_value[j];
 			right += bc[j][1] * sensors_value[j];
+			printf("Sensor %d - valor : %g\n",j,sensors_value[j]);
 		}
 		
 		// Para que vaya mas rapido...
@@ -167,10 +168,10 @@ int main( int argc, const char **argv)
 //		right *=15;
 		
 		/* set speed values */
-		dcMotorHandler0->setSpeed(right);
-		dcMotorHandler1->setSpeed(left);
+		dcMotorHandler0->setSpeed(0);
+		dcMotorHandler1->setSpeed(0);
 
-		printf("Left: %g\tRight: %g\n", left, right);
+		//printf("Left: %g\tRight: %g\n", left, right);
 
 		delay_centecimos(1);
 
