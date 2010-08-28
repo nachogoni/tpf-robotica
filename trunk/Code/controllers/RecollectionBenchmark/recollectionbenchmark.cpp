@@ -1,15 +1,13 @@
 #include <cstdlib>
 #include <iostream>
 
-#include <robotapi/IWbDeviceTag.h>
-#include <robotapi/IDevice.h>
-
 #include <robotapi/webts/WebotsRobot.h>
 #include <robotapi/webts/WebotsDifferentialWheels.h>
 #include <webots/DifferentialWheels.hpp>
-#include <robotapi/real/RealRobot.h>
+
 #include <GarbageCleaner.h>
 #include <WorldInfo.h>
+#include <behaviours/BehavioursParameters.h>
 #include <time.h>
 #include <cv.h>
 #include <highgui.h>
@@ -17,10 +15,10 @@
 // define this to save to disk slots visited
 // SAVE_CHANGED
 
-using namespace std;
-
 int main(int argc, char *argv[])
 {
+	FILE * parametersFile = fopen("webotsParameters.txt","r+");
+  behaviours::BehavioursParameters::Init(parametersFile);
 
 	WorldInfo * wi = new WorldInfo();
 
@@ -31,6 +29,8 @@ int main(int argc, char *argv[])
 //    robotapi::real::RealRobot * robot = new robotapi::real::RealRobot(wi);
 
 	GarbageCleaner::GarbageCleaner * gc = new GarbageCleaner::GarbageCleaner(wi, *robot);
+
+
 
 	gc->cleanGarbage();
 /*

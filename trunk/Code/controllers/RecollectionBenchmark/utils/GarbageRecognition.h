@@ -4,12 +4,13 @@
 #include <list>
 #include <robotapi/ICamera.h>
 #include <utils/Garbage.h>
+#include <utils/IGarbageRecognition.h>
 #include <WorldInfo.h>
 #include <cv.h>
 
 namespace utils {
 
-class GarbageRecognition {
+class GarbageRecognition : virtual public IGarbageRecognition {
 
  public:
 

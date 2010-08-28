@@ -2,8 +2,7 @@
 #define behaviours_GoToGarbage_h
 
 #include "AbstractBehaviour.h"
-#include <utils/GarbageRecognition.h>
-
+#include <utils/IGarbageRecognition.h>
 
 namespace behaviours {
 
@@ -11,7 +10,7 @@ class GoToGarbage : public AbstractBehaviour
 {
 	public:
 		// class constructor
-		GoToGarbage(utils::GarbageRecognition * gr, robotapi::IDifferentialWheels * wheels );
+		GoToGarbage(utils::IGarbageRecognition * gr, robotapi::IDifferentialWheels * wheels );
 		// class destructor
 		~GoToGarbage();
 
@@ -20,7 +19,7 @@ class GoToGarbage : public AbstractBehaviour
 	    void action();
 
 	private:
-        utils::GarbageRecognition * gr;
+        utils::IGarbageRecognition * gr;
    		utils::Garbage * currentGarbage;
 		robotapi::IDifferentialWheels * wheels;
 		

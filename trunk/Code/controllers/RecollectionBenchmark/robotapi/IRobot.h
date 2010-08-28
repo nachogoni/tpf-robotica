@@ -10,6 +10,11 @@
 #include "ITrashBin.h"
 #include <string>
 #include <IGarbageCleaner.h>
+
+#define CONTROLLER_DEBUG 1
+//#define OUTPUT_ODOMETRY_ERROR_GPS 1
+//#define REFRESH_SEEN_SLOTS 1
+
 namespace robotapi {
 
 

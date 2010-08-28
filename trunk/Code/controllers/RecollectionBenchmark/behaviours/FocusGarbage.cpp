@@ -6,7 +6,7 @@
 
 namespace behaviours {
 
-	FocusGarbage::FocusGarbage(utils::GarbageRecognition * gr, robotapi::IDifferentialWheels * wheels) : AbstractBehaviour("Focus Garbage"){
+	FocusGarbage::FocusGarbage(utils::IGarbageRecognition * gr, robotapi::IDifferentialWheels * wheels) : AbstractBehaviour("Focus Garbage"){
 		this->gr = gr;
 		this->wheels = wheels;
 	}
