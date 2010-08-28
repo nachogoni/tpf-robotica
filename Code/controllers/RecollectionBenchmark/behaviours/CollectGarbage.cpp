@@ -6,7 +6,7 @@ namespace behaviours {
 
 	int getStepsToGarbage(double distanceInMeters,double speed);
 
-	CollectGarbage::CollectGarbage(utils::GarbageRecognition * gr, robotapi::IRobot * robot, robotapi::ITrashBin * tb, robotapi::IDifferentialWheels * wheels, WorldInfo * wi,  robotapi::IServo * shovel, robotapi::IServo * container) : AbstractBehaviour("Collect Garbage"){
+	CollectGarbage::CollectGarbage(utils::IGarbageRecognition * gr, robotapi::IRobot * robot, robotapi::ITrashBin * tb, robotapi::IDifferentialWheels * wheels, WorldInfo * wi,  robotapi::IServo * shovel, robotapi::IServo * container) : AbstractBehaviour("Collect Garbage"){
 		this->shovel = shovel;
 		this->gr = gr;
 		this->wi = wi;

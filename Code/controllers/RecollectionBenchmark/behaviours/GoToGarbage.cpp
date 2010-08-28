@@ -4,7 +4,7 @@
 namespace behaviours {
 
 	// class constructor
-	GoToGarbage::GoToGarbage(utils::GarbageRecognition * gr, robotapi::IDifferentialWheels * wheels) : AbstractBehaviour("Go to Garbage")
+	GoToGarbage::GoToGarbage(utils::IGarbageRecognition * gr, robotapi::IDifferentialWheels * wheels) : AbstractBehaviour("Go to Garbage")
 	{
 		this->gr = gr;
 		this->wheels = wheels;

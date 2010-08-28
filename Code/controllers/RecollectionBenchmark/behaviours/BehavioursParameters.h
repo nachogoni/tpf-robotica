@@ -111,7 +111,6 @@
 #define WANDER_TURN_FACTOR "WANDER_TURN_FACTOR"
 #define WANDER_STEPS_BASE "WANDER_STEPS_BASE"
 
-#define GET_PARAM(param) behaviours::BehavioursParameters::getParameter(param)
 //Comparator for map keys
 struct ltstr
 {
