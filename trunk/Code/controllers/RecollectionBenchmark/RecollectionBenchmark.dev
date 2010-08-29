@@ -1,7 +1,7 @@
 [Project]
 FileName=RecollectionBenchmark.dev
 Name=RecollectionBenchmark
-UnitCount=154
+UnitCount=156
 Type=1
 Ver=1
 ObjFiles=
@@ -1579,6 +1579,26 @@ BuildCmd=
 
 [Unit154]
 FileName=utils\IGarbageRecognition.h
+CompileCpp=1
+Folder=utils
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit155]
+FileName=IGarbageCleaner.h
+CompileCpp=1
+Folder=RecollectionBenchmark
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit156]
+FileName=utils\IGarbageRecognition.cpp
 CompileCpp=1
 Folder=utils
 Compile=1

@@ -36,11 +36,8 @@ class GarbageRecognition : virtual public IGarbageRecognition {
 
  private:
     std::list<Garbage*> garbageList(IplImage * src, IplImage * model);
-		IplImage * model;
-	
-    double getDistance(double angle);
-    IplImage * loadImage(std::string filename);
-    IplImage * loadImage();
+	IplImage * model;
+
 };
 
 } /* End of namespace utils */
