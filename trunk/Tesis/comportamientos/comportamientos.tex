@@ -22,8 +22,12 @@ comportamientos (con un $ID$ menor) que podr\'ian estar activos.
 %Explicar como se relaciona el requerimiento (robot recolector de basura
 %autonomo) con los comportamientos que pusimos
 Como requerimiento de nuestro proyecto ten\'iamos la realizaci\'on de un robot
-aut\'onomo que recolecte basura de su entorno din\'amico pero estructuralmente
-est\'atico. De aqu\'i se infieren algunos de los comportamientos que debe tener
+aut\'onomo que recolecte basura de su entorno din\'amico\footnote{Con entorno
+din\'amico nos refererimos a que es concurrido por personas y es al aire
+libre, por lo que el viento puede mover ciertos objetos} pero estructuralmente
+est\'atico\footnote{Con estructuralmente es\'atico nos referimos a que sus
+l\'imites no var\'ian ya que est\'a rodeado por paredes}.
+De aqu\'i se infieren algunos de los comportamientos que debe tener
 el robot:
 \begin{itemize}
 	\item{\emph{Recolectar basura} (\ref{collect_garbage})}
@@ -77,7 +81,7 @@ A continuaci\'on detallamos los comportamientos indicados en la figura
 \paragraph{Detalle del comportamiento} 
 Por ser el comportamiento que menor jerarqu\'ia tiene (Ver figura
 \ref{fig:architecture}), es el \'unico comportamiento que est\'a activo
-ante la ausencia de un est\'imulo, asegurandonos que siempre haya por lo menos
+ante la ausencia de un est\'imulo, asegur\'andonos que siempre haya por lo menos
 un comportamiento activo.
 \\\indent
 En una primera aproximaci\'on de \emph{Wandering}, s\'olo nos preocupamos por
@@ -104,7 +108,7 @@ robot la visit\'o.
 
 \paragraph{Implementaci\'on del comportamiento}
 
-La segunda implementaci\'on en \emph{pseudo-c\'odigo} es la siguiente:
+La implementaci\'on en \emph{pseudo-c\'odigo} es la siguiente:
 \begin{verbatim}
 por cada paso
     zona = pedir_zona_vista(camara)
@@ -141,7 +145,7 @@ ac = \frac{FOV_v}{2} + \theta\\
 Organizando las ecuaciones, podemos deducir que:
 
 \begin{eqnarray}
-\gamma = \frac{\pi}{2} + ac - \frac{FOV_v}{2}\\
+\gamma = \frac{\pi}{2} - ac - \frac{FOV_v}{2}\\
 \label{eqn:distance_d}
 d = \tan(\gamma) * C_h \\
 \label{eqn:distance_dh}
@@ -169,18 +173,18 @@ zona que ve la c\'amara.
 \label{focus_garbage}
 Una vez que el m\'odulo de detecci\'on de objetos reconoce algo como basura
 (ver secci\'on \ref{sec:filtros}), hay que elegir
-la forma en que se va a la basura. En la figura \ref{fig:papproachgoto}
-mostramos una aproximaci\'on. Consiste en primero enfocar la
-basura de forma tal que la misma quede en el centro de la imagen de la
-c\'amara. De aqu\'i surge el comportamiento \emph{Enfocar Basura}.
+la forma en que el robot se dirige hacia la basura. En la figura
+\ref{fig:papproachgoto} mostramos una aproximaci\'on. Consiste en primero
+enfocar la basura de forma tal que la misma quede en el centro de la imagen de
+la c\'amara. De aqu\'i surge el comportamiento \emph{Enfocar Basura}.
 \\\indent
 Una segunda forma de lograr \'esto (figura \ref{fig:sapproachgoto}) no consiste
 en enfocar la basura, sino que se marca un arco hacia la misma. \'Esto requiere
-que se seteen las velocidades correspondientes a las ruedas de forma tal que la
-trayectoria del robot describa dicho arco. Con esta alternativa no
-existir\'ia el comportamiento que se est\'a describiendo.
+que se establezcan las velocidades correspondientes a las ruedas de forma tal
+que la trayectoria del robot describa dicho arco. Con esta alternativa no
+har\'ia falta un comportamiento para que el robot enfoque la basura.
 \\\indent
-Dado que la primera aproximaci\'on es levemente m\'as simple de implementar, y
+Dado que la primera aproximaci\'on es m\'as simple de implementar, y
 teniendo en cuenta el principio enunciado en la secci\'on \ref{arq_prop}
 \emph{``La simplicidad es una virtud''}, elegimos implementarlo, a
 pesar de tener un posible inconveniente, como mostramos en la figura
@@ -274,8 +278,7 @@ Se puede ver que la velocidad de giro del robot es proporcional al m\'odulo del
 \'angulo es mayor y tener mayor precisi\'on cuando el \'angulo es m\'as chico,
 adem\'as de tener mayor rapidez de enfoque y precisi\'on que si la velocidad de
 giro fuera constante.
-\\\indent Como observamos en el pseudo-c\'odigo del cuadro
-\ref{focus_garbage:impl}, el algoritmo enfoca la basura que se encuentra m\'as
+\\\indent Como observamos, el algoritmo enfoca la basura que se encuentra m\'as
 cerca del robot. Para \'esto realiza una transformaci\'on en la cual obtiene
 la distancia al objeto seg\'un su coordenada $(x,y)$ en la im\'agen. En la figura
 \ref{fig:altoDiag} podemos apreciar mejor el \'area vista por la c\'amara,
@@ -304,7 +307,7 @@ donde $Ch$ representa la altura de la c\'amara y es un valor conocido.\\
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.5]{comportamientos/figures/altoDiagram.png}
+\includegraphics[scale=0.75]{comportamientos/figures/altoDiagram.png}
 \caption[\'Area vista por la c\'amara y distancias y \'angulos]
 		{\'Area vista por la c\'amara y distancias y \'angulos}
 \label{fig:altoDiag}
@@ -322,13 +325,13 @@ donde $Ch$ representa la altura de la c\'amara y es un valor conocido.\\
 
 Para el c\'alculo de $dy$ tenemos que recurrir a la ecuaci\'on 
 \ref{wander:ecfov} donde reemplazamos $FOV_v$ por $\beta$ que es el \'angulo
-vertical que forma la c\'amara con el objeto en cuesti\'on. \'Este se computa
+vertical que forma la c\'amara con el objeto en cuesti\'on. \'Este se obtiene
 como $\beta=k FOV_v$ donde $k=\frac{dist_y}{C_{rh}}$ que se corresponden con la
 distancia en pixels sobre el eje $y$ y la resoluci\'on vertical de la imagen
 respectivamente. El c\'alculo de $k$ puede apreciarse mejor en la figura
 \ref{fig:image_coord_conv}.
-\\ Para el c\'omputo de la ecuaci\'on \ref{eq:asin}
-tambi\'en es necesario el valor de $\alpha$ el cual computamos como
+\\ Para el c\'alculo de la ecuaci\'on \ref{eq:asin}
+tambi\'en es necesario el valor de $\alpha$ el cual obtenemos como
 $\alpha=k'\frac{FOV_h}{2}$ donde en este caso $k'=\frac{dist_x}{0.5C_{rh}}$
 y $FOV_h$ se corresponden con la distancia en pixeles sobre el eje $x$ y
 el field of view horizontal de la c\'amara imagen. Habiendo obtenido estos
@@ -351,14 +354,11 @@ los arcos de distancia hacia cada punto de la im\'agen.
 
 \begin{figure}[htp]
 \begin{center}
-\includegraphics[scale=0.25]{comportamientos/figures/distancias.png}
+\includegraphics[scale=1]{comportamientos/figures/distancias.png}
 \caption[Distancias a pixeles en imagen]
 		{Distancias a pixeles en imagen seg\'un la variaci\'on de color.
-		Los arcos marcan distancias iguales. Cuanto m\'as clara la zona, m\'as
-		lejana est\'a. \emph{Dentro} de cada zona delimitada
-		por dos arcos hay una variaci\'on de un color m\'as claro a uno oscuro
-		a medida que se sube en la im\'agen. Cuanto m\'as claro, m\'as cercano.
-		}
+		Los arcos marcan distancias dentro de un mismo rango de valores.
+		Cuanto m\'as clara la zona, m\'as lejana est\'a.}
 \label{fig:distancias_imagen}
 \end{center}
 \end{figure}
@@ -372,7 +372,7 @@ los arcos de distancia hacia cada punto de la im\'agen.
 Luego de la elecci\'on de la forma en que se resuelve el problema de encontrar
 una basura (ver figura \ref{focus_garbage}), el comportamiento de ir a basura
 resulta trivial, ya que luego de ser enfocada, la basura est\'a delante del
-robot y lo basta con ir hacia adelante.
+robot y s\'olo basta ir hacia adelante.
 
 \paragraph{Detalle del comportamiento}
 El est\'imulo necesario para que este comportamiento est\'e presente, est\'a
@@ -488,7 +488,7 @@ El \emph{pseudo-c\'odigo} de este comportamiento es el siguiente:
 \end{verbatim}
 
 La distancia hacia la basura es obtenida de la misma forma que en la secci\'on
-\ref{go_to_garbage:impl}. Levantar y cerrar el servo consiste en setear su
+\ref{go_to_garbage:impl}. Levantar y cerrar el servo consiste en establecer su
 posici\'on en $\frac{\pi}{2}$ y $0$ respectivamente. Para calcular la distancia
 recorrida utilizamos la distancia entre la posici\'on del robot en el
 instante $t$, $P_r(t)$ y el instante $t+1$, $P_r(t+1)$, ambas dadas por la
