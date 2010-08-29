@@ -66,21 +66,21 @@ siguientes comparaciones:
 
 \item{Existencia de un dep\'osito:} Ambos tienen un dep\'osito en el cual dejar
 la basura recogida y una forma de identificarla: una fuente de luz usada por
-Nolfi y en nuestro trabajo, al llegar al final de una determinada l\'inea de la
+Nolfi y en nuestro trabajo, al llegar al final de una l\'inea marcada sobre la
 arena.
 
 \item{Autonom\'ia:} Ambos son aut\'onomos en el sentido que no son manejados
-por un ente externo. En cuanto a la recarga de la bater\'ia, Nolfi no explicita
+por un humano. En cuanto a la recarga de la bater\'ia, Nolfi no explicita
 si es asistida o no; en nuestro caso, el robot se encarga de ir a la base de
 recarga una vez detectada la falta de energ\'ia.
 
 \item{M\'etodo de Recolecci\'on:} En el trabajo de Nolfi se utiliza el m\'odulo
 ´´Gripper'' agregado al Khepera. Este m\'odulo simula un brazo con dos dedos.
 De \'esta forma, la recolecci\'on se realiza junt\'andolos y la liberaci\'on 
-se realiza separ\'andolos. Nuestro trabajo se basa m\'as en la actividad humana
-que en el comportamiento humano para realizar la recolecci\'on, ya que podr\'ia
-compararse con un recolector de basura que primero guarda lo encontrado usando
-una pala en su tacho y luego lo descarga en un dep\'osito de mayor tama\~no.
+se realiza separ\'andolos. \'Esta forma de recolectar est\'a basada en
+el comportamiento humano. Nuestro trabajo se basa m\'as en la actividad humana
+para realizar la recolecci\'on, ya que podr\'ia compararse con un recolector
+de basura que usa una pala para guardar el residuo en su tacho.
 
 \item{M\'etodo de aprendizaje:} En nuestro trabajo no utilizamos aprendizaje
 por refuerzo o algoritmos evolutivos. No es el caso de Nolfi, que
@@ -97,6 +97,8 @@ simulaci\'on, una versi\'on nueva del Khepera, pero sin el m\'odulo Gripper.
 \end{center}
 \end{figure}
 
+\item{Reconocimiento del objeto a recolectar:} 
+
 \end{itemize}
 
 \subsubsection{Arquitectura de control para un Robot Aut\'onomo M\'ovil -
@@ -109,7 +111,7 @@ proyecto.
 \\
 La arquitectura propuesta en el paper, o
 \emph{Control System Arquitecture}, se basa tambi\'en en la teor\'ia de 
-\emph{The Society of Mind}, escrita por \emph{Minsky}, donde el sistema es
+\emph{The Society of Mind}, escrita por \emph{Minsky}\cite{minsky}, donde el sistema es
 visto como una sociedad de agentes, cada uno con una competencia particular y
 que colaboran entre ellos para ayudar a la sociedad a alcanzar su meta.
 La arquitectura est\'a compuesta por tres niveles: un nivel reflexivo, uno
@@ -142,8 +144,7 @@ componente din\'amica de nuestro trabajo, siempre tratamos de mantener los
 comportamientos del robot lo m\'as reactivos posibles, por lo que armar un plan
 no ser\'ia la mejor opci\'on a utilizar. Por el contrario, el uso de
 algor\'itmos gen\'eticos puede ser una herramienta que se podr\'ia llegar a
-usar en una futura continuaci\'on de nuestro trabajo y que no utilizamos
-por el tiempo que nos hubiese demandado.
+usar en una futura continuaci\'on de nuestro trabajo.
 
 \subsubsection{Navegaci\'on predictiva de un robot aut\'onomo - Foka And
 Trahanias \cite{Foka02predictiveautonomous}}
@@ -192,11 +193,11 @@ En relaci\'on con nuestro trabajo, hay ciertas similitudes y diferencias,
 enumeradas a continuaci\'on:
 \begin{itemize}
 \item{}Ambos presentan un mecanismo de ``seguimiento de'', en nuestro caso lo
-hacemos con l\'ineas y basuras, en el paper se utiliza con paredes. Sin embargo,
+hacemos con l\'ineas, en el paper se utiliza con paredes. Sin embargo,
 se utilizan para objetivos diferentes. Nosotros lo usamos para dirigirnos a la
-base ya que tratamos de mantener el conociemiento que el robot tiene sobre el
-mundo lo m\'as acotado posible, o en el caso de las basuras, para
-recolectarlas. En el paper se utiliza el mecanismo de seguir las l\'ineas para
+base ya que tratamos de mantener el conocimiento que el robot tiene sobre el
+mundo lo m\'as acotado posible.
+En el paper se utiliza el mecanismo de seguir las l\'ineas para
 obtener un modelo del mundo, algo que puede llegar a servir mucho en ambientes
 no tan din\'amicos como el nuestro, raz\'on por la cual no elegimos
 implementarlo.
@@ -216,7 +217,7 @@ comportamiento), la base para su especificaci\'on, el tipo de respuesta y la
 forma en que se coordinan.
 \\
 La arquitectura que elegimos para desarrollar nuestro trabajo es
-\emph{Subsumption}, desarrollada por Rodney Brooks a mediados de 1980.
+\emph{Subsumption}, desarrollada por Rodney Brooks\cite{brooks} en 1985.
 Esta arquitectura est\'a basada en comportamientos puramente reactivos,
 rompiendo as\'i con el esquema que estaba de moda en la \'epoca de
 \emph{sensar-planear-actuar}. Algunos de los principios propuestos que tuvimos
@@ -228,10 +229,11 @@ complejo sistema de control,
 \item{}La simplicidad es una virtud,
 \item{}Los sistemas deben ser construidos incrementalmente.
 \end{itemize}
-Cada comportamiento es un par est\'imulo-respuesta. Tal como mostramos en la
-figura \ref{fig:behaviour}, cada est\'imulo o respuesta puede ser inhibido o
-suprimida por otros comportamientos activos. Adem\'as cada comportamiento
-recibe una se\~nal de reset, que lo devuelve a su estado original.
+Cada comportamiento es un conjunto de pares est\'imulo-respuesta. Tal como
+mostramos en la figura \ref{fig:behaviour}, cada est\'imulo o respuesta puede
+ser inhibido o suprimida por otros comportamientos activos. Adem\'as cada
+comportamiento recibe una se\~nal de reset, que lo devuelve a su estado
+original.
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[scale=0.85]{comportamientos/figures/behaviour.png}
@@ -924,8 +926,8 @@ secci\'on \ref{results}, as\'i como dar posibles explicaciones a los mismos.
 \\\indent
 Dado que en la simulaci\'on hab\'ia 15 basuras, era esperado que
 \emph{Recolectar basura} se activase la misma cantidad de veces. En promedio,
-el robot recolect\'o $\frac{t_{fs}}{15 basuras} = \frac{1.52x10^5 Ts}
-{basura}$, es decir, 1 basura cada 8 minutos.El mayor tiempo que pas\'o entre
+el robot recolect\'o \[\frac{t_{fs}}{15 basuras} = \frac{1.52x10^5 Ts}
+{basura}\], es decir, 1 basura cada 8 minutos. El mayor tiempo que pas\'o entre
 entre una recolecci\'on y otra fue de $38400 Ts = 20 m 28 s$.
 \\\indent
 Los comportamientos \'intimamente relacionados, \emph{Enfocar basura} e
@@ -1093,4 +1095,43 @@ de los comportamientos que m\'as tiempo demanda. Otro factor importante para
 destacar es que el $75\%$ del \'area se recorri\'o en un cuarto del tiempo
 en cuesti\'on, es decir, en aproximadamente $13mins$. Por todo \'esto,
 concluimos que el recorrido de la arena es muy eficiente.
+
+\subsubsection{Posibles extensiones}
+Una de las posibles extensiones del trabajo puede ser minimizar el tiempo
+consumido por los comportamientos de \emph{Ir a zona de descarga de basura}
+y \emph{Ir a zona de recarga de bater\'ia}. Dado que ambos van hacia la l\'inea,
+podemos pensar en algunas formas para minimizar este tiempo. Entre las mismas
+est\'an: cambiar las ubicaciones de las l\'ineas, agregar m\'as l\'ineas o
+cambiar las formas de las mismas. Otra alternativa podr\'ia ser utilizar otro
+mecanismo para ir hacia dichas zonas que no use el seguimiento de l\'inea, o
+lo use en menor tiempo. Cabe aclarar que no es el seguimiento de la l\'inea
+lo que m\'as tiempo demora sino ir hacia la misma.
+\\\indent
+En cuanto a los comportamientos que posee el robot podemos pensar en agregar
+algunos para ampliar las prestaciones que puede brindar el robot. Entre ellos
+se encuentran:
+\begin{itemize}
+	\item{} Seguir la pared, con un objetivo a pensar.
+	\item{} Interactuar con las personas, mediante sonidos o reconociemiento
+			visual.
+	\item{} Agregar un mecanismo que le permita recolectar basuras que est\'an
+			pegadas o en lugares no alcanzables por el robot por la presencia
+			de obst\'aculos.
+	\item{} Mover una basura hacia un \'area, en caso que no pueda recolectarla.
+	\item{} Notificar a una central sobre sucesos inesperados o dif\'iciles
+			de que sucedan.
+	\item{} Proveer una interfaz web que permita ver el estado de los sensores
+			y actuadores del robot en forma on-line, as\'i como tambi\'en
+			gr\'aficos mostrando los \'ultimos comportamientos activos. Adem\'as
+			podr\'ia ver el estado actual del sistema de predicci\'on y la
+			imagen vista por la c\'amara.
+	\item{} Subir estad\'isticas a un servidor central de forma tal que se
+			pueda analizar qu\'e cambios se podr\'ian hacer en el controlador
+			para mejorar la efectividad y eficiencia de la recolecci\'on o
+			de otros comportamientos.
+\end{itemize}
+
+
+
+
 
