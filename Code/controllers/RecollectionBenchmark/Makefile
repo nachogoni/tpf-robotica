@@ -10,7 +10,7 @@ CPP_SOURCES = recollectionbenchmark.cpp GarbageCleaner.cpp WorldInfo.cpp \
 							behaviours/RemoveFromStuck.cpp behaviours/GoToDisposal.cpp behaviours/UnloadGarbage.cpp \
 							behaviours/Wander.cpp behaviours/BehavioursParameters.cpp\
 							utils/MinimalBoundingRectangle.cpp utils/Garbage.cpp utils/GarbageRecognition.cpp \
-							utils/Contours.cpp utils/Histogram.cpp \
+							utils/IGarbageRecognition.cpp utils/Contours.cpp utils/Histogram.cpp \
 							utils/MyLine.cpp utils/MyPoint.cpp utils/MyAngle.cpp utils/MyWall.cpp \
 							utils/ArenaGrid.cpp utils/ArenaGridSlot.cpp utils/Rectangle2D.cpp \
 							robotapi/DifferentialWheelsWOdometry.cpp \

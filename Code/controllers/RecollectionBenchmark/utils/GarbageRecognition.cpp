@@ -44,7 +44,7 @@ std::list<Garbage*> GarbageRecognition::getGarbageList()
 {
 	if ( ! this->pooled ){
 		this->pooled = true;
-	    IplImage * src = loadImage();
+	    IplImage * src = this->loadImage();
 		this->garbageList(src,this->model);
 		cvReleaseImage(&src);
 	}
