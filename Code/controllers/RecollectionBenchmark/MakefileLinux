@@ -2,31 +2,35 @@
 # Makefile for a Webots C++ controller
 #
 # if your controller uses several C++ sources files:
-CPP_SOURCES = main.cpp GarbageCleaner.cpp WorldInfo.cpp \
-							behaviours/AbstractBehaviour.cpp behaviours/AvoidObstacle.cpp \
-							behaviours/CollectGarbage.cpp behaviours/GoToGarbage.cpp behaviours/FocusGarbage.cpp \
-							behaviours/FindLine.cpp behaviours/GoToBase.cpp behaviours/Recharge.cpp \
-							behaviours/GoToBaseGroup.cpp behaviours/PositionInLine.cpp behaviours/Recalibrate.cpp \
-							behaviours/RemoveFromStuck.cpp behaviours/GoToDisposal.cpp behaviours/UnloadGarbage.cpp \
-							behaviours/Wander.cpp behaviours/BehavioursParameters.cpp\
-							utils/MinimalBoundingRectangle.cpp utils/Garbage.cpp utils/GarbageRecognition.cpp \
-							utils/Contours.cpp utils/Histogram.cpp \
-							utils/MyLine.cpp utils/MyPoint.cpp utils/MyAngle.cpp utils/MyWall.cpp \
-							utils/IGarbageRecognition.cpp \
-							utils/ArenaGrid.cpp utils/ArenaGridSlot.cpp utils/Rectangle2D.cpp \
-							robotapi/DifferentialWheelsWOdometry.cpp \
-							robotapi/real/RealBattery.cpp robotapi/real/RealTrashBin.cpp robotapi/real/RealPCBattery.cpp \
-							robotapi/real/RealCamera.cpp robotapi/real/RealDevice.cpp robotapi/real/RealDeviceTag.cpp \
-							robotapi/real/RealDifferentialWheels.cpp robotapi/real/RealDistanceSensor.cpp \
-							robotapi/real/RealImage.cpp robotapi/real/RealRobot.cpp robotapi/real/RealServo.cpp \
-							protocol/BoardPacketHandler.cpp protocol/packet.cpp protocol/PacketServer.cpp \
-							protocol/packets/batterypacket.cpp protocol/packets/BoardPacket.cpp protocol/packets/DCMotorPacket.cpp \
-							protocol/packets/DistanceSensorPacket.cpp protocol/packets/floorsensorpacket.cpp \
-							protocol/packets/GroupPacket.cpp protocol/packets/ServoMotorPacket.cpp \
-							protocol/packets/trashbinpacket.cpp protocol/packets/ultrasonicsensorpacket.cpp \
-							protocol/handlers/BatteryBoardPacketHandler.cpp protocol/handlers/DCMotorBoardPacketHandler.cpp \
-							protocol/handlers/DistanceSensorBoardPacketHandler.cpp protocol/handlers/ServoBoardPacketHandler.cpp \
-							protocol/handlers/TrashBinBoardPacketHandler.cpp protocol/handlers/DefaultBoardPacketHandler.cpp
+CPP_SOURCES = main.o GarbageCleaner.o WorldInfo.o 
+						
+CPP_BEHAVIOURS_SOURCES =	behaviours/AbstractBehaviour.o behaviours/AvoidObstacle.o \
+							behaviours/CollectGarbage.o behaviours/GoToGarbage.o behaviours/FocusGarbage.o \
+							behaviours/FindLine.o behaviours/GoToBase.o behaviours/Recharge.o \
+							behaviours/GoToBaseGroup.o behaviours/PositionInLine.o behaviours/Recalibrate.o \
+							behaviours/RemoveFromStuck.o behaviours/GoToDisposal.o behaviours/UnloadGarbage.o \
+							behaviours/Wander.o behaviours/BehavioursParameters.o
+
+CPP_UTILS_SOURCES =			utils/MinimalBoundingRectangle.o utils/Garbage.o utils/GarbageRecognition.o \
+							utils/Contours.o utils/Histogram.o \
+							utils/MyLine.o utils/MyPoint.o utils/MyAngle.o utils/MyWall.o \
+							utils/IGarbageRecognition.o \
+							utils/ArenaGrid.o utils/ArenaGridSlot.o utils/Rectangle2D.o
+
+CPP_ROBOT_API_SOURCES =		robotapi/DifferentialWheelsWOdometry.o \
+							robotapi/real/RealBattery.o robotapi/real/RealTrashBin.o robotapi/real/RealPCBattery.o \
+							robotapi/real/RealCamera.o robotapi/real/RealDevice.o robotapi/real/RealDeviceTag.o \
+							robotapi/real/RealDifferentialWheels.o robotapi/real/RealDistanceSensor.o \
+							robotapi/real/RealImage.o robotapi/real/RealRobot.o robotapi/real/RealServo.o
+
+CPP_PROTOCOL_SOURCES = 		protocol/BoardPacketHandler.o protocol/packet.o protocol/PacketServer.o \
+							protocol/packets/batterypacket.o protocol/packets/BoardPacket.o protocol/packets/DCMotorPacket.o \
+							protocol/packets/DistanceSensorPacket.o protocol/packets/floorsensorpacket.o \
+							protocol/packets/GroupPacket.o protocol/packets/ServoMotorPacket.o \
+							protocol/packets/trashbinpacket.o protocol/packets/ultrasonicsensorpacket.o \
+							protocol/handlers/BatteryBoardPacketHandler.o protocol/handlers/DCMotorBoardPacketHandler.o \
+							protocol/handlers/DistanceSensorBoardPacketHandler.o protocol/handlers/ServoBoardPacketHandler.o \
+							protocol/handlers/TrashBinBoardPacketHandler.o protocol/handlers/DefaultBoardPacketHandler.o
 # or
 # CC_SOURCES = my_controller.cc my_clever_algo.cc my_gui.cc
 #
@@ -47,7 +51,7 @@ LIBRARIES= -lccext2 $(OPENCVLFLAGS)
 
 CVHEADFLAGSCOMMAND = pkg-config opencv --cflags
 OPENCVCFLAGS = $(shell $(CVHEADFLAGSCOMMAND) )
-CFLAGS= -g -Wall -I. $(OPENCVCFLAGS) -lccext2
+CFLAGS= -g -Wall -I. $(OPENCVCFLAGS) 
 
 #-L"C:/Program Files/OpenCV/lib" -lcxcore -lcv -lcvaux -lhighgui -lml -g3
 #-L"C:/Program Files/OpenCV/lib" 
@@ -57,5 +61,9 @@ CFLAGS= -g -Wall -I. $(OPENCVCFLAGS) -lccext2
 %.o: %.cpp
 	g++ -c -g -o $@ $(CFLAGS) $<
 
-all: $(CPP_SOURCES)
-	g++ -o realController $(CPP_SOURCES) $(CFLAGS) $(LIBRARIES)
+all: $(CPP_BEHAVIOURS_SOURCES) $(CPP_SOURCES) $(CPP_UTILS_SOURCES) $(CPP_ROBOT_API_SOURCES) $(CPP_PROTOCOL_SOURCES)
+	g++ -o realController $^ $(CFLAGS) $(LIBRARIES)
+
+clean:
+	rm -f *.o */*.o */*/*.o
+
