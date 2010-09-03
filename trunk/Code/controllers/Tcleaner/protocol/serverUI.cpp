@@ -87,10 +87,13 @@ bool init();
 char getDest();
 void sendAPacket(protocol::Packet * p);
 
+void cmd_test(char * data);
+
 // Implementation
 
 // Command list
 cmd_type commands[] = {
+    {"dc", "test", cmd_test, "Perform a command test...", ""},
     // Common commands
     {"common", "dc", cmd_setDC, "Set actual DC Motor board", "\%d for the board ID (0 or 1)"},
     {"common", "ds", cmd_setDS, "Set actual Distance Sensor board", "\%d for the board ID (0, 1 or 2)"},
@@ -153,6 +156,37 @@ cmd_type commands[] = {
     {"common", "quit", cmd_quit, "Quit to system", ""},
     {"common", NULL, cmd_quit, "", ""}
 };
+
+void cmd_test(char * data)
+{
+	int i = 2000000;
+	cmd_setDC("0");
+//	cmd_dcSetEncoder("0");
+	cmd_setDC("1");
+	cmd_dcSetEncoder("0");
+	cmd_setDC("0");
+//	cmd_dcSetSpeed("0 0");
+	cmd_setDC("1");
+	cmd_dcSetSpeed("0 0");
+	cmd_setDC("0");
+	cmd_dcSetEncoderToStop("450");
+	cmd_setDC("1");
+	cmd_dcSetEncoderToStop("450");
+	cmd_setDC("0");
+	cmd_dcSetSpeed("0 60");
+	cmd_setDC("1");
+	cmd_dcSetSpeed("1 60");
+	cmd_setDC("0");
+	cmd_dcGetEncoder("");
+	cmd_setDC("1");
+	cmd_dcGetEncoder("");
+	sleep(10);
+	cmd_setDC("0");
+	cmd_dcGetEncoder("");
+	cmd_setDC("1");
+	cmd_dcGetEncoder("");
+	return;
+}
 
 char getDest()
 {
