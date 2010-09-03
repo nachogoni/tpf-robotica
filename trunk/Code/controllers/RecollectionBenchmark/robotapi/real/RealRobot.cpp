@@ -54,8 +54,9 @@ RealRobot::RealRobot(WorldInfo * wi){
 	this->initServos(ps);
 	this->initTrashBins(ps);
 	this->initDistanceSensors(ps);
-	this->initCameras();
 */
+	this->initCameras();
+
 }
 
 void RealRobot::initWheels(protocol::PacketServer * ps){
@@ -101,6 +102,8 @@ void RealRobot::initDistanceSensor(protocol::PacketServer * ps, protocol::handle
 }
 
 void RealRobot::initCameras(){
+	RealCamera * c = new RealCamera(-1,"camera0");
+	this->cameras.insert( std::pair<std::string, ICamera *>(c->getName(),c) );
 }
 
 void RealRobot::initTrashBins(protocol::PacketServer * ps){
