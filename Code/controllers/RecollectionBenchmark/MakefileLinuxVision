@@ -2,7 +2,7 @@
 # Makefile for a Webots C++ controller
 #
 # if your controller uses several C++ sources files:
-CPP_SOURCES = main.o GarbageCleaner.o WorldInfo.o 
+CPP_SOURCES = RecognitionTest.o GarbageCleaner.o WorldInfo.o 
 						
 CPP_BEHAVIOURS_SOURCES =	behaviours/AbstractBehaviour.o behaviours/AvoidObstacle.o \
 							behaviours/CollectGarbage.o behaviours/GoToGarbage.o behaviours/FocusGarbage.o \
@@ -68,7 +68,7 @@ CFLAGS= -g -Wall -I. $(OPENCVCFLAGS)
 	g++ -c -g -o $@ $(CFLAGS) $<
 
 all: $(CPP_BEHAVIOURS_SOURCES) $(CPP_SOURCES) $(CPP_UTILS_SOURCES) $(CPP_ROBOT_API_SOURCES) $(CPP_PROTOCOL_SOURCES)
-	g++ -o realController $^ $(CFLAGS) $(LIBRARIES)
+	g++ -o RecognitionTest $^ $(CFLAGS) $(LIBRARIES)
 
 clean:
 	rm -f *.o */*.o */*/*.o

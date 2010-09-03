@@ -6,11 +6,7 @@
 namespace robotapi {
 namespace real {
 
-/**
-* TODO IMPLEMENT!
-**/
-
-RealCamera::RealCamera(int cameraID){
+RealCamera::RealCamera(int cameraID, std::string name) : RealDevice(&name){
 	if((capture=cvCaptureFromCAM(cameraID))==0){
 		printf("Error en el id de la camara:%d\n",cameraID);
 	}

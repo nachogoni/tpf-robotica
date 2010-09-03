@@ -4,16 +4,15 @@
 #include <cv.h>
 #include <highgui.h>
 #include <robotapi/ICamera.h>
-
-
+#include <robotapi/real/RealDevice.h>
 
 namespace robotapi {
 namespace real {
 
-class RealCamera : virtual public robotapi::ICamera {
+class RealCamera : public robotapi::ICamera, public robotapi::real::RealDevice {
 
 	public:
-		RealCamera(int cameraID);
+		RealCamera(int cameraID, std::string name);
 		void enable(int ms);
 
 		void disable();
