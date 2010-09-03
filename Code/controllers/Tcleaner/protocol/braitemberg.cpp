@@ -155,16 +155,17 @@ int main( int argc, const char **argv)
 			sensors_value[7-i] = sensors[i];
 		}
 		
-		left = 0.0;
-		right = 0.0;
+		left = 40.0;
+		right = 40.0;
 		for (j = 0; j < 8; j++) {
 			left += bc[j][0] * sensors_value[j];
 			right += bc[j][1] * sensors_value[j];
+			printf("Valor (%d): %g\n",j,sensors_value[j]);
 		}
 		
 		// Para que vaya mas rapido...
-//		left *=15;
-//		right *=15;
+		//left *=20;
+		//right *=20;
 		
 		/* set speed values */
 		dcMotorHandler0->setSpeed(right);
