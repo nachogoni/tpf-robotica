@@ -176,6 +176,15 @@ void DCMotorBoardPacketHandler::setSpeed(double value){
 	this->ps->sendPacket(p);
 }
 
+void DCMotorBoardPacketHandler::setEncoder(double value){
+	packets::DCMotorPacket * p = new packets::DCMotorPacket(groupid,boardid);
+
+	unsigned short aux = (unsigned short)abs(floor(value));
+	p->setEncoder(aux);
+	p->prepareToSend();
+	this->ps->sendPacket(p);
+}
+
 double DCMotorBoardPacketHandler::getSpeed(){
    	packets::DCMotorPacket * p = new packets::DCMotorPacket(groupid,boardid);
 	p->getDCSpeed();

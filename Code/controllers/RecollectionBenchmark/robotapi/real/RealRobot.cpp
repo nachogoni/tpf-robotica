@@ -8,10 +8,11 @@
 #include <robotapi/real/RealTrashBin.h>
 #include <robotapi/real/RealPCBattery.h>
 #include <robotapi/real/RealDevice.h>
+#include <unistd.h>
 
 #define DC_GROUP 0x01
-#define DC_LEFT_ID 0x00
-#define DC_RIGHT_ID 0x01
+#define DC_LEFT_ID 0x01
+#define DC_RIGHT_ID 0x00
 
 #define SERVO_GROUP 0x02
 #define SERVO_BOARD 0x00
@@ -45,19 +46,22 @@ namespace real {
 RealRobot::RealRobot(WorldInfo * wi){
 
 	protocol::PacketServer * ps = new protocol::PacketServer();
+	ps->start();
+	this->wi = wi;
+	this->initWheels(ps);
+/*
 	this->initBatteries(ps);
 	this->initServos(ps);
-	this->initWheels(ps);
 	this->initTrashBins(ps);
 	this->initDistanceSensors(ps);
 	this->initCameras();
-	this->wi = wi;
+*/
 }
 
 void RealRobot::initWheels(protocol::PacketServer * ps){
 	protocol::handlers::DCMotorBoardPacketHandler * dcmbphleft = new protocol::handlers::DCMotorBoardPacketHandler(ps,DC_GROUP,DC_LEFT_ID);
 	protocol::handlers::DCMotorBoardPacketHandler * dcmbphright = new protocol::handlers::DCMotorBoardPacketHandler(ps,DC_GROUP,DC_RIGHT_ID);
-   	RealDifferentialWheels * rdw = new RealDifferentialWheels(this->wi,dcmbphleft,dcmbphright,"dw0");
+   	RealDifferentialWheels * rdw = new RealDifferentialWheels(this->wi,dcmbphleft,dcmbphright,*new std::string("dw0"));
 
 	this->wheels.insert( std::pair<std::string, IDifferentialWheels *>(rdw->getName(),rdw) );
 	ps->registerHandler(dcmbphleft,DC_GROUP,DC_LEFT_ID);
@@ -157,7 +161,10 @@ IDevice & RealRobot::getDevice(std::string name){
 }
 
 IDifferentialWheels & RealRobot::getDifferentialWheels(std::string name){
-	return *this->wheels[name];
+	IDifferentialWheels * aux = this->wheels[name];
+	if ( df == NULL )
+		df = aux;
+	return *aux;
 }
 
 IBattery & RealRobot::getBattery(std::string name){
@@ -169,8 +176,11 @@ ITrashBin & RealRobot::getTrashBin(std::string name){
 }
 
 void RealRobot::step(int ms){
+	usleep(10000);
+	//sleep(1);
 	// Use differential wheels
-	//df->computeOdometry();
+	if ( df != NULL )
+		df->computeOdometry();
 	
 	// Refresh stats
 	if ( gc != NULL )

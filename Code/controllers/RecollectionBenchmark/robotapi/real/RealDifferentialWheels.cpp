@@ -24,7 +24,8 @@ void RealDifferentialWheels::enableEncoders(int ms){
 }
 
 void RealDifferentialWheels::disableEncoders(){
-	return;
+	this->leftBoard->setEncoder(0);
+	this->rightBoard->setEncoder(0);
 }
 
 double RealDifferentialWheels::getLeftEncoder(){

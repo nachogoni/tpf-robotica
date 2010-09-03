@@ -69,6 +69,7 @@ class RealRobot : virtual public robotapi::IRobot {
 		std::map<std::string, ITrashBin *> trashBins;
 		WorldInfo * wi;
 		IGarbageCleaner * gc;
+		IDifferentialWheels * df;
 	};
 
 } /* End of namespace robotapi::real */
