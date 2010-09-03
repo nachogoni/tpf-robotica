@@ -65,13 +65,13 @@ void WorldInfo::readLines(FILE * f){
 }
 
 void WorldInfo::readDistanceBetweenWheels(FILE * f){
-	fscanf (f, "%lf\n", &this->distanceBetweenWheelsFactor);
-	printf("%g\n",this->distanceBetweenWheelsFactor);
+	fscanf (f, "%lf\n", &this->distanceBetweenWheels);
+	printf("%g\n",this->distanceBetweenWheels);
 }
 
 void WorldInfo::readDistanceBetweenWheelsFactor(FILE * f){
-	fscanf (f, "%lf\n", &this->distanceBetweenWheels);
-	printf("%g\n",this->distanceBetweenWheels);
+	fscanf (f, "%lf\n", &this->distanceBetweenWheelsFactor);
+	printf("%g\n",this->distanceBetweenWheelsFactor);
 }
 
 void WorldInfo::readWheelsRadius(FILE * f){
