@@ -16,7 +16,7 @@
 #define countsToTurn (150.86672)
 //#define countsToOneMeter ((7762.66 + 7763.86) / 2)
 
-#define countsToOneMeter (2*598)
+#define countsToOneMeter (1.5*598)
 using namespace std;
 
 robotapi::real::RealRobot * dwrobot;
@@ -207,15 +207,13 @@ void doOneMeter(double qspeed){
   double lastLeftEncoderValue = initialLeftEncoderValue;
   double lastRightEncoderValue = initialRightEncoderValue;
   sleep(1);
+  wdw->setSpeed(0,0);
+  wdw->moveWheels(countsToOneMeter,countsToOneMeter);
   wdw->setSpeed(speed,speed);
-  sleep(2);
-  while( fabs( initialLeftEncoderValue - lastLeftEncoderValue ) < countsToOneMeter
-          || fabs( initialRightEncoderValue - lastRightEncoderValue ) < countsToOneMeter ){
-    dwrobot->step(32);
-  lastLeftEncoderValue = wdw->getLeftEncoder();
-  lastRightEncoderValue = wdw->getRightEncoder();
-    printf("----%g------------%g--------\n",lastLeftEncoderValue,lastRightEncoderValue);
-  }
+  
+  printf("----%g------------%g--------\n",wdw->getLeftEncoder(),wdw->getRightEncoder());
+  
+  sleep(5);
   wdw->setSpeed(0,0);
   dwrobot->step(32);
   printf("One Meter done\n");
