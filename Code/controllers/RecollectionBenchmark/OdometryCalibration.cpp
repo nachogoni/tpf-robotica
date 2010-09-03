@@ -228,26 +228,13 @@ void turnLeft(double qspeed){
   double lastLeftEncoderValue = initialLeftEncoderValue;
   double lastRightEncoderValue = initialRightEncoderValue;
   sleep(1);
+  wdw->setSpeed(0,0);
+  wdw->moveWheels(countsToTurn,countsToTurn);
   wdw->setSpeed(-speed,speed);
-  sleep(2);
-  while( fabs( initialLeftEncoderValue - lastLeftEncoderValue ) < countsToTurn
-          || fabs( initialRightEncoderValue - lastRightEncoderValue ) < countsToTurn ){
-    dwrobot->step(32);
-  double aux = wdw->getLeftEncoder();
-	while( aux == lastLeftEncoderValue ){
-		usleep(1000);
-  		aux = wdw->getLeftEncoder();
-	}
-  lastLeftEncoderValue = aux;
-	
-  aux = wdw->getRightEncoder();
-	while( aux == lastRightEncoderValue ){
-		usleep(1000);
-  		aux = wdw->getRightEncoder();
-	}
-  lastRightEncoderValue = aux;
-    printf("----%g------------%g--------\n",lastLeftEncoderValue,lastRightEncoderValue);
-  }
+  
+  printf("----%g------------%g--------\n",wdw->getLeftEncoder(),wdw->getRightEncoder());
+  
+  sleep(5);
   wdw->setSpeed(0,0);
   dwrobot->step(32);
   printf("Left turn done\n");
