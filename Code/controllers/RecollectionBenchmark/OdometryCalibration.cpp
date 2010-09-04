@@ -113,21 +113,14 @@ void doClockWise(double speed, int cant){
 void doCounterClockWise(double speed, int cant){
   for ( int i = 0 ; i < cant ; i++ ){
     turnLeft(speed);
-	wdw->disableEncoders();
     doOneMeter(speed);
-wdw->disableEncoders();
     turnLeft(speed);
-wdw->disableEncoders();
     doOneMeter(speed);
-wdw->disableEncoders();
     turnLeft(speed);
-wdw->disableEncoders();
     doOneMeter(speed);
-wdw->disableEncoders();
     turnLeft(speed);
-wdw->disableEncoders();
 	doOneMeter(speed);
-wdw->disableEncoders();
+
 	printf("Completed %d times\n",i+1);
   }
 }
@@ -211,9 +204,14 @@ void doOneMeter(double qspeed){
   wdw->moveWheels(countsToOneMeter,countsToOneMeter);
   wdw->setSpeed(speed,speed);
   
+  //sleep(5);
+	int i = 0;
+	while ( i++ < 100 )
+  		dwrobot->step(32);
+
   printf("----%g------------%g--------\n",wdw->getLeftEncoder(),wdw->getRightEncoder());
+  printf("Position After One Meter: %g %g %g\n",wdw->getPosition()->getX(),wdw->getPosition()->getY(),wdw->getOrientation());
   
-  sleep(5);
   wdw->setSpeed(0,0);
   dwrobot->step(32);
   printf("One Meter done\n");
@@ -230,9 +228,15 @@ void turnLeft(double qspeed){
   wdw->moveWheels(countsToTurn,countsToTurn);
   wdw->setSpeed(-speed,speed);
   
+
+//  sleep(5);
+	int i = 0;
+	while ( i++ < 100 )
+  		dwrobot->step(32);
+	
   printf("----%g------------%g--------\n",wdw->getLeftEncoder(),wdw->getRightEncoder());
+  printf("Position After Turn: %g %g %g\n",wdw->getPosition()->getX(),wdw->getPosition()->getY(),wdw->getOrientation());
   
-  sleep(5);
   wdw->setSpeed(0,0);
   dwrobot->step(32);
   printf("Left turn done\n");

@@ -179,7 +179,7 @@ ITrashBin & RealRobot::getTrashBin(std::string name){
 }
 
 void RealRobot::step(int ms){
-	usleep(10000);
+	usleep(50000);
 	//sleep(1);
 	// Use differential wheels
 	if ( df != NULL )
