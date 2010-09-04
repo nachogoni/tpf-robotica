@@ -2,8 +2,8 @@
 #include <iostream>
 
 #include <robotapi/real/RealRobot.h>
+#include <behaviours/BehavioursParameters.h>
 #include <utilsVision/GarbageRecognition.h>
-#include <GarbageCleaner.h>
 #include <WorldInfo.h>
 #include <cv.h>
 #include <highgui.h>
@@ -17,8 +17,8 @@ using namespace std;
 
 robotapi::real::RealRobot * dwrobot;
 robotapi::IDifferentialWheels * wdw;
-robotapi::ICamera * camera;
-utils::IGarbageRecognition * gr;
+robotapi::ICamera * realcamera;
+utils::IGarbageRecognition * igr;
 WorldInfo * wi;
 
 void turnLeft(double qspeed);
@@ -39,10 +39,10 @@ int main(int argc, char *argv[])
 	wdw->enableEncoders(32);
 
 
-	camera = &(dwrobot->getCamera("camera0"));
-	camera->enable(TIME_STEP);
-	gr = new utils::GarbageRecognition(wi);
-	gr->setCamera(*camera);
+	realcamera = &(dwrobot->getCamera("camera0"));
+	realcamera->enable(32);
+	igr = new utils::GarbageRecognition(wi);
+	igr->setCamera(*realcamera);
 
 	while(1){
 		//do whatever you want with gr, dwrobot and wdw...
