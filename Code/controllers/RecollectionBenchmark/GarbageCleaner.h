@@ -11,7 +11,7 @@
 #include <WorldInfo.h>
 #include <IGarbageCleaner.h>
 
-#define FOCUS_GOTO_COLLECT_DISPOSE_GARBAGE 1
+//#define FOCUS_GOTO_COLLECT_DISPOSE_GARBAGE 1
 #define GO_TO_RECHARGE 1
 
 #define DISTANCE_SENSORS 8

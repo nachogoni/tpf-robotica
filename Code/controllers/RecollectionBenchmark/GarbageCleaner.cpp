@@ -89,11 +89,14 @@ void GarbageCleaner::initializeSensors(){
 	servoBottom = &myIRobot.getServo("servo0");
 	servoBottom->enablePosition(TIME_STEP);
  */
-	servoFront = &myIRobot.getServo("servo2");
-	servoFront->enablePosition(TIME_STEP);
 //	servoFront->setForce(90);
 //	servoFront->setMotorForce(90);
 //	servoFront->setVelocity(4);
+
+
+	#ifdef FOCUS_GOTO_COLLECT_DISPOSE_GARBAGE
+	servoFront = &myIRobot.getServo("servo2");
+	servoFront->enablePosition(TIME_STEP);
 	servoRear = &myIRobot.getServo("servo1");
 	servoRear->enablePosition(TIME_STEP);
 
@@ -102,7 +105,7 @@ void GarbageCleaner::initializeSensors(){
 
 	trashBin = &myIRobot.getTrashBin("ts0");
 	trashBin->enable(TIME_STEP);
-
+	#endif
 	robotBattery = &myIRobot.getBattery("b0");
 	robotBattery->enable(TIME_STEP);
 	

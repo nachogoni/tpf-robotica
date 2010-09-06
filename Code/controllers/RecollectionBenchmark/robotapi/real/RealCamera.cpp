@@ -22,6 +22,9 @@ void RealCamera::disable(){
 IImage & RealCamera::getImage(){
 	if(iim==NULL)
 		iim = new RealImage(cvQueryFrame(capture));
+	else
+		cvQueryFrame(capture);
+		
 	return *iim;
 }
 

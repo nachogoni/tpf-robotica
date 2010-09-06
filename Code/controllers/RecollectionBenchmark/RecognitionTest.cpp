@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
 	dwrobot = new robotapi::real::RealRobot(wi);
 
-	wdw = &(dwrobot->getDifferentialWheels("dw0"));
+	wdw = &(dwrobot->getDifferentialWheels("df"));
 	wdw->enableEncoders(32);
 
 
@@ -43,11 +43,13 @@ int main(int argc, char *argv[])
 	realcamera->enable(32);
 	igr = new utils::GarbageRecognition(wi);
 	igr->setCamera(*realcamera);
-
+	wdw->setSpeed(0,0);
+	
 	while(1){
 		//do whatever you want with gr, dwrobot and wdw...
-		wdw->setSpeed(0,0);
-		dwrobot->step(32);
+		//~ dwrobot->step(32);
+		igr->getGarbageList();
+		
 	}
 
 	return EXIT_SUCCESS;

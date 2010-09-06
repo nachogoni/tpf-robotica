@@ -46,6 +46,7 @@ namespace behaviours {
 				speed[i] += braitenberg_coefficients[j][i] * (*this->dss).at(j)->getValue();
 			}
 		}
+		printf("SETTING SPEEDS : %g - %g\n",speed[0]*behaviours::BehavioursParameters::getParameter(SPEED_FACTOR),speed[1]*behaviours::BehavioursParameters::getParameter(SPEED_FACTOR));
 		wheels->setSpeed(speed[0]*behaviours::BehavioursParameters::getParameter(SPEED_FACTOR),speed[1]*behaviours::BehavioursParameters::getParameter(SPEED_FACTOR));
 	}
 
