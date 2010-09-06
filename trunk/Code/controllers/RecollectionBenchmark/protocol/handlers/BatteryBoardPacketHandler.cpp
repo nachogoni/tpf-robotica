@@ -82,21 +82,21 @@ void BatteryBoardPacketHandler::handlePacket(Packet * p){
 	}
 }
 
-void BatteryBoardPacketHandler::enable(){
+void BatteryBoardPacketHandler::enable(int id){
  	packets::BatteryPacket * p = new packets::BatteryPacket(groupid,boardid);
 	p->enable();
 	p->prepareToSend();
 	this->ps->sendPacket(p);
 }
 
-void BatteryBoardPacketHandler::disable(){
+void BatteryBoardPacketHandler::disable(int id){
  	packets::BatteryPacket * p = new packets::BatteryPacket(groupid,boardid);
 	p->disable();
 	p->prepareToSend();
 	this->ps->sendPacket(p);
 }
 
-double BatteryBoardPacketHandler::getValue(){
+double BatteryBoardPacketHandler::getValue(int id){
  	packets::BatteryPacket * p = new packets::BatteryPacket(groupid,boardid);
 	p->senseBattery();
 	p->prepareToSend();
@@ -115,7 +115,7 @@ double BatteryBoardPacketHandler::getValue(){
 	return value;
 }
 
-bool BatteryBoardPacketHandler::isFull(){
+bool BatteryBoardPacketHandler::isFull(int id){
 	// Lock mutex
 	#ifdef LINUX
 	this->fullMutex->enterMutex();
@@ -130,7 +130,7 @@ bool BatteryBoardPacketHandler::isFull(){
 	return full;
 }
 
-void BatteryBoardPacketHandler::setEmptyBias(double bias){
+void BatteryBoardPacketHandler::setEmptyBias(int id, double bias){
 	packets::BatteryPacket * p = new packets::BatteryPacket(groupid,boardid);
 	// TODO convert from double to char
 	p->setBatteryEmptyThreshold((char)bias);
@@ -138,7 +138,7 @@ void BatteryBoardPacketHandler::setEmptyBias(double bias){
 	this->ps->sendPacket(p);
 }
 
-bool BatteryBoardPacketHandler::isEmpty(){
+bool BatteryBoardPacketHandler::isEmpty(int id){
 	// Lock mutex
 	#ifdef LINUX
 	// TODO Change "LINUX" Appareances in all documents for __linux__
@@ -154,7 +154,7 @@ bool BatteryBoardPacketHandler::isEmpty(){
 	return empty;
 }
 
-void BatteryBoardPacketHandler::setFullBias(double bias){
+void BatteryBoardPacketHandler::setFullBias(int id, double bias){
 	packets::BatteryPacket * p = new packets::BatteryPacket(groupid,boardid);
 	// TODO convert from double to char
 	p->setBatteryFullThreshold(bias);

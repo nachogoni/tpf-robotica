@@ -137,7 +137,7 @@ GarbageRecognition::getGarbageList()
 		
 		//~ cvReleaseImage(&model);
 		this->frameNumber++;
-	cvReleaseImage(&src);
+	//cvReleaseImage(&src);
 	//return garbages;
 	return garbagePrediction;
 }
@@ -161,7 +161,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	//images for HSV conversion
 	IplImage* hsv = cvCreateImage( srcSize, 8, 3 );
 	IplImage* h_plane = cvCreateImage( srcSize, 8, 1 );
-	IplImage* h_plane2 = cvCreateImage( srcSize, 8, 1 );
+	IplImage* h_plane2;// = cvCreateImage( srcSize, 8, 1 );
 	IplImage* h_planeV ;//= cvCreateImage( srcSize, 8, 1 );
 	IplImage* s_plane = cvCreateImage( srcSize, 8, 1 );
 	IplImage* v_plane = cvCreateImage( srcSize, 8, 1 );
@@ -179,10 +179,9 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	
 	//image for contour-finding operations
 	IplImage * contourImage=cvCreateImage(srcSize,8,3);
-	
+	IplImage * contourImageVasos;
 	clock_t  create=clock();
-	printf("Time elapsed create Image: %f\n", ((double)create - start) / CLOCKS_PER_SEC);
-	int frameCounter=1;
+	//~ ("Time elapsed create Image: %f\n", ((double)create - start) / CLOCKS_PER_SEC);
 	int cont_index=0;
 
 	//convolution kernel for morph operations
@@ -201,25 +200,25 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	//convert image to hsv
 	cvCvtColor( src, hsv, CV_BGR2HSV );
 	clock_t  conv=clock();
-	printf("Time elapsed create Image- convert image: %f\n", ((double)conv - create) / CLOCKS_PER_SEC);
+	//~ printf("Time elapsed create Image- convert image: %f\n", ((double)conv - create) / CLOCKS_PER_SEC);
 	
 	cvCvtPixToPlane( hsv, h_plane, s_plane, v_plane, 0 );
 	h_planeV=cvCloneImage(h_plane);
 	h_plane2=cvCloneImage(h_plane);
 	
 	CvScalar vasosL1 = cvScalar (0, 0, 170);
-	CvScalar vasosU1 = cvScalar (20, 255, 255);
+	CvScalar vasosU1 = cvScalar (20, 255, 300);
 	CvScalar vasosL = cvScalar (40, 0, 170);
-	CvScalar vasosU = cvScalar (255, 255, 255);
+	CvScalar vasosU = cvScalar (255, 255, 300);
 	CvScalar colillasL = cvScalar (20, 60, 0);
-	CvScalar colillasU = cvScalar (40, 255,255);
+	CvScalar colillasU = cvScalar (40, 255,300);
 
 	clock_t  inrange=clock();
 	//~ cvInRangeSalt( hsv,vasosL,vasosU, vasosL1, vasosU1,h_plane );
 	cvInRangeS( hsv, vasosL1, vasosU1, h_plane );
 	cvInRangeS( hsv, vasosL, vasosU, h_plane2 );
 	cvOr(h_plane,h_plane2,h_plane);
-	printf("inRange  %f\n", ((double)clock() - inrange) / CLOCKS_PER_SEC);
+	//~ printf("inRange  %f\n", ((double)clock() - inrange) / CLOCKS_PER_SEC);
 
 	cvInRangeS( hsv, colillasL,colillasU,h_planeV);
 	cvShowImage("inrange vasos",h_plane);
@@ -245,7 +244,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	//~ }
 	
 	clock_t  color=clock();
-	printf("Time elapsed create Image - color filter: %f\n", ((double)color - conv) / CLOCKS_PER_SEC);
+	//~ printf("Time elapsed create Image - color filter: %f\n", ((double)color - conv) / CLOCKS_PER_SEC);
 	
 	//--first pipeline
 	//apply morphologic operations
@@ -259,7 +258,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	cvThreshold(morphImage,threshImage,100,255,CV_THRESH_BINARY);
 	
 	clock_t  pipe1=clock();
-	printf("Time elapsed color filter - first pipeline: %f\n", ((double)pipe1 - color) / CLOCKS_PER_SEC);
+	//~ printf("Time elapsed color filter - first pipeline: %f\n", ((double)pipe1 - color) / CLOCKS_PER_SEC);
 	
 	//-- end first pipeline
 	//-- start 2nd pipeline-----
@@ -274,7 +273,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 
     //--end second pipeline--
     clock_t  pipe2=clock();
-	printf("Time elapsed first pipeline - second pipeline: %f\n", ((double)pipe2 - pipe1) / CLOCKS_PER_SEC);
+	//~ printf("Time elapsed first pipeline - second pipeline: %f\n", ((double)pipe2 - pipe1) / CLOCKS_PER_SEC);
 	//get all contours
 	contours=myFindContours(threshImage);
 	contoursCopy=contours;
@@ -283,7 +282,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	
 	//image to write contours on
 	cvCopy(src,contourImage,0);
-	
+	contourImageVasos= cvCloneImage(src);
 	
 	//contours for dishes and glasses
 	while(contours!=NULL){
@@ -297,7 +296,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 			ct = new Contours(aContour,this->window->window);
 		
 		//apply filters for vasos
-
+		
 		if( ct->perimeterFilter(100,10000) && 
 			ct->areaFilter(1000,100000) &&
 			ct->vasoFilter()
@@ -312,7 +311,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 				
 				//if passed filters
 				ct->printContour(3,cvScalar(127,127,0,0),
-					contourImage);
+					contourImageVasos);
 								
 				centroid=ct->getCentroid();
 				
@@ -331,7 +330,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 			}else if( ct->perimeterFilter(100,10000) && 
 			ct->areaFilter(1000,100000) &&
 			ct->platoFilter()
-			){	
+			&&1){	
 				//get contour bounding box
 				boundingRect=cvBoundingRect(ct->getContour(),0);
 				cvRectangle(contourImage,cvPoint(boundingRect.x,boundingRect.y),
@@ -360,12 +359,13 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 			}
 
 		//delete ct;
+		//~ cvShowImage("drawContours2",contourImage);
 		cvReleaseMemStorage( &aContour->storage );
 		contours=contours->h_next;
 		cont_index++;
 	}
 	clock_t  vasoyplato=clock();
-	printf("Time elapsed first pipe2 - vasos y platos: %f\n", ((double)vasoyplato - pipe2) / CLOCKS_PER_SEC);
+	//~ printf("Time elapsed first pipe2 - vasos y platos: %f\n", ((double)vasoyplato - pipe2) / CLOCKS_PER_SEC);
 	
 		//2nd pipeline
 		//release temp images and data
@@ -395,7 +395,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 			//ct->rectangularAspectFilter(CONTOUR_RECTANGULAR_MIN_RATIO, CONTOUR_RECTANGULAR_MAX_RATIO) && 
 			ct->boxAreaFilter(BOXFILTER_TOLERANCE) && 	
 			//ct->histogramMatchingFilter(src,testImageHistogram, HIST_H_BINS,HIST_S_BINS,HIST_MIN)&&
-			1){	
+			0){	
 				//get contour bounding box
 				boundingRect=cvBoundingRect(ct->getContour(),0);
 				cvRectangle(contourImage,cvPoint(boundingRect.x,boundingRect.y),
@@ -428,11 +428,12 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 		cont_index++;
 	}
 	clock_t  colillas=clock();
-	printf("Time elapsed vasosyplatos - colillas: %f\n", ((double)colillas - vasoyplato) / CLOCKS_PER_SEC);
+	//~ printf("Time elapsed vasosyplatos - colillas: %f\n", ((double)colillas - vasoyplato) / CLOCKS_PER_SEC);
 
 	//display found contours
-    //~ cvShowImage("drawContours",contourImage);
-	
+    cvShowImage("drawContours",contourImage);
+    cvShowImage("vasos",contourImageVasos);
+	cvWaitKey(1000/8);
 	
 	//release temp images and data
 	if(contoursCopy!=NULL)
@@ -445,8 +446,10 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	cvReleaseImage(&morphImage);
 	cvReleaseImage(&morphImageV);
 	cvReleaseImage(&contourImage);
+	cvReleaseImage(&contourImageVasos);
 	cvReleaseImage(&hsv);
 	cvReleaseImage(&h_plane);
+	cvReleaseImage(&h_plane2);
 	cvReleaseImage(&h_planeV);
 	cvReleaseImage(&s_plane);
 	cvReleaseImage(&v_plane);
@@ -454,7 +457,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	cvReleaseImage(&andImage);
 	
 	clock_t  total=clock();
-	printf("total: %f\n", ((double)total - start) / CLOCKS_PER_SEC);
+	//~ printf("total: %f\n", ((double)total - start) / CLOCKS_PER_SEC);
 	
 	return garbageList;
 }

@@ -24,19 +24,19 @@ class BatteryBoardPacketHandler : public protocol::BoardPacketHandler
 		
 		void handlePacket(Packet * p);
 
-		void enable();
+		void enable(int id);
 
-		void disable();
+		void disable(int id);
 
-		double getValue();
+		double getValue(int id);
 
-		bool isFull();
+		bool isFull(int id);
 
-		void setEmptyBias(double bias);
+		void setEmptyBias(int id, double bias);
 
-		bool isEmpty();
+		bool isEmpty(int id);
 
-		void setFullBias(double bias);
+		void setFullBias(int id, double bias);
 		
 	private:
 		char groupid;

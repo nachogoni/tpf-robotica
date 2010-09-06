@@ -11,7 +11,7 @@ namespace real {
 class RealBattery : public robotapi::IBattery , public robotapi::real::RealDevice {
 
 	public:
-		RealBattery(protocol::handlers::BatteryBoardPacketHandler * bbph,std::string name);
+		RealBattery(protocol::handlers::BatteryBoardPacketHandler * bbph,std::string name, int sensorNumber);
 
 		void enable(int ms);
 
@@ -29,7 +29,7 @@ class RealBattery : public robotapi::IBattery , public robotapi::real::RealDevic
 
 	private:
 		protocol::handlers::BatteryBoardPacketHandler * bbph;
-
+		int id;
 	};
 
 } /* End of namespace robotapi::real */

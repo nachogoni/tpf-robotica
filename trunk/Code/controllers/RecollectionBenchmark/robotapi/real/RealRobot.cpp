@@ -21,8 +21,11 @@
 #define SERVO_THREE_ID 0x02
 
 #define DISTANCE_SENSOR_GROUP 0x03
+
 #define DISTANCE_SENSOR_BOARD_ZERO 0x00
+#define DISTANCE_SENSOR_BOARD_ONE 0x01
 #define DISTANCE_SENSOR_BOARD_TWO 0x02
+
 #define DISTANCE_SENSOR_ZERO_ID 0x00
 #define DISTANCE_SENSOR_ONE_ID 0x01
 #define DISTANCE_SENSOR_TWO_ID 0x02
@@ -32,10 +35,17 @@
 #define DISTANCE_SENSOR_SIX_ID 0x01
 #define DISTANCE_SENSOR_SEVEN_ID 0x00
 
+#define FLOOR_SENSOR_ZERO_ID 0x00
+#define FLOOR_SENSOR_ONE_ID 0x01
+#define FLOOR_SENSOR_TWO_ID 0x02
 
+#define ULTRASONIC_SENSOR_ID 0x05
 
-#define BATTERY_GROUP 0x06
-#define BATTERY_BOARD 0x00
+#define CAMERA_ID 1
+
+#define BATTERY_GROUP DISTANCE_SENSOR_GROUP
+#define BATTERY_BOARD DISTANCE_SENSOR_BOARD_ONE
+#define BATTERY_ID 0x04
 
 #define TRASHBIN_GROUP 0x07
 #define TRASHBIN_BOARD 0x00
@@ -50,11 +60,11 @@ RealRobot::RealRobot(WorldInfo * wi){
 	this->wi = wi;
 	this->initWheels(ps);
 /*
-	this->initBatteries(ps);
 	this->initServos(ps);
 	this->initTrashBins(ps);
-	this->initDistanceSensors(ps);
 */
+	this->initBatteries(ps);
+	this->initDistanceSensors(ps);
 	this->initCameras();
 
 }
@@ -62,7 +72,7 @@ RealRobot::RealRobot(WorldInfo * wi){
 void RealRobot::initWheels(protocol::PacketServer * ps){
 	protocol::handlers::DCMotorBoardPacketHandler * dcmbphleft = new protocol::handlers::DCMotorBoardPacketHandler(ps,DC_GROUP,DC_LEFT_ID);
 	protocol::handlers::DCMotorBoardPacketHandler * dcmbphright = new protocol::handlers::DCMotorBoardPacketHandler(ps,DC_GROUP,DC_RIGHT_ID);
-   	RealDifferentialWheels * rdw = new RealDifferentialWheels(this->wi,dcmbphleft,dcmbphright,*new std::string("dw0"));
+   	RealDifferentialWheels * rdw = new RealDifferentialWheels(this->wi,dcmbphleft,dcmbphright,*new std::string("df"));
 
 	this->wheels.insert( std::pair<std::string, IDifferentialWheels *>(rdw->getName(),rdw) );
 	ps->registerHandler(dcmbphleft,DC_GROUP,DC_LEFT_ID);
@@ -71,29 +81,36 @@ void RealRobot::initWheels(protocol::PacketServer * ps){
 
 void RealRobot::initBatteries(protocol::PacketServer * ps){
 	protocol::handlers::BatteryBoardPacketHandler * bbph = new protocol::handlers::BatteryBoardPacketHandler(ps,BATTERY_GROUP,BATTERY_BOARD);
-   	RealBattery * rb = new RealBattery(bbph,"b0");
+   	RealBattery * rb = new RealBattery(bbph,*new std::string("b0"),BATTERY_ID);
 	this->batteries.insert( std::pair<std::string, IBattery *>(rb->getName(),rb) );
+	// TODO There are two handlers for the same group and board
 	ps->registerHandler(bbph,BATTERY_GROUP,BATTERY_BOARD);
 	
-	IBattery * b = new RealPCBattery("b1");
+	IBattery * b = new RealPCBattery(*new std::string("b1"));
 	this->batteries.insert( std::pair<std::string, IBattery *>(b->getName(),b) );
 }
 
 void RealRobot::initDistanceSensors(protocol::PacketServer * ps){
 	protocol::handlers::DistanceSensorBoardPacketHandler * dsbph = new protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCE_SENSOR_GROUP,DISTANCE_SENSOR_BOARD_TWO);
-	this->initDistanceSensor(ps, dsbph, "ds0", DISTANCE_SENSOR_ZERO_ID);
-	this->initDistanceSensor(ps, dsbph, "ds1", DISTANCE_SENSOR_ONE_ID);
-	this->initDistanceSensor(ps, dsbph, "ds2", DISTANCE_SENSOR_TWO_ID);
-	this->initDistanceSensor(ps, dsbph, "ds3", DISTANCE_SENSOR_THREE_ID);
+	this->initDistanceSensor(ps, dsbph,*new std::string("ps0"), DISTANCE_SENSOR_ZERO_ID);
+	this->initDistanceSensor(ps, dsbph,*new std::string("ps1"), DISTANCE_SENSOR_ONE_ID);
+	this->initDistanceSensor(ps, dsbph,*new std::string("ps2"), DISTANCE_SENSOR_TWO_ID);
+	this->initDistanceSensor(ps, dsbph,*new std::string("ps3"), DISTANCE_SENSOR_THREE_ID);
 	ps->registerHandler(dsbph,DISTANCE_SENSOR_GROUP,DISTANCE_SENSOR_BOARD_TWO);
 	
 	dsbph = new protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCE_SENSOR_GROUP,DISTANCE_SENSOR_BOARD_ZERO);
-	this->initDistanceSensor(ps, dsbph, "ds4", DISTANCE_SENSOR_FOUR_ID);
-	this->initDistanceSensor(ps, dsbph, "ds5", DISTANCE_SENSOR_FIVE_ID);
-	this->initDistanceSensor(ps, dsbph, "ds6", DISTANCE_SENSOR_SIX_ID);
-	this->initDistanceSensor(ps, dsbph, "ds7", DISTANCE_SENSOR_SEVEN_ID);
-	// IF THERE ARE MORE THAN 10, CREATE ANOTHER BOARDHANDLER WITH SAME GROUP AND ANOTHER BOARDID
+	this->initDistanceSensor(ps, dsbph,*new std::string("ps4"), DISTANCE_SENSOR_FOUR_ID);
+	this->initDistanceSensor(ps, dsbph,*new std::string("ps5"), DISTANCE_SENSOR_FIVE_ID);
+	this->initDistanceSensor(ps, dsbph,*new std::string("ps6"), DISTANCE_SENSOR_SIX_ID);
+	this->initDistanceSensor(ps, dsbph,*new std::string("ps7"), DISTANCE_SENSOR_SEVEN_ID);
 	ps->registerHandler(dsbph,DISTANCE_SENSOR_GROUP,DISTANCE_SENSOR_BOARD_ZERO);
+	
+	dsbph = new protocol::handlers::DistanceSensorBoardPacketHandler(ps,DISTANCE_SENSOR_GROUP,DISTANCE_SENSOR_BOARD_ONE);
+	this->initDistanceSensor(ps, dsbph,*new std::string("fs0"), FLOOR_SENSOR_ZERO_ID);
+	this->initDistanceSensor(ps, dsbph,*new std::string("fs1"), FLOOR_SENSOR_ONE_ID);
+	this->initDistanceSensor(ps, dsbph,*new std::string("fs2"), FLOOR_SENSOR_TWO_ID);
+	this->initDistanceSensor(ps, dsbph,*new std::string("us0"), ULTRASONIC_SENSOR_ID);
+	ps->registerHandler(dsbph,DISTANCE_SENSOR_GROUP,DISTANCE_SENSOR_BOARD_ONE);
 }
 
 void RealRobot::initDistanceSensor(protocol::PacketServer * ps, protocol::handlers::DistanceSensorBoardPacketHandler * dsbph, std::string name, int id){
@@ -102,7 +119,7 @@ void RealRobot::initDistanceSensor(protocol::PacketServer * ps, protocol::handle
 }
 
 void RealRobot::initCameras(){
-	RealCamera * c = new RealCamera(-1,"camera0");
+	RealCamera * c = new RealCamera(CAMERA_ID,*new std::string("camera0"));
 	this->cameras.insert( std::pair<std::string, ICamera *>(c->getName(),c) );
 }
 

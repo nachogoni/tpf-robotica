@@ -16,7 +16,7 @@
 #define countsToTurn (150.86672)
 //#define countsToOneMeter ((7762.66 + 7763.86) / 2)
 
-#define countsToOneMeter (1.5*598)
+#define countsToOneMeter (1*598)
 using namespace std;
 
 robotapi::real::RealRobot * dwrobot;
@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 
 	dwrobot = new robotapi::real::RealRobot(wi);
 
-  wdw = &(dwrobot->getDifferentialWheels("dw0"));
+  wdw = &(dwrobot->getDifferentialWheels("df"));
   wdw->enableEncoders(32);
 
 /*
@@ -68,7 +68,8 @@ int main(int argc, char *argv[])
   double ycw = wdw->getPosition()->getY();
   double acw = wdw->getOrientation();
   printf("Position Before CWW: %g %g %g\n",xcw,ycw,acw);
-  doCounterClockWise(0,4);
+  doClockWise(0,4);
+  //doCounterClockWise(0,4);
   printf("Position After CCW : %g %g %g\n",wdw->getPosition()->getX(),wdw->getPosition()->getY(),wdw->getOrientation());
 
 	
@@ -112,7 +113,6 @@ void doClockWise(double speed, int cant){
 
 void doCounterClockWise(double speed, int cant){
   for ( int i = 0 ; i < cant ; i++ ){
-    turnLeft(speed);
     doOneMeter(speed);
     turnLeft(speed);
     doOneMeter(speed);
@@ -120,6 +120,7 @@ void doCounterClockWise(double speed, int cant){
     doOneMeter(speed);
     turnLeft(speed);
 	doOneMeter(speed);
+    turnLeft(speed);
 
 	printf("Completed %d times\n",i+1);
   }
@@ -216,7 +217,30 @@ void doOneMeter(double qspeed){
   dwrobot->step(32);
   printf("One Meter done\n");
 }
+void turnRight(double qspeed){
+	double speed = TURN_SPD;
+  double initialLeftEncoderValue = wdw->getLeftEncoder();
+  double initialRightEncoderValue = wdw->getRightEncoder();
+  double lastLeftEncoderValue = initialLeftEncoderValue;
+  double lastRightEncoderValue = initialRightEncoderValue;
+  sleep(1);
+  wdw->setSpeed(0,0);
+  wdw->moveWheels(countsToTurn,countsToTurn);
+  wdw->setSpeed(speed,-speed);
+  
 
+//  sleep(5);
+	int i = 0;
+	while ( i++ < 100 )
+  		dwrobot->step(32);
+	
+  printf("----%g------------%g--------\n",wdw->getLeftEncoder(),wdw->getRightEncoder());
+  printf("Position After Turn: %g %g %g\n",wdw->getPosition()->getX(),wdw->getPosition()->getY(),wdw->getOrientation());
+  
+  wdw->setSpeed(0,0);
+  dwrobot->step(32);
+  printf("right turn done\n");
+}
 void turnLeft(double qspeed){
 	double speed = TURN_SPD;
   double initialLeftEncoderValue = wdw->getLeftEncoder();
@@ -242,6 +266,7 @@ void turnLeft(double qspeed){
   printf("Left turn done\n");
 }
 
+/*
 void turnRight(double qspeed){
 	double speed = TURN_SPD;
   double initialLeftEncoderValue = wdw->getLeftEncoder();
@@ -273,4 +298,4 @@ void turnRight(double qspeed){
   dwrobot->step(32);
   printf("Right turn done\n");
 }
-
+*/

@@ -55,7 +55,7 @@ getPolygon(CvSeq * aContour)
 
 
 /*Test function to traverse all edges ina given polygon
- */
+ 
 void 
 traversePoints(CvSeq * contour,IplImage * img){
 		CvSeq * points=contour;
@@ -82,7 +82,7 @@ traversePoints(CvSeq * contour,IplImage * img){
 		cvShowImage("lines",img);
 		
 }
-
+*/
 
 namespace utils{
 
@@ -105,6 +105,9 @@ Contours::Contours(CvSeq * contour,CvRect window){
 	CvPoint * p=CV_GET_SEQ_ELEM(CvPoint ,contour,0);
 	this->x=p->x + window.x;
 	this->y=p->y + window.y;
+	this->per=-1;
+	this->area=-1;
+
 }
 
 
@@ -390,14 +393,19 @@ int Contours::vasoFilter(){
 	free(longestEdge);
 	free(sndLongestEdge);
 	
+	//~ printf(" vaso l2/l1 \n");
 	
 	//length of the two longest edges should be similar
 	if(l2/l1 < VASO_LONGEST_EDGE_SIMILARITY)
 		return false;
 	
+	//~ printf("eccentricity \n");
+	
 	double ecc=this->getCircularity();
 	if(ecc<14 || ecc >18)
 		return false;
+	
+	//~ printf("encontro vaso \n");
 	
 	return true;
 }
