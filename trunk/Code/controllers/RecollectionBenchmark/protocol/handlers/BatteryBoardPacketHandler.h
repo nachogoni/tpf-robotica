@@ -28,7 +28,7 @@ class BatteryBoardPacketHandler : public protocol::BoardPacketHandler
 
 		void disable(int id);
 
-		double getValue(int id);
+		double getBatteryValue(int id, bool refresh=false);
 
 		bool isFull(int id);
 

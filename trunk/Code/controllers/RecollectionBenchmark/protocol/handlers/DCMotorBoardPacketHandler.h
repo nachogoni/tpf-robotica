@@ -33,7 +33,7 @@ class DCMotorBoardPacketHandler : public protocol::BoardPacketHandler
 
 		void setEncoder(double value);
 
-		double getEncoder();
+		double getEncoder(bool refresh=false);
 
 		void moveWheel(double value);
 

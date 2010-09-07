@@ -110,7 +110,10 @@ void DistanceSensorBoardPacketHandler::disable(int dsId){
 	this->ps->sendPacket(p);
 }
 
-int DistanceSensorBoardPacketHandler::getValue(int dsId){
+int DistanceSensorBoardPacketHandler::getValue(int dsId,bool refresh){
+	if(!refresh)
+		return this->dsValue[dsId];
+	
 	// TODO Put timestamps to prevent flooding
    	packets::DistanceSensorPacket * p = new packets::DistanceSensorPacket(groupid,boardid);
 	p->getValue((char)0x0000003F);
