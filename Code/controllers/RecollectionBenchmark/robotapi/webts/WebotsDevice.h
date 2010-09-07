@@ -19,6 +19,8 @@ class WebotsDevice : virtual public robotapi::IDevice {
         std::string getName();
 
         IWbDeviceTag &getTag();
+        
+        void refresh();
 
 	private:
 

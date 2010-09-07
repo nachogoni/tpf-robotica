@@ -95,5 +95,12 @@ bool RealDifferentialWheels::motorIsOff(bool left){
 	return this->rightBoard->motorIsOff();
 }
 
+void RealDifferentialWheels::refresh(){
+	
+	this->leftBoard->getEncoder();
+	this->rightBoard->getEncoder();
+	
+}
+
 } /* End of namespace robotapi::real */
 } /* End of namespace robotapi */

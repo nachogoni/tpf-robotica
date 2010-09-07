@@ -21,6 +21,8 @@ class RealDistanceSensor : public robotapi::IDistanceSensor , public robotapi::r
 		int getValue();
 
 		double getDistance();
+		
+		void refresh();
 
 	private:
 		protocol::handlers::DistanceSensorBoardPacketHandler * boardHandler;

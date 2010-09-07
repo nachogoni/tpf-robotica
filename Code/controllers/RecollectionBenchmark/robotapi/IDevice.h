@@ -14,6 +14,8 @@ class IDevice {
     virtual std::string getName() = 0;
 
     virtual IWbDeviceTag &getTag() = 0;
+    
+    virtual void refresh() = 0;
 
     // virtual destructor for interface
     virtual ~IDevice() { }

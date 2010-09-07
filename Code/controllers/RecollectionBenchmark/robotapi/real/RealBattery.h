@@ -26,6 +26,8 @@ class RealBattery : public robotapi::IBattery , public robotapi::real::RealDevic
 		bool isEmpty();
 
 		void setFullBias(double bias);
+		
+		void refresh();
 
 	private:
 		protocol::handlers::BatteryBoardPacketHandler * bbph;

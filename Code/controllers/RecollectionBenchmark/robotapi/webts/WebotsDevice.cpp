@@ -31,6 +31,10 @@ namespace webts {
     IWbDeviceTag & WebotsDevice::getTag(){
 		return dtag;
 	}
+	
+	void WebotsDevice::refresh(){
+		return ;
+	}
 
 } /* End of namespace robotapi::webts */
 } /* End of namespace robotapi */
