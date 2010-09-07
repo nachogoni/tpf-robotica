@@ -32,5 +32,10 @@ double RealDistanceSensor::getDistance(){
 	return 0.0;
 }
 
+void RealDistanceSensor::refresh(){
+	this->boardHandler->getValue(this->id);
+}
+
+
 } /* End of namespace robotapi::real */
 } /* End of namespace robotapi */

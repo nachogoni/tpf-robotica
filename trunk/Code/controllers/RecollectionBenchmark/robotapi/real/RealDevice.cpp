@@ -20,5 +20,9 @@ IWbDeviceTag & RealDevice::getTag(){
 	return *this->dtag;
 }
 
+void RealDevice::refresh(){
+	return;
+}
+
 } /* End of namespace robotapi::real */
 } /* End of namespace robotapi */

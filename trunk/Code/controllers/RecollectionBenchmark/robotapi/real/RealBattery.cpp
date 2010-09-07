@@ -38,6 +38,10 @@ namespace real {
 	void RealBattery::setFullBias(double bias){
 		this->bbph->setFullBias(this->id, bias);
 	}
+	
+	void RealBattery::refresh(){
+		this->bbph->getValue(this->id);
+	}
 
 } /* End of namespace robotapi::real */
 } /* End of namespace robotapi */

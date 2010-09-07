@@ -54,6 +54,8 @@ class RealDifferentialWheels : public robotapi::DifferentialWheelsWOdometry , pu
 		bool motorIsOff();
 
 		bool motorIsOff(bool left);
+		
+		void refresh();
 
 	private:
 		protocol::handlers::DCMotorBoardPacketHandler * leftBoard;

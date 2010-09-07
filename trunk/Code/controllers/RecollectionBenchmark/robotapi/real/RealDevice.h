@@ -16,6 +16,8 @@ class RealDevice : virtual public robotapi::IDevice {
 		std::string getName();
 
 		IWbDeviceTag & getTag();
+		
+		void refresh();
 	private:
 		std::string * dname;
 		IWbDeviceTag * dtag;
