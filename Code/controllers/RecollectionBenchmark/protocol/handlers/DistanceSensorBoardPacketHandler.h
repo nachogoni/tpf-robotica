@@ -27,7 +27,7 @@ class DistanceSensorBoardPacketHandler : public protocol::BoardPacketHandler
 
 		void disable(int dsId);
 		
-		int getValue(int dsIds);
+		int getValue(int dsIds, bool refresh=false);
 		
 		int getValue(int* dsIds, int count);
 		

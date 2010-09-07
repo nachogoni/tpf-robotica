@@ -97,8 +97,8 @@ bool RealDifferentialWheels::motorIsOff(bool left){
 
 void RealDifferentialWheels::refresh(){
 	
-	this->leftBoard->getEncoder();
-	this->rightBoard->getEncoder();
+	this->leftBoard->getEncoder(true);
+	this->rightBoard->getEncoder(true);
 	
 }
 

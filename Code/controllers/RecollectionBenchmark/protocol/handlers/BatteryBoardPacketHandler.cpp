@@ -96,7 +96,10 @@ void BatteryBoardPacketHandler::disable(int id){
 	this->ps->sendPacket(p);
 }
 
-double BatteryBoardPacketHandler::getValue(int id){
+double BatteryBoardPacketHandler::getBatteryValue(int id, bool refresh){
+	if(!refresh)
+		return this->currentValue;
+		
  	packets::BatteryPacket * p = new packets::BatteryPacket(groupid,boardid);
 	p->senseBattery();
 	p->prepareToSend();

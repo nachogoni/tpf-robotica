@@ -20,7 +20,7 @@ namespace real {
 	}
 
 	double RealBattery::getValue(){
-		return this->bbph->getValue(this->id);
+		return this->bbph->getBatteryValue(this->id);
 	}
 
 	bool RealBattery::isFull(){
@@ -40,7 +40,7 @@ namespace real {
 	}
 	
 	void RealBattery::refresh(){
-		this->bbph->getValue(this->id);
+		this->bbph->getBatteryValue(this->id,true);
 	}
 
 } /* End of namespace robotapi::real */

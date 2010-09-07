@@ -206,7 +206,9 @@ double DCMotorBoardPacketHandler::getSpeed(){
 	return current;
 }
 
-double DCMotorBoardPacketHandler::getEncoder(){
+double DCMotorBoardPacketHandler::getEncoder(bool refresh){
+	if(!refresh)
+		return this->encoderValue;
    	packets::DCMotorPacket * p = new packets::DCMotorPacket(groupid,boardid);
 	p->getEncoder();
 	p->prepareToSend();

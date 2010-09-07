@@ -33,7 +33,7 @@ double RealDistanceSensor::getDistance(){
 }
 
 void RealDistanceSensor::refresh(){
-	this->boardHandler->getValue(this->id);
+	this->boardHandler->getValue(this->id,true);
 }
 
 
