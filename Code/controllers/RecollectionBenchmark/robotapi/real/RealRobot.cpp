@@ -196,26 +196,30 @@ ITrashBin & RealRobot::getTrashBin(std::string name){
 }
 
 void RealRobot::step(int ms){
-	usleep(50000);
 	//sleep(1);
 	
 	//refresh sensor values
+/*
 	for( std::map<std::string, IDifferentialWheels *>::iterator it=wheels.begin();
 		it!=wheels.end();++it)
 	{
 			((*it).second)->refresh();
 	}
+*/
+
 	for( std::map<std::string, IDistanceSensor *>::iterator it=distanceSensors.begin();
 		it!=distanceSensors.end();++it)
 	{
 			((*it).second)->refresh();
 	}
+
+/*
 	for( std::map<std::string, IBattery *>::iterator it=batteries.begin();
 		it!=batteries.end();++it)
 	{
 			((*it).second)->refresh();
 	}
-	
+*/	
 
 	
 	// Use differential wheels
@@ -225,6 +229,7 @@ void RealRobot::step(int ms){
 	// Refresh stats
 	if ( gc != NULL )
 		gc->stepWasDone();
+	usleep(500000);
 	return ;
 }
 

@@ -19,7 +19,7 @@ void RealDistanceSensor::disable(){
 }
 
 int RealDistanceSensor::getValue(){
-	return this->boardHandler->getValue(this->id) * 4096 / 700;
+	return this->boardHandler->getValue(this->id);
 }
 
 double RealDistanceSensor::getDistance(){

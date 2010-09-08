@@ -30,6 +30,7 @@ namespace behaviours {
 			if ( j == 0 || j == DISTANCE_SENSORS-1 )
 				thresh = behaviours::BehavioursParameters::getParameter(FRONT_THRESHOLD_OBSTACLE);
 
+			printf("Sensor %d: %d - thresh %g\n",j,(*this->dss).at(j)->getValue(),thresh);
 			if ( (*this->dss).at(j)->getValue() > thresh ){
 				setStimulusPresent();
 				// TODO Set obstacle side
