@@ -229,7 +229,7 @@ void RealRobot::step(int ms){
 	// Refresh stats
 	if ( gc != NULL )
 		gc->stepWasDone();
-	usleep(500000);
+	usleep(125000);
 	return ;
 }
 

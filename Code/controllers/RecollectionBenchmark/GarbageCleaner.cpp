@@ -115,7 +115,6 @@ void GarbageCleaner::initializeSensors(){
 	camera = &myIRobot.getCamera("camera0");
 	camera->enable(TIME_STEP);
 
-	
 }
 
 void GarbageCleaner::initializeBehaviours(WorldInfo * wi){
