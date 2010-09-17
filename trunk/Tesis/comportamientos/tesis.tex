@@ -295,10 +295,10 @@ el comportamiento de Wandering.
 \newpage
 \subsection{Odometr\'ia}
 \label{odometry}
-Para saber donde se encuentra el robot en cierto momento utilizamos odometr\'ia.
-\\
-Esta t\'ecnica se basa en la medici\'on del encoder en cuentas realizadas por
-cada motor para obtener el desplazamiento realizado por la rueda asociada.
+Para saber donde se encuentra el robot en cierto momento utilizamos \\
+odometr\'ia. Esta t\'ecnica se basa en la medici\'on del encoder en cuentas
+realizadas por cada motor para obtener el desplazamiento realizado por la
+rueda asociada.
 \\
 A diferencia de los m\'etodos de posicionamiento absoluto, la odometr\'ia
 da una estimaci\'on del desplazamiento \emph{local} a la ubicaci\'on anterior
@@ -314,7 +314,7 @@ d_l = \frac{(e_l(n) - e_l(n-1)) * R_l}{EncRes} \\
 \label{eqn:right_enc_diff}
 d_r = \frac{(e_r(n) - e_r(n-1)) * R_r}{EncRes} \\
 lc = \frac{d_r + d_l}{2} \\
-P_n = P_{n-1} + (lc * \cos{O_{n-1}},lc * \sin{O_{n-1}}) \\
+P_n = P_{n-1} + (lc * \cos{O_{n-1}}\textbf{,}lc * \sin{O_{n-1}}) \\
 O_n = O_{n-1} + \frac{d_r - d_l}{dbw}
 \end{eqnarray}
 donde $d_l$ y $d_r$ son las distancias recorridas por las ruedas izquierda y
@@ -440,7 +440,7 @@ un simulador como en la realidad.
 \subsubsection{Interfaz con hardware}
 La interfaz con el hardware se basa en tener clases encargadas de obtener los
 valores de los sensores o del accionar de los actuadores.
-\\En la implementaci\'on de la interfaz que corrimos en Webots, hic\'imos
+\\En la implementaci\'on de la interfaz que corrimos en Webots, hicimos
 llamadas al controlador del simulador, que utiliza sensores y actuadores
 simulados.
 \\En la implementaci\'on que se comunica con el robot f\'isico,
@@ -455,10 +455,10 @@ capa de comportamientos que la utilice para realizar su ejecuci\'on.
 
 \subsubsection{Interfaz con m\'odulo de reconocimiento de objetos usando
 Visi\'on}
-Como el controlador de comportamientos es \textbf{cliente} del m\'odulo de
+Como el controlador de comportamientos es \textbf{cliente} del m\'odulo de\\
 reconocimiento, necesita conocer en el instante de tiempo $t$, que objetos
 est\'an siendo reconocidos. Para esto el m\'odulo debe tener una fuente de
-informaci\'on, en nuestro caso, una c\'amara usada en Visi\'on.
+informaci\'on, en nuestro caso, una c\'amara usada para Visi\'on.
 \\
 Desde el punto de vista anat\'omico, \'esto se puede ver como los ojos
 (c\'amara), la parte del cerebro encargada de analizar el est\'imulo recibido
@@ -481,7 +481,7 @@ en la secci\'on \ref{sec:vision}.
 \label{results}
 En esta secci\'on describimos los par\'ametros que utilizamos en la
 simulaci\'on para obtener los resultados sobre los diferentes
-comportamientos. Luego presentamos dichos resultados y sacamos
+comportamientos. Luego presentamos dichos resultados y extraemos
 conclusiones sobre los mismos.
 \\
 A lo largo del proceso de desarrollo fuimos realizando diferentes
@@ -565,7 +565,7 @@ En la figura \ref{fig:behaviourDistribution} mostramos la distribuci\'on
 de time steps en la simulaci\'on de cada comportamiento. Podemos ver que
 \emph{Recargar bater\'ia} y \emph{Descargar basura} en conjunto est\'an
 activos el $54\%$ de la simulaci\'on. Los comportamientos involucrados en la
-recolecci\'on de basura(\emph{Enfocar basura}, \emph{Ir a basura} y
+recolecci\'on de basura (\emph{Enfocar basura}, \emph{Ir a basura} y
 \emph{Recolectar basura}) abarcan el $10.5\%$ del tiempo total de
 simulaci\'on. El $35.5\%$ restante est\'a repartido en los comportamientos
 encargados de una navegaci\'on libre de obst\'aculos y situaciones peligrosas
@@ -926,8 +926,11 @@ secci\'on \ref{results}, as\'i como dar posibles explicaciones a los mismos.
 \\\indent
 Dado que en la simulaci\'on hab\'ia 15 basuras, era esperado que
 \emph{Recolectar basura} se activase la misma cantidad de veces. En promedio,
-el robot recolect\'o \[\frac{t_{fs}}{15 basuras} = \frac{1.52x10^5 Ts}
-{basura}\], es decir, 1 basura cada 8 minutos. El mayor tiempo que pas\'o entre
+el robot recolect\'o
+\begin{equation*}
+	\frac{t_{fs}}{15 basuras} = \frac{1.52x10^5 Ts}{basura}
+\end{equation*}
+es decir, 1 basura cada 8 minutos. El mayor tiempo que pas\'o entre
 entre una recolecci\'on y otra fue de $38400 Ts = 20 m 28 s$.
 \\\indent
 Los comportamientos \'intimamente relacionados, \emph{Enfocar basura} e
@@ -1087,7 +1090,7 @@ de simulaci\'on. \'Este porcentaje disminuye o aumenta dependiendo de si
 aumenta el tiempo de simulaci\'on o disminuye. Es decir, lo importante no
 es el porcentaje del tiempo total, sino el tiempo en que recorri\'o el \'area
 en su totalidad. Dicho tiempo fue de $95241Ts = 50m47s$. Durante \'este tiempo
-el robot no s\'olo recorri\'o un poco menos de $200m^2$(la escala es 10:1),
+el robot no s\'olo recorri\'o un poco menos de $200m^2$ (la escala es 10:1),
 sino que recolect\'o 9 basuras de las 15 que hab\'ia en la arena y fue a
 descargarlas(uno de los comportamientos que m\'as tiempo lleva). Adem\'as,
 se recarg\'o 3 veces en ese per\'iodo, como dijimos anteriormente, es otro
