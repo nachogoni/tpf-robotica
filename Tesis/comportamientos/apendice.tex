@@ -3,8 +3,8 @@
 		{Implementaci\'on de arquitectura de software del controlador}
 La implementaci\'on de la arquitectura de software del controlador la hicimos en C++, tal
 como explicamos en la secci\'on \ref{interfaces}. La relaci\'on explicada en dicha secci\'on
-entre el robot(con sus dispositivos), los comportamientos y el sistema de reconocimiento se
-puede ver m\'as claramente en la figura\ref{fig:theAllTogether}, unidos por la clase \textit{GarbageCleaner},
+entre el robot (con sus dispositivos), los comportamientos y el sistema de reconocimiento se
+puede ver m\'as claramente en la figura \ref{fig:theAllTogether}, unidos por la clase \textit{GarbageCleaner},
 que implementa la arquitectura \emph{Subsumption}. En la misma tambi\'en est\'a el main-loop. Mostramos
 en la figura \ref{fig:soft_arq_behaviours} que \textit{GarbageCleaner} posee comportamientos, as\'i como tambi\'en
 un robot y el mismo posee dispositivos que pueden ser sensores o actuadores, tal como se ve
@@ -18,7 +18,7 @@ es simple, ya que debe:
 			el m\'odulo de reconocimiento, necesarios para saber si su est\'imulo est\'a activo y
 			para poder interactuar con el entorno.
 	\item{} Correr el main-loop, utilizando la arquitectura de comportamientos
-			elegida(\emph{Subsumption}), haciendo actuar al comportamiento cuyo est\'imulo
+			elegida (\emph{Subsumption}), haciendo actuar al comportamiento cuyo est\'imulo
 			est\'e activo en ese instante de tiempo y tenga mayor nivel en la arquitectura.
 \end{itemize}
 \begin{landscape}
@@ -55,8 +55,8 @@ que instanciarlo y agregarlo a la lista de comportamientos que posee \textit{Gar
 \end{landscape}
 
 \subsection{Dispositivos del robot}
-Para que los comportamientos sensen y act\'uen con el entorno, deben disponer de dispositivos
-que les permitan hacerlo. \'Estos \'ultimos forman parte del \textit{IRobot} que le es entregado a
+Para que el robot sense y act\'ue en el entorno a trav\'es de sus comportamientos, debe disponer de dispositivos
+que le permita hacerlo. \'Estos \'ultimos forman parte del \textit{IRobot} que le es entregado a
  \textit{GarbageCleaner} para que instancie los comportamientos. Como se puede observar, la
 interfaz que representa al robot provee m\'etodos de obtenci\'on de sensores como \textit{getDistanceSensor}
 y de actuadores, como \textit{getDifferentialWheels}. Para el desarrollo de la arquitectura nos basamos
@@ -75,7 +75,7 @@ motor posee una placa que lo controla.
 \\\indent
 En el caso que se quiera agregar un sensor nuevo a la api, como por ejemplo un GPS, es necesario
 crear la interfaz que represente el mismo, con m\'etodos de obtenci\'on de valores de los sensores o
-seteo de valores para los actuadores. Luego de crear la interfaz, es necesario agregar un m\'etodo
+establecimiento de valores para los actuadores. Luego de crear la interfaz, es necesario agregar un m\'etodo
 a la interfaz de \textit{IRobot} para poder obtener una instancia del dispositivo en cuesti\'on.
 Despu\'es es necesario implementar \'este m\'etodo en las clases \textit{WebotsRobot} y \textit{RealRobot},
 dependiendo si se va a querer simular con Webots, correr en la realidad o ambos. Finalmente,
@@ -95,11 +95,11 @@ se deben realizar las implementaciones correspondientes de la interfaz creada pa
 La figura \ref{fig:soft_arq_reconmodule} exhibe la relaci\'on entre el m\'odulo de reconocimiento de 
 objetos y el m\'odulo de comportamientos. El m\'odulo de visi\'on queda encapsulado dentro
 de la clase de \textit{GarbageRecognition}, permitiendo que el m\'odulo de comportamientos funcione en
-forma independiente a \'este. La creaci\'on de una interface para la c\'amara nos permite alternar
+forma independiente a \'este. La creaci\'on de una interfaz para la c\'amara nos permite alternar
 entre el entorno de webots y el mundo real. El comportamiento de las clases \textit{WebotsCamera} y 
-\textit{RealCamera} es el mismo pero sus implementaci\'ones difieren en que, en el caso de la primera, se pide
+\textit{RealCamera} es el mismo pero sus implementaciones difieren en que, en el caso de la primera, se pide
 la imagen a webots mientras
-que en la segunda se toma una imagen del mundo real. Por motivos similares utilizamos una interface para 
+que en la segunda se toma una imagen del mundo real. Por motivos similares utilizamos una interfaz para 
 la representaci\'on de las im\'agenes. \'Esto se debe a que OpenCV y Webots codifican las im\'agenes de
 maneras distintas y tuvimos que implementar sus respectivas clases. 
 \begin{landscape}
@@ -150,7 +150,7 @@ de valores de los campos del paquete, entre otras.
 	\includegraphics[scale=0.483]{comportamientos/figures/cs4.png}
 	\caption[Diagrama de clases: Servidor de paquetes e interface]
 			{Diagrama de clases. Estructura general del servidor de paquetes
-			e interface para los handlers.}
+			e interfaz para los handlers.}
 	\label{fig:diag_server_handler_packet}
 \end{figure}
 \subsection{Packets}
@@ -169,11 +169,11 @@ extendiendo de group packet ya que es m\'as espec\'ifico que este \'ultimo.
 En las figuras \ref{fig:packet_specific_1} y \ref{fig:packet_specific_2}
 mostramos los paquetes que extienden de board packet, espec\'ificos para
 cada sensor o actuador que pueda haber en una placa. Como se puede observar,
-cada paquete espec\'ifico tiene funciones que permiten obtener y setear
+cada paquete espec\'ifico tiene funciones que permiten obtener y establecer
 informaci\'on propia del sensor/actuador en cuesti\'on, respetando el
 protocolo que propusimos.
 \\\indent
-Por ejemplo, BatteryPacket permite setear los thresholds o
+Por ejemplo, BatteryPacket permite establecer los
 umbrales a los cuales informar\'a que la bater\'ia se encuentra cargada o
 en estado cr\'itico, respectivamente. Adem\'as permite obtener el valor
 de carga de la bater\'ia.
@@ -181,7 +181,7 @@ de carga de la bater\'ia.
 A continuaci\'on damos un ejemplo de uso de un paquete. Supongamos que se
 quiere saber la carga de la bater\'ia. Para \'esto instanciamos un
 BatteryPacket con el id de grupo y placa correspondientes. El mismo se
-encarga del seteo de los campos de grupo y placa de origen y destino,
+encarga de establecer los campos de grupo y placa de origen y destino,
 tama\~no del paquete y comando. Le indicamos que queremos el valor de carga
 con senseBattery(), que pone el comando correspondiente en el campo del
 paquete. Una vez que tenemos el paquete armado, llamamos a la funci\'on
