@@ -3,14 +3,14 @@
 
 La comunicaci\'on entre los distintos componentes del robot es imprescindible para su correcto funcionamiento
 y por lo tanto, un protocolo acorde es la base fundamental sobre la cual se construye dicha comunicaci\'on.
-Toda interacci\'on con el entorno es transportada por los mensajes enviados desde el controlador principal
+Toda interacci\'on con el entorno es precedida por los mensajes enviados desde el controlador principal
 hacia las placas controladora y debemos asegurar que su correctitud.
 Las placas controladoras se dividen en grupos seg\'un su funci\'on y perif\'ericos que tenga conectados.
 
 \subsection{Formato del paquete}
 \label{hA_protocolo_formato_paquete}
 
-El paquete consta de un header com\'un con datos que identifican el emisor y receptor del paquete, el comando
+El paquete consta de un encabezado com\'un con datos que identifican el emisor y receptor del paquete, el comando
 a enviar y posibles datos extras que sean requeridos.
 En el cuadro \ref{hA_protocolo_formato_paquete_tabla} mostramos la estructura interna de un paquete t\'ipico.
 
@@ -18,10 +18,10 @@ En el cuadro \ref{hA_protocolo_formato_paquete_tabla} mostramos la estructura in
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
-LARGO & DESTINO & ORIGEN & COMANDO & DATO & CRC \\
+LARGO & DESTINO & ORIGEN & COMANDO & DATO & XOR \\
 \hline
 \end{tabular}
-\caption{Formato y header del paquete de datos}
+\caption{Formato y encabezado del paquete de datos}
 \label{hA_protocolo_formato_paquete_tabla}
 \end{center}
 \end{table}
@@ -30,21 +30,22 @@ Tanto los paquetes de env\'io de datos como los de respuesta tienen el mismo for
 
 \begin{description}
   \item[LARGO] \hfill \\
-	Indica el largo en bytes del paquete que viene detras, consta de 1 byte.
+	Indica el largo en bytes del paquete que viene detr\'as.
+Consta de 1 byte.
 	Necesario ante la existencia del campo \emph{DATO} de longitud variable.
 	En caso que la longitud del campo \emph{DATO} sea cero, es 0x04.
   \item[DESTINO] \hfill \\
 	Identifica al destinatario del paquete, consta de 1 byte.
 	Los 4 bits m\'as significativos indican el grupo y los 4 bits menos significativos, el n\'umero de $ID$ de la placa de destino.
 	Los grupos predefinidos se tratan en el apartado \ref{hA_protocolo_grupos_listado}.
-	Si el $ID$ de placa es F, entonces el paquete es broadcast a todos los $ID$s del grupo indicado.
-	El valor 0xFF indica que el paquete es broadcast a todas las placas de todos los grupos.
+	Si el $ID$ de placa es F, entonces el paquete es transmitido a todos los $ID$s del grupo indicado.
+	El valor 0xFF indica que el paquete es transmitido a todas las placas de todos los grupos.
   \item[ORIGEN] \hfill \\
 	Similar al \emph{DESTINO}, consta de 1 byte.
 	Determina el emisor del paquete para la respuesta.
 	Los 4 bits m\'as significativos indican el grupo y los 4 bits menos significativos, el n\'umero de $ID$ de la placa de origen.
 	Los grupos predefinidos se tratan en el apartado \ref{hA_protocolo_grupos_listado}.
-	Los valores permitidos son del 0 al E, ya que F indica broadcast y no es v\'alida una respuesta broadcast.
+	Los valores permitidos son del 0 al E, ya que F indica transmitido y no es v\'alida una respuesta transmitido.
   \item[COMANDO] \hfill \\
 	El comando consta de 1 byte.
 	Comando enviado al destino, que puede o no tener datos en el campo \emph{DATO}.
@@ -54,9 +55,8 @@ Tanto los paquetes de env\'io de datos como los de respuesta tienen el mismo for
 	En el caso que el comando no los requiera, el campo debe ser nulo y el campo \emph{LARGO} ser\'a 0x04.
 
 	En el apartado \ref{hA_protocolo_codificacion} se explican las reglas para la codificac\'ion de n\'umeros utilizadas en el protocolo.
-  \item[CRC] \hfill \\
+  \item[XOR] \hfill \\
 	El comando consta de 1 byte.
-	C\'alculo de CRC sobre el paquete enviado.
 	Se realiza un XOR con cada uno de los bytes que conforman el paquete.
 \end{description}
 
@@ -64,9 +64,9 @@ Tanto los paquetes de env\'io de datos como los de respuesta tienen el mismo for
 \label{hA_protocolo_comandos}
 
 El campo \emph{COMANDO} determina la acci\'on que debe realizarse en el destinatario o la respuesta al comando recibido.
-El rango para los comandos comunes a todos los grupos de tarjetas son desde 0x00 hasta 0x3F.
+El rango para los comandos comunes a todos los grupos de placas son desde 0x00 hasta 0x3F.
 Los comandos espec\'ificos para cada grupo deben ser desde 0x40 hasta 0x7F.
-El bit m\'as significativo indica que el paquete es una respuesta, los bits menos significativos, indicaran a qu\'e comando se est\'a respondiendo.
+El bit m\'as significativo indica que el paquete es una respuesta, los bits menos significativos, indicar\'an a qu\'e comando se est\'a respondiendo.
 
 Todos los comandos generan una respuesta o al menos un ACK con el campo \emph{DATOS} vac\'io.
 
@@ -97,7 +97,7 @@ Tambi\'en utilizado para obtener la confirmaci\'on del listado de dispositivos c
 \subsubsection{RESET}
 \label{hA_protocolo_reset}
 
-Pide el reset de la tarjeta
+Pide el reset de la placa.
 
 \paragraph*{Comando enviado}
 \label{hA_protocolo_reset_comando_enviado}
@@ -148,8 +148,8 @@ Informa que ha habido un error.
 	\item{COMANDO:} 0x04
 	\item{DATO:} 1 byte con el c\'odigo de error.
 
-	El valor 0x00 indica un error de CRC en el paquete. 
-	En este caso, tambi\'en se agrega el paquete con el CRC err\'oneo y luego el CRC esperado.
+	El valor 0x00 indica un error de XOR en el paquete. 
+	En este caso, tambi\'en se agrega el paquete con el XOR err\'oneo y luego el XOR esperado.
 
 	El valor 0x01 indica que el comando es desconocido para la placa destinataria.
 
@@ -160,13 +160,13 @@ Informa que ha habido un error.
 \label{hA_protocolo_error_respuesta}
 
 \'Unico comando sin respuesta directa.
-En caso de error de CRC deber\'ia retransmitir el paquete o tomar alguna otra acci\'on ante otro tipo de error.
+En caso de error de XOR deber\'ia retransmitir el paquete o tomar alguna otra acci\'on ante otro tipo de error.
 
 \subsection{Comandos espec\'ificos}
 \label{hA_protocolo_comandos_especificos}
 
 Cada grupo de placas tiene comandos propios y espec\'ificos dependiendo de la funci\'on que deban desempe\~nar en el sistema.
-Existen grupos con comandos predefinidos cada uno se trata en las secciones como se detalla en el listado.
+Existen grupos con comandos predefinidos y cada uno se trata en las secciones como se detalla en el listado.
 Los comandos espec\'ificos para cada grupo deben ser desde 0x40 hasta el valor 0x7E.
 
 \begin{itemize}
@@ -182,8 +182,8 @@ Los comandos espec\'ificos para cada grupo deben ser desde 0x40 hasta el valor 0
 \subsection{MAIN CONTROLLER}
 \label{hA_protocolo_grupo_main_controller}
 
-Comandos especificos para el controlador principal.
-El identificador de grupo es 0x0X y no posee comandos espec\'ificos.
+El controlador principal no posee comandos espec\'ificos.
+El identificador de grupo es 0x0X.
 
 \subsection{DC MOTOR}
 \label{hA_protocolo_grupo_dc_motor}
@@ -194,7 +194,7 @@ El identificador de grupo es 0x1X.
 \subsubsection{SET DIRECTION}
 \label{hA_protocolo_set_direction}
 
-Seteo del sentido de giro del motor
+Establece el sentido de giro del motor.
 
 \paragraph*{Comando enviado}
 
@@ -213,7 +213,7 @@ Seteo del sentido de giro del motor
 \subsubsection{SET DC SPEED}
 \label{hA_protocolo_set_dc_speed}
 
-Seteo de la velocidad del motor en cuentas del encoder por segundo
+Establece la velocidad del motor en cuentas del encoder por segundo.
 
 \paragraph*{Comando enviado}
 
@@ -234,13 +234,13 @@ Seteo de la velocidad del motor en cuentas del encoder por segundo
 \subsubsection{SET ENCODER}
 \label{hA_protocolo_set_encoder}
 
-Seteo de la cantidad de cuentas hist\'oricas del encoder
+Establece la cantidad de cuentas hist\'oricas del encoder.
 
 \paragraph*{Comando enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x42
-	\item{DATO:} N\'umero entero de 32 bits con signo, con el valor para setear en el hist\'orico del encoder.
+	\item{DATO:} N\'umero entero de 32 bits con signo, con el valor para establecer en el hist\'orico del encoder.
 		Ver apartado \ref{hA_protocolo_codificacion} para mayor informaci\'on.
 \end{itemize}
 
@@ -254,7 +254,7 @@ Seteo de la cantidad de cuentas hist\'oricas del encoder
 \subsubsection{GET ENCODER}
 \label{hA_protocolo_get_encoder}
 
-Obtener la cantidad de cuentas hist\'oricas del encoder
+Obtener la cantidad de cuentas hist\'oricas del encoder.
 
 \paragraph*{Comando enviado}
 
@@ -274,7 +274,7 @@ Obtener la cantidad de cuentas hist\'oricas del encoder
 \subsubsection{RESET ENCODER}
 \label{hA_protocolo_reset_encoder}
 
-Resetear las cuentas hist\'oricas a cero
+Reestablecer las cuentas hist\'oricas a cero.
 
 \paragraph*{Comando enviado}
 
@@ -293,7 +293,7 @@ Resetear las cuentas hist\'oricas a cero
 \subsubsection{SET ENCODER TO STOP}
 \label{hA_protocolo_set_encoder_to_stop}
 
-Seteo de cu\'antas cuentas debe girar hasta detenerse
+Establece cu\'antas cuentas debe girar hasta detenerse.
 
 \paragraph*{Comando enviado}
 
@@ -352,7 +352,7 @@ Deshace los comandos \ref{hA_protocolo_set_encoder_to_stop} y \ref{hA_protocolo_
 \subsubsection{MOTOR CONSUMPTION}
 \label{hA_protocolo_motor_consumption}
 
-Consulta sobre el consumo actual del motor
+Consulta sobre el consumo de corriente actual del motor.
 
 \paragraph*{Comando enviado}
 
@@ -365,20 +365,20 @@ Consulta sobre el consumo actual del motor
 
 \begin{itemize}
 	\item{COMANDO:} 0xC8
-	\item{DATO:} N\'umero entero positivo de 16 bits en el rango desde 0x0000 hasta 0x03FF, que representa el consumo promedio del \'ultimo segundo.
+	\item{DATO:} N\'umero entero positivo de 16 bits en el rango desde 0x0000 hasta 0x03FF, que representa el consumo de corriente promedio del \'ultimo segundo.
 		Ver apartado \ref{hA_protocolo_codificacion} para mayor informaci\'on.
 \end{itemize}
 
 \subsubsection{MOTOR STRESS ALARM}
 \label{hA_protocolo_motor_stress_alarm}
 
-Indica al controlador principal que hay un consumo extremo en el motor, posiblemente un atasco del motor o de la rueda.
+Indica al controlador principal que hay un consumo de corriente extremo en el motor, posiblemente un atasco del motor o de la rueda.
 
 \paragraph*{Comando enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x49
-	\item{DATO:} N\'umero entero positivo de 16 bits en el rango desde 0x0000 hasta 0x03FF, que representa el consumo ante el que sono la alarma.
+	\item{DATO:} N\'umero entero positivo de 16 bits en el rango desde 0x0000 hasta 0x03FF, que representa el consumo de corriente antes que son\'o la alarma.
 		Ver apartado \ref{hA_protocolo_codificacion} para mayor informaci\'on.
 \end{itemize}
 
@@ -399,7 +399,7 @@ Enviado luego de sucesivos avisos del comando \ref{hA_protocolo_motor_stress_ala
 
 \begin{itemize}
 	\item{COMANDO:} 0x4A
-	\item{DATO:} N\'umero entero positivo de 16 bits en el rango desde 0x0000 hasta 0x03FF, que representa el consumo ante el que sono la alarma.
+	\item{DATO:} N\'umero entero positivo de 16 bits en el rango desde 0x0000 hasta 0x03FF, que representa el consumo antes que son\'o la alarma.
 		Ver apartado \ref{hA_protocolo_codificacion} para mayor informaci\'on.
 \end{itemize}
 
@@ -413,7 +413,7 @@ Enviado luego de sucesivos avisos del comando \ref{hA_protocolo_motor_stress_ala
 \subsubsection{GET DC SPEED}
 \label{hA_protocolo_set_dc_speed}
 
-Obtiene la velocidad del motor en cuentas del encoder por segundo
+Obtiene la velocidad del motor en cuentas del encoder por segundo.
 
 \paragraph*{Comando enviado}
 \begin{itemize}
@@ -579,7 +579,7 @@ Obtiene la velocidad asignada al servomotor indicado.
 \subsubsection{GET ALL SPEEDS}
 \label{hA_protocolo_get_all_speeds}
 
-Obtiene las velocidades de cada uno de los servomotor conectados al controlador.
+Obtiene las velocidades de cada uno de los servomotores conectados al controlador.
 
 \paragraph*{Comando enviado}
 
@@ -618,7 +618,7 @@ Deja de aplicar fuerza sobre el servo indicado.
 \subsubsection{FREE ALL SERVOS}
 \label{hA_protocolo_free_all_servos}
 
-Deja de aplicar fuerza sobre cada uno de los servomotor conectados al controlador.
+Deja de aplicar fuerza sobre cada uno de los servomotores conectados al controlador.
 
 \paragraph*{Comando enviado}
 
@@ -719,7 +719,7 @@ Enciende el sensor de distancia indicado.
 \begin{itemize}
 	\item{COMANDO:} 0x40
 	\item{DATO:} Valor de 0x00 a 0x05 que representa el $ID$ del sensor a encender.
-	El $ID$ 0x05 hace referencia al led de la placa si esta presente, en caso contrario se ignora.
+	El $ID$ 0x05 hace referencia al led de la placa si est\'a presente, en caso contrario se ignora.
 \end{itemize}
 
 \paragraph*{Respuesta al comando}
@@ -739,7 +739,7 @@ Apaga el sensor de distancia indicado.
 \begin{itemize}
 	\item{COMANDO:} 0x41
 	\item{DATO:} Valor de 0x00 a 0x05 que representa el $ID$ del sensor a apagar.
-	El $ID$ 0x05 hace referencia al sensor de ultrasonido o switch de la placa.
+	El $ID$ 0x05 hace referencia al sensor de ultrasonido o switch conectado a la placa.
 \end{itemize}
 
 \paragraph*{Respuesta al comando}
@@ -879,7 +879,7 @@ Comando enviado desde la placa a la controladora principal informando que fue sa
 
 \begin{itemize}
 	\item{COMANDO:} 0x47
-	\item{DATO:} Valor entre 0x00 y 0x03 con el tipo de cambio configurado y el estado actual, 0x00 para un estado bajo y 
+	\item{DATO:} Valor entre 0x00 y 0x03 con el tipo de cambio configurado y el estado actual, 0x00 para un estado bajo y
 	0x01 para un estado alto.
 \end{itemize}
 
@@ -932,7 +932,7 @@ Deshabilita la alimentaci\'on del robot mediante la bater\'ia.
 
 \begin{itemize}
 	\item{COMANDO:} 0xC1
-	\item{DATO:} vaci\'on.
+	\item{DATO:} vaci\'o.
 
 \end{itemize}
 
@@ -952,7 +952,7 @@ Obtiene el valor de la entrada de la bater\'ia.
 
 \begin{itemize}
 	\item{COMANDO:} 0xC2
-	\item{DATO:} N\'umero entero positivo de 16 bits, en el rango desde 0x0000 hasta 0x03FF, que representa la lectura de los voltios de la bater\'ia.
+	\item{DATO:} N\'umero entero positivo de 16 bits, en el rango desde 0x0000 hasta 0x03FF, que representa la lectura de la tensi\'on en la bater\'ia.
 		Ver apartado \ref{hA_protocolo_codificacion} para mayor informaci\'on.
 
 \end{itemize}
@@ -960,7 +960,7 @@ Obtiene el valor de la entrada de la bater\'ia.
 \subsubsection{BATTERY FULL ALARM}
 \label{hA_protocolo_battery_full_alarm}
 
-Mensaje enviado desde el controlador de la bateria informando que se completado la carga de la misma.
+Mensaje enviado desde el controlador de la bater\'ia informando que se ha completado la carga de la misma.
 
 \paragraph*{Comando enviado}
 
@@ -985,7 +985,7 @@ Establece el valor de la bater\'ia para ser tomado como cr\'itico.
 
 \begin{itemize}
 	\item{COMANDO:} 0x44
-	\item{DATO:} N\'umero entero positivo de 16 bits, en el rango desde 0x0000 hasta 0x03FF, que representa la lectura de los voltios de la bater\'ia.
+	\item{DATO:} N\'umero entero positivo de 16 bits, en el rango desde 0x0000 hasta 0x03FF, que representa la lectura de la tensi\'on en la bater\'ia.
 		Ver apartado \ref{hA_protocolo_codificacion} para mayor informaci\'on.
 \end{itemize}
 
@@ -999,13 +999,13 @@ Establece el valor de la bater\'ia para ser tomado como cr\'itico.
 \subsubsection{BATTERY EMPTY ALARM}
 \label{hA_protocolo_battery_empty}
 
-Mensaje enviado desde el controlador de la bater\'ia informando que de el voltaje lleg\'o a un valor cr\'itico.
+Mensaje enviado desde el controlador de bater\'ia informando que de el voltaje lleg\'o a un valor cr\'itico.
 
 \paragraph*{Comando enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x45
-	\item{DATO:} N\'umero entero positivo de 16 bits, en el rango desde 0x0000 hasta 0x03FF, que representa la lectura de los voltios de la bater\'ia.
+	\item{DATO:} N\'umero entero positivo de 16 bits, en el rango desde 0x0000 hasta 0x03FF, que representa la lectura de la tensi\'on en la bater\'ia.
 		Ver apartado \ref{hA_protocolo_codificacion} para mayor informaci\'on.
 \end{itemize}
 
@@ -1019,14 +1019,14 @@ Mensaje enviado desde el controlador de la bater\'ia informando que de el voltaj
 \subsubsection{SET FULL BATTERY VALUE}
 \label{hA_protocolo_set_battery_empty_value}
 
-Establece el valor de la bater\'ia para ser tomado como carga completa.
+Establece el valor de bater\'ia para ser tomado como carga completa.
 
 \paragraph*{Comando enviado}
 
 \begin{itemize}
 	\item{COMANDO:} 0x46
 	\item{DATO:} N\'umero entero positivo de 16 bits, en el rango desde 0x0000 hasta 0x03FF,
-		que representa la lectura de los voltios a ser tomado como carga completa de la bater\'ia.
+		que representa la lectura de la tensi\'on a ser tomada como carga completa de la bater\'ia.
 		Ver apartado \ref{hA_protocolo_codificacion} para mayor informaci\'on.
 \end{itemize}
 
@@ -1067,7 +1067,7 @@ Obtiene el valor que representa que tan lleno est\'a el cesto interno de basura.
 \subsubsection{BIN FULL ALARM}
 \label{hA_protocolo_bin_full_alarm}
 
-Mensaje enviado desde el controlador del cesto de basura informando que se completado y debe ser descargado.
+Mensaje enviado desde el controlador del cesto de basura informando que se ha completado y debe ser descargado.
 
 \paragraph*{Comando enviado}
 
@@ -1107,12 +1107,12 @@ Establece el valor para el cual se env\'ia la alarma \ref{hA_protocolo_bin_full_
 \subsection{Codificaci\'on de los valores enviados}
 \label{hA_protocolo_codificacion}
 
-Para mantener la compatibilidad entre los distintos agentes dentro de la cadena de tranmisi\'on de datos,
+Para mantener la compatibilidad entre los distintos agentes dentro de la cadena de transmisi\'on de datos,
 los n\'umeros enteros a trav\'es del protocolo son codificados bajo el formato \emph{little-endian} con elementos at\'omicos de 8 bits.
 
-Por ejemplo, si el valor 1023, codificaco en un entero de 16 bits en hexadecimal es 0x03FF,
+Por ejemplo, si el valor $1023$, codificado en un entero de 16 bits en hexadecimal es 0x03FF,
 entonces se env\'ia primero el byte 0xFF y luego el 0x03.
-Si fuera el caso del valor 1193046, que codificado en un entero de 32 bits, cuyo hexadecimal es 0x00123456,
+Si fuera el caso del valor 1193046, que codificado en un entero de 32 bits, cuyo valor en hexadecimal es 0x00123456,
 se env\'ia primero el byte 0x56, luego el 0x34, 0x12 y por \'ultimo, 0x00.
 
 El env\'io de n\'umeros con punto flotante no est\'a previsto en el protocolo.
@@ -1126,8 +1126,8 @@ Se detallan paquetes de ejemplo para una mejor comprensi\'on del protocolo.
 \label{hA_protocolo_ejemplo1}
 
 En el cuadro \ref{hA_protocolo_paquete_ejemplo1} mostramos un paquete enviado desde el controlador principal con \emph{ID} igual a 0,
-a una placa controladora de motor de corriente cont\'inua con \emph{ID} igual a 1, seteando el sentido de giro anti-horario.
-El campo \emph{CRC} es 0x55, valor que corresponde con el resultado de realizar la operaci\'on \emph{XOR} entre
+a una placa controladora de motor de corriente cont\'inua con \emph{ID} igual a 1, estableciendo el sentido de giro anti-horario.
+El campo \emph{XOR} es 0x55, valor que corresponde con el resultado de realizar la operaci\'on \emph{XOR} entre
 todos los bytes del paquete.
 
 \begin{table}[h]
@@ -1147,7 +1147,7 @@ todos los bytes del paquete.
 
 En el cuadro \ref{hA_protocolo_paquete_ejemplo2} mostramos un paquete enviado desde el controlador de bater\'ias con \emph{ID} igual a 2,
 al controlador principal con \emph{ID} igual a 0, informando que la bater\'ia se encuentra con un valor cr\'itico de 0x036B.
-El campo \emph{CRC} es 0x49, valor que corresponde con el resultado de realizar la operaci\'on \emph{XOR} entre
+El campo \emph{XOR} es 0x49, valor que corresponde con el resultado de realizar la operaci\'on \emph{XOR} entre
 todos los bytes del paquete.
 
 \begin{table}[h]
