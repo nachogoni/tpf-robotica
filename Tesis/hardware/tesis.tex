@@ -953,7 +953,7 @@ En el cuadro \ref{hF_comm_paquete_tabla} mostramos la estructura interna de un p
 	\begin{center}
 		\begin{tabular}{|c|c|c|c|c|c|}
 			\hline
-			LARGO & DESTINO & ORIGEN & COMANDO & DATO & CRC \\
+			LARGO & DESTINO & ORIGEN & COMANDO & DATO & XOR \\
 			\hline
 		\end{tabular}
 	\caption{Formato y header del paquete de datos}
@@ -986,7 +986,7 @@ El campo \emph{DATO} contiene los par\'ametros o datos extras que puedan ser nec
 En el caso que el comando no los requiera, el campo debe ser nulo y el campo \emph{LARGO} ser\'a 0x04.
 
 El control de errores lo realizamos mediante un checksum calculado, haciendo un \emph{XOR} con cada byte del contenido del paquete
-y coloc\'andolo en el campo \emph{CRC}.
+y coloc\'andolo en el campo \emph{XOR}.
 Cuando un paquete se encuentre con errores o est\'e mal formado, el destinarario deber\'ia pedir la retrasmisi\'on.
 De igual forma, cre\'imos necesaria la creaci\'on de un control adicional por medio de una lista de paquetes no confirmados mantenida
 por el controlador principal para evitar la p\'erdida de comandos.
