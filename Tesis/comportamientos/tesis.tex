@@ -425,10 +425,10 @@ no va a poder lograrlo.
 Decidimos hacer que el controlador encargado de realizar los comportamientos
 sea independiente de la forma con la que se implemente el hardware y el
 reconocimiento de los objetos. Para \'esto definimos
-interfaces de forma tal que el controlador las mismas y tanto el hardware
-como el m\'odulo de reconocimiento de objetos puedan cambiar su
-implementaci\'on pero brindando siempre la informaci\'on que necesita el
-controlador para poder realizar los comportamientos. Esta decisi\'on nos
+interfaces para la comunicaci\'on entre el controlador y el hardware y el
+m\'odulo de reconocimiento de objetos de forma tal que los dos \'ultimos puedan
+cambiar su implementaci\'on pero brindando siempre la informaci\'on que necesita
+el controlador para poder realizar los comportamientos. Esta decisi\'on nos
 posibilit\'o realizar un controlador que sea capaz de ser ejecutado tanto en
 Webots, donde se hizo el desarrollo, como en la base real del robot. Cabe
 aclarar que el traspaso de la simulaci\'on a la realidad no es instant\'anea,
@@ -742,7 +742,8 @@ El comportamiento que m\'as veces ``activ\'o'' a otro comportamiento es
 \emph{Enfocar basura}, activando a \emph{Ir a basura}. Observamos tambi\'en
 que el caso contrario es la 2da transici\'on m\'as hecha y ambos valores
 est\'an relativamente cercanos. El caso que los valores de $t_{ij}$ y $t_{ji}$
-est\'en cercanos tambi\'en sucede con \emph{Evitar obst\'aculos} y el resto
+est\'en cercanos tambi\'en sucede con \emph{Evitar}\\
+\emph{obst\'aculos} y el resto
 de los comportamientos, aunque en estos casos la diferencia es mucho menor.
 \\\indent
 Podemos ver que hay transiciones que s\'olo se dan 1 sola vez. \'Estas son:
@@ -994,9 +995,9 @@ de todos superando el $70\%$. Su bajo promedio y desv\'io est\'andar en estar
 $cai$ puede estar dado por situaciones en que est\'a activo, un comportamiento
 pasa a estar activo por un per\'iodo corto de tiempo(por ejemplo, \emph{Evitar
 obst\'aculos}, que causa el $62\%$ de activaciones) hasta que desaparece el
-est\'imulo que lo activ\'o y el robot vuelve a deambular. En la mayor parte de
-los casos entre una activaci\'on y otra de \emph{Wandering} no hay muchos
-comportamientos que se activan.
+est\'imulo que lo activ\'o y el robot vuelve a hacer \emph{Wandering}. En la
+mayor parte de los casos entre una activaci\'on y otra de \emph{Wandering} no
+hay muchos comportamientos que se activan.
 %Se podria hacer un cuadro con la cantidad de comportamientos que se activan
 %entre una activacion y otra de un comportamiento
 \\\indent
@@ -1014,7 +1015,7 @@ y vuelve a activar a $A$. Cabe aclarar que en realidad no lo activa a $A$, sino
 que desaparece el est\'imulo de \emph{Evitar obst\'aculos} y $A$ toma el
 control nuevamente. Su promedio y desv\'io estandar de $caa$ son bajos y se ven
 reflejados en la figura \ref{fig:behaviourEvolution}. En la misma figura se
-puede observar el efecto de tener un promedio y desvi\'o est\'andar bajos,
+puede observar el efecto de tener un promedio y desv\'io estandar bajos,
 reflejados en la duraci\'on muy corta de las mesetas. El poder de detener a
 otros comportamientos est\'a dado por su nivel en la arquitectura. Es
 importante resaltar que este beneficio viene solo por el hecho de usar
