@@ -97,7 +97,15 @@ simulaci\'on, una versi\'on nueva del Khepera, pero sin el m\'odulo Gripper.
 \end{center}
 \end{figure}
 
-\item{Reconocimiento del objeto a recolectar:} 
+\item{Reconocimiento del objeto a recolectar:} El reconocimiento de los objetos
+a recolectar lo realizamos utilizando una c\'amara y un algoritmo encargado de
+la detecci\'on y predicci\'on de objetos en las im\'agenes obtenidas. En su
+trabajo, Nolfi utiliza los sensores de distancia que posee el Khepera para
+reconocer si hay un obst\'aculo o un objeto a recolectar. Para \'esto, tom\'o
+muestras de los valores de los sensores ante obst\'aculos y ``basuras'' a
+diferentes distancias, para luego armar 2 matrices utilizadas para decidir
+si lo que se encuentra frente al robot es un obst\'aculo, un objeto a
+recolectar o no hay nada.
 
 \end{itemize}
 
@@ -354,12 +362,10 @@ sistem\'atico m\'aximo dejara de disminuir. En la figura \ref{fig:errsist}
 mostramos c\'omo disminuye el error a lo largo de las iteraciones.
 
 \begin{figure}[htp]
-\begin{center}
-\includegraphics[scale=0.6]{comportamientos/figures/errsistUse.eps}
+\centerline{\includegraphics[scale=0.8]{comportamientos/figures/errsistUse.eps}}
 %\includegraphics[scale=0.3]{comportamientos/figures/unk.jpg}
 \caption{Error Sistem\'atico M\'aximo a lo largo de las iteraciones}
 \label{fig:errsist}
-\end{center}
 \end{figure}
 
 En la \'ultima iteraci\'on obtuvimos los coeficientes de correcci\'on
@@ -376,7 +382,7 @@ comportamientos que utilizaban la odometr\'ia. Despu\'es de una extensiva
 revisi\'on de c\'odigo, llegamos a la conclusi\'on que el mismo no ten\'ia
 problemas.
 \\\indent
-Fue entonces que decidimos agregar un GPS(con error m\'inimo y que luego
+Fue entonces que decidimos agregar un GPS (con error m\'inimo y que luego
 eliminamos) al e-puck en la simulaci\'on con Webots, con el objetivo de
 obtener un gr\'afico que indique el error en la odometr\'ia a lo largo de la
 simulaci\'on. El resultado esperado era que la odometr\'ia inicie con un error
@@ -570,7 +576,7 @@ recolecci\'on de basura (\emph{Enfocar basura}, \emph{Ir a basura} y
 simulaci\'on. El $35.5\%$ restante est\'a repartido en los comportamientos
 encargados de una navegaci\'on libre de obst\'aculos y situaciones peligrosas
 (\emph{Wandering}, \emph{Evitar obst\'aculos} y \emph{Salir de situaciones no
-deseadas}). Todos los comportamientos relacionados con la basura(desde que se
+deseadas}). Todos los comportamientos relacionados con la basura (desde que se
 detecta hasta que se descarga) abarcan un $43\%$ del tiempo total de
 simulaci\'on. Tambi\'en se puede observar que el comportamiento que mayor
 tiempo est\'a activo a lo largo de la simulaci\'on es \emph{Descargar basura}
@@ -936,7 +942,7 @@ Los comportamientos \'intimamente relacionados, \emph{Enfocar basura} e
 tuvieron un nivel de activac\'ion parecido a la cantidad de steps que
 estuvieron activos, provocando un bajo promedio de steps $caa$. \'Esto pudo
 haber sido causado debido al umbral $\delta_f$ en el cual se decide si una
-basura est\'a enfocada o no(ver figura \ref{fig:focusAngles}). Un valor muy
+basura est\'a enfocada o no (ver figura \ref{fig:focusAngles}). Un valor muy
 grande del mismo, figura (a), cubre m\'as porcentaje de la im\'agen, por lo que
 va a llevar a indicar que la basura se enfoca m\'as r\'apido, disminuyendo el
 tiempo en que el comportamiento est\'a activo. Un valor chico (figura (b)),
@@ -990,7 +996,7 @@ las basuras abarcaron un $43\%$ de $t_{fs}$, es de esperarse que en una
 simulaci\'on sin basuras el protagonismo de \emph{Wandering} sea el mayor
 de todos superando el $70\%$. Su bajo promedio y desv\'io est\'andar en estar
 $cai$ puede estar dado por situaciones en que est\'a activo, un comportamiento
-pasa a estar activo por un per\'iodo corto de tiempo(por ejemplo, \emph{Evitar
+pasa a estar activo por un per\'iodo corto de tiempo (por ejemplo, \emph{Evitar
 obst\'aculos}, que causa el $62\%$ de activaciones) hasta que desaparece el
 est\'imulo que lo activ\'o y el robot vuelve a hacer \emph{Wandering}. En la
 mayor parte de los casos entre una activaci\'on y otra de \emph{Wandering} no
@@ -1090,7 +1096,7 @@ es el porcentaje del tiempo total, sino el tiempo en que recorri\'o el \'area
 en su totalidad. Dicho tiempo fue de $95241Ts = 50m47s$. Durante \'este tiempo
 el robot no s\'olo recorri\'o un poco menos de $200m^2$ (la escala es 10:1),
 sino que recolect\'o 9 basuras de las 15 que hab\'ia en la arena y fue a
-descargarlas(uno de los comportamientos que m\'as tiempo lleva). Adem\'as,
+descargarlas (uno de los comportamientos que m\'as tiempo lleva). Adem\'as,
 se recarg\'o 3 veces en ese per\'iodo, como dijimos anteriormente, es otro
 de los comportamientos que m\'as tiempo demanda. Otro factor importante para
 destacar es que el $75\%$ del \'area se recorri\'o en un cuarto del tiempo
