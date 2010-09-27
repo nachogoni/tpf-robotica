@@ -21,8 +21,8 @@ n450 y 1 gb de memoria RAM como se detalla en \ref{h_controlador_netbook}.
 Esta secci\'on se divide en las siguientes partes: en la sub-secci\'on 2 mostramos  
 los trabajos previos estudiados, en la sub-secci\'on 3 describimos el algoritmo de detecci\'on, 
 en las secciones 4 y 5 explicamos los m\'odulos de predicci\'on y focalizaci\'on respectivamente mientras que en la 
-sub-secci\'on 6 se muestran los resultados.En la sub-secci\'on 7 concluimos 
-el cap\'itulo de visi\'on.
+sub-secci\'on 6 se muestran los resultados. En la sub-secci\'on 7 concluimos 
+la secci\'on.
 
 \subsection{Trabajos previos}
 En esta secci\'on mostramos la informaci\'on obtenida a partir de 
@@ -56,7 +56,7 @@ procesamiento de im\'agenes y robots aut\'onomos.
 	%~ tambi\'en algunos de los objetos con texturas repetitivas. Sin 
 	%~ embargo, no se reconocieron objetos sin textura. Para el m\'etodo de 
 	%~ la bolsa de caracteristicas 
-	\subsubsection{\label{volunteer}Mobile Field Robot with Vision-Based Detection of Volunteer Potato Plants in a Corn Crop - FRITS K. VAN EVERT}
+	\subsubsection{\label{volunteer}Mobile Field Robot with Vision-Based Detection of Volunteer Potato Plants in a Corn Crop \cite{potato}}
 	El objetivo de este trabajo es la construcci\'on de un robot de 
 	tama\~no reducido y de bajo costo capaz de detectar un tipo de 
 	planta de papas (volunteer potato) en un campo de trigo y proporcionar control autom\'atico de esta planta. El inter\'es en 
@@ -133,16 +133,15 @@ procesamiento de im\'agenes y robots aut\'onomos.
 	 borde sea mayor si se trata de una planta de papa ya que esta 
 	 contiene un n\'umero mayor de hojas peque\~nas que se solapan entre s\'i 
 	 mientras que las de trigo s\'olo contienen algunas pocas hojas. 
-	 Paraf 
-	 clasificar las im\'agenes se us\'o un set de im\'agenes de entrenamiento
+	 Para clasificar las im\'agenes se us\'o un conjunto de im\'agenes de entrenamiento
 	 que fueron clasificadas manualmente seg\'un si conten\'ian 
 	 plantas de papa o no. Luego se entren\'o un 
 	 clasificador de discriminante lineal de Fisher \cite{HastieEtAl2008} para distinguir 
 	 entre im\'agenes que contienen plantas de papa de las que no.\\
-	 \indent Para poner a prueba el algoritmo se tomaron dos sets de 
+	 \indent Para poner a prueba el algoritmo se tomaron dos conjuntos de 
 	 im\'agenes capturando el recorrido del mismo robot aut\'onomo a 
 	 trav\'es de un campo de trigo. La tasa global de error para el 
-	 clasificador fue de 1.5\% en el primer set y 10.6\% en el 
+	 clasificador fue de 1.5\% en el primer conjunto y 10.6\% en el 
 	 segundo. En cuanto al rendimiento en la navegaci\'on, el robot 
 	 fue capaz de recorrer con \'exito 120m de hileras de cultivo con 
 	 una velocidad promedio de $0.67$ m/s. El autor remarc\'o el alto 
@@ -156,7 +155,7 @@ procesamiento de im\'agenes y robots aut\'onomos.
 	 del tipo buscado. Los algoritmos de visi\'on utilizados fueron 
 	 desarrollados usando Matlab con la librer\'ia Delft \cite{DipLib}.
 	 
-	\subsubsection{Review of shape representation and description techinques - Dengsheng Zhang}
+	\subsubsection{Review of shape representation and description techinques \cite{Zhang02}}
 El objetivo de este trabajo es realizar un resumen de las t\'ecnicas m\'as 
 importantes en cuanto a la representaci\'on y descripci\'on de figuras o 
 formas.
@@ -168,14 +167,14 @@ por la figura. Dentro de cada clase se dividen en t\'ecnicas
 estructurales o t\'ecnicas globales de acuerdo a si la figura se 
 representa como un todo o por segmentos y secciones respectivamente. 
 Exhibimos la jerarqu\'ia completa en la figura \ref{fig:review_shape}.\\
-\indent Dentro de la categor\'ia de los basados en contornos, en la sub-categor\'ia de globales, los m\'etodos suelen computar vectores de 
+\indent Dentro de la categor\'ia de los basados en contornos, en la sub-categor\'ia de globales, los m\'etodos suelen calcular vectores de 
 propiedades num\'ericas extra\'idas de la informaci\'on del borde de una 
 figura. La comparaci\'on entre formas se realiza 
-generalmente utilizando m\'etricas de distancia, como la distancia euclideana. Ejemplos de m\'etodos sencillos que caen dentro de esta 
-categor\'ia son \textit{area, circularidad( $perimetro^2 / area$), 
+generalmente utilizando m\'etricas de distancia, como la distancia eucl\'idea. Ejemplos de m\'etodos sencillos que caen dentro de esta 
+categor\'ia son \textit{area, circularidad( $perimetro^2 /$ \textit{\'area}), 
 excentricidad ( longitud del eje mayor / longitud del eje menor)}. Otros m\'etodos 
 de la misma familia pero m\'as complejos son los m\'etodos basados en la correspondencia de puntos. En estos m\'etodos se trata a cada punto como una caracter\'istica de la figura que compone. La distancia de \textit{ Hausdorff} es una t\'ecnica cl\'asica de esta categor\'ia. Dadas dos formas representadas
-por dos sets de puntos $A={x_1,x_2...x_n}$ y $B={y_1,y_2...y_n}$ la distancia Haussdorf se define como 
+por dos conjuntos de puntos $A={x_1,x_2...x_n}$ y $B={y_1,y_2...y_n}$ la distancia Haussdorf se define como 
 \[
 	 d_{\mathrm H}(A,B) = \max\{\,\sup_{x \in A} \inf_{y \in B} d(x,y),\, \sup_{y \in B} \inf_{x \in A} d(x,y)\,\}\mbox{,}
 \] 
@@ -241,7 +240,7 @@ figura en cuesti\'on puede entonces representarse utilizando estas componentes.
 Finalmente la comparaci\'on entre dos contornos representados con esta 
 t\'ecnica resulta en la comparaci\'on de grafos(caracterizando las 
 deficiencias mencionadas) lo cual es otro
-problema a resolver por s\'i mismo. Adem\'as, m\'etodos en esta familia son dif\'iciles y complejos de implementar.\\
+problema a resolver por s\'i mismo. Adem\'as, algunos m\'etodos en esta familia son dif\'iciles y complejos de implementar.\\
 \indent Como conclusi\'on, el autor establece que los m\'etodos basados en contorno son m\'as populares ya que est\'an m\'as relacionados
 a la percepci\'on humana y que para muchas aplicaciones es s\'olo necesario la informaci\'on sobre el contorno y no sobre el interior del mismo.
 Sin embargo, tambi\'en establece que como solo usan parte de una figura, son m\'as sensibles al ruido y peque\~nas variaciones.
@@ -251,12 +250,12 @@ Sin embargo, tambi\'en establece que como solo usan parte de una figura, son m\'
   \includegraphics[scale=0.55]{vision/figures/shapess.png}
 \end{center}
   \caption[T\'ecnicas de descripci\'on de figuras]
-  {Clasificaci\'on de las t\'ecnicas de descripci\'on y representaci\'on de figuras}
+  {Clasificaci\'on de las t\'ecnicas de descripci\'on y representaci\'on de figuras.\cite{Zhang02}}
   \label{fig:review_shape}
 \end{figure}
 
 % sidewalk following
-	\subsubsection{\label{sec:sidewalk} Sidewalk Following Using Color Histograms - John S. Seng}
+	\subsubsection{\label{sec:sidewalk} Sidewalk Following Using Color Histograms \cite{sidewalk2008}}
 	Este trabajo describe un algoritmo  para detectar y seguir 
 	veredas o \'areas transitables en un video filmado, con el objetivo de 
 	lograr la navegaci\'on aut\'onoma de un robot dentro del 
@@ -270,7 +269,7 @@ Sin embargo, tambi\'en establece que como solo usan parte de una figura, son m\'
 	operador a trav\'es de un sistema de radio.\\
 	\indent El algoritmo en cuesti\'on utilizaba histogramas 2D de los 
 	canales de tono y saturaci\'on de los pixeles para modelar las \'areas
-	transitables y las no transitables. Se utilizaba un \'area de 
+	transitables y las no transitables. Se utilizaba un \'area de  
 	entrenamiento ubicada directamente en frente del robot en la cual se 
 	asum\'ia que 
 	no hab\'ian obst\'aculos y conten\'ia pixeles representativos del \'area que 
@@ -285,7 +284,8 @@ Sin embargo, tambi\'en establece que como solo usan parte de una figura, son m\'
 	P_{transitable}= T(h,s)/ ( T(h,s) + NT(h,s))
 	\]
 	donde T y NT son los histogramas que modelan las \'areas transitables
-	y no transitables respectivamente. $P_{transitable}$ se calculaba para 
+	y no transitables respectivamente y donde $T(h,s)$ y $NT(h,s)$ representan la frecuencia relativa de aparición de un
+	pixel con valor $h$ de tono y $s$ de saturación en dichos histogramas. $P_{transitable}$ se calculaba para 
 	los 4 histogramas tomando el m\'aximo de \'estos. Si este \'ultimo ( el 
 	m\'aximo) superaba 
 	cierto umbral entonces se consideraba a dicho pixel como 
@@ -306,13 +306,13 @@ Sin embargo, tambi\'en establece que como solo usan parte de una figura, son m\'
 	
 	
 	
-	\subsubsection{Skin Detection using HSV color space - V. A. Oliveira, A. Conci}
+	\subsubsection{Skin Detection using HSV color space \cite{skin09}}
 	En este art\'iculo se trabaj\'o sobre la detecci\'on de piel en im\'agenes utilizando el espacio de color HSV. El algoritmo propuesto 
 por el autor consiste en el filtrado de los pixeles en base al valor del canal de tonalidad (canal H). Los rangos de valores utilizados para 
 representar el color de la piel fueron obtenidos de otros art\'iculos 
 relacionados. Con el objetivo de eliminar ruido, se aplican filtros morfol\'ogicos y de suavizado, estos son (en este orden) dilataci\'on, erosi\'on y un filtro de mediana. Para los filtros morfol\'ogicos se utilizaron n\'ucleos de 5x5 pixeles mientras que para el filtro de mediana se usaron n\'ucleos de 3x3 pixeles. Finalmente, el autor midi\'o la performance de su algoritmo utilizando im\'agenes de prueba en donde se aprecian distintas zonas con piel aisladas. A partir de estas im\'agenes, se obtuvieron las coordenadas de los pixeles que se corresponden con piel y se las contrast\'o con aquellas que identific\'o el algoritmo. Los resultados presentados para 4 im\'agenes son satisfactorios obteniendo en promedio un porcentaje de falsos negativos cercano al 1\% y de falsos positivos menor al 6\%.
 
-	\subsubsection{Line Detection and Lane Following for an Autonomous Mobile Robot - Andrew Reed Bacha}
+	\subsubsection{Line Detection and Lane Following for an Autonomous Mobile Robot \cite{Bacha05}}
 	En este art\'iculo se describi\'o el software utilizado para uno de los 
 	robots ganadores de la competencia ``Intelligent Ground Vehicle 
 	Competition'' (IGVC) en donde se requiere que los robots naveguen  a trav\'es de un camino delimitado por l\'ineas pintadas sobre c\'esped en un ambiente al aire libre en donde se pueden presentar obst\'aculos. El robot utilizaba una \'unica c\'amara para el sistema de visi\'on y su objetivo era detectar las l\'ineas pintadas 
@@ -357,7 +357,7 @@ pixeles se corresponden con el color buscado, filtrando aquellos
 pixeles que no coinciden con el rango deseado (ver inciso 
 \ref{sec:color}). A su vez, usamos la informaci\'on brindada por los  canales de saturaci\'on y/o brillo para obtener m\'as precisi\'on sobre el color de los pixeles.\\
 	\indent Descartamos los pixeles filtrados en el canal de saturaci\'on 
-	realizando una operaci\'on l\'ogica and bit a bit con la imagen filtrada.  En la siguiente 
+	realizando una operaci\'on l\'ogica AND bit a bit con la imagen filtrada.  En la siguiente 
 	etapa, utilizamos filtros morfol\'ogicos cuyo objetivo es la 
 	eliminaci\'on de ruido. El resultado de aplicar estos filtros resulta 
 	en la expansi\'on de las \'areas donde hay mucha presencia de pixeles de 
@@ -414,8 +414,12 @@ observando su valor en el canal H, sin molestarnos demasiado por las condiciones
 \\ \indent Realizamos la detecci\'on de color verificando los valores 
 correspondientes al canal H (tono) de la representaci\'on HSV de la 
 imagen. Para esto convertimos de la imagen obtenida por la c\'amara  de formato RGB a HSV usando el algoritmo expuesto en la figura \ref{code:hsv}.
+%~ HAY QUE ENCERRAR ESTO EN UNA BOX
+
 \begin{figure}[tpb]
+\begin{center}
 \begin{verbatim}
+
 V=max(R, G, B)
 S=(V-min(R,G,B))*255/V   if V!=0, 0 otherwise
 
@@ -425,7 +429,9 @@ H= 180+(B - R)*60/S,  if V=G
 
 if H<0 then H=H+360
 \end{verbatim}
+
 \caption[Conversi\'on RGB-HSV]{\label{code:hsv}pseudo-c\'odigo de la conversi\'on RGB-HSV}
+\end{center}
 \end{figure}
 
 Obteniendo el canal H, nos fijamos que los valores de los pixeles 
@@ -482,8 +488,8 @@ fondo siempre y cuando el objeto posea un mayor brillo que el fondo en
 el que se encuentra. \'Esto significa que los pixeles correspondientes a 
 un objeto se encontrar\'an por encima de cierto valor caracter\'istico, 
 determinado por el fondo. En nuestro caso \'esto no sucede de \'esta forma ya que no siempre la intensidad o brillo de los objetos supera al fondo en el que se encuentra, por lo cual resulta dif\'icil utilizar esta t\'ecnica. Podemos apreciar un ejemplo de este efecto en la figura \ref{fig:thresh-dif}. \\
-\indent Existen diversas variantes de threshold, los par\'ametros 
-utilizados son $Val$ para indicar el valor umbral y $M$ que indica el 
+\indent Existen diversas variantes de threshold, siendo los par\'ametros 
+utilizados $Val$ para indicar el valor umbral y $M$ para indicar el 
 valor a tomar por los pixeles.
 \begin{itemize}
 \item{ Threshold binario:  Si un pixel se encuentra por encima de $Val$, se le asigna un valor $M$, de otro modo se le asigna $0$.}
@@ -495,9 +501,9 @@ valor a tomar por los pixeles.
 El problema con esta familia de algoritmos es que en todos los casos el 
 valor $Val$ permanece constante para toda la imagen haci\'endolo propenso 
 a errores cuando la imagen presenta diferentes niveles de iluminaci\'on. 
-Una manera de solucionar esto es pre-computando el valor $Val$ para 
+Una manera de solucionar esto es pre-calculando el valor $Val$ para 
 distintas zonas de la imagen como lo hace la 
-t\'ecnica de thresholding adaptativo, que computa el valor de $Val$ a 
+t\'ecnica de thresholding adaptativo, que calcula el valor de $Val$ a 
 medida que recorre la imagen, usando para esto, una ventana cuyo 
 tama\~no es definido por el usuario. Siguiendo esta l\'ogica, se utilizan 
 los valores de los pixeles abarcado por esta ventana para definir un valor 
@@ -579,7 +585,7 @@ Ilustramos esto en las figuras \ref{fig:dilate-sample} y \ref{fig:erode-sample}.
 \begin{center}
   \includegraphics[scale=0.4]{vision/figures/dilate-sample.png}
 \end{center}
-  \caption[Operaci\'on de dilataci\'on]{\small Operaci\'on de dilataci\'on en im\'agenes binarias. Se reemplazan los pixeles no vac\'ios por una copia del elemento estructural con punto principal en esa posici\'on. La cruz indica la posici\'on del punto principal dentro del elemento estructural (ee). Imagen obtenida del curso de visi\'on artificial de la Universidad Polit\'ecnica de Madrid.}
+  \caption[Operaci\'on de dilataci\'on]{\small Operaci\'on de dilataci\'on en im\'agenes binarias. Se reemplazan los pixeles no vac\'ios por una copia del elemento estructural con punto principal en esa posici\'on. La cruz indica la posici\'on del punto principal dentro del elemento estructural (EE). Imagen obtenida del curso de visi\'on artificial de la Universidad Polit\'ecnica de Madrid.}
   \label{fig:dilate-sample}
 \end{figure}
 
@@ -593,7 +599,7 @@ Ilustramos esto en las figuras \ref{fig:dilate-sample} y \ref{fig:erode-sample}.
 
 	\paragraph{Dilataci\'on}
 En im\'agenes no binarias, la operaci\'on de dilataci\'on se define 
-tomando el m\'aximo local bajo el elemento estructural y asign\'andole ese valor al punto principal. El efecto producido es una reducci\'on general en el brillo de la imagen y un probable aumento el tama\~no de las figuras \cite{nasa-dilate-erode}.  Cuando un \'area grande aparece, a causa del ruido, partida en varias componentes, el uso de la operaci\'on de dilataci\'on provoca que  se combinen nuevamente en una sola. Un ejemplo de esto puede ser apreciado en la figura \ref{fig:dilate}. Otro beneficio de utilizar dilataci\'on es la eliminaci\'on del ruido espurio como se aprecia en la figura \ref{fig:dilate-ruido}.
+tomando el m\'aximo local bajo el elemento estructural y asign\'andole ese valor al punto principal. El efecto producido es un aumento general en el brillo de la imagen y un probable aumento el tama\~no de las figuras \cite{nasa-dilate-erode}.  Cuando un \'area grande aparece, a causa del ruido, partida en varias componentes, el uso de la operaci\'on de dilataci\'on provoca que  se combinen nuevamente en una sola. Un ejemplo de esto puede ser apreciado en la figura \ref{fig:dilate}. Otro beneficio de utilizar dilataci\'on es la eliminaci\'on del ruido espurio como se aprecia en la figura \ref{fig:dilate-ruido}.
 
 \begin{figure}[tpb]
 \begin{center}
@@ -619,7 +625,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 \begin{center}
   \includegraphics[scale=0.8]{vision/figures/erosion.png}
 \end{center}
-  \caption[Ejemplo de erosi\'on]{\small Ejemplo de erosi\'on. (a) Captura original. (b) Salida del filtro de color. Se observan fallas en la detecci\'on del objeto. (d) Se aplica la operaci\'on de dilataci\'on a la imagen b. Se observa la producci\'on de protuberancias en la figura del objeto. (c) Salida luego de aplicar erosi\'on a c. La figura del objeto se corrige eliminando parte de las protuberancias. Sin embargo, no se observan fallas en la detecci\'on del objeto. }
+  \caption[Ejemplo de erosi\'on]{\small Ejemplo de erosi\'on. (a) Captura original. (b) Salida del filtro de color. Se observan fallas en la detecci\'on del objeto. (d) Se aplica la operaci\'on de dilataci\'on a la imagen b. Se observa la producci\'on de protuberancias en la figura del objeto. (c) Salida luego de aplicar erosi\'on a la imagen d. La figura del objeto se corrige eliminando parte de las protuberancias. Sin embargo, no se observan fallas en la detecci\'on del objeto. }
   \label{fig:erode}
 \end{figure}
 
@@ -633,7 +639,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 	uso de los algoritmos explicados en esta sub-secci\'on.
 	
 	\paragraph{Algoritmo} 
-	Recordemos que las im\'agenes binarias se caracterizan por tener solo 
+	Recordemos que las im\'agenes binarias se caracterizan por tener s\'olo 
 	dos tipos de pixeles, los que tienen un valor de $0$ y los que tienen 
 	un valor mayor a 0. Denominamos a estos pixeles como 
 	0-pixeles o 1-pixeles respectivamente. Decimos que un conjunto de 
@@ -756,7 +762,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 \end{center}
   \caption[Aproximaci\'on de contornos mediante pol\'igonos]{\small Aproximaci\'on de contornos mediante pol\'igonos. (a) Se observa que el contorno se encuentra acorde el borde del vaso, las
   partes laterales del mismo se encuentran segmentadas (efecto serrucho) por la cantidad de puntos. (b) El contorno es representado mediante
-  8 puntos, los lados laterales solo involucran un segmento posibilitando la detecci\'on de l\'ineas.}
+  8 puntos, los lados laterales s\'olo involucran un segmento posibilitando la detecci\'on de l\'ineas.}
   \label{fig:polyVasos}
 \end{figure}
 
@@ -766,7 +772,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 \end{center}
   \caption[Algoritmo de aproximaci\'on de pol\'igonos]{\small Iteraciones del algoritmo de aproximaci\'on de pol\'igonos de Douglas-Peucker. (a) Imagen original. (b) Extracci\'on de contorno
   (c) Se seleccionan dos puntos iniciales y se traza una l\'inea entre ellos (d) Se agrega a la aproximaci\'on el punto m\'as lejano del contorno a esta l\'inea.
-  (e) Se repite el proceso agregando siempre el punto m\'as lejano (f) hasta que todos los puntos est\'en a cierta distancia requerida.}
+  (e) Se repite el proceso agregando siempre el punto m\'as lejano (f) hasta que todos los puntos est\'en a cierta distancia requerida. Imagen extra\'ida del libro \textit{Learning openCV}\cite{lopencv}}
   \label{fig:polyaprox}
 \end{figure}
 
@@ -785,7 +791,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 	el \'area que abarca un contorno determina f\'acil y r\'apidamente si un contorno corresponde a una colilla o a un plato evitando la ejecuci\'on
 	de filtros m\'as espec\'ificos. En la figura \ref{fig:desc} se exhiben 
 	los valores obtenidos por algunos de los filtros que detallamos a 
-	continuaci\'on:
+	continuaci\'on.
 	\paragraph{Filtro de \'area}
 	El filtro de \'area calcula el \'area encerrada por un contorno y verifica que la misma se encuentre por encima y/o por debajo
 	de valores determinados. El \'area encerrada por un contorno se computa utilizando la formula de Green \cite{greenwolfram}.
@@ -794,7 +800,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 	\paragraph{Filtro de \'area por zona}
 	Un objeto que posee un \'area determinada puede ocupar m\'as o menos pixeles dependiendo de su ubicaci\'on en la imagen. Este se debe a la 
 	perspectiva de la c\'amara y puede afectar al reconocimiento de un contorno. Para contemplar esta variaci\'on se pueden establecer distintas
-	zonas en la imagen y definir distintos valores de \'area m\'inimos y m\'aximo para cada una de ellas. En la figura 
+	zonas en la imagen y definir distintos valores de \'area m\'inimos y m\'aximos para cada una de ellas. En la figura 
 	\ref{fig:distancias_imagen} podemos apreciar las diferencia entre las distintas zonas de la imagen. 
 	Al ejecutarse este filtro se calcula la
 	zona a la cual pertenece dependiendo de su ubicaci\'on en la imagen y se verifican los valores para dicha zona, si este los satisface entonces
@@ -849,7 +855,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 	que $14 \leq circ \leq 18$. El filtro de vasos no es parametrizado. 
 	
 	\subsubsection{Reconocimiento de colillas}
-	Para el reconocimiento de vasos se utilizan(en este orden) los filtros de \'area, per\'imetro y \'area rectangular.
+	Para el reconocimiento de colillas se utilizan(en este orden) los filtros de \'area, per\'imetro y \'area rectangular.
 	El filtro de \'area verifica que $50 \leq area \leq 800 $, el de per\'imetro que $10 \leq per \leq 150 $ y el de \'area rectangular
 	que sea cubierto el $70\%$ del \'area del rect\'angulo contenedor m\'inimo.
 	
@@ -862,7 +868,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 	El centroide es el centro geom\'etrico o centro de 
 	gravedad de una figura y 
 	sirve como punto de referencia para la misma. Para calcular dicho 
-	punto hacemos uso de las formulas propuestas por Hu \cite{Hu1962} para la 
+	punto hacemos uso de las f\'ormulas propuestas por Hu \cite{Hu1962} para la 
 	descripci\'on de figuras. El momento de Hu de un contorno 2D se define como:
 	\begin{equation}
 		m_{pq}=\sum_{x}{\sum_{y}{x^py^qI(x,y)}}
