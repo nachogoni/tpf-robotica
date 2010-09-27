@@ -539,12 +539,21 @@ descarga de basura} en 3 comportamientos m\'as simples: \emph{Buscar l\'inea},
 \label{find_line}
 Inicialmente hab\'iamos dispuesto las l\'ineas de forma tal que sigan los
 l\'imites de la arena. Entonces para buscar la l\'inea tuvimos que calcular
-para cada una cu\'al es la distancia hacia la misma, luego elegir ir a la
+para cada una cu\'al es la distancia hacia la misma y luego elegir ir a la
 que menor distancia se encontraba. \'Esta implementaci\'on, adem\'as de ser
-costosa, ten\'ia un problema: a veces suced\'ia que al ir hacia una l\'inea,
-la distancia hacia otra pasaba a ser m\'as corta y \'esta \'ultima pod\'ia
-estar m\'as lejos de la zona de recarga que la primera.
-\\\indent
+costosa, ten\'ia un problema: a veces suced\'ia que al elegir ir hacia la
+l\'inea m\'as cercana, el robot recorr\'ia m\'as distancia para llegar a la
+zona de recarga que si hubiera elegido otra l\'inea. Un ejemplo de \'esta
+situaci\'on se puede observar en la figura \ref{fig:arenainicial}.
+
+\begin{figure}[htp]
+\begin{center}
+\includegraphics[scale=0.85]{comportamientos/figures/arenawithalllinesRotatedUse.png}
+\caption{Primer aproximaci\'on de la arena de simulaci\'on}
+\label{fig:arenainicial}
+\end{center}
+\end{figure}
+
 Luego repensamos el problema y nos dimos cuenta que el objetivo era llegar a la
 zona de descarga, por lo que decidimos dejar s\'olo 2 las l\'ineas que se
 encuentran a la misma distancia, como se puede apreciar en la figura
@@ -593,9 +602,9 @@ por cada paso
     angulo_actual = obtener_angulo_actual(odometria)
     si esta_en_un_entorno_de(angulo_actual, PI/2) entonces
         si angulo_actual > PI/2 && angulo_actual < 3PI/2 entonces
-            giro_para_la_derecha
+            giro_sentido_horario
         sino
-            giro_para_la_izquierda
+            giro_sentido_antihorario
         fin si
     sino
         voy_hacia_linea
@@ -608,7 +617,7 @@ la derecha dependiendo cual sea el caso. Para ver esto m\'as claramente,
 veamos que sucediese si no estuviera:
 \begin{verbatim}
     si esta_en_un_entorno_de(angulo_actual,PI/2) entonces
-        giro_para_la_izquierda
+        giro_sentido_antihorario
     sino
 \end{verbatim}
 En el caso que el angulo actual sea $\pi$, el robot girar\'ia un total de
@@ -685,8 +694,8 @@ la izquierda, o $-\theta$ en el otro caso.
 \includegraphics[scale=0.4]{comportamientos/figures/floorSensorsLine2.png}
 \caption[Posibles estados iniciales de ``Entrar a la l\'inea'']{Posibles
 		estados iniciales de ``Entrar a la l\'inea''. En el caso (a) el
-		robot debe girar hacia la derecha. En el caso (b), el robot debe
-		girar hacia la izquierda. En el caso (c) el robot no debe girar}
+		robot debe girar en sentido horario. En el caso (b), el robot debe
+		girar en sentido anti-horario. En el caso (c) el robot no debe girar}
 \label{fig:floorSensorsInitialStates}
 \end{center}
 \end{figure}
@@ -707,9 +716,10 @@ la l\'inea, se recorre una distancia de $Fsd$ en el caso que el robot no haya
 girado anteriormente o $Fsl$ en el caso que s\'i lo haya hecho. El motivo de
 realizar este trayecto es que el centro del robot quede sobre la l\'inea, como
 muestra la figura \ref{fig:positioned}. De \'esta forma s\'olo queda girar
-nuevamente hacia el \'angulo que se quiera. Si la l\'inea es la izquierda
-entonces el robot deber\'a girar hasta que su orientaci\'on sea $0$ o $\pi$ en
-el caso que la l\'inea sea la derecha.
+nuevamente hacia el \'angulo que se quiera. Si la l\'inea est\'a marcada a la
+izquierda en la arena (Ver figura \ref{fig:arenafinal}) entonces el robot
+deber\'a girar hasta que su orientaci\'on sea $0$ o $\pi$ en el caso que la
+l\'inea sea la derecha.
 
 \begin{figure}[htp]
 \begin{center}
@@ -726,7 +736,7 @@ l\'inea, s\'olo basta con seguirla para llegar hacia la zona deseada. Este
 comportamiento es sencillo de desarrollar.
 
 \subparagraph{Detalle del comportamiento}
-Para lograr que el robot siga la l\'inea debemos es tratar de mantener
+Para lograr que el robot siga la l\'inea debemos tratar de mantener
 s\'olo el sensor del medio sobre la l\'nea. Entonces, basta con analizar que se
 debe hacer en los siguientes casos:
 \begin{enumerate}
@@ -762,12 +772,14 @@ del robot, con la misma idea del servo en el frente utilizado para
 recolectar.
 
 \paragraph{Detalle del comportamiento}
+
 Para descargar la basura el robot debe posicionarse de forma tal que la
 compuerta de descarga quede adyacente a la zona. Dado que para llegar a la
 misma el robot sigui\'o la l\'inea, al finalizar va a estar orientado con un
 \'angulo en un entorno de $\frac{\pi}{2}$ mirando la zona de descarga. Como el
 servo de descarga se encuentra en la parte trasera, deber\'a realizar un giro
-de aproximadamente $\pi$ para luego poder descargar la basura.
+de $\pi$ para luego poder descargar la basura.
+
 \paragraph{Implementaci\'on del comportamiento}
 \begin{verbatim}
     posicionarse()
