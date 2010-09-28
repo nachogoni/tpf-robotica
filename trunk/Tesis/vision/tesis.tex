@@ -284,8 +284,8 @@ Sin embargo, tambi\'en establece que como solo usan parte de una figura, son m\'
 	P_{transitable}= T(h,s)/ ( T(h,s) + NT(h,s))
 	\]
 	donde T y NT son los histogramas que modelan las \'areas transitables
-	y no transitables respectivamente y donde $T(h,s)$ y $NT(h,s)$ representan la frecuencia relativa de aparición de un
-	pixel con valor $h$ de tono y $s$ de saturación en dichos histogramas. $P_{transitable}$ se calculaba para 
+	y no transitables respectivamente y donde $T(h,s)$ y $NT(h,s)$ representan la frecuencia relativa de aparici\'on de un
+	pixel con valor $h$ de tono y $s$ de saturaci\'on en dichos histogramas. $P_{transitable}$ se calculaba para 
 	los 4 histogramas tomando el m\'aximo de \'estos. Si este \'ultimo ( el 
 	m\'aximo) superaba 
 	cierto umbral entonces se consideraba a dicho pixel como 
@@ -828,7 +828,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 	el \'area seg\'un la f\'ormula $A=\pi a  b$ y se la compara con la 
 	obtenida a trav\'es del filtro de \'area. Se computa como $|A-AReal|/ 
 	AReal < p$ donde p determina el
-	valor de verosimilitud. Un valor de $p$ más chico exige mayor 
+	valor de verosimilitud. Un valor de $p$ m\'as chico exige mayor 
 	semejanza entre el contorno y una elipse. Si estas dos \'areas son lo suficientemente similares consideramos que el contorno supera el filtro. 
 	Para el ajuste de elipse se utiliza el algoritmo Fitzgibbon, Pilu y Fisher \cite{Fitzgibbon99}.
 	\paragraph{Filtro de vaso}
@@ -937,7 +937,7 @@ detecci\'on m\'as reciente del sistema de visi\'on.}
 \item{ Desplazamiento en la posici\'on - Si el objeto es detectado m\'as 
 de una vez, se almacena el \'ultimo desplazamiento en la posici\'on $(x_i - 
 x_{i-1}, y_i - y_{i-1} )$.}
-\item{ Antigüedad de la \'ultima detecci\'on - Cantidad de cuadros que transcurrieron desde la \'ultima detecci\'on por parte del sistema de visi\'on.}  
+\item{ Antig\"uedad de la \'ultima detecci\'on - Cantidad de cuadros que transcurrieron desde la \'ultima detecci\'on por parte del sistema de visi\'on.}  
 \end{itemize}
 Esta informaci\'on no s\'olo permite corregir al sistema de visi\'on 
 cuando este no detecta un objeto sino que tambi\'en podemos corregirlo 
@@ -1119,7 +1119,7 @@ persistido hace m\'as cuadros seg\'un el sistema de predicci\'on.}
 \item{ Combinaci\'on ponderada - Se utilizan los  criterios mencionados d\'andoles mayor o menor peso a cada uno y eligiendo al objeto que obtenga mayor puntuaci\'on.}
 \end{itemize}
 Pensamos todos los criterios con el objetivo de maximizar las chances 
-de que el robot tenga \'exito en la recolecci\'on del objeto. El criterio de menor distancia implica un menor recorrido hacia el objeto y por lo tanto menos posibilidades de cometer error durante el recorrido. Si utilizamos el criterio de mayor detecci\'on en los \'ultimos 20 cuadros estamos maximizando las chances de que el sistema de visi\'on detecte al objeto durante el trayecto del robot hacia el mismo. Con un razonamiento similar, el criterio de mayor antigüedad maximiza las chances de que el sistema de visi\'on detecte al objeto pero utilizando informaci\'on m\'as general y no tan local como el resultado de los \'ultimos cuadros. Previo a la focalizaci\'on es necesario alimentar al sistema de predicci\'on ya que sin este, no es posible utilizar ninguno de los criterios mencionados.\\ 
+de que el robot tenga \'exito en la recolecci\'on del objeto. El criterio de menor distancia implica un menor recorrido hacia el objeto y por lo tanto menos posibilidades de cometer error durante el recorrido. Si utilizamos el criterio de mayor detecci\'on en los \'ultimos 20 cuadros estamos maximizando las chances de que el sistema de visi\'on detecte al objeto durante el trayecto del robot hacia el mismo. Con un razonamiento similar, el criterio de mayor antig\"uedad maximiza las chances de que el sistema de visi\'on detecte al objeto pero utilizando informaci\'on m\'as general y no tan local como el resultado de los \'ultimos cuadros. Previo a la focalizaci\'on es necesario alimentar al sistema de predicci\'on ya que sin este, no es posible utilizar ninguno de los criterios mencionados.\\ 
 	\indent Una vez que seleccionamos el objeto, utilizamos el sistema de 
 	predicci\'on para dar cuenta de la posici\'on del mismo. Con esta 
 	informaci\'on, tomamos sub-im\'agenes (ventanas) de la captura original 
