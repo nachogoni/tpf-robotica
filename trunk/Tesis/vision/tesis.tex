@@ -342,7 +342,7 @@ de im\'agenes utilizado. \'Estas se pueden separar en una etapa de
 pre-procesamiento donde realizamos un tratamiento de la imagen obtenida 
 para resaltar las caracter\'isticas de inter\'es y  una segunda etapa 
 donde extraemos estas caracter\'isticas para interpretarlas y buscar 
-los objetos residuales en las im\'agenes.
+los residuos en las im\'agenes.
 
 \subsubsection{Estructura general}
 La figura \ref{fig:alg_steps} ilustra las etapas del algoritmo. 
@@ -418,18 +418,18 @@ imagen. Para esto convertimos de la imagen obtenida por la c\'amara  de formato 
 
 \begin{figure}[tpb]
 \begin{center}
-\begin{verbatim}
+  \includegraphics[scale=0.6]{vision/figures/hsvCode.png}
+%~ \begin{verbatim}
 
-V=max(R, G, B)
-S=(V-min(R,G,B))*255/V   if V!=0, 0 otherwise
+%~ V=max(R, G, B)
+%~ S=(V-min(R,G,B))*255/V   if V!=0, 0 otherwise
 
-       (G - B)*60/S,  if V=R
-H= 180+(B - R)*60/S,  if V=G
-   240+(R - G)*60/S,  if V=B
+       %~ (G - B)*60/S,  if V=R
+%~ H= 180+(B - R)*60/S,  if V=G
+   %~ 240+(R - G)*60/S,  if V=B
 
-if H<0 then H=H+360
-\end{verbatim}
-
+%~ if H<0 then H=H+360
+%~ \end{verbatim}
 \caption[Conversi\'on RGB-HSV]{\label{code:hsv}pseudo-c\'odigo de la conversi\'on RGB-HSV}
 \end{center}
 \end{figure}
@@ -749,7 +749,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 	apreciar una esquematizaci\'on de este proceso.\\
 	\indent Otra ventaja que 
 	otorga la utilizaci\'on de esta aproximaci\'on es que si un contorno 
-	presenta una serie de puntos alineados, estos ser\'an remplazados por 
+	presenta una serie de puntos alineados, estos ser\'an reemplazados por 
 	un \'unico segmento o lado del pol\'igono, lo que nos permite 
 	identificar l\'ineas en los contornos. Esta caracter\'istica es 
 	aprovechada para realizar la detecci\'on de vasos como se ve en la  
@@ -772,7 +772,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 \end{center}
   \caption[Algoritmo de aproximaci\'on de pol\'igonos]{\small Iteraciones del algoritmo de aproximaci\'on de pol\'igonos de Douglas-Peucker. (a) Imagen original. (b) Extracci\'on de contorno
   (c) Se seleccionan dos puntos iniciales y se traza una l\'inea entre ellos (d) Se agrega a la aproximaci\'on el punto m\'as lejano del contorno a esta l\'inea.
-  (e) Se repite el proceso agregando siempre el punto m\'as lejano (f) hasta que todos los puntos est\'en a cierta distancia requerida. Imagen extra\'ida del libro \textit{Learning openCV}\cite{lopencv}}
+  (e) Se repite el proceso agregando siempre el punto m\'as lejano (f) hasta que todos los puntos est\'en a cierta distancia requerida. Imagen extra\'ida del libro \textit{Learning OpenCV}\cite{lopencv}}
   \label{fig:polyaprox}
 \end{figure}
 
@@ -820,7 +820,7 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 	caracterizarse por tener valores de circularidad que se mantienen en cierto rango y permite identificarlas usando este filtro.
 	\paragraph{Filtro de \'area rectangular}
 	El filtro de \'area rectangular relaciona el \'area del objeto con el \'area del rect\'angulo contenedor m\'inimo. Este verifica que el \'area
-	del contorno cubra en gran parte el \'area del rect\'angulo. Esto se logra mediante la divisi\'on $(area contorno / area rectangulo)> p$, donde 
+	del contorno cubra en gran parte el \'area del rect\'angulo. Esto se logra mediante la divisi\'on $ area contorno / area rectangulo)> p$, donde 
 	$p$ es el porcentaje de \'area que queremos que sea cubierto.
 	\paragraph{Filtro de elipse}
 	El filtro de elipse verifica que un contorno determinado se ajuste o no a una elipse. Esto se logra usando un algoritmo basado 
@@ -828,11 +828,11 @@ En im\'agenes no binarias, la operaci\'on de erosi\'on se define tomando el m\'i
 	el \'area seg\'un la f\'ormula $A=\pi a  b$ y se la compara con la 
 	obtenida a trav\'es del filtro de \'area. Se computa como $|A-AReal|/ 
 	AReal < p$ donde p determina el
-	valor de verosimilitud. Un valor de $p$ mas chico significa mayor 
-	semejanza con una elipse. Si estas dos \'areas son lo suficientemente similares consideramos que el contorno supera el filtro. 
+	valor de verosimilitud. Un valor de $p$ más chico exige mayor 
+	semejanza entre el contorno y una elipse. Si estas dos \'areas son lo suficientemente similares consideramos que el contorno supera el filtro. 
 	Para el ajuste de elipse se utiliza el algoritmo Fitzgibbon, Pilu y Fisher \cite{Fitzgibbon99}.
 	\paragraph{Filtro de vaso}
-	El filtro para vasos consiste en varias etapas. Recordando que el contorno se codifica como un pol\'igono, se obtienen los dos segmentos 
+	El filtro para vasos consiste de varias etapas. Recordando que el contorno se codifica como un pol\'igono, se obtienen los dos segmentos 
 	m\'as largos y se verifica que estos no compartan v\'ertices. Por otro lado se pide que la suma de la longitud de estos dos segmentos supere al $50\%$ del 
 	per\'imetro del contorno, indicado por dicho filtro. Finalmente, se verifica que la distancia m\'inima entre estos dos ejes sea mayor a cierto valor prefijado, proporcional a la
 	longitud del segmento m\'as largo. El filtro se basa en la idea de que 
@@ -922,9 +922,9 @@ el cuadro siguiente $c_1$ con coordenadas $(x_1, y_1)$ tal que
 $||(x_1,y_1) - (x_0,y_0)||\leq \alpha$, \'area $a'$ tal que $|a-a'| \leq 
 \gamma *a$ y per\'imetro $p'$ tal que $|p-p'|\leq \theta*p$ entonces $A 
 \simeq A'$, donde $\alpha$, $\gamma$ y $\theta$ son par\'ametros del 
-sistema. Esta afirmaci\'on no solo vale para el cuadro subsiguiente 
+sistema. Esta afirmaci\'on no s\'olo vale para el cuadro subsiguiente 
 $c_1$ sino tambi\'en para los siguientes $c_2,c_3 ... c_{0+\eta}$ donde 
-$\eta$ y $\alpha$ se computan, para este caso, seg\'un el 
+$\eta$ y $\alpha$ se calculan, para este caso, seg\'un el 
 historial de detecci\'on de cada objeto.  Bas\'andose en esta regla, el 
 sistema de predicci\'on puede estimar la posici\'on de un objeto que, 
 para un cuadro en particular, no fue detectado por el sistema de 
@@ -974,7 +974,7 @@ objeto de inter\'es y utilizamos la regla 1 para eliminar dicha detecci\'on. \\
 	Una vez ganada la confianza del sistema de predicci\'on, este 
 	\'ultimo comienza a tener a estos objetos en consideraci\'on 
 	\footnote{Decimos que el sistema de predicci\'on considera a un 
-	objeto cuando este empieza a informar la posici\'on de este dentro de la 
+	objeto cuando este empieza a informar su posici\'on en la 
 	imagen. N\'otese que, para un cuadro determinado, el sistema de 
 	visi\'on puede detectar un objeto y el sistema de predicci\'on, como 
 	todav\'ia no considera a dicho objeto, ignora la detecci\'on y no informa de su 
@@ -984,7 +984,7 @@ el sistema cree en la existencia de estos objetos se regula de
 acuerdo al historial de apariciones de los mismos. Si estos abusan de 
 la confianza otorgada entonces el sistema de predicci\'on los descarta 
 como indica la regla 2. 
-Este grado de confianza o de libertad se traduce en cantidad de 
+Este grado de confianza se traduce en cantidad de 
 cuadros que puede pasar un objeto sin ser detectado por el sistema de 
 visi\'on y siendo considerado por el sistema de predicci\'on. Dicho 
 n\'umero se determina peri\'odicamente utilizando la f\'ormula de la regla 3.
@@ -1002,7 +1002,7 @@ $\alpha$ definimos un valor aproximado de 30 pixeles\footnote{ El
 valor de 30 pixeles nos di\'o resultados para im\'agenes de 640x480, para 
 otras resoluciones habr\'ia que buscar el equivalente.}. Sin embargo, la 
 tolerancia en el desplazamiento var\'ia seg\'un los cuadros transcurridos desde la \'ultima 
-detecci\'on. Si en el cuadro anterior fue detectado entonces se utiliza 
+detecci\'on. Si en el cuadro anterior un objeto fue detectado entonces se utiliza 
 $\alpha$, si fue detectado hace dos cuadros entonces $2\alpha$, tres 
 cuadros $3\alpha$ y as\'i. La variable $\delta$ establece el umbral de 
 detecci\'on de un objeto por parte del sistema de visi\'on para que el 
@@ -1017,7 +1017,7 @@ sistema de visi\'on debe reconocer un objeto $\delta -1$ veces antes de que sea
 tenido en consideraci\'on por el sistema de predicci\'on y, en este lapso, las 
 detecciones ser\'an ignoradas\footnote{El sistema de predicci\'on ignora 
 una detecci\'on del sistema de visi\'on en el sentido de que este primero 
-no informa a dicha detecci\'on como un objeto residual encontrado para 
+no informa a dicha detecci\'on como un objeto de inter\'es encontrado para 
 ese cuadro, sino que s\'olo registra dicha detecci\'on para 
 cuadros futuros.}. Sin embargo, las apariciones no sostenidas 
 (de hasta $\delta -1$ cuadros) de elementos que aparentan ser objetos 
@@ -1025,8 +1025,8 @@ para el sistema de visi\'on pero no lo son, son tambi\'en ignoradas,
 disminuyendo el porcentaje de falsos negativos.\\
 \indent La variable $\rho$, en cambio, establece otro tipo de balance. 
 Supongamos que un objeto que tiene un historial de detecci\'on 
-positivo repentinamente deja de ser detectado, debido a una oclusi\'on 
-o un cambio en la ilumniaci\'on, por el sistema de visi\'on 
+positivo repentinamente deja de ser detectado (debido a una oclusi\'on 
+o un cambio en la ilumniaci\'on) por el sistema de visi\'on 
 pero permanece en el campo de visi\'on del robot. En esta 
 circunstancia, el sistema de predicci\'on 
 arriesgar\'a la posici\'on (hasta $\rho$ veces) pudi\'endole acertar o no hasta que el objeto 
@@ -1053,7 +1053,7 @@ detecci\'on del sistema de visi\'on y valores de $\delta$, m\'as bien
 peque\~nos, para no entorpecer la detecci\'on. Es importante remarcar 
 que el bajo porcentaje de falsos positivos, en este caso, nos 
 permite confiar en el sistema de visi\'on en el sentido de que las cosas que 
-este detecte tienen altas probabilidades de ser objetos. \\
+este detecte tienen altas probabilidades de ser objetos de inter\'es. \\
 \indent En el caso rec\'iproco, un sistema de visi\'on con alto 
 porcentaje de falsos negativos y bajo porcentaje de falsos 
 positivos quiz\'as convenga tener un valor de $\delta$ alto, para 
@@ -1064,7 +1064,7 @@ buscar un balance.\\
 \indent Otra posibilidad es que el sistema de visi\'on sea muy 
 confiable (bajo porcentaje de falsos positivos/negativos). En 
 esta situaci\'on conviene configurar al sistema de predicci\'on para 
-que haga m\'as caso de lo que el sistema de visi\'on le informa. Esto 
+que haga m\'as caso acerca de lo que el sistema de visi\'on le informa. Esto 
 significa que cuando el sistema de visi\'on no encuentra un objeto 
 el sistema de predicci\'on no debe arriesgar mucho ya que el objeto 
 probablemente no se encuentre. Asimismo, unas pocas detecciones de 
@@ -1181,8 +1181,8 @@ usuario. Para obtener estad\'isticas sobre la performance
 medimos los siguientes par\'ametros:
 \begin{itemize}
 \item { Cantidad de objetos a detectar \textbf{(\#O)}: Se corresponde con la cantidad de rect\'angulos marcados por el usuario}
-\item { Hits\textbf{(H)} : Cantidad de detecciones por parte del algoritmo que se corresponden con rect\'angulos marcados.}
-\item { Misses o detecciones falsas \textbf{(M)} : Cantidad de detecciones por parte del algoritmo que no se corresponden con rect\'angulos marcados.}
+\item { Aciertos\textbf{(H)} : Cantidad de detecciones por parte del algoritmo que se corresponden con rect\'angulos marcados.}
+\item { Fallas o detecciones falsas \textbf{(M)} : Cantidad de detecciones por parte del algoritmo que no se corresponden con rect\'angulos marcados.}
 \end{itemize}
 Se desprende directamente, de estos valores, que la cantidad de detecciones: 
 \textbf{$\#D=H+M$} .
@@ -1203,7 +1203,7 @@ acertadas \textbf{G\&H}.
 
 \subsubsection{An\'alisis}
 Exhibimos los resultados obtenidos tras utilizar s\'olo el sistema de 
-visi\'on en el cuadro \ref{tab:result} e utilizando el sistema de 
+visi\'on en el cuadro \ref{tab:result} y utilizando el sistema de 
 visi\'on con el sistema de predicci\'on, utilizando dos configuraciones 
 distintas, en 
 los cuadros \ref{tab:pred} y  \ref{tab:pred_2}. Adem\'as exhibimos los 
@@ -1216,7 +1216,7 @@ sistema de predicci\'on. \'Estas son:
 \item{\textbf{Configuraci\'on 1:} $\lambda=10$, $\rho=10$, $\delta=3$}
 	\item{\textbf{Configuraci\'on 2:} $\lambda=10$, $\rho=4$, $\delta=2$}
 \end{itemize}
-\indent En los resultados arrojados en el cuadro \ref{tab:result} 
+\indent En los resultados mostrados por el cuadro \ref{tab:result} 
 (s\'olo por el sistema de visi\'on) observamos problemas en la  detecci\'on de colillas ya que posee altos 
 porcentajes de falsos negativos. Esto indica que el detector, en el 
 caso de las colillas, tiene
@@ -1229,7 +1229,7 @@ predicci\'on observamos una gran reducci\'on de este porcentaje producto
 del filtrado realizado por dicho sistema el cual no considera una 
 basura hasta que esta est\'e presente en $\delta$ cuadros consecutivos.  
 Esta mejora viene acompa\~nada de efecto negativos ya que la cantidad de 
-hits se ve afectada pero con menor intensidad. Esto prueba que el 
+aciertos se ve afectada pero con menor intensidad. Esto prueba que el 
 filtrado realizado es efectivo ya que elimina, sobre el total de las 
 detecciones, en mayor proporci\'on a 
 aquellas que son falsas. El cuadro \ref{tab:evo_colillas} exhibe las ventajas de utilizar un sistema de 
@@ -1286,7 +1286,7 @@ el objetivo de minimizar errores de tipo II ( falsos negativos) o
 viceversa. En ese sentido el sistema de predicci\'on proporciona los mecanismos que 
 permiten lograr estos ajustes sin necesidad de modificar el algoritmo de detecci\'on 
 subyacente. Para nuestro caso, por lo explicado en \ref{comp_conclusion}, priorizamos 
-la disminuci\'on en los errores de tipo I frente a los de tipo II y ,por lo tanto, configurar\'iamos
+la disminuci\'on en los errores de tipo I frente a los de tipo II y, por lo tanto, configurar\'iamos
 el sistema de predicci\'on acorde.\\
 \indent En cuanto al tiempo de procesamiento demandado por el algoritmo obtuvimos, en la notebook
 cuyas caracteristicas explicamos en la secci\'on \ref{h_controlador_netbook},
@@ -1346,6 +1346,7 @@ complejidad del algoritmo una vez que se enfoca un residuo.
 %~ Sin embargo, en el caso de las colillas, el predictor si impacto en la cantidad de hits por lo que no se observa un 
 %~ cambio del todo favorable respecto de la configuraci\'on anterior.\\
 \begin{table}[htb]
+\begin{center}
   \begin{tabular}{|l | c | c | c | c | c | c |}
 	\hline  
 	\textbf{Video} & \textbf{(\#O)} &  \textbf{(\#D)} & \textbf{(H)} & 
@@ -1365,10 +1366,12 @@ complejidad del algoritmo una vez que se enfoca un residuo.
 	\hline
 	\end{tabular}
 	\caption[Performance del algoritmo de visi\'on]{\label{tab:result} Performance del sistema sin el algoritmo de predicci\'on}
+	\end{center}
 \end{table}
 
 %Con predicci\'on
 \begin{table}[htb]
+\begin{center}
   \begin{tabular}{|l | c | c | c | c | c | c | c | c |}
 	\hline  
 	\textbf{Video} & \textbf{(\#O)} &  \textbf{(\#D)} & \textbf{(H)} & \textbf{(M)} & \textbf{fp} & \textbf{fn} & \textbf{G} & \textbf{G\&H} \\
@@ -1388,9 +1391,11 @@ complejidad del algoritmo una vez que se enfoca un residuo.
 	\end{tabular}
 	\caption[Performance con sistema de predicci\'on configuraci\'on 1]{\label{tab:pred} Performance del sistema con el sistema de predicci\'on para 
 	$\lambda=10$, $\rho=10$, $\delta=3$ }
+	\end{center}
 \end{table}
 
 \begin{table}[htb]
+\begin{center}
   \begin{tabular}{|l | c | c | c | c | c | c | c | c |}
 	\hline  
 	\textbf{Video} & \textbf{(\#O)} &  \textbf{(\#D)} & \textbf{(H)} & \textbf{(M)} & \textbf{fp} & \textbf{fn} & \textbf{G} & \textbf{G\&H} \\
@@ -1410,9 +1415,11 @@ complejidad del algoritmo una vez que se enfoca un residuo.
 	\end{tabular}
 	\caption[Performance con sistema de predicci\'on configuraci\'on 2]{\label{tab:pred_2} Performance del sistema con el sistema de predicci\'on con
 	$\lambda=10$, $\rho=4$, $\delta=2$}
+	\end{center}
 \end{table}
 
 \begin{table}[h]
+\begin{center}
   \begin{tabular}{|l | c | c | c | c | c|}
 	\hline  
 	\textbf{Configuraci\'on} & \textbf{$\bar{fp}$} &  
@@ -1428,9 +1435,11 @@ complejidad del algoritmo una vez que se enfoca un residuo.
 	\end{tabular}
 	\caption[Performance promedio de las colillas]{\label{tab:evo_colillas} Performance promedio de las colillas 
 	por configuraci\'on y  efectividad de las estimaciones del sistema de predicci\'on}
+	\end{center}
 \end{table}
 
 \begin{table}[h]
+\begin{center}
   \begin{tabular}{|l | c | c | c | c | c|}
 	\hline
 	\textbf{Configuraci\'on} & \textbf{$\bar{fp}$} &  \textbf{$\bar{fn}$}& \textbf{G} &  \textbf{G\&H} &  \textbf{G\&H/G} \\
@@ -1445,11 +1454,12 @@ complejidad del algoritmo una vez que se enfoca un residuo.
 	\end{tabular}
 	\caption[Performance promedio de los vasos]{\label{tab:evo_vasos} Performance promedio de los vasos seg\'un configuraci\'on del 
 	sistema y efectividad de las estimaciones del sistema de predicci\'on}
+\end{center}
 \end{table}
 
 
-
 \begin{table}[h]
+\begin{center}
   \begin{tabular}{|l | c | c | c | c | c|}
 	\hline
 	\textbf{Configuraci\'on} & \textbf{$\bar{fp}$} &  \textbf{$\bar{fn}$}& \textbf{G} &  \textbf{G\&H} &  \textbf{G\&H/G} \\
@@ -1464,6 +1474,7 @@ complejidad del algoritmo una vez que se enfoca un residuo.
 	\end{tabular}
 	\caption[Performance promedio de los platos]{\label{tab:evo_platos} Performance promedio de los platos seg\'un configuraci\'on del 
 	sistema y efectividad de las estimaciones del sistema de predicci\'on}
+\end{center}
 \end{table}
 
 
@@ -1499,7 +1510,7 @@ algoritmo. La utilizaci\'on de dichas t\'ecnicas pueden servir para
 la caracterizaci\'on de nuevos objetos a reconocer o bien para reforzar 
 los objetos ya tratados. Por otro lado, hallamos al sistema de filtros 
 en cascada un tanto limitado para la tarea propuesta ya que frente a 
-peque\~nas perturbaciones que provoquen que un \'unico filtro rechaze un 
+peque\~nas perturbaciones que provoquen que un \'unico filtro rechace un 
 determinado contorno, este \'ultimo se ver\'a descartado por el sistema. 
 Como alternativas a este sistema se puede implementar un sistema de 
 votaci\'on donde se re\'unan los resultados de cada filtro y se tome una 
@@ -1534,7 +1545,7 @@ per\'imetro en gran proporci\'on. Por lo tanto, la inclusi\'on de otros
 \emph{descriptores de contorno} en este sistema podr\'ia resultar en un 
 seguimiento m\'as efectivo de los mismos a lo largo de los cuadros. 
 Tambi\'en es posible mejorar la estimaci\'on de las posiciones utilizando 
-f\'ormulas que tengan en cuenta no solo el \'ultimo desplazamiento sino 
+f\'ormulas que tengan en cuenta no s\'olo el \'ultimo desplazamiento sino 
 el desplazamiento promedio del objeto en los \'ultimos cuadros.
 
 
