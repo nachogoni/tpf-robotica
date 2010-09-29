@@ -254,6 +254,7 @@ La primer aproximaci\'on se puede describir como:
 \paragraph{Implementaci\'on del comportamiento}
 \label{focus_garbage:impl}
 Para la implementaci\'on se sigue el siguiente \emph{pseudo-c\'odigo}:
+{\scriptsize
 \begin{verbatim}
 por cada paso
     lista_de_basuras = obtener_lista_de_basuras(modulo_de_reconocimiento)
@@ -271,7 +272,7 @@ por cada paso
     fin_si
     poner_velocidades_en_ruedas(veloc_izq, veloc_der)
 \end{verbatim}
-
+}
 
 Se puede ver que la velocidad de giro del robot es proporcional al m\'odulo del
 \'angulo que hay hacia la basura, logrando enfocar m\'as r\'apido cuando el
@@ -651,6 +652,7 @@ la l\'inea, el robot deber\'a girar dependiendo de que lado se encuentre la
 misma (Ver figura \ref{fig:arenafinal}).
 
 \subparagraph{Implementaci\'on del comportamiento}
+{\scriptsize
 \begin{verbatim}
     angulo_final = obtener_angulo_final(obtener_linea(odometria))
     tita = atan(dist_sens_piso_X, dist_sens_piso_Y)
@@ -671,7 +673,7 @@ misma (Ver figura \ref{fig:arenafinal}).
     angulo_actual = obtener_angulo(odometria)
     girar(normalizar(angulo_actual - angulo_final))
 \end{verbatim}
-
+}
 % Explicar el porque del primer giro
 % Relacionarlo con la figura fig:floorSensors
 El primer giro del robot es para lograr que el segmento que une el sensor de
@@ -888,6 +890,7 @@ Se puede ver que los pesos que influyen en el motor de una rueda influyen
 con igual fuerza pero distinto signo en el motor de la rueda contraria.
 \\\indent
 Este comportamiento, en \emph{pseudo-c\'odigo} puede verse como:
+{\scriptsize
 \begin{verbatim}
 por cada paso
     veloc_izq = suma(coeficiente(RUEDA_IZQ, SENSOR_I) * VALOR(SENSOR_I))
@@ -896,7 +899,7 @@ por cada paso
     veloc_der *= FACTOR_DE INCIDENCIA
     poner_velocidades_en_ruedas(veloc_izq, veloc_der)
 \end{verbatim}
-
+}
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[scale=0.4]{comportamientos/figures/red.png}
