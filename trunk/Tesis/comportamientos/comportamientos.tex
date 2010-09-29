@@ -849,11 +849,15 @@ depender\'a entonces del valor sensado tal que la distancia
 hacia un obst\'aculo lleve al robot a una colisi\'on o le imposibilite
 moverse.
 \paragraph{Implementaci\'on del comportamiento}
-La implementaci\'on de este comportamiento la hicimos utilizando una
-red neuronal sin capas ocultas (ver figura \ref{fig:redN}) usando los sensores
-de distancia como entradas y 2 neuronas de salida indicando los valores a
-ser seteados en los motores de las ruedas.
-\\\indent
+Para la implementaci\'on de este comportamiento nos basamos en un trabajo
+anterior. El mismo consist\'io en ``conectar'' los sensores de distancia
+(entrada) a los motores (salida) como se muestra en la figura \ref{fig:redN}. 
+$W^s_i$ denota la conexi\'on entre el motor $s$ y el sensor de distancia $i$, y
+posee un valor real entre -1 y 1. Si el sensor de distancia $i$ sensa un valor
+de $d(i)$, entonces la velocidad otorgada al motor $s$ es:
+\begin{equation*}
+V(s) = \sum W^s_i d(i)
+\end{equation*}
 Debemos notar que hay conexiones tanto inhibitorias como excitatorias. Como es
 de esperarse, ambos sensores traseros (4 y 5) exitan a ambos motores. Distinto
 es el caso de los sensores del lado izquierdo (5, 6 y 7) que exitan el motor
@@ -862,8 +866,8 @@ robot gire para el lado opuesto de la ubicaci\'on de los sensores. La misma
 idea se sigue con los sensores (0, 1 y 2) ubicados en el costado derecho del
 robot.
 \\\indent
-Luego de entrenar la red, obtuvimos los siguientes valores para los pesos de la
-misma:
+Como resultado obtuvimos los siguientes valores para los pesos de las
+conexiones:
 
 \begin{table}[ht]
 	\begin{center}
@@ -896,7 +900,7 @@ por cada paso
 \begin{figure}[htp]
 \begin{center}
 \includegraphics[scale=0.4]{comportamientos/figures/red.png}
-\caption{Red neuronal entre los sensores de distancia y los motores}
+\caption{Conexionado entre los sensores de distancia y los motores}
 \label{fig:redN}
 \end{center}
 \end{figure}
