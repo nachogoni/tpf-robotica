@@ -57,10 +57,9 @@ class RealRobot : virtual public robotapi::IRobot {
         void initBatteries(protocol::PacketServer * ps);
         void initDistanceSensors(protocol::PacketServer * ps);
         void initDistanceSensor(protocol::PacketServer * ps, protocol::handlers::DistanceSensorBoardPacketHandler * dsbph, std::string name, int id);
-        
+       	void shutdown(); 
         void initCameras();
         void initTrashBins(protocol::PacketServer * ps);
-
 		std::map<std::string, IServo *> servos;
 		std::map<std::string, IDifferentialWheels *> wheels;
 		std::map<std::string, IBattery *> batteries;
@@ -70,6 +69,7 @@ class RealRobot : virtual public robotapi::IRobot {
 		WorldInfo * wi;
 		IGarbageCleaner * gc;
 		IDifferentialWheels * df;
+		protocol::PacketServer * ps;
 	};
 
 } /* End of namespace robotapi::real */
