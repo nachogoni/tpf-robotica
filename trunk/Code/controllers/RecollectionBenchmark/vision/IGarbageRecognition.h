@@ -1,12 +1,12 @@
-#ifndef utils_IGarbageRecognition_h
-#define utils_IGarbageRecognition_h
+#ifndef vision_IGarbageRecognition_h
+#define vision_IGarbageRecognition_h
 
 #include <list>
 #include <robotapi/ICamera.h>
-#include <utils/Garbage.h>
+#include <vision/Garbage.h>
 #include <WorldInfo.h>
 
-namespace utils {
+namespace vision {
 
 class IGarbageRecognition {
 
@@ -16,13 +16,13 @@ class IGarbageRecognition {
 
 		bool thereIsGarbage()  ;
 
-		virtual std::list<utils::Garbage*> getGarbageList()  = 0;
+		virtual std::list<vision::Garbage*> getGarbageList()  = 0;
 
-		utils::Garbage * getClosestGarbage(std::list<utils::Garbage*> gs);
+		vision::Garbage * getClosestGarbage(std::list<vision::Garbage*> gs);
 
-		double angleTo(utils::Garbage * g) ;
+		double angleTo(vision::Garbage * g) ;
 
-		double distanceTo(utils::Garbage * g) ;
+		double distanceTo(vision::Garbage * g) ;
 
 		void stepDone() ;
 
@@ -42,12 +42,12 @@ class IGarbageRecognition {
 		WorldInfo * wi;
 		bool pooled;
 		robotapi::ICamera * cam;
-		std::list<utils::Garbage*> garbages;
+		std::list<vision::Garbage*> garbages;
 		time_t lastRequest;
 
 
 };
 
-} /* End of namespace utils */
+} /* End of namespace vision */
 
-#endif // utils_IGarbageRecognition_h
+#endif // vision_IGarbageRecognition_h

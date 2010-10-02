@@ -1,5 +1,5 @@
-#ifndef utils_Prediction_h
-#define utils_Prediction_h
+#ifndef vision_Prediction_h
+#define vision_Prediction_h
 
 #include "GarbageHistoric.h"
 #include <vector>
@@ -9,13 +9,11 @@
 
 
 
-namespace utils{
+namespace vision{
 
 	class Prediction {
 		
 	 public:
-		 //~ Prediction();
-		 //~ ~Prediction();
 	     std::list<Garbage*> getPrediction(std::list<Garbage*> garbageList);
 	     void updateHistorical(std::list<Garbage*> garbageList);
 	     GarbageHistoric * focusGarbage();
@@ -28,4 +26,4 @@ namespace utils{
 
 }
 
-#endif // utils_Prediction_h
+#endif // vision_Prediction_h

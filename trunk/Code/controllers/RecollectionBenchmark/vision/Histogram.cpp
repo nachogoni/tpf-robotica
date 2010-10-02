@@ -3,9 +3,9 @@
 //      Copyright 2010 dnul <dnul@alu.itba.edu.ar>
 //      
 
-#include <utils/Histogram.h>
+#include <vision/Histogram.h>
 
-namespace utils{
+namespace vision{
 
 Histogram::Histogram(int h_bins,int s_bins){
 	this->h_bins = h_bins;

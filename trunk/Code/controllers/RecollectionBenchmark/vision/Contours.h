@@ -1,10 +1,10 @@
-#ifndef contours_h
-#define contours_h
+#ifndef vision_contours_h_
+#define vision_contours_h_
 
 #include <cv.h>
 #include <highgui.h>
 #include <vector>
-#include "polygon.h"
+#include <vision/Polygon.h>
 
 CvSeq * myFindContours(IplImage * image);
 CvSeq * getPolygon(CvSeq * aContour);
@@ -12,7 +12,7 @@ void traversePoints(CvSeq * contour,IplImage * src);
 
 
 
-namespace utils {
+namespace vision {
 
 const double miPI = 3.141592;
 const double VASO_LONGEST_EDGE_SIMILARITY=0.8;

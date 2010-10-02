@@ -1,5 +1,5 @@
-#ifndef polygon_h_h
-#define polygon_h
+#ifndef Polygon_h_
+#define Polygon_h_
 
 #include <stdio.h>
 #include <vector>

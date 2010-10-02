@@ -3,7 +3,7 @@
  * 
  *      Takes care of all polygon analysis functions
  */
-#include "polygon.h"
+#include <vision/Polygon.h>
 
 bool equalsCvPoint(CvPoint * a, CvPoint * b){
 	if(a==NULL || b==NULL)

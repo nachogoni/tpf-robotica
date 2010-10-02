@@ -1,14 +1,14 @@
-#include <utils/GarbageRecognition.h>
+#include <vision/GarbageRecognition.h>
 
 #include <highgui.h>
 #include <stdio.h>
 #include <string>
 #include <time.h>
-#include <utils/Contours.h>
-#include <utils/Histogram.h>
-#include <utils/Garbage.h>
+#include <vision/Contours.h>
+#include <vision/Histogram.h>
+#include <vision/Garbage.h>
 #include <utils/MyAngle.h>
-#include <utils/MinimalBoundingRectangle.h>
+#include <vision/MinimalBoundingRectangle.h>
 
 // image preprocessing values
 #define THRESHOLD_VALUE 240
@@ -32,7 +32,7 @@
 #define HIST_MIN 0.7
 #define TIME_THRESHOLD 1 //seconds
 
-namespace utils {
+namespace vision {
 
 
 GarbageRecognition::GarbageRecognition(WorldInfo * wi){
@@ -53,8 +53,8 @@ std::list<Garbage*> GarbageRecognition::getGarbageList()
 
 
 
-std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * model){
-	std::list<utils::Garbage*>::iterator it;
+std::list<vision::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplImage * model){
+	std::list<vision::Garbage*>::iterator it;
 	for ( it=garbages.begin() ; it != garbages.end() ; it++ )
 		delete *it;
 	garbages.clear();
@@ -66,7 +66,7 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 	//image for the histogram-based filter
 	//could be a parameter
 
-	utils::Histogram * h = new Histogram(HIST_H_BINS,HIST_S_BINS);
+	vision::Histogram * h = new Histogram(HIST_H_BINS,HIST_S_BINS);
 	CvHistogram * testImageHistogram = h->getHShistogramFromRGB(model);
 
 	//~ int frameWidth=cvGetCaptureProperty(capture,CV_CAP_PROP_FRAME_WIDTH);
@@ -151,7 +151,7 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 
 	while(contours!=NULL){
 		CvSeq * aContour=getPolygon(contours);
-		utils::Contours * ct = new Contours(aContour);
+		vision::Contours * ct = new Contours(aContour);
 
 	
 	    //int	pf = ct->perimeterFilter(MINCONTOUR_PERIMETER,MAXCONTOUR_PERIMETER);
@@ -181,12 +181,12 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 			
 				//printf(" c %d,%d\n",boundingRect.x,boundingRect.y);
 
-				utils::MinimalBoundingRectangle * r = new utils::MinimalBoundingRectangle(boundingRect.x,
+				vision::MinimalBoundingRectangle * r = new vision::MinimalBoundingRectangle(boundingRect.x,
 					boundingRect.y,boundingRect.width,boundingRect.height);
 
 
 
-				utils::Garbage * aGarbage = new utils::Garbage(r);
+				vision::Garbage * aGarbage = new vision::Garbage(r);
 //				printf("%d , %d - %d , %d\n",boundingRect.x,boundingRect.y,boundingRect.width,boundingRect.height);
 
 				garbages.push_back(aGarbage);
@@ -224,9 +224,4 @@ std::list<utils::Garbage*> GarbageRecognition::garbageList(IplImage * src, IplIm
 	return garbages;
 }
 
-
-
-
-
-
-} /* End of namespace utils */
+} /* End of namespace vision */
