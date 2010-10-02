@@ -52,7 +52,8 @@ class IRobot {
 
     // virtual destructor for interface
     virtual ~IRobot() { }
-
+	
+	virtual void shutdown()=0;
 };
 
 } /* End of namespace robotapi */

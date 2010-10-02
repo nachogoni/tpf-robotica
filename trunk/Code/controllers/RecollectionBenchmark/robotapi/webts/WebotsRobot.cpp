@@ -234,5 +234,8 @@ namespace webts {
 	void WebotsRobot::setGC(IGarbageCleaner * gc){
 		this->gc = gc;
 	}
+
+	void WebotsRobot::shutdown(){
+};
 } /* End of namespace robotapi::webts */
 } /* End of namespace robotapi */

@@ -49,7 +49,7 @@ public:
 	void saveChanges(std::list<utils::ArenaGridSlot *> ags);
 
 	std::list<utils::ArenaGridSlot *> getSlotsSeen(utils::MyPoint * position, double angle, utils::ArenaGridSlot * currentSlot);
-
+	void shutdown();
     // destructor for interface
     ~WebotsRobot() { }
     

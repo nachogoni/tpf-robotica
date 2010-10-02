@@ -1,5 +1,5 @@
 #include "RealRobot.h"
-
+#include <signal.h>
 #include <robotapi/real/RealCamera.h>
 #include <robotapi/real/RealDistanceSensor.h>
 #include <robotapi/real/RealServo.h>
@@ -41,7 +41,7 @@
 
 #define ULTRASONIC_SENSOR_ID 0x05
 
-#define CAMERA_ID 1
+#define CAMERA_ID -1
 
 #define BATTERY_GROUP DISTANCE_SENSOR_GROUP
 #define BATTERY_BOARD DISTANCE_SENSOR_BOARD_ONE
@@ -50,15 +50,24 @@
 #define TRASHBIN_GROUP 0x07
 #define TRASHBIN_BOARD 0x00
 
+
+
 namespace robotapi {
 namespace real {
 
+void RealRobot::shutdown(){
+	df->setSpeed(0,0);
+	sleep(5);
+	ps->shutdown();
+}
+
 RealRobot::RealRobot(WorldInfo * wi){
 
-	protocol::PacketServer * ps = new protocol::PacketServer();
+	ps = new protocol::PacketServer();
 	ps->start();
 	this->wi = wi;
 	this->initWheels(ps);
+	
 /*
 	this->initServos(ps);
 	this->initTrashBins(ps);
@@ -182,8 +191,9 @@ IDevice & RealRobot::getDevice(std::string name){
 
 IDifferentialWheels & RealRobot::getDifferentialWheels(std::string name){
 	IDifferentialWheels * aux = this->wheels[name];
-	if ( df == NULL )
+	if ( df == NULL ){
 		df = aux;
+	}
 	return *aux;
 }
 
@@ -199,13 +209,13 @@ void RealRobot::step(int ms){
 	//sleep(1);
 	
 	//refresh sensor values
-/*
+
 	for( std::map<std::string, IDifferentialWheels *>::iterator it=wheels.begin();
 		it!=wheels.end();++it)
 	{
 			((*it).second)->refresh();
 	}
-*/
+
 
 	for( std::map<std::string, IDistanceSensor *>::iterator it=distanceSensors.begin();
 		it!=distanceSensors.end();++it)
@@ -229,7 +239,8 @@ void RealRobot::step(int ms){
 	// Refresh stats
 	if ( gc != NULL )
 		gc->stepWasDone();
-	usleep(125000);
+
+	usleep(250000);
 	return ;
 }
 
