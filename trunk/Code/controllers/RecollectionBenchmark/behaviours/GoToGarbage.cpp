@@ -4,7 +4,7 @@
 namespace behaviours {
 
 	// class constructor
-	GoToGarbage::GoToGarbage(utils::IGarbageRecognition * gr, robotapi::IDifferentialWheels * wheels) : AbstractBehaviour("Go to Garbage")
+	GoToGarbage::GoToGarbage(vision::IGarbageRecognition * gr, robotapi::IDifferentialWheels * wheels) : AbstractBehaviour("Go to Garbage")
 	{
 		this->gr = gr;
 		this->wheels = wheels;
@@ -21,7 +21,7 @@ namespace behaviours {
 		if ( ! garbagePresent )
 			return;
 
-        std::list<utils::Garbage*> gs = this->gr->getGarbageList();
+        std::list<vision::Garbage*> gs = this->gr->getGarbageList();
 
 		// Calculate nearest garbage and angle to it
         this->currentGarbage = this->gr->getClosestGarbage(gs);

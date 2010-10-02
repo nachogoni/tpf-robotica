@@ -6,9 +6,10 @@
 
 namespace behaviours {
 
-	FocusGarbage::FocusGarbage(utils::IGarbageRecognition * gr, robotapi::IDifferentialWheels * wheels) : AbstractBehaviour("Focus Garbage"){
+	FocusGarbage::FocusGarbage(vision::IGarbageRecognition * gr, robotapi::IDifferentialWheels * wheels) : AbstractBehaviour("Focus Garbage"){
 		this->gr = gr;
 		this->wheels = wheels;
+		printf("Focus garbage");
 	}
 
 	FocusGarbage::~FocusGarbage(){}
@@ -18,7 +19,7 @@ namespace behaviours {
 		if ( ! garbagePresent )
 			return;
 
-        std::list<utils::Garbage*> gs = this->gr->getGarbageList();
+        std::list<vision::Garbage*> gs = this->gr->getGarbageList();
 
 		// Calculate nearest garbage and angle to it
         this->currentGarbage = this->gr->getClosestGarbage(gs);
@@ -43,6 +44,10 @@ namespace behaviours {
 			// Turn right
 			rightSpeed *= -1;
 		}
+		printf("Angle To garbage: %g\n",angleToGarbage);
+		printf("Module: %g\n",module);
+		printf("speeds: %g - %g\n",leftSpeed,rightSpeed);
+		
    		this->wheels->setSpeed(leftSpeed,rightSpeed);
 		this->currentGarbage = NULL;
 	}

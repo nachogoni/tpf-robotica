@@ -56,6 +56,7 @@ namespace behaviours {
 				leftSpeed *= (1-behaviours::BehavioursParameters::getParameter(WANDER_TURN_FACTOR));
 		}
 		*/
+		printf("left speed %g, right speed %g\n",leftSpeed,rightSpeed);
 		this->wheels->setSpeed(leftSpeed,rightSpeed);
 	}
 
