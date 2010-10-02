@@ -41,7 +41,7 @@ class PacketServer {
 		void registerHandler(BoardPacketHandler * bph,int groupid,int boardid);
 
 		void setDebug(bool debug);
-
+		void shutdown();
 	private:
 		BoardPacketHandler * getHandler(unsigned char groupid,unsigned char boardid);
 		bool init();
@@ -54,7 +54,7 @@ class PacketServer {
 		void run(void);
 		bool debug;
 
-
+		
 		#ifdef __linux__
 		int pipes[2];
 		int serfd;

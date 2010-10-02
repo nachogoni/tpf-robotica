@@ -214,5 +214,10 @@ bool PacketServer::init()
 void PacketServer::setDebug(bool mode) {
 	this->debug = mode;
 }
-
+void PacketServer::shutdown(){
+#ifdef __linux__
+	::close(this->serfd);
+	exit();
+#endif
+}
 }
