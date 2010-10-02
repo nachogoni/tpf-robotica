@@ -7,6 +7,7 @@
  */
 
 #include "Contours.h"
+#include "Histogram.h"
 #include <stdio.h>
 #include <vector>
 #include <cv.h>
@@ -84,7 +85,7 @@ traversePoints(CvSeq * contour,IplImage * img){
 }
 */
 
-namespace utils{
+namespace vision{
 
 Contours::Contours(CvSeq * contour){
 	this->c = contour;
@@ -273,7 +274,7 @@ int Contours::boxAreaFilter(double minAreaRatio){
  * @s_bins number of sat bins 
  * @min minimum similarity to achieve when comparing histograms
  */
-/*int Contours::histogramMatchingFilter(IplImage * src, CvHistogram * testImageHistogram,int h_bins,int s_bins, double min){
+int Contours::histogramMatchingFilter(IplImage * src, CvHistogram * testImageHistogram,int h_bins,int s_bins, double min){
 	CvRect box;
 	CvMemStorage* mem = cvCreateMemStorage(0);
 	
@@ -289,7 +290,7 @@ int Contours::boxAreaFilter(double minAreaRatio){
     cvGetSubArr( src,(CvMat*)src_bbox, box );
 
 	//gets subimage histogram
-	utils::Histogram * h = new Histogram(h_bins,s_bins);
+	vision::Histogram * h = new Histogram(h_bins,s_bins);
 	CvHistogram* hist = h->getHShistogramFromRGB(src_bbox);
 	//compares with object histogram
 	val=cvCompareHist(hist,testImageHistogram,CV_COMP_BHATTACHARYYA);
@@ -301,7 +302,7 @@ int Contours::boxAreaFilter(double minAreaRatio){
 	
 	return (val<min);
 }
-*/
+
 std::vector<int> Contours::getCentroid(){
 	 std::vector<int> vec(2);
 	

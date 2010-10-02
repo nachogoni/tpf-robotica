@@ -1,10 +1,10 @@
-#ifndef utils_Histogram_h
-#define utils_Histogram_h
+#ifndef vision_Histogram_h
+#define vision_Histogram_h
 
 #include <cv.h>
 #include <highgui.h>
 
-namespace utils{
+namespace vision{
 
 	class Histogram {
 		

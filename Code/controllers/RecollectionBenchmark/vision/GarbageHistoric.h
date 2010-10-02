@@ -1,5 +1,5 @@
-#ifndef utils_GarbageHistoric_h
-#define utils_GarbageHistoric_h
+#ifndef vision_GarbageHistoric_h
+#define vision_GarbageHistoric_h
 
 #include "MinimalBoundingRectangle.h"
 #include <vector>
@@ -14,7 +14,7 @@ const double AREA_PER_RATIO=0.25;
 //is multiplied
 const double DELTA_MOVEMENT_FACTOR=0.3;
 
-namespace utils{
+namespace vision{
 	enum gHistState { NOT_SHOW, SHOW, DEAD };
 
 	class GarbageHistoric {
@@ -24,6 +24,7 @@ namespace utils{
 		 GarbageHistoric();
 		 GarbageHistoric(std::vector<int> currentPos);
 		 GarbageHistoric(Garbage * garbage);
+
 		 bool isSameObject(Garbage * garbage);
 		 void updateHistoric();
 		 void updateHistoricWithGarbage(Garbage * garbage);
@@ -56,4 +57,4 @@ namespace utils{
 
 }
 
-#endif // utils_GarbageHistoric_h
+#endif // vision_GarbageHistoric_h

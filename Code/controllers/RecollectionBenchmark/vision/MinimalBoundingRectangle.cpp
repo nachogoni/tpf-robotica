@@ -1,16 +1,13 @@
-#include <utils/MinimalBoundingRectangle.h>
+#include "MinimalBoundingRectangle.h"
 
-namespace utils{
+namespace vision{
 
-MinimalBoundingRectangle::MinimalBoundingRectangle(int x,int y,int height,int width)
+MinimalBoundingRectangle::MinimalBoundingRectangle(int x,int y,int width,int height)
 {
   this->height=height;
   this->width=width;
   this->x=x;
   this->y=y;
-}
-
-MinimalBoundingRectangle::~MinimalBoundingRectangle(){
 }
 
 int MinimalBoundingRectangle::getTopX()

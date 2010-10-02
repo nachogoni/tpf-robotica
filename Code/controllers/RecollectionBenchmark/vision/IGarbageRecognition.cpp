@@ -1,6 +1,6 @@
-#include <utils/IGarbageRecognition.h>
+#include <vision/IGarbageRecognition.h>
 
-namespace utils {
+namespace vision {
 	
 	
  void IGarbageRecognition::setCamera(robotapi::ICamera &camera)
@@ -18,16 +18,16 @@ bool IGarbageRecognition::thereIsGarbage()
     return !garbages.empty();
 }
 
-utils::Garbage * IGarbageRecognition::getClosestGarbage(std::list<utils::Garbage*> gs){
+vision::Garbage * IGarbageRecognition::getClosestGarbage(std::list<vision::Garbage*> gs){
 		if ( gs.empty() )
 		    return NULL;
 
-        std::list<utils::Garbage *>::iterator it;
+        std::list<vision::Garbage *>::iterator it;
 		it=gs.begin();
 		return *it;
 }
 
-double IGarbageRecognition::angleTo(utils::Garbage * g)
+double IGarbageRecognition::angleTo(vision::Garbage * g)
 {
 	if ( g == NULL )
 	    return PI;
@@ -47,7 +47,7 @@ double IGarbageRecognition::angleTo(utils::Garbage * g)
 	return atan((double)transformedX/(double)transformedY) * hfov / PI;
 }
 
-double IGarbageRecognition::distanceTo(utils::Garbage * g)
+double IGarbageRecognition::distanceTo(vision::Garbage * g)
 {
     if ( g == NULL )
 	    return 10000;

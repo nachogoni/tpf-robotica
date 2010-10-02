@@ -11,10 +11,11 @@ CPP_BEHAVIOURS_SOURCES =	behaviours/AbstractBehaviour.o behaviours/AvoidObstacle
 							behaviours/RemoveFromStuck.o behaviours/GoToDisposal.o behaviours/UnloadGarbage.o \
 							behaviours/Wander.o behaviours/BehavioursParameters.o
 
-CPP_UTILS_SOURCES =			utils/MinimalBoundingRectangle.o utils/Garbage.o utils/GarbageRecognition.o \
-							utils/Contours.o utils/Histogram.o \
-							utils/MyLine.o utils/MyPoint.o utils/MyAngle.o utils/MyWall.o \
-							utils/IGarbageRecognition.o \
+CPP_VISION_SOURCES =		vision/MinimalBoundingRectangle.o vision/Garbage.o vision/GarbageRecognition.o \
+							vision/Contours.o vision/Histogram.o vision/Polygon.o vision/GarbageHistoric.o \
+							vision/IGarbageRecognition.o vision/Windowing.o vision/Prediction.o \
+
+CPP_UTILS_SOURCES =			utils/MyLine.o utils/MyPoint.o utils/MyAngle.o utils/MyWall.o \
 							utils/ArenaGrid.o utils/ArenaGridSlot.o utils/Rectangle2D.o
 
 CPP_ROBOT_API_SOURCES =		robotapi/DifferentialWheelsWOdometry.o \
@@ -61,7 +62,8 @@ CFLAGS= -g -Wall -I. $(OPENCVCFLAGS)
 %.o: %.cpp
 	g++ -c -g -o $@ $(CFLAGS) $<
 
-all: $(CPP_BEHAVIOURS_SOURCES) $(CPP_SOURCES) $(CPP_UTILS_SOURCES) $(CPP_ROBOT_API_SOURCES) $(CPP_PROTOCOL_SOURCES)
+all: $(CPP_BEHAVIOURS_SOURCES) $(CPP_SOURCES) $(CPP_UTILS_SOURCES) $(CPP_ROBOT_API_SOURCES) $(CPP_PROTOCOL_SOURCES) \
+     $(CPP_VISION_SOURCES)
 	g++ -o realController $^ $(CFLAGS) $(LIBRARIES)
 
 clean:

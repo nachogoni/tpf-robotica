@@ -1,7 +1,7 @@
-#ifndef utils_MinimalBoundingRectangle_h
-#define utils_MinimalBoundingRectangle_h
+#ifndef vision_MinimalBoundingRectangle_h
+#define vision_MinimalBoundingRectangle_h
 
-namespace utils{
+namespace vision{
 
 class MinimalBoundingRectangle {
 
@@ -17,8 +17,6 @@ class MinimalBoundingRectangle {
 
 	MinimalBoundingRectangle(int x,int y,int height,int width);
 	
-	~MinimalBoundingRectangle();
-	private:
 	 int x;
 	 int y;
 	 int height;
@@ -29,4 +27,4 @@ class MinimalBoundingRectangle {
 
 }
 
-#endif // utils_MinimalBoundingRectangle_h
+#endif // vision_MinimalBoundingRectangle_h

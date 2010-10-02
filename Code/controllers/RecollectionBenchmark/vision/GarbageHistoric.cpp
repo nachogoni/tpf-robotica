@@ -4,10 +4,7 @@
 #include <math.h>
 #include "PredictionParameters.h"
 
-
-
-
-namespace utils{
+namespace vision{
 	
 	GarbageHistoric::GarbageHistoric(){
 		

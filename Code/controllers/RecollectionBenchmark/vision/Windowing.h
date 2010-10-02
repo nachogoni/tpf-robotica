@@ -1,5 +1,5 @@
-#ifndef utils_Windowing_h
-#define utils_Windowing_h
+#ifndef vision_Windowing_h
+#define vision_Windowing_h
 
 #include "GarbageHistoric.h"
 #include <vector>
@@ -11,7 +11,7 @@
 
 
 
-namespace utils{
+namespace vision{
 
 	class Windowing {
 		
@@ -39,4 +39,4 @@ namespace utils{
 
 }
 
-#endif // utils_Windowing_h
+#endif // vision_Windowing_h

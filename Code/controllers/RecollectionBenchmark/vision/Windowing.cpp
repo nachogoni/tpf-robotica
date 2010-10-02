@@ -11,7 +11,7 @@
 
 
 
-namespace utils{
+namespace vision{
 
 	Windowing::~Windowing(){
 		//if(windowImage!=NULL){

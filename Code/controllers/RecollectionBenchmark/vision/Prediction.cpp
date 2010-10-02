@@ -1,6 +1,3 @@
-
-
-
 #include <iostream>
 #include <stdio.h>
 #include "Prediction.h"
@@ -8,7 +5,7 @@
 #include "PredictionParameters.h"
 
 
-namespace utils{
+namespace vision{
 	
 	
 	std::list<Garbage*> Prediction::getPrediction(std::list<Garbage*> garbageList){
