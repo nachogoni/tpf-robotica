@@ -6,7 +6,7 @@ namespace behaviours {
 
 	int getStepsToGarbage(double distanceInMeters,double speed);
 
-	CollectGarbage::CollectGarbage(utils::IGarbageRecognition * gr, robotapi::IRobot * robot, robotapi::ITrashBin * tb, robotapi::IDifferentialWheels * wheels, WorldInfo * wi,  robotapi::IServo * shovel, robotapi::IServo * container) : AbstractBehaviour("Collect Garbage"){
+	CollectGarbage::CollectGarbage(vision::IGarbageRecognition * gr, robotapi::IRobot * robot, robotapi::ITrashBin * tb, robotapi::IDifferentialWheels * wheels, WorldInfo * wi,  robotapi::IServo * shovel, robotapi::IServo * container) : AbstractBehaviour("Collect Garbage"){
 		this->shovel = shovel;
 		this->gr = gr;
 		this->wi = wi;
@@ -23,7 +23,7 @@ namespace behaviours {
 		if ( ! garbagePresent )
 			return;
 
-        std::list<utils::Garbage*> gs = this->gr->getGarbageList();
+        std::list<vision::Garbage*> gs = this->gr->getGarbageList();
 
 		// Calculate nearest garbage and angle to it
         this->currentGarbage = this->gr->getClosestGarbage(gs);

@@ -2,7 +2,7 @@
 #define behaviours_FocusGarbage_h
 
 #include "AbstractBehaviour.h"
-#include <utils/IGarbageRecognition.h>
+#include <vision/IGarbageRecognition.h>
 
 namespace behaviours {
 
@@ -10,7 +10,7 @@ class FocusGarbage : public AbstractBehaviour {
 
 	public:
 
-		FocusGarbage(utils::IGarbageRecognition * gr, robotapi::IDifferentialWheels * wheels );
+		FocusGarbage(vision::IGarbageRecognition * gr, robotapi::IDifferentialWheels * wheels );
 		~FocusGarbage();
 
 		void sense();
@@ -18,9 +18,9 @@ class FocusGarbage : public AbstractBehaviour {
 	    void action();
 
 	private:
-        utils::IGarbageRecognition * gr;
+        vision::IGarbageRecognition * gr;
 		robotapi::IDifferentialWheels * wheels;
-		utils::Garbage * currentGarbage;
+		vision::Garbage * currentGarbage;
 	};
 
 } /* End of namespace behaviours */
