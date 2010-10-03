@@ -3,7 +3,7 @@
 
 #include <robotapi/real/RealRobot.h>
 #include <behaviours/BehavioursParameters.h>
-#include <utilsVision/GarbageRecognition.h>
+#include <vision/GarbageRecognition.h>
 #include <WorldInfo.h>
 #include <cv.h>
 #include <highgui.h>

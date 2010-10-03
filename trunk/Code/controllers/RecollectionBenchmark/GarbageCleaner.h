@@ -1,15 +1,13 @@
 #ifndef GarbageCleaner_h
 #define GarbageCleaner_h
 
-
-
-
 #include <list>
 
 #include <behaviours/AbstractBehaviour.h>
 #include <robotapi/IRobot.h>
 #include <WorldInfo.h>
 #include <IGarbageCleaner.h>
+#include <vision/IGarbageRecognition.h>
 
 //#define FOCUS_GOTO_COLLECT_DISPOSE_GARBAGE 1
 #define CONTROLLER_DEBUG 1
@@ -21,12 +19,14 @@
 #define TIME_STEP 32
 
 #define MAX_BEHAVIOURS 32
+#define GR "GarbageRecognition"
+#define GRP "GarbageRecognitionWithPrediction"
 
 class GarbageCleaner : virtual public IGarbageCleaner {
 
  public:
 
-    GarbageCleaner(WorldInfo * wi, robotapi::IRobot &robot);
+    GarbageCleaner(WorldInfo * wi, robotapi::IRobot &robot, char * recognitionType);
 
     void cleanGarbage();
 
@@ -40,9 +40,11 @@ class GarbageCleaner : virtual public IGarbageCleaner {
     
 	void printStats();
  private:
-	void initializeBehaviours(WorldInfo * wi);
+	void initializeBehaviours(WorldInfo * wi, char * garbageRecognitionType);
 	void initializeSensors();
 	int stats [MAX_BEHAVIOURS];
+
+	template<typename T> vision::IGarbageRecognition * createInstance(WorldInfo * wi);
 
 };
 
