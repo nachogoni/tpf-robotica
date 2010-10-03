@@ -14,6 +14,7 @@ CPP_BEHAVIOURS_SOURCES =	behaviours/AbstractBehaviour.o behaviours/AvoidObstacle
 CPP_VISION_SOURCES =		vision/MinimalBoundingRectangle.o vision/Garbage.o vision/GarbageRecognition.o \
 							vision/Contours.o vision/Histogram.o vision/Polygon.o vision/GarbageHistoric.o \
 							vision/IGarbageRecognition.o vision/Windowing.o vision/Prediction.o \
+							vision/GarbageRecognitionWithPrediction.o
 
 CPP_UTILS_SOURCES =			utils/MyLine.o utils/MyPoint.o utils/MyAngle.o utils/MyWall.o \
 							utils/ArenaGrid.o utils/ArenaGridSlot.o utils/Rectangle2D.o

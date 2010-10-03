@@ -1,9 +1,8 @@
 #include <vision/IGarbageRecognition.h>
 
 namespace vision {
-	
-	
- void IGarbageRecognition::setCamera(robotapi::ICamera &camera)
+
+void IGarbageRecognition::setCamera(robotapi::ICamera &camera)
 {
 	cam = &camera;
 	lastRequest = time(NULL);

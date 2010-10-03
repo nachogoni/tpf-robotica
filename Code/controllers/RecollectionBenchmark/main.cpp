@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 
     robotapi::real::RealRobot * robot = new robotapi::real::RealRobot(wi);
 
-	GarbageCleaner::GarbageCleaner * gc = new GarbageCleaner::GarbageCleaner(wi, *robot);
+	GarbageCleaner::GarbageCleaner * gc = new GarbageCleaner::GarbageCleaner(wi, *robot, GR);
 
 	gc->cleanGarbage();
     return EXIT_SUCCESS;

@@ -1,5 +1,5 @@
-#ifndef utils_GarbageRecognition_h
-#define utils_GarbageRecognition_h
+#ifndef vision_GarbageRecognitionWithPrediction_h
+#define vision_GarbageRecognitionWithPrediction_h
 
 #include <list>
 #include "Garbage.h"
@@ -10,17 +10,17 @@
 
 
 
-namespace utils {
+namespace vision {
 
-class GarbageRecognition : virtual public IGarbageRecognition {
+class GarbageRecognitionWithPrediction : virtual public IGarbageRecognition {
 
  public:
 
-	GarbageRecognition();
-	GarbageRecognition(WorldInfo * wi);
-	~GarbageRecognition();
+	GarbageRecognitionWithPrediction();
+	GarbageRecognitionWithPrediction(WorldInfo * wi);
+	~GarbageRecognitionWithPrediction();
 	
-    std::list<utils::Garbage*> getGarbageList();
+    std::list<vision::Garbage*> getGarbageList();
     
     void enablePrediction();
     
@@ -50,10 +50,8 @@ private:
     
     IplImage * oldImage;
     
-    //std::list<utils::Garbage*> garbages;
-
 };
 
-} /* End of namespace utils */
+} /* End of namespace vision */
 
-#endif // utils_GarbageRecognition_h
+#endif // vision_GarbageRecognition_h

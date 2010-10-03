@@ -1,4 +1,4 @@
-#include "GarbageRecognition.h"
+#include "GarbageRecognitionWithPrediction.h"
 #include "Prediction.h"
 
 //~ #define BENCHMARK_H
@@ -42,18 +42,17 @@
 	extern int focusedFrames;
 #endif
 
-namespace utils {
+namespace vision {
 
-void drawPrediction(IplImage * src,std::list<utils::Garbage*> garbagePrediction);
+void drawPrediction(IplImage * src,std::list<vision::Garbage*> garbagePrediction);
 
 
-std::list<utils::Garbage*> garbages;
-std::list<utils::Garbage*> garbagePrediction;
+std::list<vision::Garbage*> garbagePrediction;
 
 IplImage * src_window;
 
 
-GarbageRecognition::GarbageRecognition(WorldInfo * wi=0){
+GarbageRecognitionWithPrediction::GarbageRecognitionWithPrediction(WorldInfo * wi=0){
 	
 	if(wi!=NULL)
 		this->wi=wi;
@@ -66,10 +65,10 @@ GarbageRecognition::GarbageRecognition(WorldInfo * wi=0){
 	doPrediction=true;
 	}
 	
-GarbageRecognition::~GarbageRecognition(){};
+GarbageRecognitionWithPrediction::~GarbageRecognitionWithPrediction(){};
 	
 std::list<Garbage*> 
-GarbageRecognition::getGarbageList()
+GarbageRecognitionWithPrediction::getGarbageList()
 {
 	IplImage * src = this->loadImage();
 		//~ IplImage * model = cvLoadImage("./colilla-sinBlanco.png",1);
@@ -143,7 +142,7 @@ GarbageRecognition::getGarbageList()
 }
 
 std::list<Garbage*> 
-GarbageRecognition::garbageList(IplImage * src, IplImage * model){
+GarbageRecognitionWithPrediction::garbageList(IplImage * src, IplImage * model){
 
     clock_t start = clock();
 
@@ -151,7 +150,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	std::list<Garbage*> garbageList;
 	std::vector<int> centroid(2);
 	
-	//~ utils::Histogram * h = new Histogram(HIST_H_BINS,HIST_S_BINS);
+	//~ vision::Histogram * h = new Histogram(HIST_H_BINS,HIST_S_BINS);
 	//~ CvHistogram * testImageHistogram = h->getHShistogramFromRGB(model);
 
 	//gets a frame for setting  image size
@@ -288,7 +287,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 	while(contours!=NULL){
 
 		CvSeq * aContour=getPolygon(contours);
-		utils::Contours * ct;
+		vision::Contours * ct;
 		
 		if(this->window==NULL)
 			ct = new Contours(aContour);
@@ -316,10 +315,10 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 				centroid=ct->getCentroid();
 				
 				//build garbage List
-				utils::MinimalBoundingRectangle * r = new utils::MinimalBoundingRectangle(boundingRect.x,
+				vision::MinimalBoundingRectangle * r = new vision::MinimalBoundingRectangle(boundingRect.x,
 					boundingRect.y,boundingRect.width,boundingRect.height);
 
-				utils::Garbage * aGarbage = new utils::Garbage(r,centroid,ct);
+				vision::Garbage * aGarbage = new vision::Garbage(r,centroid,ct);
 				//benchmark purposes
 				aGarbage->isVisualized=true;
 				aGarbage->isPredicted=false;
@@ -345,10 +344,10 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 				centroid=ct->getCentroid();
 				
 				//build garbage List
-				utils::MinimalBoundingRectangle * r = new utils::MinimalBoundingRectangle(boundingRect.x,
+				vision::MinimalBoundingRectangle * r = new vision::MinimalBoundingRectangle(boundingRect.x,
 					boundingRect.y,boundingRect.width,boundingRect.height);
 
-				utils::Garbage * aGarbage = new utils::Garbage(r,centroid,ct);
+				vision::Garbage * aGarbage = new vision::Garbage(r,centroid,ct);
 				//benchmark purposes
 				aGarbage->isVisualized=true;
 				aGarbage->isPredicted=false;
@@ -380,7 +379,7 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 		while(contours!=NULL){
 
 		CvSeq * aContour=getPolygon(contours);
-		utils::Contours * ct;
+		vision::Contours * ct;
 		
 		if(this->window==NULL)
 			ct = new Contours(aContour);
@@ -410,10 +409,10 @@ GarbageRecognition::garbageList(IplImage * src, IplImage * model){
 				centroid=ct->getCentroid();
 				
 				//build garbage List
-				utils::MinimalBoundingRectangle * r = new utils::MinimalBoundingRectangle(boundingRect.x,
+				vision::MinimalBoundingRectangle * r = new vision::MinimalBoundingRectangle(boundingRect.x,
 					boundingRect.y,boundingRect.width,boundingRect.height);
 
-				utils::Garbage * aGarbage = new utils::Garbage(r,centroid,ct);
+				vision::Garbage * aGarbage = new vision::Garbage(r,centroid,ct);
 				//benchmark purposes
 				aGarbage->isVisualized=true;
 				aGarbage->isPredicted=false;
@@ -483,18 +482,18 @@ void drawPrediction(IplImage * src,std::list<Garbage*> garbagePrediction){
 	cvReleaseImage(&predictionImage);
 }
 
-	void GarbageRecognition::enablePrediction(){
+	void GarbageRecognitionWithPrediction::enablePrediction(){
 		this->doPrediction=true;
 	}
 	
-    void GarbageRecognition::disablePrediction(){
+    void GarbageRecognitionWithPrediction::disablePrediction(){
 		this->doPrediction=false;
 	}
-    void GarbageRecognition::enableWindowing(){
+    void GarbageRecognitionWithPrediction::enableWindowing(){
 		this->doWindowing=true;
 	}
-    void GarbageRecognition::disableWindowing(){
+    void GarbageRecognitionWithPrediction::disableWindowing(){
 		this->doWindowing=false;
 	}
 
-} /* End of namespace utils */
+} /* End of namespace vision */
