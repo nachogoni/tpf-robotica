@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 
     robotapi::webts::WebotsRobot * robot = new robotapi::webts::WebotsRobot(wi, *wdw);
 
-	GarbageCleaner::GarbageCleaner * gc = new GarbageCleaner::GarbageCleaner(wi, *robot);
+	GarbageCleaner::GarbageCleaner * gc = new GarbageCleaner::GarbageCleaner(wi, *robot, GR);
 
 	gc->cleanGarbage();
 

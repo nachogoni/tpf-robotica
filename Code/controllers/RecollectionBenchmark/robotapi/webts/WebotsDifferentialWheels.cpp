@@ -96,5 +96,9 @@ namespace webts {
 		return dwtag;
 	}
 
+	void WebotsDifferentialWheels::refresh(){
+		return ;
+	}
+
 } /* End of namespace robotapi::webts */
 } /* End of namespace robotapi */

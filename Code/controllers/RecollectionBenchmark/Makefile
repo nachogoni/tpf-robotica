@@ -2,34 +2,28 @@
 # Makefile for a Webots C++ controller
 #
 # if your controller uses several C++ sources files:
-CPP_SOURCES = recollectionbenchmark.cpp GarbageCleaner.cpp WorldInfo.cpp \
+CPP_SOURCES = recollectionbenchmark.cpp \
+							WorldInfo.cpp GarbageCleaner.cpp \
 							behaviours/AbstractBehaviour.cpp behaviours/AvoidObstacle.cpp \
 							behaviours/CollectGarbage.cpp behaviours/GoToGarbage.cpp behaviours/FocusGarbage.cpp \
 							behaviours/FindLine.cpp behaviours/GoToBase.cpp behaviours/Recharge.cpp \
 							behaviours/GoToBaseGroup.cpp behaviours/PositionInLine.cpp behaviours/Recalibrate.cpp \
 							behaviours/RemoveFromStuck.cpp behaviours/GoToDisposal.cpp behaviours/UnloadGarbage.cpp \
-							behaviours/Wander.cpp behaviours/BehavioursParameters.cpp\
-							utils/MinimalBoundingRectangle.cpp utils/Garbage.cpp utils/GarbageRecognition.cpp \
-							utils/IGarbageRecognition.cpp utils/Contours.cpp utils/Histogram.cpp \
+							behaviours/Wander.cpp behaviours/BehavioursParameters.cpp \
+							vision/MinimalBoundingRectangle.cpp vision/Garbage.cpp vision/GarbageRecognition.cpp \
+							vision/Contours.cpp vision/Histogram.cpp vision/Polygon.cpp vision/GarbageHistoric.cpp \
+							vision/IGarbageRecognition.cpp vision/Windowing.cpp vision/Prediction.cpp \
+							vision/GarbageRecognitionWithPrediction.cpp \
 							utils/MyLine.cpp utils/MyPoint.cpp utils/MyAngle.cpp utils/MyWall.cpp \
 							utils/ArenaGrid.cpp utils/ArenaGridSlot.cpp utils/Rectangle2D.cpp \
 							robotapi/DifferentialWheelsWOdometry.cpp \
+							robotapi/webts/WebotsBattery.cpp robotapi/webts/WebotsTrashBin.cpp robotapi/webts/WebotsPCBattery.cpp \
 							robotapi/webts/WebotsCamera.cpp robotapi/webts/WebotsDevice.cpp robotapi/webts/WebotsDeviceTag.cpp \
 							robotapi/webts/WebotsDifferentialWheels.cpp robotapi/webts/WebotsDistanceSensor.cpp \
 							robotapi/webts/WebotsImage.cpp robotapi/webts/WebotsRobot.cpp robotapi/webts/WebotsServo.cpp \
-							robotapi/webts/WebotsTrashBin.cpp robotapi/webts/WebotsPCBattery.cpp robotapi/webts/WebotsBattery.cpp
-#							robotapi/real/RealBattery.cpp robotapi/real/RealTrashBin.cpp robotapi/real/RealPCBattery.cpp \
-#							robotapi/real/RealCamera.cpp robotapi/real/RealDevice.cpp robotapi/real/RealDeviceTag.cpp \
-#							robotapi/real/RealDifferentialWheels.cpp robotapi/real/RealDistanceSensor.cpp \
-#							robotapi/real/RealImage.cpp robotapi/real/RealRobot.cpp robotapi/real/RealServo.cpp \
-#							protocol/BoardPacketHandler.cpp protocol/packet.cpp protocol/PacketServer.cpp \
-#							protocol/packets/batterypacket.cpp protocol/packets/BoardPacket.cpp protocol/packets/DCMotorPacket.cpp \
-#							protocol/packets/DistanceSensorPacket.cpp protocol/packets/floorsensorpacket.cpp \
-#							protocol/packets/GroupPacket.cpp protocol/packets/ServoMotorPacket.cpp \
-#							protocol/packets/trashbinpacket.cpp protocol/packets/ultrasonicsensorpacket.cpp \
-#							protocol/handlers/BatteryBoardPacketHandler.cpp protocol/handlers/DCMotorBoardPacketHandler.cpp \
-#							protocol/handlers/DistanceSensorBoardPacketHandler.cpp protocol/handlers/ServoBoardPacketHandler.cpp \
-#							protocol/handlers/TrashBinBoardPacketHandler.cpp protocol/handlers/DefaultBoardPacketHandler.cpp
+							
+
+
 # or
 # CC_SOURCES = my_controller.cc my_clever_algo.cc my_gui.cc
 #
@@ -60,7 +54,7 @@ OPENCVCFLAGS = $(shell $(CVHEADFLAGSCOMMAND) )
 LIBRARIES= -lCppController -lccext2 $(OPENCVLFLAGS)
 else
 #LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/OpenCV2.0/lib"
-LIBRARIES= -lCppController -lcv200 -lhighgui200 -lcxcore200 -L"C:/Archivos de programa/OpenCV/lib"
+LIBRARIES= -lCppController -lcv210 -lhighgui210 -lcxcore210 -L"C:/Archivos de programa/OpenCV/lib"
 endif
 
 #
