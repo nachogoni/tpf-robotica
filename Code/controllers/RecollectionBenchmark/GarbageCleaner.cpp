@@ -149,14 +149,17 @@ void GarbageCleaner::initializeBehaviours(WorldInfo * wi, char * garbageRecognit
 	wander = new behaviours::Wander(wi, wheels);
 	myAbstractBehaviours.push_back(wander);
 	
-	#ifdef FOCUS_GOTO_COLLECT_DISPOSE_GARBAGE
+
 	ab = new behaviours::FocusGarbage( gr, wheels );
+	myAbstractBehaviours.push_back(ab);
+
+	ab = new behaviours::GoToGarbage( gr, wheels );
 	myAbstractBehaviours.push_back(ab);
 
 	ab = new behaviours::CollectGarbage( gr, &myIRobot, trashBin, wheels, wi, servoFront, servoContainer );
 	myAbstractBehaviours.push_back(ab);
 
-
+	#ifdef FOCUS_GOTO_COLLECT_DISPOSE_GARBAGE
 	gotodisposal = new behaviours::GoToDisposal( wi, &myIRobot, trashBin , wheels, fss , servoRear, servoContainer );
 	myAbstractBehaviours.push_back(gotodisposal);
 	#endif
