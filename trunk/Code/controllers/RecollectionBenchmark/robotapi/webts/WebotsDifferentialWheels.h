@@ -52,6 +52,8 @@ public:
     std::string getName();
 
     IWbDeviceTag & getTag();
+    
+	void refresh();
 
     // Change parameter to Webots API Differential Wheels
     WebotsDifferentialWheels(WorldInfo * wi, webots::DifferentialWheels & wdw);
